@@ -2,20 +2,20 @@ import "pkg:/components/music/playlistViewHost.bs"
 import "pkg:/components/recordings/incompleteRecordingWatch.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/MoonfinPlugin.bs"
-import "pkg:/source/api/trailerSearch.bs"
-import "pkg:/source/enums/SubtitleSelection.bs"
-import "pkg:/source/enums/TaskControl.bs"
-import "pkg:/source/enums/ViewLoadStatus.bs"
 import "pkg:/source/utils/buttonLayout.bs"
 import "pkg:/source/utils/detailActions.bs"
 import "pkg:/source/utils/detailButtons.bs"
 import "pkg:/source/utils/detailCompatibility.bs"
 import "pkg:/source/utils/kidsMode.bs"
 import "pkg:/source/utils/misc.bs"
+import "pkg:/source/utils/speshResume.brs"
 import "pkg:/source/utils/seerrButtons.bs"
 import "pkg:/source/utils/seerrDetailHost.bs"
 import "pkg:/source/utils/userDataSync.bs"
-import "pkg:/source/utils/watchPartyPick.bs"
+
+import "pkg:/source/enums/SubtitleSelection.bs"
+import "pkg:/source/enums/TaskControl.bs"
+import "pkg:/source/enums/ViewLoadStatus.bs"
 
 ' The action row, shared by the classic and modern detail screens so both behave the
 ' same. These run in the host screen's scope, so m is whichever screen imported them.
@@ -41,25 +41,17 @@ const BUTTON_ROW_SCROLL_MARGIN = 50
 ' The room over the Incomplete line, whatever gap the screen leaves between its other rows
 const INCOMPLETE_LINE_GAP = 8
 
-sub addArrangedButtons(candidates as object, personDisplayForKids = false as boolean)
+sub addArrangedButtons(candidates as object)
     order = m.global.session.user.settings[DETAIL_ORDER_SETTING]
     hidden = m.global.session.user.settings[DETAIL_HIDDEN_SETTING]
 
-    for each candidate in seerrButtons.Candidates(m.seerrDetails, seerrMediaType(), seerrSwapQueue())
+    for each candidate in seerrButtons.Candidates(m.seerrDetails, seerrMediaType())
         candidates.push(candidate)
     end for
 
     for each candidate in detailActionCandidates(m.top.itemContent.json)
         candidates.push(candidate)
     end for
-
-    if not offersFavorite(m.top.itemContent.json)
-        kept = []
-        for each candidate in candidates
-            if candidate.id <> "favorite" then kept.push(candidate)
-        end for
-        candidates = kept
-    end if
 
     m.keepAsCompleteInRow = offersKeepAsComplete()
     if m.keepAsCompleteInRow
@@ -70,9 +62,6 @@ sub addArrangedButtons(candidates as object, personDisplayForKids = false as boo
     ' is the point and a reorder would otherwise put a button it hides back
     offered = buttonLayout.InCatalogueOrder(candidates)
     arranged = kidsMode.Enabled() ? kidsMode.KeepButtons(offered) : buttonLayout.Arrange(offered, order, hidden)
-    if LCase(chainLookupReturn(m.top.itemContent, "json.Type", "")) = "person" and (personDisplayForKids or not kidsMode.Enabled())
-        arranged = withPersonDisplay(arranged)
-    end if
 
     for each candidate in arranged
         addButton(candidate.config)
@@ -80,12 +69,12 @@ sub addArrangedButtons(candidates as object, personDisplayForKids = false as boo
 end sub
 
 ' The Action Buttons on Screen setting laid over the cap a style asks for. Returns how many
-' buttons stay in the row, or -1 when nothing folds. Play, Resume, Restart and Extras count toward
-' the cap but never fold, so the row always keeps those.
+' buttons stay in the row, or -1 when nothing folds. Play, Resume and Restart count toward the
+' cap but never fold, so the row always keeps those.
 function cappedButtonCount(buttons as object, styleCap as object) as integer
     leading = 0
     for each button in buttons
-        if button.id <> "resumeButton" and button.id <> "restartButton" and button.id <> "playButton" and button.id <> "extrasButton" then exit for
+        if button.id <> "resumeButton" and button.id <> "restartButton" and button.id <> "playButton" then exit for
         leading++
     end for
 
@@ -327,8 +316,8 @@ end sub
 
 sub addButton(config as object)
     ' A Seerr title has nothing in the library behind it, so only the actions that reach
-    ' Seerr itself are worth offering
-    if m.top.seerrOnly and Left(config.id, 5) <> "seerr" then return
+    ' Seerr itself (or an available remote trailer) are worth offering
+    if m.top.seerrOnly and Left(config.id, 5) <> "seerr" and config.id <> "trailerButton" then return
     appendButtonNode(config)
 end sub
 
@@ -417,14 +406,19 @@ sub addButtons(itemData as object)
 
     if m.top.trailerAvailable then candidates.push(trailerCandidate())
 
-    withGroup = watchPartyPick.Candidate(itemData)
-    if isValid(withGroup) then candidates.push(withGroup)
-
     candidates.push(watchedCandidate(itemData))
     candidates.push(favoriteCandidate(itemData))
 
-    goToSeries = goToSeriesCandidate(itemData)
-    if isValid(goToSeries) then candidates.push(goToSeries)
+    if isEpisode()
+        candidates.push({
+            id: "goToSeries", config: {
+                icon: "pkg:/images/icons/detail_series.webp",
+                label: tr("Go to Series"),
+                action: "goToSeries",
+                id: "goToSeriesButton"
+            }
+        })
+    end if
 
     addArrangedButtons(candidates)
 end sub
@@ -462,9 +456,6 @@ sub addSeriesButtons()
 
     if m.top.trailerAvailable then candidates.push(trailerCandidate())
 
-    withGroup = watchPartyPick.Candidate(itemData)
-    if isValid(withGroup) then candidates.push(withGroup)
-
     candidates.push(watchedCandidate(itemData))
     candidates.push(favoriteCandidate(itemData))
 
@@ -475,36 +466,9 @@ function trailerCandidate() as object
     return { id: "trailer", config: { icon: "pkg:/images/icons/detail_trailer.webp", label: tr("Trailer"), action: "trailer", id: "trailerButton" } }
 end function
 
-' In a SyncPlay group it plays like the row's first button, which sends the title to the group
-sub watchWithGroup()
-    if watchPartyPick.InSyncPlayGroup()
-        if m.buttonGroups.count() > 0 then runButtonAction(m.buttonGroups[0].buttonAction)
-        watchPartyPick.SayGroupSyncing()
-        return
-    end if
-    watchPartyPick.Pick(m.top.itemContent.json)
-end sub
-
 function watchedCandidate(itemData as object) as object
     isWatched = chainLookupReturn(itemData, "UserData.Played", false)
     return { id: "watched", config: markActiveButton({ icon: "pkg:/images/icons/detail_watched.webp", label: isWatched ? tr("Watched") : tr("Unwatched"), action: "watched", id: "watchedButton" }, isWatched, CLASSIC_WATCHED_INK) }
-end function
-
-' A person's Display button sits beside the heart, outside the arrangement the viewer saves, and
-' leads the row when the heart is hidden
-function withPersonDisplay(arranged as object) as object
-    display = { id: "personDisplay", config: { icon: "pkg:/images/icons/tune.webp", label: tr("Display"), action: "personDisplay", id: "personDisplayButton" } }
-    shown = []
-    placed = false
-    for each candidate in arranged
-        shown.push(candidate)
-        if candidate.id = "favorite"
-            shown.push(display)
-            placed = true
-        end if
-    end for
-    if not placed then shown.Unshift(display)
-    return shown
 end function
 
 function favoriteCandidate(itemData as object) as object
@@ -532,14 +496,6 @@ sub addPlaylistButtons()
     end for
 end sub
 
-' A season or an episode leads back to its series
-function goToSeriesCandidate(itemData as dynamic) as dynamic
-    itemType = LCase(m.top.itemType)
-    if itemType <> "episode" and itemType <> "season" then return invalid
-    if not isValidAndNotEmpty(chainLookupReturn(itemData, "SeriesId", "")) then return invalid
-    return { id: "goToSeries", config: { icon: "pkg:/images/icons/detail_series.webp", label: tr("Go to Series"), action: "goToSeries", id: "goToSeriesButton" } }
-end function
-
 sub handleButtonSelect()
     if m.currentButtonIndex < 0 or m.currentButtonIndex >= m.buttonGroups.count() then return
 
@@ -549,10 +505,6 @@ sub handleButtonSelect()
     buttonAction = buttonGroup.buttonAction
     if buttonAction = invalid then return
 
-    runButtonAction(buttonAction)
-end sub
-
-sub runButtonAction(buttonAction as string)
     if Left(buttonAction, 5) = "seerr"
         startSeerrRequest(buttonAction)
         return
@@ -563,24 +515,13 @@ sub runButtonAction(buttonAction as string)
         return
     end if
 
-    ' A person's Display options open over the page, so there's nothing to load again after
-    if buttonAction = "personDisplay"
-        handleScreenButtonAction(buttonAction)
-        return
-    end if
-
-    if buttonAction = "watchWithGroup"
-        watchWithGroup()
-        return
-    end if
-
     m.loadStatus = ViewLoadStatus.RELOAD
 
     if buttonAction = "resume"
         startLoadingSpinner()
         itemContent = m.top.itemContent
         if itemContent <> invalid and isValid(itemContent.json)
-            playbackPositionTicks = chainLookup(itemContent, "json.UserData.PlaybackPositionTicks") ?? 0
+            playbackPositionTicks = speshResumeTicks(itemContent)
             itemContent.startingPoint = playbackPositionTicks
             selectPlaybackSource(itemContent, m.top.selectedVideoStreamId)
             itemContent.selectedAudioStreamIndex = m.top.selectedAudioStreamIndex
@@ -683,7 +624,6 @@ sub toggleWatched()
     end if
 
     newWatchedState = not currentWatched
-    hadProgress = chainLookupReturn(itemData, "UserData.PlaybackPositionTicks", 0) > 0
 
     itemServerInfo = getServerInfoFromItem(itemContent)
     taskParams = {}
@@ -704,6 +644,7 @@ sub toggleWatched()
         m.playstateTask.itemId = itemData.id
         m.playstateTask.params = taskParams
         m.playstateTask.control = TaskControl.RUN
+        itemData.UserData.PlaybackPositionTicks = 0
     else
         if isValid(itemServerInfo) and isValidAndNotEmpty(itemServerInfo.serverUrl)
             taskParams["serverData"] = {
@@ -719,14 +660,11 @@ sub toggleWatched()
     end if
 
     itemData.UserData.Played = newWatchedState
-    ' Either way the server drops the resume point
-    itemData.UserData.PlaybackPositionTicks = 0
     itemContent.watched = newWatchedState
     ' json is a node field, so the read handed back a copy and nothing else sees the change
     ' until it goes back
     itemContent.json = itemData
 
-    if hadProgress then rebuildButtonRow()
     updatePlayedIndicator()
     showWatchedState(newWatchedState)
 
@@ -810,11 +748,7 @@ sub onDetailExtrasChanged()
     if not isChainValid(m.top.itemContent, "json") then return
     if not isValid(m.buttonGroups) then return
     if isValid(m.builtExtrasSignature) and detailExtrasSignature() = m.builtExtrasSignature then return
-    rebuildButtonRow()
-end sub
 
-' Builds the row again from the item, keeping the focused or selected button where it was
-sub rebuildButtonRow()
     focusedId = ""
     selectedId = ""
     previousIndex = m.currentButtonIndex
@@ -860,7 +794,7 @@ end function
 
 ' LocalTrailerCount arrives as a number, which isValidAndNotEmpty always reads as empty
 function detailHasTrailer(itemData as object) as boolean
-    if isValidAndNotEmpty(itemData.RemoteTrailers) or trailerSearch.Offers(itemData) then return true
+    if isValidAndNotEmpty(itemData.RemoteTrailers) then return true
     localTrailers = itemData.LocalTrailerCount
     countType = LCase(type(localTrailers))
     if countType = "integer" or countType = "roint" or countType = "rointeger" or countType = "longinteger" or countType = "rolonginteger" then return localTrailers > 0

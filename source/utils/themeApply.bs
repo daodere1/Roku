@@ -42,12 +42,7 @@ namespace themeApply
             "badgeBackground",
             "badgeUnplayed",
             "recordingActive",
-            "recordingScheduled",
-            "onBadge",
-            "statusAvailable",
-            "statusRequested",
-            "statusPending",
-            "statusError"
+            "recordingScheduled"
         ]
     end function
 

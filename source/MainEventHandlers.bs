@@ -7,6 +7,7 @@ import "pkg:/source/enums/String.bs"
 import "pkg:/source/enums/SubtitleSelection.bs"
 import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/misc.bs"
+import "pkg:/source/utils/speshResume.brs"
 import "pkg:/source/utils/multiserver.bs"
 import "pkg:/source/utils/seerrBrowseRows.bs"
 import "pkg:/source/utils/SeerrUtils.bs"
@@ -236,11 +237,6 @@ sub onJumpToEvent(msg)
             stopLoadingSpinner()
             message_dialog(tr("Unable to find any albums or songs belonging to this artist"))
         end if
-    end if
-
-    ' Cast & Crew in the player opens a person over it, and Back returns to the paused player
-    if isStringEqual(jumpToData.selectiontype, "person")
-        CreatePersonView(jumpToData)
     end if
 
     if isStringEqual(jumpToData.selectiontype, "album")
@@ -895,12 +891,6 @@ sub onSelectedItemEvent(msg)
             return
         end if
 
-        ' The upcoming rows' See All card opens the month grid at today
-        if isValid(selectedItem.json) and isStringEqual(selectedItem.json.Type, "CalendarSeeAll")
-            m.global.sceneManager.callFunc("pushScene", CreateObject("roSGNode", "CalendarMonthScreen"))
-            return
-        end if
-
         ' Calendar cards stand for releases that are not on the server yet, so their ids
         ' mean nothing to Jellyfin. They carry a TMDB id instead, which is what the Seerr
         ' page needs to show the release and its request state.
@@ -918,9 +908,6 @@ sub onSelectedItemEvent(msg)
 
         if isStringEqual(selectedItemType, "collectionfolder")
             onLibrarySelection(selectedItem)
-        else if isStringEqual(selectedItemType, "seerrbrowse") or isStringEqual(selectedItemType, "seerrshortcut")
-            stopLoadingSpinner()
-            openSeerrBrowseTile(selectedItem, selectedItemType)
         else if isStringEqual(selectedItemType, "boxset")
             group = CreateMovieDetailsGroup(selectedItem)
         else if isStringEqual(selectedItemType, "genre")
@@ -967,8 +954,8 @@ sub onSelectedItemEvent(msg)
         else if selectedItemType = "episode" or selectedItemType = "recording"
             group = CreateMovieDetailsGroup(selectedItem)
             ' One episode to the next takes the old screen's place, so Back leaves the run of
-            ' episodes in one press. Quick Look's drawer shows over the page instead.
-            if selectedItemType = "episode" and isValid(group) and not group.isSubtype("QuickLookItemDetails") and isValid(activeScene) and activeScene.hasField("itemType") and isStringEqual(activeScene.itemType, "episode")
+            ' episodes in one press
+            if selectedItemType = "episode" and isValid(group) and isValid(activeScene) and activeScene.hasField("itemType") and isStringEqual(activeScene.itemType, "episode")
                 m.global.sceneManager.callFunc("removeScene", activeScene)
             end if
         else if selectedItemType = "series"
@@ -983,8 +970,7 @@ sub onSelectedItemEvent(msg)
                 stopLoadingSpinner()
                 message_dialog(tr("Error loading Season"))
             end if
-        else if selectedItemType = "movie" or (selectedItemType = "video" and isValid(activeScene) and activeScene.isSubtype("QuickLookItemDetails"))
-            ' A video picked anywhere else plays, but its own drawer is asking for its full page
+        else if selectedItemType = "movie"
             group = CreateMovieDetailsGroup(selectedItem)
         else if selectedItemType = "person"
             CreatePersonView(selectedItem)
@@ -1093,11 +1079,6 @@ sub onSelectedItemEvent(msg)
 
             stopLoadingSpinner()
             message_dialog("This type is not yet supported: " + (selectedItemType ?? ""))
-        end if
-
-        ' Open full page takes the drawer's place, so Back from the page goes to the screen under it
-        if isValid(activeScene) and activeScene.isSubtype("QuickLookItemDetails") and isStringEqual(activeScene.id, itemId) and not activeScene.isSameNode(m.global.sceneManager.callFunc("getActiveScene"))
-            m.global.sceneManager.callFunc("removeScene", activeScene)
         end if
 
         ' Clear the selectedItem field to prevent re-triggering when scene regains focus
@@ -1685,12 +1666,6 @@ sub onRoDeviceInfoEvent(msg)
                 group.callFunc("OnScreenShown")
             end if
         end if
-
-        ' The clock may have drifted while the device slept, so SyncPlay measures it again
-        syncPlayManager = m.global.syncPlayManager
-        if isValid(syncPlayManager) and syncPlayManager.syncPlayActive
-            syncPlayManager.callFunc("onAppWake")
-        end if
         return
     end if
 
@@ -1830,7 +1805,7 @@ end sub
 sub processPlaybackPopup(selectedPopupAction as integer, selectedItem as object)
     'Resume video from resume point
     if selectedPopupAction = ResumePopupAction.RESUME
-        selectedItem[0].startingPoint = chainLookup(selectedItem[0], "json.UserData.PlaybackPositionTicks") ?? 0
+        selectedItem[0].startingPoint = speshResumeTicks(selectedItem[0])
         MainAction.playItem(selectedItem[0], { method: "push", bypassNextPreferredAudioTrackIndexReset: true })
         return
     end if

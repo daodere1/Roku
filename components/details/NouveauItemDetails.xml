@@ -137,7 +137,7 @@
         <field id="trailerAvailable" type="bool" value="false" />
         <field id="additionalParts" type="assocarray" />
         <field id="selectedPart" type="assocarray" onChange="onSelectedPartChanged" />
-        <field id="selectedAudioStreamIndex" type="integer" />
+    <field id="selectedAudioStreamIndex" type="integer" value="-1" />
         <field id="selectedVideoStreamId" type="string" />
         <field id="quickPlayNode" type="node" alwaysNotify="true" />
         <field id="refreshMovieDetailsData" type="bool" alwaysNotify="true" />

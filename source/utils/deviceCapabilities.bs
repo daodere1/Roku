@@ -53,16 +53,12 @@ function getDeviceProfile(videoCodec = string.EMPTY as string) as object
     }
 end function
 
-' What the Roku plays directly. A forced transcode turns direct play off, unless the caller asks
-' for the device's own list regardless (Silo reads what the Roku decodes from it)
-function GetDirectPlayProfiles(ignoreForceTranscode = false as boolean) as object
+function GetDirectPlayProfiles() as object
     globalUserSettings = m.global.session.user.settings
     directPlayProfiles = []
 
-    if not ignoreForceTranscode
-        if not isStringEqual(PlaybackMethod.PLAYNORMALLY, chainLookupReturn(globalUserSettings, "`playback.media.forceTranscode`", PlaybackMethod.PLAYNORMALLY)) then return directPlayProfiles
-        if not isStringEqual(m.global.queueManager.callFunc("getForceTranscode"), PlaybackMethod.PLAYNORMALLY) then return directPlayProfiles
-    end if
+    if not isStringEqual(PlaybackMethod.PLAYNORMALLY, chainLookupReturn(globalUserSettings, "`playback.media.forceTranscode`", PlaybackMethod.PLAYNORMALLY)) then return directPlayProfiles
+    if not isStringEqual(m.global.queueManager.callFunc("getForceTranscode"), PlaybackMethod.PLAYNORMALLY) then return directPlayProfiles
 
     di = CreateObject("roDeviceInfo")
     ' all possible containers
@@ -202,7 +198,7 @@ function getTranscodingProfiles(videoCodec = string.EMPTY as string) as object
     ' does the users setup support surround sound?
     maxAudioChannels = "2" ' jellyfin expects this as a string
     ' in order of preference from left to right
-    audioCodecs = ["eac3", "ac3", "dts", "mp3", "vorbis", "opus", "flac", "alac", "ac4", "pcm", "wma", "wmapro"]
+    audioCodecs = ["aac", "eac3", "ac3", "dts", "mp3", "vorbis", "opus", "flac", "alac", "ac4", "pcm", "wma", "wmapro"]
 
     if di.GetAudioOutputChannel() = "5.1 surround"
         maxAudioChannels = "6"
@@ -339,7 +335,7 @@ function getTranscodingProfiles(videoCodec = string.EMPTY as string) as object
     ' AUDIO CODECS
     for each container in transcodingContainers
         for each codec in audioCodecs
-            if di.CanDecodeAudio({ Codec: codec, Container: container }).result
+            if canDecodeVideoAudio(di, codec, container)
                 if container = "mp4"
                     mp4AudioCodecs = mp4AudioCodecs + "," + codec
                 else if container = "ts"
@@ -426,6 +422,14 @@ function getTranscodingProfiles(videoCodec = string.EMPTY as string) as object
     transcodingProfiles.push(mp4Array)
 
     return transcodingProfiles
+end function
+
+' Video profiles must include supported stereo AAC so Live TV can copy it during a remux.
+function canDecodeVideoAudio(device as object, codec as string, container as string) as boolean
+    if codec = "aac"
+        return device.CanDecodeAudio({ Codec: codec, Container: container, ChCnt: 2 }).Result
+    end if
+    return device.CanDecodeAudio({ Codec: codec, Container: container }).Result
 end function
 
 ' The name a picked codec is stored under, for every label a profile or a stream gives it
@@ -688,8 +692,7 @@ function getCodecProfiles(videoCodec = string.EMPTY as string) as object
 
     dp = di.GetDisplayProperties()
     if dp.Hdr10
-        ' Profile 7 and out of spec Dolby Vision files play from their HDR10 base layer. Without these the server remuxes them, which can overflow the player's buffer
-        hevcVideoRangeTypes = hevcVideoRangeTypes + "|HDR10|DOVIWithHDR10|DOVIWithEL|DOVIWithELHDR10Plus|DOVIInvalid"
+        hevcVideoRangeTypes = hevcVideoRangeTypes + "|HDR10|DOVIWithHDR10"
         vp9VideoRangeTypes = vp9VideoRangeTypes + "|HDR10|DOVIWithHDR10"
         av1VideoRangeTypes = av1VideoRangeTypes + "|HDR10|DOVIWithHDR10"
     end if

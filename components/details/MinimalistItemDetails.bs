@@ -3,12 +3,9 @@ import "pkg:/components/details/detailMetadataHost.bs"
 import "pkg:/components/details/detailPopulationHost.bs"
 import "pkg:/components/details/detailScreenHost.bs"
 import "pkg:/components/details/detailTrackHost.bs"
-import "pkg:/components/details/SpotlightCards.bs"
 import "pkg:/components/itemMenu/itemMenuDetailHost.bs"
 import "pkg:/components/userDataHost.bs"
 import "pkg:/source/utils/detailButtons.bs"
-import "pkg:/source/utils/detailImages.bs"
-import "pkg:/source/utils/detailSectionLayout.bs"
 import "pkg:/source/utils/fontApply.bs"
 import "pkg:/source/utils/minimalistRules.bs"
 import "pkg:/source/utils/misc.bs"
@@ -105,10 +102,6 @@ sub init()
     ' reach for when they have them stay empty
     m.seerrBlock = invalid
     m.extrasGrid = invalid
-    m.extras = []
-    m.extrasModal = m.top.findNode("extrasModal")
-    m.extrasModal.observeField("extraChosen", "onExtraChosen")
-    m.extrasModal.observeField("modalClosed", "closeExtras")
     m.sectionItems = []
     m.tabGrid = invalid
 
@@ -210,72 +203,8 @@ sub renderDetailContent()
 
     watchDetailIncompleteRecording(itemData)
     loadEpisodes(itemData)
-    loadExtras(itemData)
     layoutContainer()
     stopLoadingSpinner()
-end sub
-
-' ===== Extras =====
-
-' Only a title without episode tabs has the Extras button, so only it asks for its extras
-sub loadExtras(itemData as object)
-    if m.top.seerrOnly or kidsMode.Enabled() or minimalistRules.ShowsEpisodes(m.top.itemType) or not detailSectionLayout.Shows("extras") then return
-
-    task = CreateObject("roSGNode", "LoadExtrasTask")
-    task.itemId = itemData.id
-    task.itemType = m.top.itemType
-    if isValidAndNotEmpty(itemData._serverUrl)
-        task.serverUrl = itemData._serverUrl
-        task.serverUserId = itemData._userId
-        task.serverAuthToken = itemData._authToken
-    end if
-    task.observeField("content", "onExtrasLoaded")
-    m.extrasTask = task
-    task.control = TaskControl.RUN
-end sub
-
-sub onExtrasLoaded(event as object)
-    content = event.getData()
-    m.extras = []
-    if isValid(content)
-        for i = 0 to content.getChildCount() - 1
-            row = content.getChild(i)
-            if isValid(row) and row.title = "specials"
-                for j = 0 to row.getChildCount() - 1
-                    extra = row.getChild(j)
-                    url = detailImages.LandscapeImageUrl(extra)
-                    if url = "" then url = ImageURL(extra.id, "Primary", { "maxWidth": 480, "quality": 90 })
-                    extra.posterURL = url
-                    m.extras.push(extra)
-                end for
-            end if
-        end for
-    end if
-    ' The row is drawn again for the button, keeping focus where it was
-    m.builtExtrasSignature = invalid
-    onDetailExtrasChanged()
-end sub
-
-sub openExtras()
-    m.extrasModal.visible = true
-    m.extrasModal.card = { id: "extras", title: tr("Extras"), iconKey: "extras", sections: spotlightExtraSections(m.extras) }
-end sub
-
-sub closeExtras()
-    m.extrasModal.visible = false
-    for i = 0 to m.buttonGroups.count() - 1
-        if m.buttonGroups[i].id = "extrasButton" then focusButton(i)
-    end for
-end sub
-
-' An extra plays from its start rather than opening a page of its own
-sub onExtraChosen(event as object)
-    extra = event.getData()
-    if not isValid(extra) then return
-    closeExtras()
-    m.global.queueManager.callFunc("clear")
-    m.global.queueManager.callFunc("push", extra)
-    m.global.queueManager.callFunc("playQueue")
 end sub
 
 ' A season already carries its own episodes. A series, or one episode of one, is given the whole
@@ -291,7 +220,6 @@ sub loadEpisodes(itemData as object)
 
     task = CreateObject("roSGNode", "NouveauSeriesEpisodesTask")
     task.seriesId = seriesId
-    task.withLabels = true
     task.observeField("episodes", "onSeriesEpisodesLoaded")
     task.control = TaskControl.RUN
 end sub
@@ -354,13 +282,9 @@ sub rebuildEpisodes()
     currentId = ""
     if isEpisode() and isValid(m.top.itemContent) then currentId = m.top.itemContent.id
 
-    ' An episode's own season opens the rail on it, and any other season at its start
-    startIndex = 0
     cards = []
     for each episode in m.railCards
         json = episode.json
-        isCurrent = currentId <> "" and isStringEqual(chainLookupReturn(json, "Id", ""), currentId)
-        if isCurrent then startIndex = cards.count()
         cards.push({
             imageUrl: minimalistRules.CardUrl(json, MINIMALIST_CARD_WIDTH),
             title: chainLookupReturn(json, "Name", ""),
@@ -368,8 +292,7 @@ sub rebuildEpisodes()
             ' the trip into a node's field
             number: chainLookupReturn(json, "IndexNumber", -1),
             watched: chainLookupReturn(json, "UserData.Played", false),
-            current: isCurrent,
-            posterLabels: episode.LookupCI("posterLabels") ?? []
+            current: currentId <> "" and isStringEqual(chainLookupReturn(json, "Id", ""), currentId)
         })
     end for
 
@@ -379,8 +302,7 @@ sub rebuildEpisodes()
         cardSize: [MINIMALIST_CARD_WIDTH, MINIMALIST_CARD_IMAGE_HEIGHT],
         gap: MINIMALIST_CARD_GAP,
         stopsPerCard: 1,
-        cards: cards,
-        startIndex: startIndex
+        cards: cards
     })
 
     m.episodesGroup.visible = cards.count() > 0
@@ -409,7 +331,7 @@ end sub
 sub focusRail()
     if m.episodeRail.stopCount = 0 then return
 
-    m.episodeRail.callFunc("focusStop", m.episodeRail.entryStop)
+    m.episodeRail.callFunc("focusStop", 0)
     m.top.lastFocus = m.episodeRail
     setLastFocus(m.episodeRail)
 end sub
@@ -424,10 +346,6 @@ end sub
 sub openFocusedEpisode()
     index = m.episodeRail.focusedStop
     if index < 0 or index >= m.railCards.count() then return
-    if picksItemOnScreen(m.railCards[index])
-        playItemOnScreen()
-        return
-    end if
 
     m.top.selectedItem = m.railCards[index]
 end sub
@@ -522,11 +440,6 @@ sub appendButtonNode(config as object)
     buttonGroup.observeField("focusedChild", "onButtonFocusChanged")
     m.buttonRow.appendChild(buttonGroup)
     m.buttonGroups.push(buttonGroup)
-
-    ' Extras rides straight after Play or Restart, ahead of the arranged buttons
-    if (config.id = "playButton" or config.id = "restartButton") and minimalistRules.ShowsExtrasButton(m.top.itemType, m.extras.count(), kidsMode.Enabled())
-        appendButtonNode({ icon: "pkg:/images/icons/video_library_outlined.webp", label: tr("Extras"), action: "openExtras", id: "extrasButton" })
-    end if
 end sub
 
 sub clearButtonRow()
@@ -619,8 +532,6 @@ sub handleScreenButtonAction(action as string)
         m.global.queueManager.callFunc("clear")
         m.global.queueManager.callFunc("push", item)
         m.global.queueManager.callFunc("playQueue")
-    else if action = "openExtras"
-        openExtras()
     else if action = "favorite"
         toggleItemFavorite()
     end if
@@ -661,8 +572,8 @@ end function
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
 
-    ' An open menu or the extras answer the remote themselves
-    if m.overflowMenu.visible or m.extrasModal.visible then return false
+    ' An open menu answers the remote itself
+    if m.overflowMenu.visible then return false
 
     if m.episodeRail.isInFocusChain()
         atStop = m.episodeRail.focusedStop

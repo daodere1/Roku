@@ -32,16 +32,11 @@ sub onSeerrDetailsLoaded(event as object)
     m.seerrDetails = response.data
 
     node = seerrDetailItem.NodeFor(response.data, m.top.seerrTarget.mediaType)
-    if not isValid(node)
-        stopLoadingSpinner()
-        return
-    end if
-    m.top.itemContent = node
+    if isValid(node) then m.top.itemContent = node
     updateSeerrSeasonMarkers()
-    loadSeerrArrQueue()
 end sub
 
-sub startSeerrRequest(action as string, season = 0 as integer)
+sub startSeerrRequest(action as string)
     if not isValid(m.seerrRequests)
         m.seerrRequests = CreateObject("roSGNode", "SeerrRequestController")
         m.seerrRequests.observeField("requestCompleted", "onSeerrRequestCompleted")
@@ -52,34 +47,9 @@ sub startSeerrRequest(action as string, season = 0 as integer)
     m.seerrRequests.tmdbId = seerrTmdbId()
     m.seerrRequests.mediaType = seerrMediaType()
     m.seerrRequests.details = m.seerrDetails
-    ' An assocarray field won't take invalid, so no queue goes over as an empty one
-    m.seerrRequests.arrQueue = seerrSwapQueue() ?? {}
     m.seerrRequests.returnFocus = seerrFocusTarget()
-
-    ' A season or episode page acts for its series, and Report Issue starts on that one
-    json = seerrItemJson()
-    m.seerrRequests.itemName = toString(json.Name ?? "")
-    m.seerrRequests.initialSeason = 0
-    m.seerrRequests.initialEpisode = 0
-    m.seerrRequests.requestSeason = season
-    if IsSeerrSeriesPart(json)
-        m.seerrRequests.itemName = toString(json.SeriesName ?? "")
-        if isStringEqual(json.Type, "Episode")
-            m.seerrRequests.initialSeason = json.ParentIndexNumber ?? 0
-            m.seerrRequests.initialEpisode = json.IndexNumber ?? 0
-        else
-            m.seerrRequests.initialSeason = json.IndexNumber ?? 0
-        end if
-    end if
     m.seerrRequests.callFunc("begin", action)
 end sub
-
-' The library item the screen shows. The Classic season screen keeps its own in seasonData.
-function seerrItemJson() as object
-    json = chainLookupReturn(m.top.itemContent, "json", invalid)
-    if type(json) <> "roAssociativeArray" then json = chainLookupReturn(m.top.seasonData, "json", {})
-    return json
-end function
 
 ' The screen root takes no focus, so the flow hands it back to the button it was opened from
 function seerrFocusTarget() as object
@@ -95,7 +65,6 @@ end function
 function seerrTmdbId() as string
     target = m.top.seerrTarget
     if isValid(target) and isValidAndNotEmpty(target.tmdbId) then return target.tmdbId
-    if isValid(m.seerrSeries) then return GetSeerrTargetFor(m.seerrSeries).tmdbId
 
     return chainLookupReturn(m.top.itemContent, "json.ProviderIds.Tmdb", "")
 end function
@@ -110,39 +79,23 @@ sub onSeerrWatchlistToggled(event as object)
 end sub
 
 sub onSeerrRequestCompleted()
-    ' A swap may have just removed what the queue lists, so the last answer and any read still on its
-    ' way are dropped, and the reload reads it again
-    if not isValid(m.seerrArrGeneration) then m.seerrArrGeneration = 0
-    m.seerrArrGeneration++
-    m.seerrArrQueue = invalid
-
     if isValid(m.top.seerrTarget)
         m.top.seerrTarget = m.top.seerrTarget
         return
     end if
 
-    if isValid(m.seerrSeries)
-        loadLibrarySeerrDetails(GetSeerrTargetFor(m.seerrSeries))
-        return
-    end if
     loadLibrarySeerrDetails(GetSeerrTargetFor(m.top.itemContent.json))
 end sub
 
 function seerrMediaType() as string
     target = m.top.seerrTarget
     if isValid(target) and isValidAndNotEmpty(target.mediaType) then return target.mediaType
-    if isValid(m.seerrSeries) then return "tv"
     return isStringEqual(chainLookupReturn(m.top.itemContent, "json.Type", ""), "Series") ? "tv" : "movie"
 end function
 
 sub loadSeerrBlock(itemData as object)
     EnsureSeerrPublicSettings()
     EnsureSeerrUserSettings()
-
-    if IsSeerrSeriesPart(itemData)
-        loadSeriesPartSeerr(itemData)
-        return
-    end if
 
     target = GetSeerrTargetFor(itemData)
     loadLibrarySeerrDetails(target)
@@ -160,7 +113,6 @@ sub loadLibrarySeerrDetails(target as object)
     if isValid(m.top.seerrTarget) then return
     if not isValidAndNotEmpty(target.tmdbId) then return
     if not GetSeerrConfig().enabled then return
-    forgetSeerrArrQueueUnlessTitle(target)
 
     m.librarySeerrTask = CreateObject("roSGNode", "SeerrAPITask")
     m.librarySeerrTask.request = {
@@ -179,93 +131,7 @@ sub onLibrarySeerrDetails(event as object)
 
     m.seerrDetails = response.data
     m.top.seerrButtonsStale = true
-    if not isValid(m.seerrSeries) then updateSeerrSeasonMarkers()
-    loadSeerrArrQueue()
-end sub
-
-' Quick play can put another title on the same screen. Its queue is dropped, and any read still on
-' its way is ignored, so a release swap can't act on the previous title's download. A refresh of
-' the same title keeps it up.
-sub forgetSeerrArrQueueUnlessTitle(target as object)
-    title = `${target.mediaType}:${target.tmdbId}`
-    if isValid(m.seerrArrTitle) and title = m.seerrArrTitle then return
-    m.seerrArrTitle = title
-
-    if not isValid(m.seerrArrGeneration) then m.seerrArrGeneration = 0
-    m.seerrArrGeneration++
-    if isValid(m.seerrArrQueue)
-        m.seerrArrQueue = invalid
-        m.top.seerrButtonsStale = true
-    end if
-end sub
-
-' Moonbase's read of the arr's queue for the HD track, while the title is on its way. It says why a
-' download is stuck, and lets an admin swap it. The last answer stays up until the next one lands,
-' and anything but a 200 drops it, which puts the screen back on what Seerr reports.
-sub loadSeerrArrQueue()
-    if not isValid(m.seerrArrGeneration) then m.seerrArrGeneration = 0
-    m.seerrArrGeneration++
-
-    ' The Classic season screen draws no download and offers no swap, so it has nothing to ask for
-    path = ""
-    if m.top.subtype() <> "SeasonDetails" and SeerrArrQueueAvailable() then path = SeerrArrQueuePathForDetails(m.seerrDetails, seerrMediaType())
-    if path = ""
-        if isValid(m.seerrArrQueue)
-            m.seerrArrQueue = invalid
-            m.top.seerrButtonsStale = true
-        end if
-        return
-    end if
-
-    m.seerrArrTask = CreateObject("roSGNode", "SeerrAPITask")
-    m.seerrArrTask.addField("generation", "integer", false)
-    m.seerrArrTask.generation = m.seerrArrGeneration
-    ' The query rides on the endpoint, since an assocarray crossing a node field loses its key case
-    m.seerrArrTask.request = { method: "GET", endpoint: path, usePluginRoot: true }
-    m.seerrArrTask.observeField("response", "onSeerrArrQueue")
-    m.seerrArrTask.control = "RUN"
-end sub
-
-sub onSeerrArrQueue(event as object)
-    ' An answer that set off before a newer fetch, such as the one after a release swap, may still
-    ' list the removed download
-    if event.getRoSGNode().generation <> m.seerrArrGeneration then return
-
-    response = event.getData()
-    queue = invalid
-    if isValid(response) and response.success = true and response.statusCode = 200 and type(response.data) = "roAssociativeArray" then queue = response.data
-    if not isValid(queue) and not isValid(m.seerrArrQueue) then return
-
-    m.seerrArrQueue = queue
-    m.top.seerrButtonsStale = true
-end sub
-
-' The arr queue the action row offers a release swap from. Only the title's own page offers it: a
-' season or episode page shows the series-wide download, and a swap there would act on whichever
-' season's download is worst.
-function seerrSwapQueue() as dynamic
-    if isValid(m.seerrSeries) then return invalid
-    if IsSeerrSeriesPart(seerrItemJson()) then return invalid
-    return m.seerrArrQueue
-end function
-
-' A season or an episode offers its series' Seerr actions and nothing else of Seerr's, so the
-' series is looked up for its TMDB id first
-sub loadSeriesPartSeerr(itemData as object)
-    if isValid(m.top.seerrTarget) or not GetSeerrConfig().enabled then return
-
-    m.seriesPartTask = CreateObject("roSGNode", "JellyfinAPITask")
-    m.seriesPartTask.request = { path: `Items/${itemData.SeriesId}`, params: { userId: m.global.session.user.id } }
-    m.seriesPartTask.observeField("response", "onSeriesPartSeries")
-    m.seriesPartTask.control = "RUN"
-end sub
-
-sub onSeriesPartSeries(event as object)
-    response = event.getData()
-    if not isValid(response) or response.success <> true or not isValid(response.data) then return
-
-    m.seerrSeries = response.data
-    loadLibrarySeerrDetails(GetSeerrTargetFor(response.data))
+    updateSeerrSeasonMarkers()
 end sub
 
 ' Maps season numbers to Seerr availability status (matching Smart-TV and Core)

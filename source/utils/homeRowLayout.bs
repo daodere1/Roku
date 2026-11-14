@@ -1,8 +1,6 @@
-import "pkg:/source/api/MoonfinPlugin.bs"
 import "pkg:/source/utils/buttonLayout.bs"
 import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/misc.bs"
-import "pkg:/source/utils/serverCompatibility.bs"
 
 ' Which rows the home screen offers and what order they sit in. The layout follows the
 ' viewer between devices through the plugin, so the ids here have to match the ones the
@@ -25,11 +23,10 @@ namespace homeRowLayout
     ' these apart, favourites by media type for instance, and Save carries those ids
     ' through untouched. Declaration order decides where a row nobody arranged ends up.
     function Catalogue() as object
-        rows = [
+        return [
             { id: "resume", label: "Continue Watching" },
             { id: "nextup", label: "Next Up" },
             { id: "seasonal", label: "Seasonal Row" },
-            { id: "mdblist_watching_now", label: "Watching on MDBList" },
             { id: "latestmedia", label: "Recently Added Media" },
             { id: "collections", label: "Collections" },
             { id: "smalllibrarytiles", label: "My Media" },
@@ -84,60 +81,6 @@ namespace homeRowLayout
             { id: "tmdb_trending_tv_weekly", label: "TMDB Trending TV (Weekly)" },
             { id: "tmdb_trending_all_weekly", label: "TMDB Trending All (Weekly)" }
         ]
-        for each chart in homeRowLayout.ExternalCharts()
-            rows.push({ id: chart.id, label: chart.label })
-        end for
-        return rows
-    end function
-
-    ' The outside chart rows, with what the plugin's custom rows endpoint is asked for. A regional
-    ' chart also sends the viewer's country. The table is built once, since the row checks read it
-    ' for every row Home lays out.
-    function ExternalCharts() as object
-        if isValid(m.homeRowExternalCharts) then return m.homeRowExternalCharts
-
-        m.homeRowExternalCharts = [
-            homeRowLayout.OfficialChart("mdblist_most_watched_week_movies", "Most Watched Movies This Week", "most-watched-week", "movie"),
-            homeRowLayout.OfficialChart("mdblist_most_watched_week_shows", "Most Watched Shows This Week", "most-watched-week", "show"),
-            homeRowLayout.OfficialChart("mdblist_most_watched_year_movies", "Most Watched Movies This Year", "most-watched", "movie"),
-            homeRowLayout.OfficialChart("mdblist_most_watched_year_shows", "Most Watched Shows This Year", "most-watched", "show"),
-            homeRowLayout.OfficialChart("mdblist_anticipated_movies", "Most Anticipated Movies", "anticipated", "movie"),
-            homeRowLayout.OfficialChart("mdblist_anticipated_shows", "Most Anticipated Shows", "anticipated", "show"),
-            homeRowLayout.OfficialChart("mdblist_streaming_charts_movies", "Streaming Chart Movies", "streaming-charts", "movie"),
-            homeRowLayout.OfficialChart("mdblist_streaming_charts_shows", "Streaming Chart Shows", "streaming-charts", "show"),
-            { id: "justwatch_top_movies", label: "Top Streaming Movies Today", source: "justwatch", type: "movie", params: {}, regional: true },
-            { id: "justwatch_top_shows", label: "Top Streaming Shows Today", source: "justwatch", type: "show", params: {}, regional: true },
-            { id: "tmdb_trending_all_daily", label: "Trending All (Daily)", source: "tmdb_chart", type: "trending/all/day", params: {}, regional: false },
-            homeRowLayout.DiscoverChart("tmdb_korean_dramas", "Korean Dramas", "korean_dramas", false),
-            homeRowLayout.DiscoverChart("tmdb_anime", "Popular Anime", "anime", false),
-            homeRowLayout.DiscoverChart("tmdb_new_digital_movies", "New Digital Releases", "new_digital_movies", true),
-            homeRowLayout.DiscoverChart("tmdb_hidden_gems", "Hidden Gems", "hidden_gems", false),
-            homeRowLayout.DiscoverChart("tmdb_netflix", "Popular on Netflix", "provider_netflix", true),
-            homeRowLayout.DiscoverChart("tmdb_prime_video", "Popular on Prime Video", "provider_prime_video", true),
-            homeRowLayout.DiscoverChart("tmdb_disney_plus", "Popular on Disney+", "provider_disney_plus", true),
-            homeRowLayout.DiscoverChart("tmdb_hbo_max", "Popular on HBO Max", "provider_hbo_max", true),
-            homeRowLayout.DiscoverChart("tmdb_apple_tv", "Popular on Apple TV", "provider_apple_tv", true),
-            homeRowLayout.DiscoverChart("tmdb_paramount_plus", "Popular on Paramount+", "provider_paramount_plus", true)
-        ]
-        return m.homeRowExternalCharts
-    end function
-
-    ' One of MDBList's official lists, cut down to its movies or its shows
-    function OfficialChart(id as string, label as string, listName as string, mediaType as string) as object
-        return { id: id, label: label, source: "mdblist", type: "list", params: { username: "official", listname: listName, mediatype: mediaType }, regional: false }
-    end function
-
-    ' One of the TMDB discover charts Moonbase serves by name
-    function DiscoverChart(id as string, label as string, chartName as string, regional as boolean) as object
-        return { id: id, label: label, source: "tmdb_discover", type: chartName, params: {}, regional: regional }
-    end function
-
-    function ExternalChart(id as string) as dynamic
-        lowerId = LCase(id)
-        for each entry in homeRowLayout.ExternalCharts()
-            if entry.id = lowerId then return entry
-        end for
-        return invalid
     end function
 
     ' The three lists the server can be asked for, each offered as one row per item. The
@@ -147,10 +90,7 @@ namespace homeRowLayout
         return [
             { key: "collections", section: "collection", gate: "ui.home.displayCollectionsRows" },
             { key: "genres", section: "genre", gate: "ui.home.displayGenresRows" },
-            { key: "playlists", section: "playlist", gate: "ui.home.displayPlaylistsRows" },
-            ' Silo's own home rows (Core's server rows): no switch of their own, offered on Silo only.
-            ' A row named by its kind keeps "type." here, since a colon would split the row id
-            { key: "server", section: "server", gate: "" }
+            { key: "playlists", section: "playlist", gate: "ui.home.displayPlaylistsRows" }
         ]
     end function
 
@@ -168,11 +108,11 @@ namespace homeRowLayout
         return homeRowLayout.AsText(chainLookupReturn(m.global, "session.server.url", ""))
     end function
 
-    function DynamicId(sourceKey as string, owner as string, itemId as string) as string
+    function DynamicId(sourceKey as string, serverKey as string, itemId as string) as string
         entry = homeRowLayout.SourceFor(sourceKey)
         word = isValid(entry) ? entry.section : sourceKey
 
-        return `pluginDynamic:${sourceKey}:${owner}:${word}:${itemId}`
+        return `pluginDynamic:${sourceKey}:${serverKey}:${word}:${itemId}`
     end function
 
     ' What a row id is asking for, or invalid when it is not one of these rows. The server
@@ -191,15 +131,7 @@ namespace homeRowLayout
         itemId = parts[parts.Count() - 1]
         head = Len(homeRowLayout.DYNAMIC_PREFIX) + Len(parts[1]) + 1
         tail = Len(parts[parts.Count() - 2]) + Len(itemId) + 2
-        return { source: entry.key, itemId: itemId, server: homeRowLayout.ServerOf(Mid(text, head + 1, Len(text) - head - tail)) }
-    end function
-
-    ' Builds from early November 2026 wrote "Function: homerowlayout_serverkey" where a row's server
-    ' goes, after the transpiler swapped a parameter named serverKey for the function of that name.
-    ' Such a row was always picked on this server, so it reads as this server.
-    function ServerOf(server as string) as string
-        if LCase(server).startsWith("function:") then return homeRowLayout.ServerId()
-        return server
+        return { source: entry.key, itemId: itemId, server: Mid(text, head + 1, Len(text) - head - tail) }
     end function
 
     ' This server the way a Seerr slider row spells it, since clients write it with and without a
@@ -344,9 +276,7 @@ namespace homeRowLayout
     ' home screen honours those switches, so the picker leaves those rows out rather than
     ' offering to arrange something that never appears.
     ' Which switch each row answers to. One table, since the picker, the home screen and the
-    ' sync all have to agree on what turns a row on. The external rows have no switch now
-    ' (ExternalRowAvailable decides for them), but older app versions still read theirs, so
-    ' they stay listed here for the sync to keep in step with the rows.
+    ' sync all have to agree on what turns a row on.
     function RowToggles() as object
         return {
             favorites: "ui.home.displayFavoritesRows",
@@ -357,7 +287,6 @@ namespace homeRowLayout
             audio: "ui.home.displayAudioRows",
             rewatch: "ui.home.displayRewatchRow",
             seasonal: "seasonal.row.enabled",
-            mdblist_watching_now: "mdblist.watchingnow.enabled",
 
             imdb_top_250_movies: "imdb.top250movies",
             imdb_top_250_tv_shows: "imdb.top250tvshows",
@@ -399,111 +328,17 @@ namespace homeRowLayout
         }
     end function
 
-    ' Home reads these only as it builds its rows, and it stays loaded behind Settings, so a
-    ' change to one of them has Home build its rows again once Settings closes. Every switch
-    ' that turns a row on or off counts, along with the options that decide what the rows hold and
-    ' the info area that moves Classic rows down.
-    function ReloadsHome(settingName as string) as boolean
-        toggles = homeRowLayout.RowToggles()
-        for each rowId in toggles
-            if toggles[rowId] = settingName then return true
-        end for
-
-        return inArray([
-            "ui.home.collectionsRowSortBy",
-            "ui.home.collectionsRowSortOrder",
-            "ui.home.audioRowsSortBy",
-            "ui.home.audioRowsSortOrder",
-            "ui.home.collectionsRowShowEpisodes",
-            "ui.home.genresRowSortBy",
-            "ui.home.genresRowItemFilter",
-            "ui.home.playlistsRowShowEpisodes",
-            "ui.home.recommendationSource",
-            "ui.home.recommendationsParentalCap",
-            "ui.home.sinceYouWatchedNumRows",
-            "ui.home.sinceYouWatchedSource",
-            "ui.home.sinceYouWatchedSourceItem",
-            "ui.home.sinceYouWatchedSourceType",
-            "ui.home.sinceYouWatchedIncludeWatched",
-            "ui.home.rewatchIncludeMovies",
-            "ui.home.rewatchIncludeShows",
-            "ui.home.rewatchIncludeCollections",
-            "ui.home.rewatchSortBy",
-            "ui.home.mergeContinueWatchingNextUp",
-            "ui.details.maxdaysnextup",
-            "ui.home.recentlyReleasedSeriesType",
-            "ui.home.mergeRecentRowsByType",
-            "ui.home.hideWatchedInRecentRows",
-            "ui.home.enableMultiServer",
-            "imdb.rowsSortBy",
-            "imdb.rowsSortOrder",
-            "tmdb.rowsSortBy",
-            "tmdb.rowsSortOrder",
-            "seerr.rowsSortBy",
-            "seerr.rowsSortOrder",
-            "calendar.radarr.showCinema",
-            "calendar.radarr.showDigital",
-            "calendar.radarr.showPhysical",
-            "calendar.radarr.showDate",
-            "calendar.radarr.hideDownloaded",
-            "calendar.sonarr.showEpisodeInfo",
-            "calendar.sonarr.showDate",
-            "calendar.sonarr.hideDownloaded",
-            "calendar.merge",
-            "calendar.rowSeeAll",
-            "ui.home.rowInfoOverlay"
-        ], settingName)
-    end function
-
     ' A setting the viewer has never opened is not in the registry, and the default
     ' settings.json declares is only read when that screen draws the row, so the answer has
     ' to come from here. Seerr's rows ship on, every other switch ships off.
     ' Callers looping over rows pass the table in rather than rebuilding it each time.
     function RowToggleOn(sectionKey as string, toggles = invalid as object) as boolean
-        available = homeRowLayout.ExternalRowAvailable(sectionKey)
-        if isValid(available) then return available
-
         if not isValid(toggles) then toggles = homeRowLayout.RowToggles()
 
         settingName = toggles[sectionKey]
         if not isValid(settingName) then return true
 
         return get_user_setting_bool(settingName, Left(settingName, 10) = "seerr.row.")
-    end function
-
-    function IsExternalRow(id as string) as boolean
-        return Left(id, 5) = "imdb_" or Left(id, 5) = "tmdb_" or Left(id, 8) = "mdblist_" or Left(id, 10) = "justwatch_" or inArray(["seasonal", "radarr_calendar", "sonarr_calendar"], id)
-    end function
-
-    ' The external rows (IMDb, TMDB, MDBList Watching Now, seasonal and the calendars) have no
-    ' switch of their own. The picker offers one, and Home builds it when it's on, only while
-    ' the server can fill it. Invalid for every other row. Silo makes its own seasonal row,
-    ' plugin or not.
-    function ExternalRowAvailable(id as string) as dynamic
-        if not homeRowLayout.IsExternalRow(id) then return invalid
-
-        globalSession = m.global.session
-        plugin = moonfinPlugin.IsEnabled(globalSession)
-        if id = "seasonal" then return plugin or isSiloServer()
-        if not plugin then return false
-        if Left(id, 5) = "imdb_" then return true
-
-        ' JustWatch and the TMDB discover charts need a Moonbase that serves them
-        chart = homeRowLayout.ExternalChart(id)
-        if isValid(chart) and (chart.source = "justwatch" or chart.source = "tmdb_discover") and not toBoolean(chainLookupReturn(globalSession, "pluginInfo.discoverChartsSupported", false)) then return false
-
-        if Left(id, 5) = "tmdb_" then return toBoolean(chainLookupReturn(globalSession, "pluginInfo.tmdbAvailable", false)) or homeRowLayout.AsText(chainLookupReturn(globalSession, "user.settings.`plugin.tmdb.apiKey`", "")) <> ""
-        if Left(id, 8) = "mdblist_" or Left(id, 10) = "justwatch_" then return toBoolean(chainLookupReturn(globalSession, "pluginInfo.mdblistAvailable", false)) or homeRowLayout.AsText(chainLookupReturn(globalSession, "user.settings.`plugin.mdblist.apiKey`", "")) <> ""
-        return toBoolean(chainLookupReturn(globalSession, "pluginInfo.calendarAvailable", false))
-    end function
-
-    ' The switch an external row used to answer to, which older app versions still read. A
-    ' layout from one of them that never mentions the seasonal or Watching Now row leaves that
-    ' row to it.
-    function LegacySwitchOn(id as string) as boolean
-        settingName = homeRowLayout.RowToggles()[id]
-        if not isValid(settingName) then return false
-        return get_user_setting_bool(settingName, false)
     end function
 
     function Offered() as object
@@ -537,10 +372,6 @@ namespace homeRowLayout
             end for
         end for
 
-        ' Silo's own rows come from no list on the Home screen, so they start at the end
-        for each entry in picked["server"] ?? []
-            rows.push(entry)
-        end for
         ' Seerr's sliders have no list row of their own to sit beside
         if isValid(picked["seerr"]) then rows.Append(picked["seerr"])
 
@@ -554,7 +385,8 @@ namespace homeRowLayout
     end function
 
     ' A row in neither list is one this app started offering after the viewer last arranged
-    ' their layout, or one a layout from the server left out, and those start off.
+    ' their layout, and those start off, since every row but the opening three is declared
+    ' off across the clients.
     function IsEnabled(id as string, placed as object, off as object, picked as object) as boolean
         seedIndex = homeRowLayout.SeedRowIndex(id)
         if seedIndex > 0 and seedIndex > homeRowLayout.SeedRowCount() then return false
@@ -568,21 +400,17 @@ namespace homeRowLayout
 
         ' The seasonal row answers to its own synced switch, so a layout that never mentions
         ' it leaves it to that switch
-        if id = "seasonal" or id = "mdblist_watching_now" then return homeRowLayout.LegacySwitchOn(id)
+        if id = "seasonal" then return homeRowLayout.RowToggleOn(id)
 
-        ' A layout that leaves out an opening row has it off. The opening rows only start on for a
-        ' viewer with no layout at all.
-        return placed.Count() = 0 and inArray(homeRowLayout.DefaultEnabled(), id)
+        return inArray(homeRowLayout.DefaultEnabled(), id)
     end function
 
     ' The rows the viewer left on, in the order they put them. Only the ids come back,
-    ' since that is what the home screen builds from. The settings preview passes the order and
-    ' off list the Rows screen holds before it saves them.
-    function Arranged(storedOrder = invalid as dynamic, storedHidden = invalid as dynamic) as object
-        if not isValid(storedOrder) then storedOrder = get_user_setting(homeRowLayout.ORDER_SETTING)
-        if not isValid(storedHidden) then storedHidden = get_user_setting(homeRowLayout.HIDDEN_SETTING)
+    ' since that is what the home screen builds from.
+    function Arranged() as object
+        storedOrder = get_user_setting(homeRowLayout.ORDER_SETTING)
         placed = buttonLayout.ToIds(storedOrder)
-        off = buttonLayout.HiddenLookup(storedHidden)
+        off = buttonLayout.HiddenLookup(get_user_setting(homeRowLayout.HIDDEN_SETTING))
 
         known = homeRowLayout.Catalogue()
         picked = {}
@@ -616,13 +444,7 @@ namespace homeRowLayout
 
         hidden = []
         for each row in homeRowLayout.Catalogue()
-            if not inArray(order, row.id)
-                if (row.id = "seasonal" or row.id = "mdblist_watching_now") and homeRowLayout.LegacySwitchOn(row.id)
-                    order.push(row.id)
-                else
-                    hidden.push(row.id)
-                end if
-            end if
+            if not inArray(order, row.id) then hidden.push(row.id)
         end for
 
         set_user_setting(homeRowLayout.ORDER_SETTING, FormatJson(order))

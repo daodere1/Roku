@@ -11,7 +11,6 @@ namespace settingsIcons
             audio: "audiotrack",
             subtitles: "subtitles",
             trailer: "movie_outlined",
-            watchWithGroup: "people_alt_rounded",
             watched: "check_circle_outline",
             favorite: "favorite_border",
             personalRating: "star_outline",
@@ -31,14 +30,11 @@ namespace settingsIcons
 
     function OsdButtonGlyph(id as string) as string
         glyphs = {
-            favorite: "favorite_border",
             speed: "speed_rounded",
             chapters: "bookmark_outline_rounded",
             episodes: "video_library_outlined",
             subtitles: "subtitles_outlined",
             audio: "audiotrack_outlined",
-            castAndCrew: "people_outline_rounded",
-            quality: "video_settings_outlined",
             info: "info_outline_rounded"
         }
         return glyphs[id] ?? "tune"

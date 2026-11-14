@@ -25,7 +25,7 @@
 
         <!-- Empty State -->
         <LayoutGroup id="emptyStateGroup" translation="[960, 400]" layoutDirection="vert" horizAlignment="center" visible="false">
-            <Poster id="emptyIcon" uri="pkg:/images/icons/movies.png" width="80" height="80" blendColor="#666666" />
+            <Poster id="emptyIcon" uri="pkg:/images/media_type_icons/movie.webp" width="80" height="80" blendColor="#666666" />
             <Text id="emptyLabel" text="No items found" font="font:LargeBoldSystemFont" color="#FFFFFF" translation="[0, 20]" horizAlign="center" />
             <Text id="emptySubLabel" text="Your library appears to be empty" font="font:MediumSystemFont" color="#888888" translation="[0, 10]" horizAlign="center" />
         </LayoutGroup>

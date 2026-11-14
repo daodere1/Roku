@@ -21,6 +21,16 @@ sub init()
 
     m.segments = []
     m.cues = []
+    m.hasPlayed = false
+    m.failed = false
+    m.cachedPath = invalid
+    m.compatibilityFallback = false
+    m.failureReason = ""
+    m.tempFile = "tmp:/speshtv-trailer-" + CreateObject("roDateTime").AsSeconds().ToStr() + "-" + Int(Rnd(1000000)).ToStr() + ".mp4"
+    m.dismissGuard = CreateObject("roTimespan")
+    m.startupTimer = CreateObject("roSGNode", "Timer")
+    m.startupTimer.duration = 20
+    m.startupTimer.observeFieldScoped("fire", "onTrailerTimeout")
     m.audioLanguage = ""
     m.video.notificationInterval = 0.25
     m.video.observeFieldScoped("state", "onVideoState")
@@ -31,30 +41,71 @@ end sub
 
 sub onVideoIdChanged()
     if not isValidAndNotEmpty(m.top.videoId) then return
+    m.dismissGuard.Mark()
+    m.candidateIndex = 0
+    m.currentVideoId = m.top.videoId
+    m.hasPlayed = false
+    m.failed = false
+    m.compatibilityFallback = false
+    m.cachedPath = m.global.sceneManager.callFunc("getTrailerPath", m.currentVideoId)
+    ' A cached compatibility path must not bypass the newly available HD helper.
+    m.compatibilityFallback = false
+    m.loadingLabel.text = tr("Loading trailer...")
+    m.loadingLabel.visible = true
+    startTrailerAttempt()
+end sub
+
+sub startTrailerAttempt()
+    m.awaitingAnswer = true
+    m.cues = []
+    m.caption.text = ""
+    m.captionShadow.text = ""
+    m.captions.visible = false
+    if isValid(m.task)
+        m.task.unobserveFieldScoped("answer")
+        m.task.cancelRequested = true
+    end if
     m.task = CreateObject("roSGNode", "TrailerPreviewTask")
     m.task.observeFieldScoped("answer", "onAnswer")
+    cachedStream = invalid
+    if isValid(m.cachedPath) then cachedStream = m.cachedPath.stream
     language = m.global.session.user.settings["ui.language"] ?? ""
     if language = "" then language = chainLookupReturn(m.global, "device.locale", "en")
     ' The media bar's caption switch covers these trailers too
-    m.task.request = { requestId: 0, videoId: m.top.videoId, index: 0, captions: get_user_setting_bool("ui.home.mediaBarTrailerCaptions", false), language: language.Replace("_", "-") }
+    m.task.request = { requestId: 0, videoId: m.currentVideoId, index: 0, captions: get_user_setting_bool("ui.home.mediaBarTrailerCaptions", false), language: language.Replace("_", "-"), preferCompatible: m.compatibilityFallback, cacheLocally: m.compatibilityFallback, tempFile: m.tempFile, cachedStream: cachedStream, serverHelper: not m.compatibilityFallback }
+    m.startupTimer.duration = 45
+    m.startupTimer.control = "start"
     m.task.control = "RUN"
 end sub
 
-' Nothing to play closes the overlay again without a word
+' Keep failures visible so an unavailable trailer is not mistaken for a dead button.
 sub onAnswer(event as object)
+    if m.closed = true or not event.getRoSGNode().isSameNode(m.task) then return
     answer = event.getData()
-    if not isValidAndNotEmpty(answer.url)
-        close()
+    if not isValid(answer)
+        showTrailerError()
         return
     end if
+    if not isValidAndNotEmpty(answer.url)
+        m.failureReason = answer.error ?? "No playable trailer returned"
+        showTrailerError()
+        return
+    end if
+    m.awaitingAnswer = false
+    m.sourceStream = answer.sourceStream
 
-    m.segments = answer.segments
-    m.cues = answer.cues
-    m.audioLanguage = answer.audioLanguage
+    m.segments = answer.segments ?? []
+    m.cues = answer.cues ?? []
+    m.audioLanguage = answer.audioLanguage ?? ""
     content = CreateObject("roSGNode", "ContentNode")
     content.url = answer.url
     content.streamFormat = answer.format
+    content.HttpCertificatesFile = "common:/certs/ca-bundle.crt"
+    content.HttpHeaders = answer.httpHeaders ?? []
+    m.playbackFormat = answer.format
     m.video.content = content
+    ' Explicit trailer playback is separate from muted home-page previews.
+    m.video.mute = false
     m.video.control = "play"
 end sub
 
@@ -64,8 +115,77 @@ sub onAudioTracks()
 end sub
 
 sub onVideoState()
-    if m.video.state = "playing" then m.loadingLabel.visible = false
-    if m.video.state = "error" then close()
+    if m.closed = true or m.awaitingAnswer = true then return
+    if m.video.state = "playing"
+        if not m.hasPlayed and isValid(m.sourceStream)
+            m.global.sceneManager.callFunc("rememberTrailerPath", m.currentVideoId, m.sourceStream, m.compatibilityFallback)
+        end if
+        m.hasPlayed = true
+        m.startupTimer.control = "stop"
+        m.loadingLabel.visible = false
+    end if
+    if m.video.state = "error"
+        m.failureReason = "Playback error " + m.video.errorCode.ToStr()
+        print "[Trailer] player error code="; m.video.errorCode; " format="; m.playbackFormat
+        showTrailerError()
+    end if
+    if m.video.state = "finished"
+        if m.hasPlayed
+            close()
+        else
+            showTrailerError()
+        end if
+    end if
+end sub
+
+sub showTrailerError()
+    if m.failed then return
+    m.failed = true
+    m.video.control = "stop"
+    m.startupTimer.control = "stop"
+    if isValid(m.cachedPath)
+        m.global.sceneManager.callFunc("forgetTrailerPath", m.currentVideoId)
+        m.cachedPath = invalid
+        m.compatibilityFallback = false
+    end if
+    if not m.hasPlayed and not m.compatibilityFallback
+        m.compatibilityFallback = true
+        m.failed = false
+        m.loadingLabel.text = tr("Preparing trailer...")
+        m.loadingLabel.visible = true
+        startTrailerAttempt()
+        return
+    end if
+    if isValid(m.task)
+        m.task.unobserveFieldScoped("answer")
+        m.task.cancelRequested = true
+    end if
+    if tryNextTrailer() then return
+    m.loadingLabel.text = tr("Trailer Not Available") + Chr(10) + m.failureReason
+    m.loadingLabel.visible = true
+    cleanupTrailerFile()
+end sub
+
+function tryNextTrailer() as boolean
+    if m.hasPlayed or not isValid(m.top.videoIds) then return false
+    nextIndex = m.candidateIndex + 1
+    if nextIndex >= m.top.videoIds.count() or nextIndex >= 3 then return false
+    m.candidateIndex = nextIndex
+    m.currentVideoId = m.top.videoIds[nextIndex]
+    m.cachedPath = invalid
+    m.sourceStream = invalid
+    m.compatibilityFallback = false
+    m.failed = false
+    m.loadingLabel.text = tr("Trying another trailer...")
+    m.loadingLabel.visible = true
+    startTrailerAttempt()
+    return true
+end function
+
+sub onTrailerTimeout()
+    if m.closed = true or m.hasPlayed then return
+    m.failureReason = "Trailer startup timed out"
+    showTrailerError()
 end sub
 
 ' A seek lands on the keyframe before its target, which can still be inside the segment, so
@@ -98,18 +218,37 @@ end sub
 sub close()
     if m.closed = true then return
     m.closed = true
-    if isValid(m.task) then m.task.unobserveFieldScoped("answer")
+    m.video.unobserveFieldScoped("state")
+    m.video.unobserveFieldScoped("position")
+    m.video.unobserveFieldScoped("availableAudioTracks")
+    m.startupTimer.control = "stop"
+    if isValid(m.task)
+        m.task.unobserveFieldScoped("answer")
+        m.task.cancelRequested = true
+    end if
     m.video.control = "stop"
+    m.video.content = invalid
+    m.video.setFocus(false)
+    cleanupTrailerFile()
     ' The screen holds itself as its last focus, which would keep it alive once it is gone
     m.top.lastFocus = invalid
     m.global.sceneManager.callFunc("popScene")
 end sub
 
+sub cleanupTrailerFile()
+    if not isValidAndNotEmpty(m.tempFile) then return
+    m.cleanupTask = CreateObject("roSGNode", "TrailerPreviewTask")
+    m.cleanupTask.request = { cleanupOnly: true, tempFile: m.tempFile }
+    m.cleanupTask.control = "RUN"
+end sub
+
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
 
-    if key = KeyCode.OK or key = KeyCode.BACK
+    if key = KeyCode.BACK
         close()
+    else if key = KeyCode.OK
+        if m.dismissGuard.TotalMilliseconds() >= 750 then close()
     else if key = KeyCode.PLAY
         m.video.control = (m.video.state = "paused") ? "resume" : "pause"
     else if key = KeyCode.FASTFORWRD or key = KeyCode.RIGHT

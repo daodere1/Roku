@@ -50,7 +50,7 @@ sub executePluginLogin(serverUrl as string, authBody as string)
 
     addServerAuthorization(urlTransfer, buildAuthHeaderForServer({ serverUrl: serverUrl, userId: "", authToken: authToken }), serverUrl)
     urlTransfer.AddHeader("Content-Type", "application/json")
-    urlTransfer.AddHeader("User-Agent", "Moonfin/1.0")
+    urlTransfer.AddHeader("User-Agent", "SpeshTV/1.0")
 
     port = CreateObject("roMessagePort")
     urlTransfer.SetMessagePort(port)

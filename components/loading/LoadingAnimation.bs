@@ -1,5 +1,6 @@
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/playbackOverlay.bs"
+import "pkg:/source/utils/themeChrome.bs"
 
 const TWO_PI = 6.2831853
 ' Frames per turn the logo's spin is keyed at, enough that its width follows a cosine
@@ -8,8 +9,8 @@ const RUNNER_FRAMES = 24
 const RUNNER_COLUMNS = 6
 const MOON_FRAMES = 48
 const MOON_COLUMNS = 8
-' The label's fill runs purple to blue across it, drawn as this many bands
-const LABEL_BANDS = 8
+' One label layer, using the selected theme's accent.
+const LABEL_BANDS = 1
 const BOUNCE_PADDING = 40
 
 sub init()
@@ -55,9 +56,7 @@ function positionLayout(position as string) as object
 end function
 
 function loadingSetting(key as string, fallback as string) as string
-    value = invalid
-    if isValid(m.top.values) then value = m.top.values[key]
-    if not isValid(value) then value = m.global.session.user.settings[key]
+    value = m.global.session.user.settings[key]
     if not isValid(value) then return fallback
     return value.toStr()
 end function
@@ -213,7 +212,8 @@ sub buildLogo(px as integer)
     for each face in [{ id: "loadingFront", uri: "", values: frontValues }, { id: "loadingBack", uri: "_back", values: backValues }]
         poster = m.art.createChild("Poster")
         poster.id = face.id
-        poster.uri = `pkg:/images/loading/logo_${px}${face.uri}.webp`
+        poster.uri = "pkg:/images/loading/speshtv-mask.png"
+        poster.blendColor = themeChrome.Accent()
         poster.width = px
         poster.height = px
         poster.scaleRotateCenter = [px / 2, px / 2]
@@ -294,7 +294,7 @@ function buildLabel(text as string, fontSize as integer) as object
         label = band.createChild("Label")
         playbackOverlay.SetFont(label, fontSize, true)
         label.text = text
-        label.color = gradientColor((i + 0.5) / LABEL_BANDS)
+        label.color = themeChrome.Accent()
     end for
 
     ' Faint to full and back, easing at each end
@@ -317,12 +317,3 @@ function buildLabel(text as string, fontSize as integer) as object
     return { width: width, height: height }
 end function
 
-function gradientColor(t as float) as string
-    start = [170, 92, 195]
-    finish = [0, 164, 220]
-    hex = "#"
-    for i = 0 to 2
-        hex += playbackOverlay.HexByte(Int(start[i] + (finish[i] - start[i]) * t + 0.5))
-    end for
-    return hex + "FF"
-end function

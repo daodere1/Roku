@@ -2,7 +2,6 @@ import "pkg:/source/utils/detailCompatibility.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/remoteSubtitles.bs"
 import "pkg:/source/utils/trackLabels.bs"
-import "pkg:/source/utils/trackMemory.bs"
 
 import "pkg:/source/enums/MediaStreamType.bs"
 import "pkg:/source/enums/PlaybackMethod.bs"
@@ -24,10 +23,6 @@ sub SetUpTrackOptions(itemData as object)
     if m.top.selectedVideoStreamId = "" and isValidAndNotEmpty(itemData.MediaSources)
         SetCurrentVideoCodec(itemData)
         m.top.selectedVideoStreamId = itemData.MediaSources[0].id
-    else if isValidAndNotEmpty(itemData.MediaSources) and itemData.MediaSources[0].id <> m.top.selectedVideoStreamId
-        ' A reload brings the first version's streams back, so the one still picked puts its own
-        ' back before the audio is chosen from them
-        if applyPickedVersion(itemData, m.top.selectedVideoStreamId) then storeItemJson(itemData)
     end if
     SetDefaultAudioTrack(itemData)
     SetUpVideoOptions(itemData.mediaSources)
@@ -80,18 +75,14 @@ sub SetUpAudioOptions(streams)
         selectedSubtitle = preferredSubtitle.StreamIndex
     else
         ' Without a pick of the viewer's own, the track playback will turn on shows as chosen
-        json = chainLookup(m.top, "itemContent.json")
-        selectedSubtitle = trackMemory.RememberedSubtitle(trackMemory.Load(), chainLookup(json, "Id"), chainLookup(json, "SeriesId"), trackMemory.OfType(streams, "Subtitle"))
-        if selectedSubtitle = SubtitleSelection.NOTSET
-            audioLanguage = ""
-            if m.top.selectedAudioStreamIndex >= 0 and m.top.selectedAudioStreamIndex < streams.Count() then audioLanguage = streams[m.top.selectedAudioStreamIndex].LookupCI("Language") ?? ""
-            modeSubtitle = trackLabels.ModeSubtitle(streams, detailServerSubtitleIndex(), m.global.session.user.settings, audioLanguage)
-            selectedSubtitle = trackLabels.PreferredSubtitle(streams, modeSubtitle, m.global.session.user.settings)
-        end if
+        audioLanguage = ""
+        if m.top.selectedAudioStreamIndex >= 0 and m.top.selectedAudioStreamIndex < streams.Count() then audioLanguage = streams[m.top.selectedAudioStreamIndex].LookupCI("Language") ?? ""
+        modeSubtitle = trackLabels.ModeSubtitle(streams, detailServerSubtitleIndex(), m.global.session.user.settings, audioLanguage)
+        selectedSubtitle = trackLabels.PreferredSubtitle(streams, modeSubtitle, m.global.session.user.settings)
     end if
 
-    audioTracks = []
-    subtitleTracks = [{
+    audioTracks = [{ "Title": tr("Automatic"), "Description": tr("Server preferences"), "Selected": m.top.selectedAudioStreamIndex < 0, "StreamIndex": -1, "RokuTrackName": "" }]
+    subtitleTracks = [{ "StreamIndex": SubtitleSelection.NOTSET, "json": {}, "Title": tr("Automatic"), "Description": tr("Automatic"), "Selected": selectedSubtitle = SubtitleSelection.NOTSET }, {
         "StreamIndex": SubtitleSelection.NONE,
         "json": {},
         "Title": "None",
@@ -103,7 +94,7 @@ sub SetUpAudioOptions(streams)
     for i = 0 to streams.Count() - 1
         if streams[i].Type = "Audio"
             rokuTrackName = `#uniq:${streams[i].LookupCI("Title") ?? string.EMPTY}(${audioStreamCount})`
-            audioTracks.push({ "Title": streams[i].displayTitle, "Description": streams[i].Title, "Selected": m.top.selectedAudioStreamIndex = i, "StreamIndex": i, "RokuTrackName": rokuTrackName, "Language": streams[i].Language, "Codec": streams[i].Codec, "Channels": streams[i].Channels })
+            audioTracks.push({ "Title": streams[i].displayTitle, "Description": streams[i].Title, "Selected": m.top.selectedAudioStreamIndex = streams[i].Index, "StreamIndex": streams[i].Index, "RokuTrackName": rokuTrackName, "Language": streams[i].Language, "Codec": streams[i].Codec, "Channels": streams[i].Channels })
             audioStreamCount++
         end if
         if streams[i].Type = "Subtitle"
@@ -146,49 +137,27 @@ sub SetCurrentVideoCodec(itemData)
     end for
 end sub
 
-' A new version starts from the server's choice rather than a remembered one
-sub SetDefaultAudioTrack(itemData, useMemory = true as boolean)
+sub SetDefaultAudioTrack(itemData)
     if not isValidAndNotEmpty(chainLookup(itemData, "mediaStreams")) then return
 
     preferredAudioTrackIndex = m.global.queueManager.callFunc("getPreferredAudioTrackIndex")
-    if preferredAudioTrackIndex < 0 and useMemory
-        remembered = trackMemory.RememberedAudio(trackMemory.Load(), itemData.LookupCI("Id"), itemData.LookupCI("SeriesId"), trackMemory.OfType(itemData.mediaStreams, "Audio"))
-        if remembered >= 0 then preferredAudioTrackIndex = trackMemory.Position(itemData.mediaStreams, "Audio", remembered)
-    end if
     preferredAudioTrackName = m.global.queueManager.callFunc("getPreferredAudioTrackName")
-    preferredLanguage = getPreferredLanguage("playback.audioPreferredLanguage")
-    firstAudioTrack = -1
-
-    defaultAudioTrackIndex = getDefaultAudioTrackIndex(itemData.mediaStreams)
-    defaultAudioTrackName = string.EMPTY
-
-    if preferredAudioTrackIndex < 0 and chainLookupReturn(m.global.session, "user.settings.`playback.playDefaultAudioTrack`", false)
-        preferredAudioTrackIndex = defaultAudioTrackIndex
-    end if
+    ' File flags are not user choices. Defer automatic selection to PlaybackInfo.
+    m.top.selectedAudioStreamIndex = -1
+    if preferredAudioTrackIndex < 0 then return
 
     audioStreamCount = 1
     for i = 0 to itemData.mediaStreams.Count() - 1
         if itemData.mediaStreams[i].Type = "Audio"
             rokuTrackName = `#uniq:${itemData.mediaStreams[i].LookupCI("Title") ?? string.EMPTY}(${audioStreamCount})`
 
-            if firstAudioTrack < 0 then firstAudioTrack = i
-            if i = defaultAudioTrackIndex then defaultAudioTrackName = rokuTrackName
-
-            if i = preferredAudioTrackIndex
+            if itemData.mediaStreams[i].Index = preferredAudioTrackIndex
                 m.global.queueManager.callFunc("setPreferredAudioTrackName", rokuTrackName)
                 preferredAudioTrackName = rokuTrackName
             end if
 
-            if preferredAudioTrackIndex < 0 and isValid(preferredLanguage)
-                if isStringEqual(chainLookupReturn(itemData.mediaStreams[i], "Language", invalid), preferredLanguage)
-                    m.top.selectedAudioStreamIndex = i
-                    m.global.queueManager.callFunc("setPreferredAudioTrackName", rokuTrackName)
-                    return
-                end if
-            end if
-
             if isStringEqual(rokuTrackName, preferredAudioTrackName)
-                m.top.selectedAudioStreamIndex = i
+                m.top.selectedAudioStreamIndex = itemData.mediaStreams[i].Index
                 return
             end if
 
@@ -196,15 +165,6 @@ sub SetDefaultAudioTrack(itemData, useMemory = true as boolean)
         end if
     end for
 
-    if defaultAudioTrackIndex > -1
-        m.top.selectedAudioStreamIndex = defaultAudioTrackIndex
-        m.global.queueManager.callFunc("setPreferredAudioTrackName", defaultAudioTrackName)
-        return
-    end if
-
-    if firstAudioTrack > -1
-        m.top.selectedAudioStreamIndex = firstAudioTrack
-    end if
 end sub
 
 sub onAudioStreamIndexChanged()
@@ -212,7 +172,6 @@ sub onAudioStreamIndexChanged()
         m.top.selectedAudioStreamIndex = m.audioSelector.audioStreamIndex
         m.global.queueManager.callFunc("setPreferredAudioTrackIndex", m.audioSelector.audioStreamIndex)
         m.global.queueManager.callFunc("setPreferredAudioTrackName", m.audioSelector.audioStreamName)
-        rememberTrack("audio", m.top.selectedAudioStreamIndex)
 
         if isValid(m.top.itemContent)
             m.top.itemContent.selectedAudioStreamIndex = m.top.selectedAudioStreamIndex
@@ -230,21 +189,7 @@ sub onSubtitleStreamChanged()
     if isValid(m.subtitleSelector.subtitleStream)
         m.global.queueManager.callFunc("setPreferredSubtitleTrack", m.subtitleSelector.subtitleStream)
         updateSubtitleTrackSelection(m.subtitleSelector.subtitleStream)
-        rememberTrack("subtitle", m.subtitleSelector.subtitleStream.StreamIndex)
     end if
-end sub
-
-' Keeps a pick for the title, and its series on an episode. Audio is picked by its place in the
-' version's streams and saved by the server's index for it.
-sub rememberTrack(kind as string, pick as integer)
-    json = chainLookup(m.top, "itemContent.json")
-    streams = detailMediaStreams(chainLookupReturn(json, "mediaStreams", []))
-    index = pick
-    if kind = "audio"
-        if pick < 0 or pick >= streams.Count() then return
-        index = streams[pick].LookupCI("Index") ?? pick
-    end if
-    trackMemory.Remember(chainLookup(json, "Id"), chainLookup(json, "SeriesId"), kind, index, trackMemory.OfType(streams, kind))
 end sub
 
 sub onSubtitleDownloadRequested()
@@ -350,12 +295,24 @@ sub onVersionSelected()
     if newStreamId <> m.top.selectedVideoStreamId
         m.top.selectedVideoStreamId = newStreamId
         m.currentCodec = m.versionSelector.codec
+        m.top.unobservefield("itemContent")
         itemData = m.top.itemContent.json
-        if applyPickedVersion(itemData, newStreamId)
-            SetDefaultAudioTrack(itemData, false)
-            SetUpAudioOptions(itemData.mediaStreams)
-        end if
-        storeItemJson(itemData)
+        for each mediaSource in itemData.mediaSources
+            if mediaSource.id = newStreamId
+                itemData.mediaStreams = []
+                for i = 0 to mediaSource.mediaStreams.Count() - 1
+                    itemData.mediaStreams.push(mediaSource.mediaStreams[i])
+                end for
+                if isValid(mediaSource.RunTimeTicks)
+                    itemData.RunTimeTicks = mediaSource.RunTimeTicks
+                end if
+                SetDefaultAudioTrack(itemData)
+                SetUpAudioOptions(itemData.mediaStreams)
+                exit for
+            end if
+        end for
+        m.top.itemContent.json = itemData
+        m.top.observeField("itemContent", "itemContentChanged")
 
         populateRuntime(itemData)
         buildStreamSummary(itemData)
@@ -367,30 +324,6 @@ sub onVersionSelected()
             m.global.queueManager.callFunc("setForceTranscode", PlaybackMethod.FORCETRANSCODEDISABLEREMUX, m.currentCodec)
         end if
     end if
-end sub
-
-' Puts a version's streams and runtime on the item, the way the server sends them for the first
-' version, and says whether it found that version
-function applyPickedVersion(itemData as object, sourceId as string) as boolean
-    for each mediaSource in itemData.mediaSources
-        if mediaSource.id = sourceId
-            itemData.mediaStreams = []
-            for i = 0 to mediaSource.mediaStreams.Count() - 1
-                itemData.mediaStreams.push(mediaSource.mediaStreams[i])
-            end for
-            if isValid(mediaSource.RunTimeTicks)
-                itemData.RunTimeTicks = mediaSource.RunTimeTicks
-            end if
-            return true
-        end if
-    end for
-    return false
-end function
-
-sub storeItemJson(itemData as object)
-    m.top.unobservefield("itemContent")
-    m.top.itemContent.json = itemData
-    m.top.observeField("itemContent", "itemContentChanged")
 end sub
 
 sub updateSubtitleTrackSelection(selectedSubtitle as object)

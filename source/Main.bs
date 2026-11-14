@@ -3,7 +3,6 @@ import "pkg:/source/enums/ItemType.bs"
 import "pkg:/source/enums/String.bs"
 import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/parentalControls.bs"
-import "pkg:/source/utils/recentRows.bs"
 import "pkg:/source/utils/settingsSync.bs"
 import "pkg:/source/utils/setupWizardGate.bs"
 
@@ -46,19 +45,14 @@ sub Main (args as dynamic) as void
     m.global.addFields({
         app_loaded: false,
         homeNeedsRefresh: false,
-        homeNeedsReload: false,
         playstateTask: playstateTask,
         sceneManager: sceneManager,
         queueManager: CreateObject("roSGNode", "QueueManager"),
-        watchParty: CreateObject("roSGNode", "WatchPartySession"),
         audioPlayer: CreateObject("roSGNode", "AudioPlayer"),
         diagLog: CreateObject("roSGNode", "DiagnosticsLog"),
-        syncPlayManager: CreateObject("roSGNode", "SyncPlayManager"),
         jumpTo: {},
         fallbackFont: string.EMPTY,
-        pendingUserSwitch: string.EMPTY,
-        ' When Moonbase last had no poster labels to give or didn't answer, which every row's task reads
-        posterLabelsPausedAt: 0.0
+        pendingUserSwitch: string.EMPTY
     })
 
     runtimeContext = GetGlobalAA()
@@ -72,12 +66,10 @@ sub Main (args as dynamic) as void
     if isValid(accountDialog)
         accountDialog.observeField("accountAction", m.port)
         accountDialog.observeField("switchToUser", m.port)
+        accountDialog.observeField("removeUserRequest", m.port)
     end if
 
     m.global.observeField("jumpTo", m.port)
-    ' Set from whichever thread Silo refused to renew a login in, as "server|account"
-    m.global.addField("siloLoginEnded", "string", true)
-    m.global.observeField("siloLoginEnded", m.port)
 
     audioMiniPlayer = m.scene.findNode("audioMiniPlayer")
     if isValid(audioMiniPlayer)
@@ -87,14 +79,8 @@ sub Main (args as dynamic) as void
     m.accessWatcher = CreateObject("roSGNode", "AccessScheduleWatcher")
     m.accessWatcher.observeField("accessStatus", m.port)
 
-    ' Nobody is signed in yet, so a Silo profile whose PIN is asked every time is locked again
-    silo.ForgetUnrememberedPins()
-
     app_start:
     stopAchievementsPoll()
-    ' A party belongs to the account that joined it
-    m.global.watchParty.callFunc("leave", false)
-    m.global.syncPlayManager.callFunc("disable")
     m.accessWatcher.userId = ""
 
     ' Hide both nav elements before login to prevent flash/overlap
@@ -106,18 +92,10 @@ sub Main (args as dynamic) as void
     if not LoginFlow() then return
 
     parentalControls.Activate()
-    pinGate = RunPinGate()
-    if pinGate = "closed" then return
-    if pinGate = "forgot"
-        ' The account stays saved, so it can be picked again, but only its sign in clears the PIN
-        unset_setting("active_user")
-        session.user.Logout()
-        m.global.sceneManager.callFunc("clearScenes")
-        goto app_start
-    end if
+    if not RunPinGate() then return
 
     ' Jellyfin turns a user away outside their access schedule, so the app says so when it closes
-    if not isEmbyServer() and not isPlexServer() then m.accessWatcher.userId = chainLookupReturn(m.global.session, "user.id", "")
+    if not isEmbyServer() then m.accessWatcher.userId = chainLookupReturn(m.global.session, "user.id", "")
 
     'Pull user configuration from server and apply settings
     'The server reports no language preference as an empty string. The client uses "anyLanguage"
@@ -131,8 +109,6 @@ sub Main (args as dynamic) as void
     set_user_setting("playback.subs.language", subtitleLanguage)
     set_user_setting("playback.audioPreferredLanguage", audioLanguage)
     set_user_setting("playback.playDefaultAudioTrack", defaultAudio)
-    ' Someone who never set Hide Watched starts from their account's own choice
-    if not isValid(get_user_setting(recentRows.HIDE_WATCHED_SETTING)) and toBoolean(chainLookupReturn(m.global.session, "user.Configuration.HidePlayedInLatest", false)) then set_user_setting(recentRows.HIDE_WATCHED_SETTING, "true")
 
     MigrateSeerrRegistryNamespace()
     MigrateSeerrConfig()
@@ -208,7 +184,6 @@ sub Main (args as dynamic) as void
         msg = wait(0, m.port)
 
         if type(msg) = "roSGScreenEvent" and msg.isScreenClosed()
-            leaveSyncPlayGroupNow()
             return
         end if
 
@@ -216,7 +191,6 @@ sub Main (args as dynamic) as void
             ' The marker only gets written on the way out, so its absence next launch is
             ' what says the last session died rather than closed
             diagnostics.NoteCleanExit()
-            leaveSyncPlayGroupNow()
             return
         end if
 
@@ -322,7 +296,7 @@ sub Main (args as dynamic) as void
             else if isStringEqual(action, "add_user")
                 SignOut(false)
             else if isStringEqual(action, "sign_out")
-                SignOutCurrentUser()
+                SignOut()
             else if isStringEqual(action, "sign_out_all")
                 SignOutAllUsers()
             else
@@ -337,21 +311,28 @@ sub Main (args as dynamic) as void
                 sceneManager.callFunc("clearScenes")
                 goto app_start
             end if
-        else if isNodeEvent(msg, "siloLoginEnded")
-            ' The password changed or the account's sessions were signed out, so the household
-            ' goes and its sign in opens with the name filled in, as in Moonfin Core
-            if SignOutEndedSiloLogin(msg.getData())
-                accountDialog.visible = false
-                setUserColors()
-                sceneManager.callFunc("clearScenes")
-                goto app_start
-            end if
         else if isNodeEvent(msg, "switchToUser")
             accountDialog.visible = false
             SwitchToSavedUser(msg.getData())
             setUserColors()
             sceneManager.callFunc("clearScenes")
             goto app_start
+        else if isNodeEvent(msg, "removeUserRequest")
+            request = msg.getData()
+            prompt = Substitute(tr("Are you sure you want to remove {0} from {1}?"), request.username, request.serverName)
+            confirmed = show_dialog(prompt + " " + tr("You will need to sign in again to use this account."), [tr("Cancel"), tr("Remove")], 0)
+            if confirmed = 1
+                ForgetSavedUser(request.id)
+                ' Removing the account in use leaves nothing signed in
+                if isStringEqual(request.id, m.global.session.user.id)
+                    accountDialog.visible = false
+                    SignOut()
+                    setUserColors()
+                    sceneManager.callFunc("clearScenes")
+                    goto app_start
+                end if
+            end if
+            accountDialog.callFunc("showDialog")
         else if isNodeEvent(msg, "state")
             onStateEvent(msg)
         else if type(msg) = "roDeviceInfoEvent"
@@ -592,23 +573,4 @@ sub MigrateSettings()
     for each key in ["playback.timeAboveCenter", "playback.timeBelowCenter"]
         if isStringEqual(get_user_setting(key), "remaining") then set_user_setting(key, "timeRemaining")
     end for
-
-    ' The media bar's Libraries and Collections sources were folded into Random
-    storedSource = get_user_setting("ui.home.mediaBarSourceType")
-    if isValid(storedSource)
-        knownSource = settingsSync.MediaBarSource(storedSource)
-        if storedSource <> knownSource then set_user_setting("ui.home.mediaBarSourceType", knownSource)
-    end if
-end sub
-
-' The app is closing, so the group hears this set left instead of waiting on it
-sub leaveSyncPlayGroupNow()
-    if not m.global.syncPlayManager.syncPlayActive then return
-    req = APIRequest("/syncplay/leave")
-    if not isValid(req) then return
-    port = CreateObject("roMessagePort")
-    req.SetMessagePort(port)
-    req.AddHeader("Content-Type", "application/json")
-    req.AsyncPostFromString("{}")
-    wait(2000, port)
 end sub

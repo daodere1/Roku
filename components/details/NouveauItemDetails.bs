@@ -17,7 +17,6 @@ import "pkg:/source/utils/mediaBadges.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/nouveauLayout.bs"
 import "pkg:/source/utils/seerrDetailHost.bs"
-import "pkg:/source/utils/seerrMissingCollection.bs"
 import "pkg:/source/utils/SeerrUtils.bs"
 import "pkg:/source/utils/themeApply.bs"
 import "pkg:/source/utils/tmdbReviews.bs"
@@ -74,7 +73,8 @@ const NOUVEAU_BUTTON_SIZE = 75
 const NOUVEAU_BUTTON_GAP = 12
 const NOUVEAU_PRIMARY_GAP = 18
 const NOUVEAU_BUTTON_LABEL_PAD = 41
-' A person's page draws their backdrop faintly
+' A person's page asks for this much of their filmography, and draws their backdrop faintly
+const NOUVEAU_PERSON_LIMIT = 50
 const NOUVEAU_PERSON_BACKDROP_ALPHA = 0.4
 
 sub init()
@@ -241,7 +241,6 @@ function newSectionData() as object
         seerrResolved: false,
         collection: [],
         collectionOrder: [],
-        parentCollections: [],
         person: { movies: [], series: [], guest: [], music: [], appearances: [], crew: [] }
     }
 end function
@@ -379,13 +378,14 @@ sub buildStreamSummary(itemData as object)
     m.techChips.removeChildrenIndex(m.techChips.getChildCount(), 0)
 
     badges = []
-    if mediaBadges.Enabled() then badges = mediaBadges.Build(itemData, m.top.selectedVideoStreamId)
+    if mediaBadges.Enabled() then badges = mediaBadges.Build(itemData)
     for each badge in badges
         if isValidAndNotEmpty(badge) then addTechChip(badge)
     end for
 
-    source = fileFacts.PickedSource(itemData, m.top.selectedVideoStreamId)
-    setFieldText("techSize", fileFacts.FormatSize(chainLookupReturn(source, "Size", 0)))
+    firstSource = invalid
+    if isValidAndNotEmpty(itemData.MediaSources) then firstSource = itemData.MediaSources[0]
+    setFieldText("techSize", fileFacts.FormatSize(chainLookupReturn(firstSource, "Size", 0)))
 
     hasSize = isValidAndNotEmpty(m.top.findNode("techSize").text)
     m.techRow.visible = hasSize or m.techChips.getChildCount() > 0
@@ -440,16 +440,13 @@ sub loadSections()
 
     ' A collection's page is its titles, and nothing similar or extra to go with them
     if isCollection()
-        m.membersTask = startCollectionMembersTask("onCollectionMembersLoaded", true)
+        m.membersTask = startCollectionMembersTask("onCollectionMembersLoaded")
         return
     end if
 
-    itemData = m.top.itemContent.json
     loadTask = CreateObject("roSGNode", "LoadExtrasTask")
     loadTask.itemId = m.top.id
     loadTask.itemType = m.top.itemType
-    loadTask.providerIds = itemData.ProviderIds ?? {}
-    loadTask.includeCollections = true
 
     if isEpisode()
         loadTask.isEpisode = true
@@ -458,10 +455,9 @@ sub loadSections()
     else if isSeries()
         loadTask.isTVShow = true
         loadTask.showID = m.top.itemContent.id
-    else if isSeason()
-        loadTask.showID = chainLookupReturn(itemData, "SeriesId", "")
     end if
 
+    itemData = m.top.itemContent.json
     if isValidAndNotEmpty(itemData._serverUrl)
         loadTask.serverUrl = itemData._serverUrl
         loadTask.serverUserId = itemData._userId
@@ -478,7 +474,6 @@ sub loadSections()
     if isSeries()
         episodesTask = CreateObject("roSGNode", "NouveauSeriesEpisodesTask")
         episodesTask.seriesId = m.top.id
-        episodesTask.withLabels = true
         episodesTask.observeField("episodes", "onSeriesEpisodesLoaded")
         episodesTask.control = TaskControl.RUN
     end if
@@ -487,21 +482,8 @@ sub loadSections()
 end sub
 
 sub onExtrasLoaded(event as object)
-    loadTask = event.getRoSGNode()
-    if isValid(loadTask) and isValidAndNotEmpty(m.top.id) and loadTask.itemId <> m.top.id
-        return
-    end if
-
     content = event.getData()
     if not isValid(content) then return
-
-    ' Write back the unfiltered merged credits so downstream consumers (e.g. Frost) retain
-    ' full cast and crew even when cast or crew rows are hidden in UI settings
-    if isChainValid(m.top.itemContent, "json") and isValid(loadTask) and isValid(loadTask.allPeople) and loadTask.allPeople.count() > 0
-        m.top.itemContent.json.People = loadTask.allPeople
-    end if
-
-    m.sectionData.parentCollections = []
 
     for i = 0 to content.getChildCount() - 1
         row = content.getChild(i)
@@ -522,8 +504,6 @@ sub onExtrasLoaded(event as object)
             m.sectionData.crew = people.crew
         else if row.title = "similar"
             m.sectionData.similar = items
-        else if row.title = "parentCollection"
-            m.sectionData.parentCollections.push({ name: row.collectionName, items: items })
         else if row.title = "nextup" and items.count() > 0
             m.sectionData.nextUpId = chainLookupReturn(items[0], "id", "")
         else if row.title = "episodes" and items.count() > 0
@@ -542,9 +522,8 @@ sub onReviewsLoaded()
     if m.sectionData.reviews.count() > 0 then rebuildSections()
 end sub
 
-' The titles the library is missing are slotted in by release, leaving the server's order alone
 sub onCollectionMembersLoaded()
-    m.sectionData.collection = seerrMissingCollection.SlotByRelease(m.membersTask.items ?? [], m.membersTask.missing ?? [])
+    m.sectionData.collection = m.membersTask.items ?? []
     m.sectionData.collectionOrder = m.membersTask.order ?? []
     rebuildSections()
 end sub
@@ -590,7 +569,7 @@ end sub
 ' What the library has them in, and what Seerr knows they worked on
 sub loadPersonCredits()
     itemData = m.top.itemContent.json
-    m.personFilmTask = startPersonFilmography(m.top.id, itemData, PERSON_PAGE_LIMIT, "onPersonFilmographyLoaded")
+    m.personFilmTask = startPersonFilmography(m.top.id, itemData, NOUVEAU_PERSON_LIMIT, "onPersonFilmographyLoaded")
     m.personCreditsTask = startSeerrPersonCredits(chainLookupReturn(itemData, "ProviderIds.Tmdb", ""), "onPersonSeerrCreditsLoaded")
 end sub
 
@@ -598,26 +577,17 @@ sub onPersonFilmographyLoaded(event as object)
     content = event.getData()
     if not isValid(content) then return
 
-    m.personEntries = content.getChildren(-1, 0)
-    personDisplayChanged()
+    m.sectionData.person.Append(splitFilmography(content.getChildren(-1, 0)))
+    rebuildSections()
 end sub
 
 sub onPersonSeerrCreditsLoaded(event as object)
     response = event.getData()
     if not isValid(response) or not response.success or not isValid(response.data) then return
 
-    m.personSeerrData = response.data
-    personDisplayChanged()
-end sub
-
-' The rails from what has arrived so far, drawn again whenever the order or grouping changes
-sub personDisplayChanged()
-    if isValid(m.personEntries) then m.sectionData.person.Append(splitFilmography(m.personEntries))
-    if isValid(m.personSeerrData)
-        credits = shownSeerrCredits(m.personSeerrData, true)
-        m.sectionData.person.appearances = credits.appearances
-        m.sectionData.person.crew = credits.crew
-    end if
+    credits = shownSeerrCredits(response.data)
+    m.sectionData.person.appearances = credits.appearances
+    m.sectionData.person.crew = credits.crew
     rebuildSections()
 end sub
 
@@ -648,8 +618,6 @@ sub rebuildSections()
             buildChaptersRail()
         else if id = NOUVEAU_SECTION_EXTRAS
             buildExtrasRail()
-        else if id = NOUVEAU_SECTION_PARENT_COLLECTIONS
-            buildParentCollectionRails()
         else if id = NOUVEAU_SECTION_DISCOVERY
             buildDiscoveryRails()
         else if id = NOUVEAU_SECTION_PEOPLE
@@ -681,7 +649,6 @@ function sectionState() as object
         similarLoaded: m.sectionData.similarLoaded,
         similarCount: m.sectionData.similar.count(),
         reviewCount: m.sectionData.reviews.count(),
-        parentCollectionCount: m.sectionData.parentCollections.count(),
         seerrExpected: seerrListed and nouveauLayout.SeerrDiscoveryExpected(LCase(m.top.itemType), seerrAvailable, hasProviderId),
         seerrResolved: m.sectionData.seerrResolved,
         seerrSimilarCount: m.sectionData.seerrSimilar.count(),
@@ -760,8 +727,7 @@ function episodeCards(episodes as object) as object
             title: chainLookupReturn(episode, "json.Name", ""),
             overview: chainLookupReturn(episode, "json.Overview", ""),
             isNextUp: isValidAndNotEmpty(m.sectionData.nextUpId) and chainLookupReturn(episode, "id", "") = m.sectionData.nextUpId,
-            progress: played / 100,
-            posterLabels: episode.LookupCI("posterLabels") ?? []
+            progress: played / 100
         })
     end for
     return cards
@@ -835,19 +801,7 @@ end function
 
 ' The collection keeps the order the server gave it
 sub buildCollectionRail()
-    addCollectionRail(tr("Collection"), m.sectionData.collection, true)
-end sub
-
-' A rail for each collection the title is in, drawn the same way as a collection's own
-sub buildParentCollectionRails()
-    leads = true
-    for each collection in m.sectionData.parentCollections
-        addCollectionRail(collection.name, collection.items, leads)
-        leads = false
-    end for
-end sub
-
-sub addCollectionRail(title as string, items as object, leads as boolean)
+    items = m.sectionData.collection
     if items.count() = 0 then return
 
     cards = []
@@ -860,13 +814,13 @@ sub addCollectionRail(title as string, items as object, leads as boolean)
     end for
 
     addRail({
-        title: title,
+        title: tr("Collection"),
         component: "NouveauCaptionCard",
         gap: NOUVEAU_TV_RAIL_GAP,
         cardSize: [m.metrics.collectionWidth, m.metrics.collectionHeight],
         stopsPerCard: 1,
         cards: cards,
-        leadsSection: leads
+        leadsSection: true
     }, "poster", items)
 end sub
 
@@ -925,21 +879,17 @@ sub buildDiscoveryRails()
     end if
 end sub
 
-' Nouveau's own rails show no Seerr status. The screens built on this one ask for it.
-function posterSpec(title as string, items as object, leadsSection as boolean, withSeerrStatus = false as boolean) as object
+function posterSpec(title as string, items as object, leadsSection as boolean) as object
     cards = []
     for each item in items
         year = chainLookupReturn(item, "json.ProductionYear", invalid)
         ' A person's filmography reads the role they played, everything else the year
         subtitle = chainLookupReturn(item, "json.PersonRole", "")
         if subtitle = "" and isValid(year) then subtitle = year.toStr()
-        seerrStatus = -1
-        if withSeerrStatus then seerrStatus = seerrCardStatus(item)
         cards.push({
             imageUrl: detailImages.ItemImageUrl(item),
             title: chainLookupReturn(item, "json.Name", chainLookupReturn(item, "title", "")),
-            subtitle: subtitle,
-            seerrStatus: seerrStatus
+            subtitle: subtitle
         })
     end for
 
@@ -1015,7 +965,7 @@ sub buildFooter()
     source = invalid
     streams = []
     if not hidden.DoesExist("mediaInfo")
-        source = fileFacts.PickedSource(itemData, m.top.selectedVideoStreamId)
+        if isValidAndNotEmpty(itemData.MediaSources) then source = itemData.MediaSources[0]
         if isValid(source) and isValidAndNotEmpty(source.MediaStreams)
             streams = source.MediaStreams
         else if isValidAndNotEmpty(itemData.MediaStreams)
@@ -1101,7 +1051,7 @@ sub probeDirectPlay()
 
     task = CreateObject("roSGNode", "DetailPlaybackInfoTask")
     task.itemJson = itemData
-    task.mediaSourceId = chainLookupReturn(fileFacts.PickedSource(itemData, m.top.selectedVideoStreamId), "Id", "")
+    task.mediaSourceId = itemData.MediaSources[0].Id ?? ""
     task.audioStreamIndex = m.top.selectedAudioStreamIndex
     task.subtitleStreamIndex = chainLookupReturn(m.global.queueManager.callFunc("getPreferredSubtitleTrack"), "StreamIndex", -1)
     task.observeField("result", "onDirectPlayResult")
@@ -1718,7 +1668,7 @@ end sub
 
 function typeSpecificButtons() as boolean
     if isPerson()
-        addArrangedButtons([favoriteCandidate(chainLookupReturn(m.top.itemContent, "json", {}))], true)
+        addArrangedButtons([favoriteCandidate(chainLookupReturn(m.top.itemContent, "json", {}))])
         return true
     end if
 
@@ -1756,8 +1706,6 @@ sub handleScreenButtonAction(action as string)
         m.global.queueManager.callFunc("playQueue")
     else if action = "favorite"
         toggleFavorite()
-    else if action = "personDisplay"
-        openPersonDisplay()
     end if
 end sub
 
@@ -1766,9 +1714,6 @@ sub updatePlayedIndicator()
 end sub
 
 sub refreshAfterVersionChange()
-    ' The footer describes the version picked, and whether it plays as it is, so both are asked again
-    probeDirectPlay()
-    rebuildSections()
     m.top.refreshMovieDetailsData = not m.top.refreshMovieDetailsData
 end sub
 
@@ -1792,7 +1737,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
 
     if m.overflowMenu.visible then return false
-    if personDisplayOpen() then return true
 
     ' Chapters, extras, people and reviews have no card menu, and a Seerr card turns it down itself
     if key = KeyCode.OPTIONS and m.focusZone = "rail" and m.focusRail >= 0 and m.focusRail < m.rails.count()

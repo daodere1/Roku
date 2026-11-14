@@ -1,12 +1,13 @@
 {
-  "name": "moonfin",
+  "name": "speshtv-roku",
   "type": "module",
-  "version": "3.1.0",
-  "description": "Moonfin - Roku Client for Jellyfin",
+  "version": "0.3.6",
+  "description": "SpeshTV for Roku, based on Moonfin and Jellyfin Roku",
   "dependencies": {
     "@rokucommunity/bslib": "0.1.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
     "@rokucommunity/bslint": "0.8.38",
     "brighterscript": "0.70.3",
     "brighterscript-formatter": "1.7.19",
@@ -16,14 +17,14 @@
     "roku-deploy": "3.16.1"
   },
   "scripts": {
-    "build": "npx rimraf build/ out/ && npx bsc --project bsconfig.json --source-map=false --create-package false && node scripts/package.mjs",
+    "build": "node scripts/speshtv-assets.mjs && npx rimraf build/ out/ && npx bsc --project bsconfig.json --source-map=false --create-package false && node scripts/package.mjs",
     "lint": "npx bsc --project bsconfig.json --create-package false --copy-to-staging false",
     "format": "npx bsfmt --write",
-    "test": "node test/server-compatibility.mjs"
+    "test": "node test/server-compatibility.mjs && node test/spesh-progress.mjs && node test/spesh-seerr-player.mjs && node test/live-audio-profile.mjs && node test/guide-modal-regression.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Moonfin-Client/Roku.git"
+    "url": "https://github.com/daodere1/Roku.git"
   },
   "keywords": [
     "jellyfin",
@@ -31,10 +32,10 @@
     "music",
     "movies"
   ],
-  "author": "Moonfin",
+  "author": "SpeshTV contributors",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/Moonfin-Client/Roku.git"
+    "url": "https://github.com/daodere1/Roku/issues"
   },
-  "homepage": "https://github.com/Moonfin-Client/Roku"
+  "homepage": "https://github.com/daodere1/Roku"
 }

@@ -40,9 +40,6 @@
 
         <NouveauOverflowMenu id="overflowMenu" visible="false" />
 
-        <!-- The extras the Extras button opens -->
-        <SpotlightSectionModal id="extrasModal" visible="false" />
-
         <AudioSelector id="audioSelector" visible="false" />
         <SubtitleSelector id="subtitleSelector" visible="false" />
         <SubtitleDownloadDialog id="subtitleDownloadDialog" visible="false" />
@@ -63,7 +60,7 @@
         <field id="trailerAvailable" type="bool" value="false" />
         <field id="additionalParts" type="assocarray" />
         <field id="selectedPart" type="assocarray" onChange="onSelectedPartChanged" />
-        <field id="selectedAudioStreamIndex" type="integer" />
+    <field id="selectedAudioStreamIndex" type="integer" value="-1" />
         <field id="selectedVideoStreamId" type="string" />
         <field id="quickPlayNode" type="node" alwaysNotify="true" />
         <field id="refreshMovieDetailsData" type="bool" alwaysNotify="true" />

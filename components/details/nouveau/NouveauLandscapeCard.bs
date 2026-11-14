@@ -1,4 +1,3 @@
-import "pkg:/components/posterLabels/posterLabelsDraw.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/themeApply.bs"
 
@@ -82,7 +81,6 @@ sub onCardSizeChanged()
     m.detailsFocus.height = detailsHeight
 
     m.top.cardHeight = artHeight + NOUVEAU_BLOCK_GAP + detailsHeight
-    if isValid(m.posterLabels) and m.posterLabels.visible then m.posterLabels.frame = posterLabelSpots()
 end sub
 
 sub onCardDataChanged()
@@ -106,29 +104,10 @@ sub onCardDataChanged()
     if show then m.progressFill.width = m.progressTrack.width * progress
 
     onCardSizeChanged()
-
-    if isValidAndNotEmpty(data.posterLabels) or isValid(m.posterLabels) then m.posterLabels = drawPosterLabels(m.posterLabels, m.artMask, data.posterLabels, posterLabelSpots(), POSTER_LABEL_EPISODE_SCALE)
 end sub
-
-' Under the Up Next badge and over the progress line
-function posterLabelSpots() as object
-    size = m.top.cardSize
-    width = 0
-    height = 0
-    if isValid(size) and size.count() > 1
-        width = size[0]
-        height = size[1]
-    end if
-
-    bottom = POSTER_LABEL_EDGE
-    if m.progressTrack.visible then bottom = m.progressTrack.height + POSTER_LABEL_GAP
-    return posterLabelFrame(width, height, posterLabelsBelow(m.nextUpBadge, m.nextUpFill.height, POSTER_LABEL_EDGE), POSTER_LABEL_EDGE, bottom, bottom)
-end function
 
 sub onFocusPartChanged()
     part = m.top.focusPart
-    m.artFocus.blendColor = coreFocusColor()
-    m.detailsFocus.blendColor = m.artFocus.blendColor
     m.artFocus.visible = part = 0
     m.detailsFocus.visible = part = 1
     m.detailsFill.opacity = part = 1 ? 0.96 : 0.88

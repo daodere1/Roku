@@ -1,0 +1,195 @@
+sub main()
+    m.modalFocusCount = 0
+    m.downloadModal = {visible: true, callFunc: sub(name as string)
+        m.focusCalls = (m.focusCalls ?? 0) + 1
+    end sub}
+    m.top = {findNode: function(id as string) as object
+        return m.dialog
+    end function, dialog: m.downloadModal}
+    check(subtitleDownloadOwnsInput(), "subtitle modal blocks player shortcuts")
+    check(m.downloadModal.focusCalls = 1, "subtitle result list receives focus")
+    m.downloadModal.visible = false
+    check(not subtitleDownloadOwnsInput(), "dismissed subtitle modal releases player input")
+    m.global = {sceneManager: {
+        callFunc: sub(name as string, title as string, payload as object)
+            m.payload = payload
+        end sub,
+        observeFieldScoped: sub(field as string, callback as string)
+        end sub
+    }}
+    m.filterOptions = [{label: "All", value: "all"}, {label: "Available", value: "available"}]
+    m.currentFilter = "available"
+    ShowFilterDialog()
+    check(m.global.sceneManager.payload.data[0].description = "All", "filter text is supplied to radio renderer")
+    check(m.global.sceneManager.payload.data[1].selected = true, "filter selection preserved")
+    m.sortOptions = [{label: "Popularity", value: "popularity"}, {label: "Rating", value: "rating"}]
+    m.currentSortBy = "rating"
+    ShowSortDialog()
+    check(m.global.sceneManager.payload.data[0].description = "Popularity", "sort text is supplied to radio renderer")
+    check(m.global.sceneManager.payload.data[1].Name = "rating", "sort return value preserved")
+    m.scene = {}
+    m.restored = 0
+    target = {visible: true, isSameNode: function(other as object) as boolean
+        return other.visible = m.visible
+    end function}
+    m.active = target
+    m.trailerReturnTarget = target
+    onTrailerReturnFocus()
+    check(m.restored = 1, "completion restores previous screen focus")
+    check(m.trailerReturnTarget = invalid, "return target released")
+    m.active = {visible: false, isSameNode: function(other as object) as boolean
+        return false
+    end function}
+    m.trailerReturnTarget = target
+    onTrailerReturnFocus()
+    check(m.restored = 1, "new screen cannot have focus stolen")
+    m.active = target
+    m.scene.dialog = {}
+    m.trailerReturnTarget = target
+    onTrailerReturnFocus()
+    check(m.restored = 1, "open dialog keeps its focus")
+    check(trailerHeaderSize({"Content-Length": "123456"}) = 123456, "case insensitive HTTP size read")
+    check(trailerHeaderSize({}) = 0, "missing HTTP size rejected")
+    check(trailerHeaderSize({"Content-Length": "99999999999999"}) = 0, "HTTP size cannot overflow")
+    check(trailerHeaderSize({"Content-Length": "40000000"}) = 40000000, "oversize retained for cap check")
+    check(not trailerPathExpired({ used: 900, created: 800 }, 1000), "active successful path retained")
+    check(trailerPathExpired({ used: 700, created: 800 }, 1000), "idle paths expire")
+    check(trailerPathExpired({ used: 1000, created: 400 }, 1000), "signed path has hard expiry")
+    check(trailerFileSize(invalid) = -1, "missing temporary file is safe")
+    check(trailerFileSize({}) = -1, "empty Roku file stat is safe")
+    check(trailerFileSize({ size: "unknown" }) = -1, "non-numeric file stat is safe")
+    check(trailerFileSize({ size: 1024 }) = 1024, "downloaded byte count is retained")
+    m.top = {}
+    m.searchButton = focusNode(false)
+    m.requestsButton = focusNode(true)
+    m.categoryRows = focusNode(false)
+    m.categoryRows.rowItemFocused = [0, 0]
+    check(discoveryKey("left", true), "left is handled from Requests")
+    check(m.searchButton.focused, "Search receives focus")
+    m.requestsButton.focused = false
+    check(discoveryKey("right", true), "right is handled from Search")
+    check(m.requestsButton.focused, "Requests receives focus")
+    m.searchButton.focused = false
+    m.requestsButton.focused = false
+    m.categoryRows.focused = true
+    check(discoveryKey("up", true), "up from first row is handled")
+    check(m.searchButton.focused, "up reaches Search")
+
+    m.sortButton = focusNode(true)
+    m.filterButton = focusNode(false)
+    check(browseKey("right", true), "search toolbar right is handled")
+    check(m.filterButton.focused, "Retry receives focus")
+    m.sortButton.focused = false
+    check(browseKey("left", true), "search toolbar left is handled")
+    check(m.sortButton.focused, "Search receives focus from Retry")
+
+    m.closed = false
+    m.hasPlayed = false
+    m.failed = false
+    m.compatibilityFallback = false
+    m.awaitingAnswer = false
+    m.attempts = 0
+    m.closes = 0
+    m.video = { state: "finished", errorCode: -1 }
+    m.failureReason = ""
+    m.startupTimer = {}
+    m.loadingLabel = {}
+    onVideoState()
+    check(m.closes = 0 and m.attempts = 1, "early finished retries instead of dismissing")
+    check(m.compatibilityFallback, "only one fallback admitted")
+    m.awaitingAnswer = false
+    m.video.state = "error"
+    onVideoState()
+    check(m.failed and m.loadingLabel.visible, "failure stays visible")
+    check(m.closes = 0 and m.attempts = 1, "failure does not bounce or loop")
+    m.video.state = "playing"
+    onVideoState()
+    check(m.hasPlayed and not m.loadingLabel.visible, "playing clears status")
+    m.video.state = "finished"
+    onVideoState()
+    check(m.closes = 1, "completed trailer closes normally")
+    m.hasPlayed = false
+    m.candidateIndex = 0
+    m.top.videoIds = ["first", "second", "third", "fourth"]
+    check(tryNextTrailer(), "failed first trailer advances")
+    check(m.currentVideoId = "second" and not m.compatibilityFallback, "alternate starts with normal playback")
+    check(tryNextTrailer(), "second trailer can advance")
+    check(not tryNextTrailer(), "alternate retries capped at three")
+    m.hasPlayed = true
+    m.candidateIndex = 0
+    check(not tryNextTrailer(), "successful playback never switches trailers")
+
+    m.dismissGuard = { TotalMilliseconds: function()
+        return 0
+    end function }
+    m.closes = 0
+    check(trailerKey("OK", true), "opening OK consumed")
+    check(m.closes = 0, "opening OK cannot dismiss")
+    m.dismissGuard.TotalMilliseconds = function()
+        return 800
+    end function
+    trailerKey("OK", true)
+    check(m.closes = 1, "later OK can close")
+    m.dismissGuard.TotalMilliseconds = function()
+        return 0
+    end function
+    trailerKey("back", true)
+    check(m.closes = 2, "Back remains immediate")
+    print "SPESHTV SEERR FOCUS/PLAYER TESTS PASSED"
+end sub
+
+function getActiveScene() as object
+    return m.active
+end function
+
+sub restoreFocusToNode(node as object)
+    m.restored++
+end sub
+
+function focusNode(focused as boolean) as object
+    return { focused: focused, hasFocus: function()
+        return m.focused
+    end function, setFocus: sub(value as boolean)
+        m.focused = value
+    end sub }
+end function
+
+function isValid(value as dynamic) as boolean
+    return value <> invalid
+end function
+
+function isValidAndNotEmpty(value as dynamic) as boolean
+    return value <> invalid
+end function
+
+function FocusNav(node as object) as boolean
+    return true
+end function
+
+function tr(value as string) as string
+    return value
+end function
+
+function toString(value as dynamic) as string
+    if value = invalid then return ""
+    return value.ToStr()
+end function
+
+sub close()
+    m.closes++
+end sub
+
+sub startTrailerAttempt()
+    m.attempts++
+    m.awaitingAnswer = true
+end sub
+
+sub cleanupTrailerFile()
+end sub
+
+sub check(condition as boolean, name as string)
+    if not condition
+        print "FAIL: " + name
+        stop
+    end if
+end sub

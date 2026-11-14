@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- A choice from a list, drawn over the settings panel. One pick saves and closes, or a list of
-     checks saves once Save is chosen, with Select All, Clear and Save over it and Cancel under it. -->
+     checks saves once Save is chosen. Save leads a list of checks, followed by what is ticked. -->
 <component name="SettingsPickerDialog" extends="Group">
   <interface>
     <field id="title" type="string" />
@@ -8,33 +8,23 @@
     <field id="selectedIndex" type="integer" value="0" />
     <field id="multi" type="boolean" value="false" />
     <field id="checked" type="array" />
-    <!-- The ticked options in the order they were ticked, starting from the order they were saved in -->
-    <field id="picks" type="array" />
     <!-- The most ticks a list of checks takes, or 0 for no limit -->
     <field id="max" type="integer" value="0" />
     <field id="style" type="node" />
-    <!-- The part of the screen the dialog dims and centers on: x, y, width and height -->
-    <field id="area" type="array" />
-    <!-- The option in focus, so the live preview can draw it before it's chosen -->
-    <field id="focusedOption" type="integer" value="-1" alwaysNotify="true" />
     <field id="chosen" type="integer" value="-1" alwaysNotify="true" />
     <field id="saved" type="boolean" alwaysNotify="true" />
     <field id="closed" type="boolean" alwaysNotify="true" />
     <function name="open" />
   </interface>
   <children>
-    <!-- Both start hidden, since the fade only takes over a frame after it starts -->
-    <Rectangle id="barrier" color="0x0000008A" opacity="0" />
-    <Group id="dialog" opacity="0">
+    <Rectangle id="barrier" translation="[1219, 0]" width="701" height="1080" color="0x0000008A" />
+    <Group id="dialog">
       <Poster id="dialogFill" />
-      <Poster id="dialogStroke" />
       <Label id="dialogTitle" vertAlign="center" wrap="true" maxLines="2" />
       <Group id="listGroup">
-        <SettingsScroller id="optionList" bottomPadding="0" lastHandsDown="true" />
+        <SettingsScroller id="optionList" bottomPadding="0" />
       </Group>
     </Group>
-    <!-- Holds the remote while a button has the focus, since the buttons are drawn, not focusable -->
-    <Group id="buttonFocus" focusable="true" />
     <Animation id="fadeIn" duration="0.15" easeFunction="linear">
       <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[0.0, 1.0]" fieldToInterp="barrier.opacity" />
       <FloatFieldInterpolator key="[0.0, 1.0]" keyValue="[0.0, 1.0]" fieldToInterp="dialog.opacity" />

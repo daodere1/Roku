@@ -12,7 +12,10 @@
     <function name="getIsShuffled" />
     <function name="getItemByIndex" />
     <function name="getItemType" />
+    <function name="getNextItemTitleAndIcon" />
+    <function name="getItemTitleAndIcon" />
     <function name="getPosition" />
+    <function name="getPreviousItemTitleAndIcon" />
     <function name="getQueue" />
     <function name="getQueueTypes" />
     <function name="getQueueUniqueTypes" />
@@ -28,8 +31,6 @@
     <function name="resetShuffle" />
     <function name="setShuffle" />
     <function name="set" />
-    <function name="markSeasonWindow" />
-    <function name="isSeasonWindow" />
     <function name="getEpisodeToShowAtFinish" />
     <function name="setEpisodeToShowAtFinish" />
     <function name="bypassNextPreferredAudioTrackIndexReset" />

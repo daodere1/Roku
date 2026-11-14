@@ -4,6 +4,7 @@
      selection's clock time rather than by geometry. -->
 <component name="LiveTvGuide" extends="JFScreen">
   <children>
+    <Group id="guideFocus" />
     <Rectangle id="page" width="1920" height="1080" color="#000000FF" />
 
     <Group id="chipRail" translation="[50, 12]" />
@@ -37,6 +38,7 @@
     <Timer id="clockTimer" duration="15" repeat="true" />
     <Timer id="reanchorTimer" repeat="false" />
     <Timer id="numberTimer" duration="1.5" repeat="false" />
+    <Timer id="channelHoldTimer" duration="0.7" repeat="false" />
     <Timer id="toastTimer" duration="3" repeat="false" />
     <Timer id="artworkTimer" duration="0.5" repeat="false" />
     <Animation id="scrollAnimation" duration="0.2" repeat="false" easeFunction="outCubic">

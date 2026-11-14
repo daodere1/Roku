@@ -3,6 +3,7 @@
 namespace settingsMetrics
     const PX_PER_DP = 1.66957
 
+    const PANEL_X = 1219
     const PANEL_WIDTH = 701
     const TITLE_BAR_HEIGHT = 93
 
@@ -15,7 +16,7 @@ namespace settingsMetrics
 
     ' Font sizes in pixels, which the pixel theme draws at 60 percent
     function FontSizes(scale as float) as object
-        sizes = { title: 14, caption: 12, descSmall: 11, bubble: 11, header: 12, appTitle: 22, hint: 12, lead: 14, dialogTitle: 18, option: 15 }
+        sizes = { title: 14, caption: 12, descSmall: 11, bubble: 11, header: 12, appTitle: 22, hint: 12, lead: 14, dialogTitle: 14 }
         result = {}
         for each name in sizes
             result[name] = Int(settingsMetrics.Px(sizes[name]) * scale + 0.5)

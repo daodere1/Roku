@@ -5,5330 +5,7522 @@
 <context>
     <name>default</name>
     <message>
+        <source>+{0}</source>
+        <extracomment>The score a quest pays out</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>192.168.1.100:8096 or https://example.com/jellyfin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Achievement Badges</source>
-        <translation>Insígnias de conquistas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Action Buttons</source>
-        <translation>Botões de ação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Activity</source>
         <extracomment>What everyone on the server has unlocked lately</extracomment>
-        <translation>Atividade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Adds a button to the menu for messages sent by your server admin</source>
-        <translation>Adicionar ao menu um botão para as mensagens enviadas pelo administrador do servidor</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All the details on one page.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>And plenty more</source>
-        <translation>E muito mais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Appearance</source>
         <extracomment>The screen for picking an avatar and a title</extracomment>
-        <translation>Aspeto</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artwork first, with cards that open what they name.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Artwork, one play button and the episodes.</source>
-        <translation>Imagem, um botão de reprodução e os episódios.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Avatars</source>
-        <translation>Avatares</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Aya</source>
-        <translation>Aya</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Back</source>
-        <translation>Voltar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Badges</source>
-        <translation>Insígnias</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Badges unlocked</source>
-        <translation>Insígnias desbloqueadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Badges, ranks and quests earned from what you watch</source>
-        <translation>Insígnias, níveis e missões conquistados com o que vês</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Banner</source>
-        <translation>Banner</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Best combo</source>
-        <translation>Melhor combo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Best login streak</source>
-        <translation>Melhor sequência de dias com início de sessão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Best watch streak</source>
-        <translation>Melhor sequência de dias a ver conteúdo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Best: {0} days</source>
+        <extracomment>The longest watch streak the viewer has reached</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bests</source>
         <extracomment>Heading over the viewer&apos;s best figures</extracomment>
-        <translation>Recordes pessoais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bookshelf</source>
-        <translation>Estante</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Buy this?</source>
-        <translation>Comprar este item?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Checking Direct Play capability...</source>
         <extracomment>Shown in the Nouveau details footer while the server is asked how it would play the file</extracomment>
-        <translation>A verificar a capacidade de Reprodução direta...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Chapters</source>
-        <translation>Capítulos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cast</source>
-        <translation>Transmitir</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which buttons appear on the details screen action row and what order they run in. Press OK to show or hide a button, and Left or Right to move it. Play, Resume and Restart always lead the row.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cinematic, with tabs for cast and extras.</source>
-        <translation>Cinematográfico, com separadores para elenco e extras.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Classic</source>
-        <translation>Clássico</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Compact. More rows on screen at once.</source>
-        <translation>Compacto. Mais secções visíveis ao mesmo tempo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Confirm</source>
-        <translation>Confirmar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Connect to Server</source>
-        <translation>Ligar ao servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not buy that.</source>
-        <translation>Não foi possível comprar este item.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not change how the profile looks.</source>
-        <translation>Não foi possível alterar a aparência do perfil.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not load your achievements.</source>
-        <translation>Não foi possível carregar as tuas conquistas.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not use that power-up.</source>
-        <translation>Não foi possível utilizar este bónus.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not reroll those quests.</source>
-        <translation>Não foi possível trocar estas missões.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Countries watched</source>
-        <translation>Países vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Covers one missed day. Only one can be banked.</source>
-        <translation>Protege a tua sequência de dias consecutivos se falhares um dia. Só podes guardar uma proteção.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Crew</source>
-        <translation>Equipa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Custom themes</source>
-        <translation>Temas personalizados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Daily</source>
-        <translation>Diário</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Days signed in</source>
-        <translation>Dias com início de sessão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Days watched</source>
-        <translation>Dias de visualização</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Decades watched</source>
-        <translation>Décadas vistas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Double Credit</source>
-        <translation>Crédito a dobrar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Doubles score for an hour. Using it again restarts the hour.</source>
-        <translation>Duplica os pontos durante uma hora. Voltar a utilizá-lo reinicia o temporizador de uma hora.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Direct Play</source>
         <extracomment>Shown in the Nouveau details footer when the server would hand the file over as it is</extracomment>
-        <translation>Reprodução direta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Details</source>
-        <translation>Detalhes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Default</source>
         <extracomment>Marks a media track the file itself flags as the default one</extracomment>
-        <translation>Predefinição</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Concluído</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Early morning sessions</source>
-        <translation>Sessões de manhã cedo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ends at %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter Configuration</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enter your PIN to restore the full app</source>
-        <translation>Introduz o teu PIN para voltar à aplicação completa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Equipped</source>
         <extracomment>Shown on the avatar or title the profile wears</extracomment>
-        <translation>Equipado</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every section stacked down one page.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Exit Kids Mode</source>
-        <translation>Sair do modo infantil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to load</source>
-        <translation>Falha ao carregar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Favorite</source>
-        <translation>Favorito</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Films watched</source>
-        <translation>Filmes vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Forced</source>
         <extracomment>Marks a subtitle track the file itself flags as forced</extracomment>
-        <translation>Forçadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File Details</source>
-        <translation>Detalhes do ficheiro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File Information</source>
-        <translation>Informações do ficheiro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Gallery</source>
-        <translation>Galeria</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genres watched</source>
-        <translation>Géneros vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Go to Series</source>
-        <translation>Ir para a série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Habits</source>
         <extracomment>Heading over when and how often the viewer watches</extracomment>
-        <translation>Hábitos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hours</source>
-        <translation>Horas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hidden achievement</source>
         <extracomment>Stands in for a secret badge the viewer has not unlocked</extracomment>
-        <translation>Conquista oculta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hours watched</source>
-        <translation>Horas de visualização</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How should a movie or show look when you open it?</source>
-        <translation>Como queres ver um filme ou uma série ao abrir os detalhes?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How should the top of your Home screen look?</source>
-        <translation>Como queres o topo da página inicial?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How should your rows look?</source>
-        <translation>Como queres as secções?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How you compare with other users on this server</source>
-        <translation>A tua posição em relação aos outros utilizadores deste servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Incorrect PIN</source>
-        <translation>PIN incorreto</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Instant Mix</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>It comes straight out of your score bank.</source>
-        <translation>O custo é descontado diretamente do teu saldo de pontos.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Items watched</source>
-        <translation>Itens vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Just now</source>
         <extracomment>Something that happened less than a minute ago</extracomment>
-        <translation>Agora mesmo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Kids Mode</source>
         <extracomment>Strips the app back to what a child needs and locks the way out with a PIN</extracomment>
-        <translation>Modo infantil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Languages watched</source>
-        <translation>Idiomas vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Larger cards with titles underneath.</source>
-        <translation>Cartões maiores com os títulos por baixo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Late night sessions</source>
-        <translation>Sessões de madrugada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Leaderboard</source>
-        <translation>Tabela de classificação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Left Sidebar</source>
-        <translation>Barra lateral esquerda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Libraries visited</source>
-        <translation>Bibliotecas visitadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Library completion</source>
-        <translation>Conclusão da biblioteca</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loadout</source>
-        <translation>Equipamento</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Locked</source>
-        <translation>Bloqueadas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Login attempt failed.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Longest single item</source>
         <extracomment>The longest thing the viewer has watched, in minutes</extracomment>
-        <translation>Item mais longo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>MakD</source>
-        <translation>MakD</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mark all as read</source>
-        <translation>Marcar todas como lidas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mark Watched</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Messages</source>
-        <translation>Mensagens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Minimalist</source>
-        <translation>Minimalista</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Modern</source>
-        <translation>Moderno</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Mês</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moonfin</source>
-        <translation>Moonfin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>More Actions</source>
-        <translation>Mais ações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Most common badge</source>
-        <translation>Insígnia mais comum</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Most episodes in a day</source>
-        <translation>Mais episódios num dia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Most films in a day</source>
-        <translation>Mais filmes num dia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>Seguinte</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No messages from your server yet</source>
-        <translation>Ainda não há mensagens do teu servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nothing for sale right now.</source>
-        <translation>Não há nada à venda de momento.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nothing here yet.</source>
-        <translation>Ainda não há nada aqui.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nothing to suggest for this badge.</source>
-        <translation>Não há sugestões para esta insígnia.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>None held</source>
-        <translation>Nenhum disponível</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nouveau</source>
-        <translation>Nouveau</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Desligado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open this on your phone</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Options</source>
-        <translation>Opções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Other</source>
         <extracomment>Groups badges an admin gave no category</extracomment>
-        <translation>Outro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Owned</source>
         <extracomment>Shown on an avatar or title the profile holds but is not wearing</extracomment>
-        <translation>Adquirido</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pick a look</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>PIN must be exactly 4 digits.</source>
-        <translation>O PIN deve ter exatamente 4 dígitos.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Play</source>
-        <translation>Reproduzir</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please sign in</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Power-ups</source>
         <extracomment>The consumables a viewer holds</extracomment>
-        <translation>Bónus</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Progress</source>
         <extracomment>How far along a badge is</extracomment>
-        <translation>Progresso</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recap</source>
-        <translation>Recapitulação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Filler</source>
         <extracomment>Anime marker pill for an episode that isnt part of the original story</extracomment>
-        <translation>Não canónico</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mixed Canon/Filler</source>
+        <extracomment>Anime marker pill for an episode that is part story and part filler</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Manga Canon</source>
         <extracomment>Anime marker pill for an episode adapted from the manga</extracomment>
-        <translation>Canónico no manga</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Anime Canon</source>
         <extracomment>Anime marker pill for an original anime episode that counts as part of the story</extracomment>
-        <translation>Canónico no anime</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subbed</source>
         <extracomment>Anime marker pill for an item with the original audio and subtitles</extracomment>
-        <translation>Legendado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Dubbed</source>
         <extracomment>Anime marker pill for an item with dubbed audio</extracomment>
-        <translation>Dobrado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subbed/Dubbed</source>
         <extracomment>Anime marker pill for an item with both the original audio and a dub</extracomment>
-        <translation>Legendado/dobrado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rewatches</source>
-        <translation>Visualizações repetidas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Running now</source>
         <extracomment>Shown on a power-up that is already working</extracomment>
-        <translation>Ativo agora</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Quests</source>
-        <translation>Missões</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recommendations</source>
-        <translation>Recomendações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reroll daily quests</source>
-        <translation>Trocar missões diárias</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reroll these quests?</source>
-        <translation>Trocar estas missões?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reroll weekly quests</source>
-        <translation>Trocar missões semanais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation>Repor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Score bank</source>
-        <translation>Saldo de pontos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Score earned</source>
-        <translation>Pontuação obtida</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Score to spend and the boosts you hold</source>
-        <translation>Pontos disponíveis para gastar e bónus que tens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Restart</source>
-        <translation>Reiniciar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Resume</source>
-        <translation>Retomar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Retry</source>
-        <translation>Tentar novamente</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run Setup Again</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Guardar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Score</source>
-        <translation>Pontuação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Search</source>
-        <translation>Pesquisar</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Season {0}</source>
+        <extracomment>Labels a season on the Nouveau season selector, where {0} is the season number</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seerr requests</source>
-        <translation>Pedidos pelo Seerr</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Series finished</source>
-        <translation>Séries terminadas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server not found, is it online?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show messages button</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shuffle</source>
-        <translation>Reprodução aleatória</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sign In</source>
-        <translation>Iniciar sessão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Simplify the app and lock the way out with a PIN</source>
-        <translation>Simplificar a aplicação e exigir um PIN para sair deste modo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size: {0}  •  Format: {1}</source>
+        <extracomment>File size and container in the Nouveau details footer</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Similar</source>
-        <translation>Semelhantes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Skip setup</source>
-        <translation>Saltar configuração</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Specials</source>
         <extracomment>Labels season zero, where a server keeps specials</extracomment>
-        <translation>Especiais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spotlight</source>
-        <translation>Spotlight</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Stats</source>
         <extracomment>Records and figures from what the viewer has watched</extracomment>
-        <translation>Estatísticas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Streak</source>
-        <translation>Sequência</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Streak Freeze</source>
-        <translation>Proteção de sequência</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Submit</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle</source>
-        <translation>Legenda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitles</source>
-        <translation>Legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The avatar and title on your profile</source>
-        <translation>O avatar e o título do teu perfil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Titles</source>
         <extracomment>Names a profile can wear in place of its rank</extracomment>
-        <translation>Títulos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Your records and how the server is doing</source>
-        <translation>Os teus recordes e o desempenho do servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>When you watch</source>
         <extracomment>Heading over a chart of the hours the viewer watches in</extracomment>
-        <translation>Quando vês conteúdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Weekend sessions</source>
-        <translation>Sessões ao fim de semana</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Variety</source>
         <extracomment>Heading over how widely the viewer watches</extracomment>
-        <translation>Variedade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Users</source>
         <extracomment>How many people this server has</extracomment>
-        <translation>Utilizadores</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This server</source>
         <extracomment>Heading over the whole server&apos;s figures</extracomment>
-        <translation>Este servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Suggested items to watch</source>
-        <translation>Sugestões de conteúdo para ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The next thing you finish counts twice towards badges.</source>
-        <translation>O próximo conteúdo que terminares conta a dobrar para as insígnias.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Swap this set for a different one</source>
-        <translation>Trocar este conjunto por outro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>There is more waiting in Settings</source>
-        <translation>Há mais para descobrir em Definições</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top actors</source>
-        <translation>Atores mais vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top Bar</source>
-        <translation>Barra superior</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top directors</source>
-        <translation>Realizadores mais vistos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top rank reached</source>
-        <translation>Nível mais alto atingido</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Trailer</source>
-        <translation>Trailer</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unknown Codec</source>
-        <translation>Codec desconhecido</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlocked {0}</source>
+        <extracomment>The date a badge was earned</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unlocked</source>
-        <translation>Desbloqueadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unwatched</source>
-        <translation>Não visto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Up Next</source>
         <extracomment>Marks the episode the viewer is up to on a Nouveau episode card</extracomment>
-        <translation>A seguir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Use this power-up?</source>
-        <translation>Utilizar este bónus?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Used this week, comes back Monday UTC</source>
         <extracomment>Shown once the week&apos;s quest reroll is spent</extracomment>
-        <translation>Utilizado esta semana; volta a estar disponível na segunda-feira, em UTC</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Used today, comes back at midnight UTC</source>
         <extracomment>Shown once the day&apos;s quest reroll is spent</extracomment>
-        <translation>Utilizado hoje; volta a estar disponível à meia-noite UTC</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Walk through the first run questions again: navigation, media bar, rows, details, and theme.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Watched</source>
-        <translation>Visto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>XP Boost</source>
-        <translation>Bónus de XP</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You get one daily and one weekly reroll, and this spends it.</source>
-        <translation>Podes trocar as missões diárias uma vez por dia e as semanais uma vez por semana. Esta ação utiliza a troca correspondente.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>It&apos;s spent as soon as you confirm.</source>
-        <translation>É consumido assim que confirmares.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation>Definições</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shop</source>
-        <translation>Loja</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spend score on more boosts</source>
-        <translation>Gastar pontos em mais bónus</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change Server</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sign Out</source>
-        <translation>Terminar sessão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add User</source>
-        <translation>Adicionar utilizador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Profile</source>
-        <translation>Perfil</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Credentials?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Saved</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>My Media</source>
-        <translation>O meu conteúdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Continue Watching</source>
-        <translation>Continuar a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Next Up</source>
-        <translation>A seguir</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recently Added in</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recently Released</source>
-        <translation>Lançados recentemente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>On Now</source>
-        <translation>Em emissão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Home</source>
-        <translation>Página inicial</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a username</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a password</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nome</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Descending</source>
-        <translation>Decrescente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ascending</source>
-        <translation>Crescente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Password</source>
-        <translation>Palavra-passe</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Nome de utilizador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genres</source>
-        <translation>Géneros</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Director</source>
-        <translation>Realizador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video</source>
-        <translation>Vídeo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio</source>
-        <translation>Áudio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Server</source>
-        <translation>Servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Extras</source>
-        <translation>Extras</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Episodes</source>
-        <translation>Episódios</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Retrieving Content</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Dialog title when unable to load Content from Server</extracomment>
+    </message>
+    <message>
+        <source>Error During Playback</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Dialog title when error occurs during playback</extracomment>
+    </message>
+    <message>
+        <source>Unable to get playback information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error retrieving the data for this item from the server.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Dialog detail when unable to load Content from Server</extracomment>
+    </message>
+    <message>
+        <source>An error was encountered while playing this item.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Dialog detail when error occurs during playback</extracomment>
+    </message>
+    <message>
+        <source>Loading Channel Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading Channel Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to load Channel Data from the server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <comment>Message displayed in Item Grid when no item to display. %1 is container type (e.g. Boxset, Collection, Folder, etc)</comment>
+        <source>NO_ITEMS</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <comment>Name or Title field of media item</comment>
         <source>TITLE</source>
-        <translation>Nome</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IMDB_RATING</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Community Rating</source>
-        <translation>Classificação da comunidade</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRITIC_RATING</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>DATE_ADDED</source>
-        <translation>Data de adição</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DATE_PLAYED</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OFFICIAL_RATING</source>
-        <translation>Classificação etária</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date Show Added</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Date Episode Added</source>
-        <translation>Data de adição do episódio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>PLAY_COUNT</source>
-        <translation>Contagem de reproduções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>RELEASE_DATE</source>
-        <translation>Data de lançamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>RUNTIME</source>
-        <translation>Duração</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <comment>Title of Tab for switching &quot;views&quot; when looking at a library</comment>
         <source>TAB_VIEW</source>
-        <translation>Visualizar</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <comment>Title of Tab for options to sort library content</comment>
+        <source>TAB_SORT</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <comment>Title of Tab for options to filter library content</comment>
         <source>TAB_FILTER</source>
-        <translation>Filtro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Born</source>
-        <translation>Nascimento</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Died</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Age</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cast &amp; Crew</source>
-        <translation>Elenco e equipa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>More Like This</source>
-        <translation>Títulos semelhantes</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press &apos;OK&apos; to Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional Parts</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Additional parts of a video</extracomment>
     </message>
     <message>
         <source>Movies</source>
-        <translation>Filmes</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Movies (Presentation)</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Movie library view option</extracomment>
+    </message>
+    <message>
+        <source>Movies (Grid)</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Movie library view option</extracomment>
     </message>
     <message>
         <source>TV Shows</source>
-        <translation>Séries</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>today</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Current day</extracomment>
     </message>
     <message>
         <source>Week</source>
-        <translation>Semana</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Weekly</source>
-        <translation>Semanal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>What the server has unlocked lately</source>
-        <translation>Conquistas desbloqueadas recentemente no servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>What you watched recently</source>
-        <translation>O que viste recentemente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Where should navigation go?</source>
-        <translation>Onde preferes a navegação?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Year</source>
-        <translation>Ano</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>yesterday</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Previous day</extracomment>
+    </message>
+    <message>
+        <source>tomorrow</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Next day</extracomment>
     </message>
     <message>
         <source>Sunday</source>
-        <translation>Domingo</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
         <source>Monday</source>
-        <translation>Segunda-feira</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
         <source>Tuesday</source>
-        <translation>Terça-feira</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
         <source>Wednesday</source>
-        <translation>Quarta-feira</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
         <source>Thursday</source>
-        <translation>Quinta-feira</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
         <source>Friday</source>
-        <translation>Sexta-feira</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
         <source>Saturday</source>
-        <translation>Sábado</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Day of Week</extracomment>
     </message>
     <message>
+        <source>Started at</source>
+        <translation type="unfinished"></translation>
+        <extracomment>(Past Tense) For defining time when a program started today (e.g. Started at 08:00) </extracomment>
+    </message>
+    <message>
         <source>Started</source>
-        <translation>Iniciado</translation>
+        <translation type="unfinished"></translation>
         <extracomment>(Past Tense) For defining a day and time when a program started (e.g. Started Wednesday, 08:00) </extracomment>
     </message>
     <message>
+        <source>Starts at</source>
+        <translation type="unfinished"></translation>
+        <extracomment>(Future Tense) For defining time when a program will start today (e.g. Starts at 08:00) </extracomment>
+    </message>
+    <message>
+        <source>Starts</source>
+        <translation type="unfinished"></translation>
+        <extracomment>(Future Tense) For defining a day and time when a program will start (e.g. Starts Wednesday, 08:00) </extracomment>
+    </message>
+    <message>
+        <source>Ended at</source>
+        <translation type="unfinished"></translation>
+        <extracomment>(Past Tense) For defining time when a program will ended (e.g. Ended at 08:00) </extracomment>
+    </message>
+    <message>
         <source>Ends at</source>
-        <translation>Termina às</translation>
+        <translation type="unfinished"></translation>
         <extracomment>(Past Tense) For defining a day and time when a program ended (e.g. Ended Wednesday, 08:00) </extracomment>
     </message>
     <message>
         <source>Live</source>
-        <translation>Em direto</translation>
+        <translation type="unfinished"></translation>
         <extracomment>If TV Show is being broadcast live (not pre-recorded)</extracomment>
     </message>
     <message>
         <source>Repeat</source>
-        <translation>Repetir</translation>
+        <translation type="unfinished"></translation>
         <extracomment>If TV Shows has previously been broadcasted</extracomment>
     </message>
     <message>
         <source>Channels</source>
-        <translation>Canais</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Menu option for showing Live TV Channel List</extracomment>
     </message>
     <message>
+        <source>TV Guide</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Menu option for showing Live TV Guide / Schedule</extracomment>
+    </message>
+    <message>
+        <source>View Channel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Record</source>
-        <translation>Gravar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Record Series</source>
-        <translation>Gravar série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel Recording</source>
-        <translation>Cancelar gravação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel Series Recording</source>
-        <translation>Cancelar gravação de série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Fechar</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting to Server</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Message to display to user while client is attempting to connect to the server</extracomment>
+    </message>
+    <message>
+        <source>Not found</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title of message box when the requested content is not found on the server</extracomment>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Desconhecido</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Title for a cast member for which we have no information for</extracomment>
     </message>
     <message>
+        <source>The requested content does not exist on the server</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Content of message box when the requested content is not found on the server</extracomment>
+    </message>
+    <message>
+        <source>Enter the server name or IP address</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title of KeyboardDialog when manually entering a server URL</extracomment>
+    </message>
+    <message>
+        <source>Pick a Jellyfin server from the local network</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Instructions on initial app launch when the user is asked to pick a server from a list</extracomment>
+    </message>
+    <message>
+        <source>...or enter server URL manually:</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Instructions on initial app launch when the user is asked to manually enter a server URL</extracomment>
+    </message>
+    <message>
+        <source>Error Getting Playback Information</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Dialog Title: Received error from server when trying to get information about the selected item for playback</extracomment>
+    </message>
+    <message>
+        <source>An error was encountered while playing this item. Server did not provide required transcoding data.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Content of message box when trying to play an item which requires transcoding, and the server did not provide transcode url</extracomment>
+    </message>
+    <message>
         <source>Version</source>
-        <translation>Versão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playback</source>
-        <translation>Reprodução</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Title for Playback section in user setting screen.</extracomment>
     </message>
     <message>
+        <source>Codec Support</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for settings group related to codec support</extracomment>
+    </message>
+    <message>
+        <source>Enable or disable Direct Play for optional codecs</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for settings group related to codec support</extracomment>
+    </message>
+    <message>
+        <source>MPEG-2</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Name of codec used in settings menu</extracomment>
+    </message>
+    <message>
+        <source>Support Direct Play of MPEG-2 content (e.g., Live TV). This will prevent transcoding of MPEG-2 content, but uses significantly more bandwidth.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>MPEG-4</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Name of codec used in settings menu</extracomment>
+    </message>
+    <message>
+        <source>Support Direct Play of MPEG-4 content. This may need to be disabled for playback of DIVX encoded video files.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
         <source>Enabled</source>
-        <translation>Ativado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation>Desativado</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Interface</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title for User Interface section in user setting screen.</extracomment>
+    </message>
+    <message>
+        <source>Media Grid</source>
+        <translation type="unfinished"></translation>
+        <extracomment>UI -&gt; Media Grid section in user setting screen.</extracomment>
+    </message>
+    <message>
+        <source>Media Grid options.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Item Count</source>
-        <translation>Contagem de itens</translation>
+        <translation type="unfinished"></translation>
         <extracomment>UI -&gt; Media Grid -&gt; Item Count in user setting screen.</extracomment>
     </message>
     <message>
+        <source>Show item count in the library and index of selected item.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description for option in Setting Screen</extracomment>
+    </message>
+    <message>
+        <source>Set Favorite</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Button Text - When pressed, sets item as Favorite</extracomment>
+    </message>
+    <message>
         <source>Favorited</source>
-        <translation>Favorito</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mark As Favorite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Watched</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Button Text - When pressed, marks item as Warched</extracomment>
+    </message>
+    <message>
+        <source>Resume playing at </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start over from the beginning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Playback Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to series</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Continue Watching Popup Menu - Navigate to the Series Detail Page</extracomment>
+    </message>
+    <message>
+        <source>Go to season</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Continue Watching Popup Menu - Navigate to the Season Page</extracomment>
+    </message>
+    <message>
+        <source>Go to episode</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Continue Watching Popup Menu - Navigate to the Episode Detail Page</extracomment>
+    </message>
+    <message>
+        <source>Use voice remote to search</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Help text in search voice text box</extracomment>
+    </message>
+    <message>
+        <source>Search now</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Help text in search Box</extracomment>
+    </message>
+    <message>
+        <source>You can search for Titles, People, Live TV Channels and more</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Help text in search results</extracomment>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Item position and count. %1 = current item. %2 = total number of items</extracomment>
     </message>
     <message>
         <source>Quick Connect</source>
-        <translation>Ligação rápida</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Here is your Quick Connect code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Dialog will close automatically)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error authenticating via Quick Connect.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Networks</source>
-        <translation>Canais e plataformas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Studios</source>
-        <translation>Estúdios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shows</source>
-        <translation>Séries</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cinema Mode</source>
-        <translation>Modo cinema</translation>
+        <source>Return to Top</source>
+        <translation type="unfinished"></translation>
+        <extracomment>UI -&gt; Media Grid -&gt; Item Title in user setting screen.</extracomment>
+    </message>
+    <message>
+        <source>Use the replay button to slowly animate to the first item in the folder. (If disabled, the folder will reset to the first item immediately).</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description for option in Setting Screen</extracomment>
+    </message>
+    <message>
+        <source>Hide Taglines</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Option Title in user setting screen</extracomment>
+    </message>
+    <message>
+        <source>Hides tagline text on details pages.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options for TV Shows.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description for TV Shows user settings.</extracomment>
+    </message>
+    <message>
+        <source>Blur Unwatched Episodes</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Option Title in user setting screen</extracomment>
+    </message>
+    <message>
+        <source>Skip Details for Single Seasons</source>
+        <translation type="unfinished"></translation>
         <extracomment>Settings Menu - Title for option</extracomment>
     </message>
     <message>
+        <source>Go directly to the episode list if a TV series has only one season.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Blur images of unwatched episodes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Design Elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options that alter the design of Jellyfin.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description for Design Elements user settings.</extracomment>
+    </message>
+    <message>
+        <source>Use Splashscreen as Home Background</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Option Title in user setting screen</extracomment>
+    </message>
+    <message>
+        <source>Use generated splashscreen image as Jellyfin&apos;s home background. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description for option in Setting Screen</extracomment>
+    </message>
+    <message>
+        <source>Cinema Mode</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Bring the theater experience straight to your living room with the ability to play custom intros before the main feature.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Hide Clock</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Option Title in user setting screen</extracomment>
+    </message>
+    <message>
+        <source>Hide all clocks in Jellyfin. Jellyfin will need to be closed and reopened for changes to take effect.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Next episode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play Trailer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H.264</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Name of codec used in settings menu</extracomment>
+    </message>
+    <message>
+        <source>Attempt Direct Play for H.264 media with unsupported profile levels before falling back to transcoding if it fails.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>HEVC</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Name of codec used in settings menu</extracomment>
+    </message>
+    <message>
+        <source>Attempt Direct Play for HEVC media with unsupported profile levels before falling back to transcoding if it fails.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Settings relating to playback and supported codec and media types.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings relating to how the application looks.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max Days Next Up</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Option Title in user setting screen</extracomment>
+    </message>
+    <message>
+        <source>Set the maximum amount of days a show should stay in the &apos;Next Up&apos; list without watching it. Maximum value is 1000 days.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
         <source>Playback Information</source>
-        <translation>Informações de reprodução</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transcoding Information</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video Codec</source>
-        <translation>Codec de vídeo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio Codec</source>
-        <translation>Codec de áudio</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>direct</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Bitrate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio Channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Codec Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Video profile level</extracomment>
+    </message>
+    <message>
+        <source>Bit Rate</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Video streaming bit rate</extracomment>
     </message>
     <message>
         <source>Container</source>
-        <translation>Contentor</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Video streaming container</extracomment>
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamanho</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Video size</extracomment>
     </message>
     <message>
+        <source>Video range type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pixel format</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Video pixel format</extracomment>
+    </message>
+    <message>
+        <source>WxH</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Video width x height</extracomment>
+    </message>
+    <message>
+        <source>Unable to find any albums or songs belonging to this artist</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Popup message when we find no audio data for an artist</extracomment>
+    </message>
+    <message>
+        <source>Custom Subtitles</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Name of a setting - custom subtitles that support CJK fonts</extracomment>
+    </message>
+    <message>
+        <source>Replace Roku&apos;s default subtitle functions with custom functions that support CJK fonts. Fallback fonts must be configured and enabled on the server for CJK rendering to work.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description of a setting - custom subtitles that support CJK fonts</extracomment>
+    </message>
+    <message>
+        <source>Text Subtitles Only</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Name of a setting - should we hide subtitles that might transcode</extracomment>
+    </message>
+    <message>
+        <source>Only display text subtitles to minimize transcoding.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Description of a setting - should we hide subtitles that might transcode</extracomment>
+    </message>
+    <message>
+        <source>all</source>
+        <translation type="unfinished"></translation>
+        <extracomment>all will reset the searchTerm so all data will be availible</extracomment>
+    </message>
+    <message>
         <source>All</source>
-        <translation>Todos</translation>
+        <translation type="unfinished"></translation>
         <extracomment>All in filter</extracomment>
     </message>
     <message>
+        <source>Slideshow Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slideshow On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slideshow Paused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Favorites)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Favorites</source>
-        <translation>Favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Artists</source>
-        <translation>Artistas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slideshow Resumed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random On</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete Playlist</source>
-        <translation>Eliminar playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Collections</source>
-        <translation>Coleções</translation>
+        <source>MPEG-4 Support</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
     </message>
     <message>
-        <source>Playlists</source>
-        <translation>Playlists</translation>
-    </message>
-    <message>
-        <source>Years</source>
-        <translation>Anos</translation>
+        <source>Parental Ratings</source>
+        <translation type="unfinished"></translation>
         <extracomment>Used in Filter menu</extracomment>
     </message>
     <message>
+        <source>Collections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Playlists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Years</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Used in Filter menu</extracomment>
+    </message>
+    <message>
+        <source>No items found. Try adjusting your selected filters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show What&apos;s New Popup</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Show What&apos;s New popup when Jellyfin is updated to a new version.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Unplayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Played</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resumable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Movie Library Default View</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Default view for Movie Libraries.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Grid View Item Titles</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title of a setting - when should we show the title text of a grid item</extracomment>
+    </message>
+    <message>
+        <source>Select when to show titles in grid view.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Show On Hover</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always Hide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artists (Presentation)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Album Artist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Album Artists (Presentation)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artists (Grid)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Album Artists (Grid)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Songs</source>
-        <translation>Músicas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Album</source>
-        <translation>Álbum</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Albums</source>
-        <translation>Álbuns</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoplay Episode Limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The number of episodes that will play automatically after the selected episode. Requires &apos;Play next episode automatically&apos; server setting to be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disable Community Rating for Episodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide the star and community rating for episodes of a TV show. This is to prevent spoilers of an upcoming good/bad episode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure the maximum playback bitrate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Biographical information for this person is not currently available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable or disable the &apos;Maximum Bitrate&apos; setting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bitrate Limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum Bitrate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the maximum bitrate in Mbps. Set to 0 to use Roku&apos;s specifications. This setting must be enabled to take effect.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Libraries</source>
-        <translation>Bibliotecas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of Library pages</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>General</source>
-        <translation>Geral</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of the Home screen and the program in general.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid View Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings that apply when Grid views are enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of pages in TV Libraries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of pages in Movie Libraries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Presentation</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title of an option - name of presentation view</extracomment>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title of an option - name of grid view</extracomment>
+    </message>
+    <message>
+        <source>Disable Unwatched Episode Count</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>If enabled, the number of unwatched episodes in a series/season will be removed.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Loading trailer</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Dialog title in Main.brs</extracomment>
+    </message>
+    <message>
+        <source>Next Episode Button Time</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Set how many seconds before the end of an episode the Next Episode button should appear. Set to 0 to disable.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Preferred Audio Codec</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title of option</extracomment>
+    </message>
+    <message>
+        <source>Use the selected audio codec for transcodes. If the device or stream does not support it, a fallback codec will be used.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Video Codec Support</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Enable or disable Direct Play support for certain codecs.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Video Profile Level Support</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Attempt Direct Play of potentially unsupported profile levels</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Use system settings</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Option title</extracomment>
+    </message>
+    <message>
+        <source>Direct playing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The source file is entirely compatible with this client and the session is receiving the file without modifications.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Direct play info box text in GetPlaybackInfoTask.brs</extracomment>
+    </message>
+    <message>
+        <source>Maximum Resolution</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title</extracomment>
+    </message>
+    <message>
+        <source>Set the maximum resolution when playing video files on this device.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>Off - Attempt to play all resolutions</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Option title</extracomment>
+    </message>
+    <message>
+        <source>Auto - Use TV resolution</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Option title</extracomment>
     </message>
     <message>
         <source>Mode</source>
-        <translation>Modo</translation>
+        <translation type="unfinished"></translation>
         <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Maximum Audio Channels</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title</extracomment>
+    </message>
+    <message>
+        <source>Configure the maximum audio channels when playing video files on this device.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>Off - Attempt to play all channels</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Option title</extracomment>
+    </message>
+    <message>
+        <source>Configure the maximum resolution when playing video files on this device.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>Apply max resolution to all files or only transcoded files.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description</extracomment>
+    </message>
+    <message>
+        <source>All files</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Only transcoded files</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Compatibility</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Attempt to prevent playback failures.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Disable HEVC</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Disable the HEVC codec on this device. This may improve playback for some devices (ultra).</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
     </message>
     <message>
         <source>Global</source>
-        <translation>Global</translation>
+        <translation type="unfinished"></translation>
         <extracomment>User Setting - Setting title</extracomment>
     </message>
     <message>
-        <source>Intro Segments</source>
-        <translation>Segmentos de introdução</translation>
+        <source>Global settings that affect everyone that uses this Roku device.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Remember Me?</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Remember the currently logged in user and try to log them in again next time you start the Jellyfin app.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Custom Trickplay</source>
+        <translation type="unfinished"></translation>
         <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Display custom trickplay images even if this Roku says it&apos;s displaying its own. This may cause the two images to overlay on top of each other.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Force Transcoding</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Force all playable media to be transcoded.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Media Segment Actions</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Settings relating to how Jellyfin should handle media segments.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Commercial Segments</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>What action should Jellyfin take for commercial segments?</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Intro Segments</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>What action should Jellyfin take for intro segments?</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
     </message>
     <message>
         <source>Outro Segments</source>
-        <translation>Segmentos de créditos finais</translation>
+        <translation type="unfinished"></translation>
         <extracomment>User Setting - Title for option</extracomment>
     </message>
     <message>
+        <source>What action should Jellyfin take for outro segments?</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Preview Segments</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>What action should Jellyfin take for preview segments?</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Recap Segments</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>What action should Jellyfin take for recap segments?</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Ask To Skip</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Options</extracomment>
+    </message>
+    <message>
         <source>Skip</source>
-        <translation>Saltar</translation>
+        <translation type="unfinished"></translation>
         <extracomment>User Setting - Options</extracomment>
     </message>
     <message>
         <source>None</source>
-        <translation>Nenhuma</translation>
+        <translation type="unfinished"></translation>
         <extracomment>User Setting - Options</extracomment>
     </message>
     <message>
+        <source>No Chapter Data Found</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Message shown in OSD when no chapter data is returned by the API</extracomment>
+    </message>
+    <message>
+        <source>Use Web Client&apos;s Home Section Arrangement</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Make the arrangement of the Roku home view sections match the web client&apos;s home screen. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Welcome to version</source>
+        <translation type="unfinished"></translation>
+        <extracomment>WhatsNewDialog title - Welcome to version 2.0.0</extracomment>
+    </message>
+    <message>
+        <source>To view a complete list of changes visit</source>
+        <translation type="unfinished"></translation>
+        <extracomment>WhatsNewDialog body text preceding the changelog URL</extracomment>
+    </message>
+    <message>
         <source>Random</source>
-        <translation>Aleatório</translation>
+        <translation type="unfinished"></translation>
         <extracomment>General use word when we want to randomize data</extracomment>
     </message>
     <message>
+        <source>... (Press * to read more)</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Ellipsis Text for when text overflows its container</extracomment>
+    </message>
+    <message>
+        <source>Item Detail Screen</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User interface Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of the item detail screen.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User interface Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Community and Critical Ratings</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Ratings for how good a movie is</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Overview Content</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>A quick overview of the item selected - typically a short plot outline.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Settings relating to the appearance of Library pages.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Libraries Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Forget Filters</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Libraries Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Forget applied library filters when Jellyfin is closed.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Libraries Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>View All Next Up</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Title for viewing all episodes available in the Next Up section</extracomment>
+    </message>
+    <message>
+        <source>Rewatching Next Up</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>Show already watched episodes in &apos;Next Up&apos; sections.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Episode Images Next Up</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting title</extracomment>
+    </message>
+    <message>
+        <source>What type of images to use for Episodes shown in the &apos;Next Up&apos; and &apos;Continue Watching&apos; sections.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Use Web Client Setting</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting option title</extracomment>
+    </message>
+    <message>
+        <source>Use Episode Image</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting option title</extracomment>
+    </message>
+    <message>
+        <source>Use Show Image</source>
+        <translation type="unfinished"></translation>
+        <extracomment>User Setting - Setting option title</extracomment>
+    </message>
+    <message>
+        <source>The selected Jellyfin server uses version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>which is not supported by this app. Please update the server to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>or newer to use this app or install and use the Jellyfin Legacy app from Roku&apos;s Streaming Store</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return to server select screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CH</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Abbreviation for Channel</extracomment>
+    </message>
+    <message>
+        <source>Use Fallback Font Across App</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changes the font used in the app to the server&apos;s configured fallback font.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Highlighted Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Folders</source>
-        <translation>Pastas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go To Artist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Results Found</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Format</source>
-        <translation>Formato</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>downloads</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Series</source>
-        <translation>Séries</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play / Resume from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play or Resume from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What&apos;s New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search is unavailable because the API does not support searching inside boxsets.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search is unavailable because the API does not support searching inside My List.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search this library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mark As Played</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add To Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove From My List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add To My List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press OK to type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Library Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Watched Checkmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Subtitles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation>Faixas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Released</source>
-        <translation>Lançado</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mins</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Continue Listening</source>
-        <translation>Continuar a ouvir</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In My List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AppearsOn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Public Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage Hidden Users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to forget this user?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete this subtitle?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>Sim</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No, Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual Login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unhide Users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>as</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Used in ExtrasRowList.bs to show the role of a person in a movie or TV show</extracomment>
     </message>
     <message>
         <source>Seasons</source>
-        <translation>Temporadas</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Used in TVSeasonRow.bs to show the title of a row containing seasons</extracomment>
     </message>
     <message>
         <source>Season</source>
-        <translation>Temporada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Episode</source>
-        <translation>Episódio</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section 8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 1. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 2. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 3. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 4. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 5. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 6. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 7. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select what to show in section 8. This setting has no effect if \&quot;Use Web Client&apos;s Home Section Arrangement\&quot; is enabled. Jellyfin will need to be closed and reopened for change to take effect.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Live TV</source>
-        <translation>TV em direto</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>My List</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recently Added Media</source>
-        <translation>Conteúdo adicionado recentemente</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customize the home screen sections</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Home Rows</source>
-        <translation>Secções da página inicial</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change the colors of elements in the app.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Screens</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors used across multiple screens.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The base background color. Background images are layered on top of this color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The color of the remote control&apos;s cursor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The primary text color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Secondary Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The secondary text color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Watched Check Mark &amp; Unplayed Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors specific to the watched check mark &amp; unplayed count box.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The background color of the check mark &amp; unplayed count shown in the top right corner of items.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unplayed Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The color of the unplayed count number.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Watched Check Mark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The color of the watched check mark.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialog Popups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors specific to dialog popups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The background color for all dialog popups.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bold Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color for bold text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horizontal Border line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The color of the thin border line under the header text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color for the item the cursor is over.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color for title and items the cursor is not over.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What&apos;s New Author</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color for the author in the What&apos;s New popup.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Home Screen</source>
-        <translation>Ecrã inicial</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors specific to the home screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>My List Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The color of the star icon in the My List library item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row Headers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color of the headers of each row.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row Item Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The background color of items. Only seen if no image loads on top of it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row Item Progress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The color of the watched portion of the progress bar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row Item Progress Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The background color of the progress bar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row Item Subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color of the second line displayed under items.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row Item Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color of the first line displayed under items.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username In Header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text color of the user&apos;s name in the header.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shuffle Play Collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Force transcode option automatically enabled due to video rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start Episode List From First Unwatched Episode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When opening a season&apos;s list of episodes, automatically scroll down and start the cursor on the first unwatched episode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add To Favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove From Favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play Normally</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Force Transcode (Allow Remux)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Force Transcode (Remux Disabled)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No channels found matching your search criteria</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are You Still Watching Popup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>How many minutes of inactivity before playback is stopped between items and a popup is shown to continue? Set to 0 to disable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are You Still Watching?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes, continue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No, stop playback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Playback will automatically stop in 1 minute if no buttons are pressed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Burn in subtitle when transcoding</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Burn in all subtitles when transcoding is triggered. This ensures subtitle synchronization after transcoding at the cost of reduced transcoding speed.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Settings Menu - Description for option</extracomment>
+    </message>
+    <message>
+        <source>Support Moonfin Development</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Donation Dialog - Title</extracomment>
+    </message>
+    <message>
+        <source>Moonfin is free and open source. If you find it useful, please consider supporting continued development. Scan the QR code below to donate:</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Donation Dialog - Message</extracomment>
+    </message>
+    <message>
+        <source>Thank you for your support!</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Donation Dialog - Thanks message</extracomment>
+    </message>
+    <message>
+        <source>Update Available</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Update Dialog - Title</extracomment>
+    </message>
+    <message>
+        <source>is now available</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Update Dialog - Version availability text</extracomment>
     </message>
     <message>
         <source>Current</source>
-        <translation>Atual</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Update Dialog - Current version label</extracomment>
+    </message>
+    <message>
+        <source>A new version is available. Please visit the GitHub releases page to download.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Update Dialog - Default message</extracomment>
+    </message>
+    <message>
+        <source>Library Image Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video Library Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose between the Classic, Modern and Docked library headers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Docked</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show</source>
         <extracomment>A library header control that opens the played status filter</extracomment>
-        <translation>Mostrar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display</source>
         <extracomment>A library header control that opens how the library draws its cards</extracomment>
-        <translation>Visualização</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Music Library Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classic is the original artist and album grid. Quick Access starts with a grid of your recent albums and playlists. Immersive leads with the album you&apos;re listening to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quick Access</source>
+        <extracomment>Music library style option: a grid of recent albums and playlists over the rows</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Immersive</source>
+        <extracomment>Music library style option: a full-width album hero over the rows</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Jump Back In</source>
+        <extracomment>Heading over the albums and playlists the user played recently in a music library</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From This Album</source>
+        <extracomment>Heading over the track list of the album shown in the music library hero</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search Music</source>
+        <extracomment>Label for the search control in a music library</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latest {0}</source>
+        <extracomment>Heading over the newest albums in a music library, {0} is the library&apos;s name</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Last Played</source>
         <extracomment>Heading over the songs played last in a music library</extracomment>
-        <translation>Última reprodução</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Browse By Genre</source>
         <extracomment>Heading over the genre tiles in a music library</extracomment>
-        <translation>Navegar por género</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>See All</source>
         <extracomment>Opens the whole list behind a music library row</extracomment>
-        <translation>Ver tudo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Release Year</source>
         <extracomment>A music library sort</extracomment>
-        <translation>Ano de lançamento</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the poster image orientation for the library views.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default (Varies By Media Type)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Landscape (Wide)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Portrait (Vertical)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip Commercial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip Recap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip Outro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skip Intro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go To Genre</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play Instant Mix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Next Episode Details After Finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If auto play next episode is disabled, display the next episode&apos;s detail screen after an episode finishes playing. If no next up episode is found, return to the just-played episode&apos;s page.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Favorites Row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings relating to the favorites row on the home screen.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort By Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field to sort the row by.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date Created</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Is Unplayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort Order for the row - Ascending,Descending.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Episodes In Two Columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Screen Settings</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Collections Row Sorting</source>
-        <translation>Ordenação das secções de coleções</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose sorting for Collections home row</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genres Row Sorting</source>
-        <translation>Ordenação das secções de géneros</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose sorting for Genres home row</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genres Row Items</source>
-        <translation>Itens das secções de géneros</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which media types are included in Genres home row</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Movies &amp; TV Shows</source>
-        <translation>Filmes e séries de TV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Movies Only</source>
-        <translation>Apenas filmes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>TV Shows Only</source>
-        <translation>Apenas séries de TV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Date Added</source>
-        <translation>Data de adição</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playlist Order</source>
         <extracomment>A sort choice for a collection row: the order its titles were arranged in</extracomment>
-        <translation>Ordem da playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You&apos;re set. Here&apos;s what else is in here.</source>
-        <translation>Está tudo pronto. Descobre o que mais está disponível.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Home View</source>
-        <translation>Visualização inicial</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Library View</source>
-        <translation>Visualização da biblioteca</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>View style</source>
-        <translation>Estilo de visualização</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Grid direction</source>
-        <translation>Direção da grelha</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation>Vertical</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation>Horizontal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No favorites yet</source>
-        <translation>Ainda não há favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No favorites found</source>
-        <translation>Nenhum favorito encontrado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>People</source>
-        <translation>Pessoas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Music Videos</source>
-        <translation>Vídeos musicais</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} badges earned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} days watched</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} pts</source>
+        <extracomment>What a badge is worth</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} ×{1}</source>
+        <extracomment>A pack of power-ups in the shop, such as XP Boost x3</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} held</source>
+        <extracomment>How many of a power-up the viewer holds</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} min</source>
+        <extracomment>How long something runs</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 held</source>
-        <translation>1 disponível</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} libraries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} completed</source>
+        <extracomment>How many quests are finished</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} day streak</source>
+        <extracomment>How many days running the viewer has watched something</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} of {1} badges</source>
+        <extracomment>How many badges of a set are unlocked</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} points to {1}</source>
+        <extracomment>How far the viewer is from the next rank tier, where {1} is the tier name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} points</source>
+        <extracomment>The score a rank tier was reached with</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Earned at {0} lifetime score</source>
+        <extracomment>What an avatar or title costs in score earned over time, rather than in score spent</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} favorites sorted by {1}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0}m</source>
+        <extracomment>A wait in whole minutes</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0}s</source>
+        <extracomment>A wait in seconds</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many attempts. Try again in {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} unlocked {1}</source>
+        <extracomment>One line of the activity feed, where {0} is a user and {1} is a badge</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0}m ago</source>
+        <extracomment>Minutes since something happened</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0}h ago</source>
+        <extracomment>Hours since something happened</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0}d ago</source>
+        <extracomment>Days since something happened</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Today</source>
         <extracomment>When the next episode airs</extracomment>
-        <translation>Hoje</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Tomorrow</source>
         <extracomment>When the next episode airs</extracomment>
-        <translation>Amanhã</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Jan</source>
         <extracomment>Short month name</extracomment>
-        <translation>Jan</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Feb</source>
         <extracomment>Short month name</extracomment>
-        <translation>Fev</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mar</source>
         <extracomment>Short month name</extracomment>
-        <translation>Mar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Apr</source>
         <extracomment>Short month name</extracomment>
-        <translation>Abr</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>May</source>
         <extracomment>Month name, used both in short dates and in full ones, so it needs a form that works for both</extracomment>
-        <translation>Mai</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Jun</source>
         <extracomment>Short month name</extracomment>
-        <translation>Jun</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Jul</source>
         <extracomment>Short month name</extracomment>
-        <translation>Jul</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Aug</source>
         <extracomment>Short month name</extracomment>
-        <translation>Ago</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sep</source>
         <extracomment>Short month name</extracomment>
-        <translation>Set</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Oct</source>
         <extracomment>Short month name</extracomment>
-        <translation>Out</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nov</source>
         <extracomment>Short month name</extracomment>
-        <translation>Nov</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Dec</source>
         <extracomment>Short month name</extracomment>
-        <translation>Dez</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Offset</source>
         <extracomment>Subtitle track picker row that opens the subtitle offset panel</extracomment>
-        <translation>Deslocamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Offset</source>
         <extracomment>Title of the panel that moves subtitles earlier or later</extracomment>
-        <translation>Deslocamento da legenda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Press BACK to close</source>
         <extracomment>Button that closes the subtitle offset panel</extracomment>
-        <translation>Prime VOLTAR para fechar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Continue Watching &amp; Next Up</source>
         <extracomment>Home row that merges Continue Watching with Next Up</extracomment>
-        <translation>Continuar a ver e A seguir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Chapters and Extras</source>
         <extracomment>Spotlight card that holds a title&apos;s chapters and extras</extracomment>
-        <translation>Capítulos e extras</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 chapter</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 capítulo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} chapters</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} capítulos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 extra</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 extra</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} extras</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} extras</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 review</source>
+        <extracomment>Count on a Spotlight card</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{count} reviews</source>
+        <extracomment>Count on a Spotlight card</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reviews</source>
+        <extracomment>TMDB reviews of a title on the details screen, and the switch for them in the details screen sections settings</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{rating} / 10</source>
         <extracomment>A reviewer&apos;s score out of ten on a TMDB review, for example 9 / 10</extracomment>
-        <translation>{rating} / 10</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Chapter</source>
         <extracomment>A chapter with no name of its own, followed by its number</extracomment>
-        <translation>Capítulo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Behind the Scenes</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Bastidores</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Deleted Scenes</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Cenas eliminadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Featurettes</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Vídeos especiais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Interviews</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Entrevistas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Scenes</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Cenas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shorts</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Curtas-metragens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Trailers</source>
         <extracomment>A kind of extra</extracomment>
-        <translation>Trailers</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 collection</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} collections</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} coleções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Collection</source>
         <extracomment>A collection with no name of its own</extracomment>
-        <translation>Coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cast, Crew, and Studios</source>
         <extracomment>Spotlight card that holds the people and studios behind a title</extracomment>
-        <translation>Elenco, equipa e estúdios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 person</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 pessoa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} people</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} pessoas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 studio</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 estúdio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} studios</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} estúdios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Writer</source>
         <extracomment>A crew member credited as a writer</extracomment>
-        <translation>Argumentista</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Track List</source>
         <extracomment>Spotlight card that holds an album&apos;s tracks</extracomment>
-        <translation>Lista de faixas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 track</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 faixa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} tracks</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} faixas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playlist</source>
         <extracomment>Spotlight card that holds a playlist&apos;s items</extracomment>
-        <translation>Playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 album</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 álbum</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} albums</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} álbuns</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Disc {number}</source>
         <extracomment>Heading over the tracks on one disc of an album</extracomment>
-        <translation>Disco {number}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Movies &amp; Shows</source>
         <extracomment>Spotlight card that holds a collection&apos;s titles</extracomment>
-        <translation>Filmes e séries</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 movie</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 filme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} movies</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} filmes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 show</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} shows</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} séries</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 item</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 item</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} items</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} itens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 title</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 título</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} titles</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} títulos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Moonfin Recommends</source>
+        <source>SpeshTV Recommends</source>
         <extracomment>Recommendations scored by Moonfin</extracomment>
-        <translation>Moonfin Recomenda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>TMDb</source>
         <extracomment>Recommendations from TMDb</extracomment>
-        <translation>TMDB</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recommendations (Seerr)</source>
         <extracomment>Recommendations that come from Seerr</extracomment>
-        <translation>Recomendações (Seerr)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Similar (Seerr)</source>
         <extracomment>Similar titles that come from Seerr</extracomment>
-        <translation>Semelhantes (Seerr)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 season</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 temporada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} seasons</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} temporadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 episode</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 episódio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} episodes</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} episódios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Missing Collection Items</source>
         <extracomment>Seerr setting</extracomment>
-        <translation>Mostrar itens ausentes das coleções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Include missing items on Collection pages</source>
         <extracomment>Seerr setting description</extracomment>
-        <translation>Exibe itens que pertencem à coleção, mas ainda não estão disponíveis na biblioteca</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date Added: {0}</source>
+        <extracomment>When the file was added, on the File Information tab of the details screen. {0} is a date like Sep 24, 2026</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Direct Play Capability:</source>
         <extracomment>Label before Yes or No on the File Information tab</extracomment>
-        <translation>Capacidade de reprodução direta:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No</source>
         <extracomment>Direct play answer on the File Information tab</extracomment>
-        <translation>Não</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show All ({0}) Audio Tracks</source>
+        <extracomment>Opens the full audio track list on the File Information tab. {0} is how many there are</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show All ({0}) Subtitle Tracks</source>
+        <extracomment>Opens the full subtitle track list on the File Information tab. {0} is how many there are</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Less</source>
         <extracomment>Folds a long text or track list back</extracomment>
-        <translation>Mostrar menos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Container format is not supported by the player.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O formato do contentor não é suportado pelo leitor.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video codec is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O codec de vídeo não é suportado.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio codec is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O codec de áudio não é suportado.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle format is not supported (requires burning).</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O formato das legendas não é suportado e as legendas têm de ser gravadas na imagem do vídeo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio profile is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O perfil de áudio não é suportado.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video profile is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O perfil de vídeo não é suportado.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video level is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O nível de vídeo não é suportado.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video resolution is not supported by this device.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A resolução do vídeo não é suportada por este dispositivo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video bit depth is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A profundidade de bits do vídeo não é suportada.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video framerate is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A frequência de fotogramas do vídeo não é suportada.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File bitrate exceeds player streaming limit.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A taxa de bits do ficheiro excede o limite de streaming do leitor.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video bitrate exceeds streaming limit.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A taxa de bits do vídeo excede o limite de streaming.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio bitrate exceeds streaming limit.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A taxa de bits do áudio excede o limite de streaming.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Number of audio channels is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O número de canais de áudio não é suportado.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio codec ({0}) is not supported directly.</source>
+        <extracomment>Why a file cant direct play, {0} is the codec</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio channel count ({0}ch) exceeds the player limit.</source>
+        <extracomment>Why a file cant direct play, {0} is the channel count</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tip: Adjust &apos;Maximum Audio Channels&apos; in Audio Preferences.</source>
+        <extracomment>Hint under a direct play reason. The quoted name is a setting in this app and should match how it is translated</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subtitle format ({0}) is not supported directly and must be burned in.</source>
+        <extracomment>Why a file cant direct play, {0} is the subtitle format</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ASS/SSA subtitles require transcoding because direct play is turned off.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>As legendas ASS/SSA requerem transcodificação porque a reprodução direta está desativada.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tip: Enable &apos;Direct Play ASS Subtitles&apos; in Subtitle Preferences to play directly without transcoding.</source>
+        <extracomment>Hint under a direct play reason. The quoted name is a setting in this app and should match how it is translated</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tip: Increase &apos;Maximum Bitrate&apos; in Video Playback Preferences to allow direct streaming.</source>
+        <extracomment>Hint under a direct play reason. The quoted name is a setting in this app and should match how it is translated</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File bitrate ({0}) exceeds the configured streaming limit ({1}).</source>
+        <extracomment>Why a file cant direct play, both are bitrates like 42.0 Mbps</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video dynamic range (e.g. Dolby Vision / HDR) is not supported by this display.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A gama dinâmica do vídeo (por exemplo, Dolby Vision/HDR) não é suportada por este ecrã.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio sample rate is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>Taxa de amostragem de áudio não compatível.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio bit depth is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>Profundidade de bits do áudio não compatível.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video reference frames exceed player limits.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O número de fotogramas de referência do vídeo excede os limites do leitor.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Anamorphic video is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>Vídeo anamórfico não compatível.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Interlaced video is not supported.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>Vídeo entrelaçado não compatível.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Secondary audio stream requires transcoding.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>O fluxo de áudio secundário requer transcodificação.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Direct play is not supported for this media format.</source>
         <extracomment>Why a file cant direct play</extracomment>
-        <translation>A reprodução direta não é suportada para este formato multimédia.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Action Buttons on Screen</source>
         <extracomment>Details screen setting</extracomment>
-        <translation>Botões de ação no ecrã</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose how many buttons stay on screen before the rest move into More Actions</source>
+        <extracomment>Details screen setting description</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Auto (Theme Default)</source>
         <extracomment>Action Buttons on Screen option that leaves each details style to its own default</extracomment>
-        <translation>Automático (predefinição do tema)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 (Play only)</source>
         <extracomment>Action Buttons on Screen option</extracomment>
-        <translation>1 (apenas Reproduzir)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>All (Horizontal Scroll)</source>
         <extracomment>Action Buttons on Screen option that keeps every button in one row that scrolls sideways</extracomment>
-        <translation>Todos (deslocamento horizontal)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>More</source>
         <extracomment>Button on the classic details screen that opens the actions that didnt fit, and the name of an untitled tab on the modern one</extracomment>
-        <translation>Mais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Items in Collection</source>
         <extracomment>Row of the titles in a collection on the classic details screen</extracomment>
-        <translation>Itens na coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Items</source>
         <extracomment>Tab of the titles in a collection on the modern details screen, and the word after a count like 42 Items</extracomment>
-        <translation>Itens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Movie</source>
         <extracomment>What a title in a collection is, under its card</extracomment>
-        <translation>Filme</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>TV Show</source>
         <extracomment>What a title in a collection is, under its card</extracomment>
-        <translation>Série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>More Episodes</source>
         <extracomment>Spotlight card holding every episode of the show, a section per season</extracomment>
-        <translation>Mais episódios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 fact</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 informação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} facts</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} informações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 tag</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>1 etiqueta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} tags</source>
         <extracomment>Count on a Spotlight card</extracomment>
-        <translation>{count} etiquetas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genres and Tags</source>
         <extracomment>Chip that opens Seerr&apos;s genres, networks and keywords for a title</extracomment>
-        <translation>Géneros e etiquetas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Streaming on</source>
+        <extracomment>Heading over the logos of the services streaming a Seerr title</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Continuing</source>
         <extracomment>Series status badge</extracomment>
-        <translation>Em exibição</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ended</source>
         <extracomment>Series status badge, and the start of a finished program time like Ended Monday, 8:00 PM</extracomment>
-        <translation>Terminado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Declined</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Recusado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Available</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Disponível</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Partially Available</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Parcialmente disponível</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Requested</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Pedido</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pending</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Pendente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Blocklisted</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Na lista de bloqueio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Deleted</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Eliminado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Not Requested</source>
         <extracomment>Seerr availability pill</extracomment>
-        <translation>Não pedido</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seerr Availability</source>
         <extracomment>Metadata row item in the details screen settings</extracomment>
-        <translation>Disponibilidade no Seerr</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Guest Appearances</source>
         <extracomment>A rail or tab of episodes a person appears in outside a show they are billed on</extracomment>
-        <translation>Participações especiais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Crew Contributions (Seerr)</source>
         <extracomment>A rail of titles Seerr credits a person as crew on</extracomment>
-        <translation>Contribuições da equipa (Seerr)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Appearances (Seerr)</source>
         <extracomment>A rail of titles Seerr credits a person as cast on</extracomment>
-        <translation>Participações (Seerr)</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>January</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>February</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>March</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>April</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>June</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>July</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>August</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>September</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>October</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>November</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>December</source>
+        <extracomment>Month in a person&apos;s birth or death date</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mark as Watched</source>
         <extracomment>Card menu entry</extracomment>
-        <translation>Marcar como visto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mark as Unwatched</source>
         <extracomment>Card menu entry</extracomment>
-        <translation>Marcar como não visto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide from Continue Watching</source>
         <extracomment>Card menu entry</extracomment>
-        <translation>Ocultar de Continuar a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide from Next Up</source>
         <extracomment>Card menu entry</extracomment>
-        <translation>Ocultar de A seguir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add to Favorites</source>
         <extracomment>Card menu entry</extracomment>
-        <translation>Adicionar aos Favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove from Favorites</source>
         <extracomment>Card menu entry</extracomment>
-        <translation>Remover dos Favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add to Collection</source>
         <extracomment>Card menu entry, and the title of the collection picker</extracomment>
-        <translation>Adicionar à coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove from Collection</source>
         <extracomment>Card menu entry, and the title of the dialog confirming it</extracomment>
-        <translation>Remover da coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add to Playlist</source>
         <extracomment>Card menu entry, and the title of the playlist picker</extracomment>
-        <translation>Adicionar à playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Refresh Metadata</source>
         <extracomment>Card menu entry for admins, and a button in the Identify dialog</extracomment>
-        <translation>Atualizar metadados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Identify</source>
         <extracomment>Card menu entry for admins, and the title of the Identify dialog</extracomment>
-        <translation>Identificar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Change Artwork</source>
         <extracomment>Card menu entry for admins, the details screen button and the title of the artwork picker</extracomment>
-        <translation>Alterar imagens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Artwork updated successfully</source>
         <extracomment>Note after new artwork was picked</extracomment>
-        <translation>Imagem atualizada com sucesso</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create New Collection</source>
         <extracomment>First row of the collection picker</extracomment>
-        <translation>Criar nova coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No collections found</source>
         <extracomment>Collection picker with nothing to pick</extracomment>
-        <translation>Nenhuma coleção encontrada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>New Collection</source>
         <extracomment>Title of the keyboard naming a new collection</extracomment>
-        <translation>Nova coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Collection name</source>
         <extracomment>Hint in the keyboard naming a new collection</extracomment>
-        <translation>Nome da coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Added to collection</source>
         <extracomment>Note after adding an item to a collection</extracomment>
-        <translation>Adicionado à coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Created &quot;{name}&quot; and added item</source>
         <extracomment>Note after creating a collection or playlist with the item in it. {name} is what it was called</extracomment>
-        <translation>&quot;{name}&quot; criado e item adicionado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove {item} from {collection}? The item stays in your library.</source>
         <extracomment>Confirming taking a title out of a collection. {item} is the title and {collection} the collection</extracomment>
-        <translation>Remover {item} de {collection}? O item permanece na tua biblioteca.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove</source>
         <extracomment>Button confirming a removal</extracomment>
-        <translation>Remover</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete from Playlist</source>
         <extracomment>Option on a playlist row that takes it out of the playlist</extracomment>
-        <translation>Remover da playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Removed from playlist</source>
         <extracomment>Note once the server has taken a row out of a playlist</extracomment>
-        <translation>Removido da playlist</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to remove from collection: {error}</source>
+        <extracomment>Note when the server refuses a removal. {error} is the reason</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to update playlist: {error}</source>
+        <extracomment>Note when the server refuses to delete or move a playlist row. {error} is the reason</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create New Playlist</source>
         <extracomment>Starts a new playlist, as the first row of the playlist picker or a keyboard title</extracomment>
-        <translation>Criar nova playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No playlists found</source>
         <extracomment>Playlist picker with nothing to pick</extracomment>
-        <translation>Nenhuma playlist encontrada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>New Playlist</source>
         <extracomment>Names a new playlist, as a keyboard title or a menu option</extracomment>
-        <translation>Nova playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playlist name</source>
         <extracomment>Hint in the keyboard naming a new playlist</extracomment>
-        <translation>Nome da playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Added to playlist</source>
         <extracomment>Note after adding an item to a playlist</extracomment>
-        <translation>Adicionado à playlist</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Metadata refresh requested</source>
         <extracomment>Note after asking the server to refresh an item</extracomment>
-        <translation>Atualização de metadados solicitada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to refresh metadata: {error}</source>
         <extracomment>Note when the server refuses a refresh. {error} is the reason</extracomment>
-        <translation>Falha ao atualizar metadados: {error}</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unauthorized</source>
+        <extracomment>Reason a card menu request failed, when the server wants the viewer signed in again</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forbidden</source>
+        <extracomment>Reason a card menu request failed, when the viewer isnt allowed to do it</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTTP error</source>
+        <extracomment>Reason a card menu request failed, when the server gave nothing more specific</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Metadata updated</source>
         <extracomment>Note after an item was matched with Identify</extracomment>
-        <translation>Metadados atualizados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Refreshing metadata</source>
         <extracomment>Note after a refresh was asked for from the Identify dialog</extracomment>
-        <translation>A atualizar metadados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enter PIN</source>
         <extracomment>Title of the screen that holds the app shut until the PIN is entered</extracomment>
-        <translation>Introduzir PIN</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This profile is protected by a 4-digit PIN.</source>
         <extracomment>Line under Enter PIN on the PIN screen</extracomment>
-        <translation>Este perfil é protegido por um PIN de 4 dígitos.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>4 digits</source>
         <extracomment>Hint in the empty PIN field</extracomment>
-        <translation>4 dígitos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unlock</source>
         <extracomment>Button that checks the PIN typed on the PIN screen</extracomment>
-        <translation>Desbloquear</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PIN Code Protection</source>
+        <extracomment>Setting that asks for a PIN after signing in</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Require a PIN to access your account</source>
         <extracomment>Description of the PIN Code Protection setting</extracomment>
-        <translation>Exigir um PIN para aceder à tua conta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>PIN Code</source>
         <extracomment>Setting that chooses the PIN the PIN screen asks for</extracomment>
-        <translation>Código PIN</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default PIN: 0000</source>
+        <extracomment>Description of the PIN Code setting before a PIN has been chosen</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enter a 4-digit PIN used to unlock the app when PIN protection is enabled.</source>
         <extracomment>Shown beside the keypad when choosing the PIN the PIN screen asks for</extracomment>
-        <translation>Introduz um PIN de 4 dígitos para desbloquear a aplicação quando a proteção por PIN estiver ativada.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configured 4-digit PIN</source>
+        <extracomment>Description of the PIN Code setting once a PIN has been chosen</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blocked Ratings</source>
+        <extracomment>Setting that opens the list of content ratings to block</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Content rating restrictions</source>
         <extracomment>Description of the Blocked Ratings setting</extracomment>
-        <translation>Restrições de classificação etária</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Parental Controls</source>
         <extracomment>Title over the list of content ratings to block</extracomment>
-        <translation>Controlo parental</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Block content with the following ratings:</source>
         <extracomment>Line at the top of the Blocked Ratings list</extracomment>
-        <translation>Bloqueia conteúdo com as seguintes classificações:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Blocking a rating also blocks everything stronger than it.</source>
         <extracomment>Follows Block content with the following ratings: in the Blocked Ratings list</extracomment>
-        <translation>Bloquear uma classificação etária também bloqueia todas as classificações etárias superiores.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ratings</source>
         <extracomment>Heading over the ratings in the Blocked Ratings list that can be ranked by strength</extracomment>
-        <translation>Classificações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Only blocks itself</source>
         <extracomment>Heading over ratings in the Blocked Ratings list that cant be ranked, so blocking one blocks nothing else</extracomment>
-        <translation>Bloqueia apenas esta classificação etária</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not load server ratings. Showing saved ratings only.</source>
         <extracomment>Blocked Ratings list when the server couldnt be read and nothing was blocked before</extracomment>
-        <translation>Não foi possível carregar as classificações do servidor. A mostrar apenas classificações guardadas.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No content ratings were found on this server yet.</source>
         <extracomment>Blocked Ratings list when the library has no rated titles</extracomment>
-        <translation>Ainda não há classificações de conteúdo neste servidor.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not refresh ratings from server. Showing saved ratings.</source>
         <extracomment>Top of the Blocked Ratings list when the server couldnt be read</extracomment>
-        <translation>Não foi possível atualizar as classificações do servidor. A mostrar classificações guardadas.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This isn&apos;t available</source>
         <extracomment>Shown with a lock in place of a title a blocked rating keeps out</extracomment>
-        <translation>Este conteúdo não está disponível</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Now</source>
         <extracomment>Guide button that takes the guide back to the current time</extracomment>
-        <translation>Agora</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recordings</source>
         <extracomment>Guide button that opens recorded and scheduled programs, and the title of that screen</extracomment>
-        <translation>Gravações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Guide Timeline</source>
         <extracomment>Guide header title while no channel is focused</extracomment>
-        <translation>Linha temporal do guia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No program data</source>
         <extracomment>Guide cell for a stretch of time a channel has nothing listed for</extracomment>
-        <translation>Nenhuma informação de programação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to load guide: {error}</source>
         <extracomment>Shown in place of the guide when it couldnt load, {error} is the reason</extracomment>
-        <translation>Falha ao carregar o guia: {error}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No channels found</source>
         <extracomment>Shown in place of the guide when no channel matches the filter</extracomment>
-        <translation>Nenhum canal encontrado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sort By</source>
         <extracomment>Title of the picker that chooses the order of guide channels</extracomment>
-        <translation>Ordenar por</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Channel Number</source>
         <extracomment>Guide sort option that orders channels by number</extracomment>
-        <translation>Número do canal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Favorites First</source>
         <extracomment>Guide sort option that puts favorite channels at the top</extracomment>
-        <translation>Favoritos primeiro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select date</source>
         <extracomment>Title of the picker that moves the guide to another day</extracomment>
-        <translation>Selecionar data</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sports</source>
         <extracomment>Guide filter and program tag for sports</extracomment>
-        <translation>Desportos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>News</source>
         <extracomment>Guide filter and program tag for news</extracomment>
-        <translation>Notícias</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Kids</source>
         <extracomment>Guide filter and program tag for children&apos;s programs</extracomment>
-        <translation>Infantil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Premiere</source>
         <extracomment>Guide filter and program tag for a program&apos;s first airing</extracomment>
-        <translation>Estreia</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <extracomment>Short name for Sunday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <extracomment>Short name for Monday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <extracomment>Short name for Tuesday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <extracomment>Short name for Wednesday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <extracomment>Short name for Thursday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fri</source>
+        <extracomment>Short name for Friday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <extracomment>Short name for Saturday in the guide&apos;s date heading</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Watch</source>
         <extracomment>Program popup button that plays a program on air now</extracomment>
-        <translation>Ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Watch channel live</source>
         <extracomment>Program popup button that tunes the channel when the program isnt on air now</extracomment>
-        <translation>Ver canal em direto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Favorite Channel</source>
         <extracomment>Program popup button that adds the channel to favorites</extracomment>
-        <translation>Adicionar canal aos favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unfavorite Channel</source>
         <extracomment>Program popup button that removes the channel from favorites</extracomment>
-        <translation>Remover canal dos favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Program set to record</source>
         <extracomment>Guide notice once a recording is scheduled</extracomment>
-        <translation>Gravação do programa agendada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unable to create recording</source>
         <extracomment>Guide notice when a recording couldnt be scheduled</extracomment>
-        <translation>Não foi possível criar a gravação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recording cancelled</source>
         <extracomment>Guide notice once a scheduled recording is cancelled</extracomment>
-        <translation>Gravação cancelada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to cancel recording</source>
         <extracomment>Guide notice when a scheduled recording couldnt be cancelled</extracomment>
-        <translation>Falha ao cancelar a gravação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Series set to record</source>
         <extracomment>Guide notice once every episode of a series is scheduled to record</extracomment>
-        <translation>Série programada para gravação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unable to create series recording</source>
         <extracomment>Guide notice when a series recording couldnt be scheduled</extracomment>
-        <translation>Não foi possível programar a gravação da série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Series recording cancelled</source>
         <extracomment>Guide notice once a series recording is cancelled</extracomment>
-        <translation>Gravação da série cancelada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to cancel series recording</source>
         <extracomment>Guide notice when a series recording couldnt be cancelled</extracomment>
-        <translation>Falha ao cancelar a gravação da série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Added to favorite channels</source>
         <extracomment>Guide notice once a channel is made a favorite</extracomment>
-        <translation>Adicionado aos canais favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Removed from favorite channels</source>
         <extracomment>Guide notice once a channel is no longer a favorite</extracomment>
-        <translation>Removido dos canais favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to update favorite channel</source>
         <extracomment>Guide notice when a channel&apos;s favorite state couldnt be changed</extracomment>
-        <translation>Falha ao atualizar canal favorito</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>LIVE</source>
         <extracomment>End of the live TV timeline in the player when nothing is listed for the channel</extracomment>
-        <translation>EM DIRETO</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to play {name}</source>
         <extracomment>Channel changer notice, and the card over the player, when a channel wouldnt play, {name} is the channel</extracomment>
-        <translation>Falha ao reproduzir {name}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reconnecting… ({attempt} of {total})</source>
         <extracomment>Loading label while the player asks for a live channel again after it stalled, {attempt} is the try and {total} how many it gets</extracomment>
-        <translation>A restabelecer a ligação… ({attempt} de {total})</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Schedule</source>
         <extracomment>Recordings screen tab that lists scheduled recordings</extracomment>
-        <translation>Agendamentos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Series Recordings</source>
         <extracomment>Recordings screen tab that lists series recordings</extracomment>
-        <translation>Gravações de séries</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Scheduled in Next 24 Hours</source>
         <extracomment>Recordings row of recordings due to start within a day</extracomment>
-        <translation>Agendado para as próximas 24 horas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recent Recordings</source>
         <extracomment>Recordings row of the newest recordings</extracomment>
-        <translation>Gravações recentes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>TV Series</source>
         <extracomment>Recordings row of recorded episodes</extracomment>
-        <translation>Série de TV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Yesterday</source>
         <extracomment>Recordings heading for scheduled recordings from the day before</extracomment>
-        <translation>Ontem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>All channels</source>
         <extracomment>Series recording card when it records the series on any channel</extracomment>
-        <translation>Todos os canais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No recordings found</source>
         <extracomment>Recordings tab with nothing recorded yet</extracomment>
-        <translation>Nenhuma gravação encontrada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No scheduled recordings</source>
         <extracomment>Schedule tab with nothing set to record</extracomment>
-        <translation>Nenhuma gravação agendada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No series recordings</source>
         <extracomment>Series Recordings tab with no series set to record</extracomment>
-        <translation>Sem gravações de série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete</source>
         <extracomment>Recording popup button that deletes the recording</extracomment>
-        <translation>Eliminar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel Recording?</source>
         <extracomment>Title of the question asked before a scheduled recording is cancelled</extracomment>
-        <translation>Cancelar gravação?</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel Series Recording?</source>
+        <extracomment>Title of the question asked before a series recording is cancelled</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop recording {name}?</source>
+        <extracomment>Asked before a series recording is cancelled, {name} is the series</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel scheduled recording of {name}?</source>
+        <extracomment>Asked before a scheduled recording is cancelled, {name} is the program</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Yes, Cancel</source>
         <extracomment>Button that goes ahead with cancelling a recording</extracomment>
-        <translation>Sim, cancelar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Live TV Button</source>
         <extracomment>Setting that shows the Live TV button in the navigation bar</extracomment>
-        <translation>Mostrar botão TV em direto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show the Live TV button in the navigation bar when the server has a Live TV library</source>
         <extracomment>Description of the Show Live TV Button setting</extracomment>
-        <translation>Mostrar o botão TV em direto na barra de navegação quando o servidor tiver uma biblioteca de TV em direto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Trick Play</source>
         <extracomment>Setting that shows preview thumbnails while seeking</extracomment>
-        <translation>Pré-visualização ao avançar ou retroceder</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show preview thumbnails when seeking</source>
         <extracomment>Description of the Trick Play setting</extracomment>
-        <translation>Mostrar miniaturas ao avançar ou retroceder</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pause While Scrubbing</source>
         <extracomment>Setting that pauses playback while scrubbing the progress bar</extracomment>
-        <translation>Pausar ao avançar ou retroceder</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playback pauses while you seek and resumes when you press play. Turn this off to keep playing and jump straight to the new spot</source>
         <extracomment>Description of the Pause While Scrubbing setting</extracomment>
-        <translation>A reprodução pausa enquanto escolhes outra posição e retoma quando primes Reproduzir. Desativa para continuar a reproduzir e saltar diretamente para a nova posição</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seek Step</source>
         <extracomment>Setting for how far each press moves while scrubbing the progress bar</extracomment>
-        <translation>Intervalo dos saltos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How far each press moves while scrubbing the progress bar</source>
         <extracomment>Description of the Seek Step setting</extracomment>
-        <translation>Distância percorrida na barra de progresso a cada pressão do botão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>5 seconds</source>
         <extracomment>How far each press moves while scrubbing the progress bar</extracomment>
-        <translation>5 segundos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>10 seconds</source>
         <extracomment>How far each press moves while scrubbing the progress bar</extracomment>
-        <translation>10 segundos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>20 seconds</source>
         <extracomment>How far each press moves while scrubbing the progress bar</extracomment>
-        <translation>20 segundos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>30 seconds</source>
         <extracomment>How far each press moves while scrubbing the progress bar</extracomment>
-        <translation>30 segundos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Chapter Marks</source>
         <extracomment>Setting that marks chapter starts on the seek bar</extracomment>
-        <translation>Marcas de capítulos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mark where each chapter starts on the seek bar</source>
         <extracomment>Description of the Chapter Marks setting</extracomment>
-        <translation>Assinalar o início de cada capítulo na barra de progresso</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Customization</source>
         <extracomment>Heading over the subtitle style settings</extracomment>
-        <translation>Personalização de legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Size</source>
         <extracomment>Setting for how big subtitles are</extracomment>
-        <translation>Tamanho da legenda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Small</source>
         <extracomment>How big subtitles are, a subtitle style choice</extracomment>
-        <translation>Pequeno</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Medium</source>
         <extracomment>How big subtitles are, a subtitle style choice</extracomment>
-        <translation>Médio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Large</source>
         <extracomment>How big subtitles are, a subtitle style choice</extracomment>
-        <translation>Grande</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Extra Large</source>
         <extracomment>How big subtitles are, a subtitle style choice</extracomment>
-        <translation>Muito grande</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Position</source>
         <extracomment>Setting for where subtitles sit on screen</extracomment>
-        <translation>Posição da legenda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Position</source>
         <extracomment>Row in the subtitle appearance panel during playback for where subtitles sit</extracomment>
-        <translation>Posição</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bottom</source>
         <extracomment>Where subtitles sit on screen, a subtitle style choice</extracomment>
-        <translation>Inferior</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lower</source>
         <extracomment>Where subtitles sit on screen, a subtitle style choice</extracomment>
-        <translation>Menor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Middle</source>
         <extracomment>Where subtitles sit on screen, a subtitle style choice, and where the loading animation sits</extracomment>
-        <translation>Centro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Higher</source>
         <extracomment>Where subtitles sit on screen, a subtitle style choice</extracomment>
-        <translation>Maior</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Absolute</source>
         <extracomment>Where subtitles sit on screen, a subtitle style choice, placed by a percentage</extracomment>
-        <translation>Absoluta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Absolute Position</source>
         <extracomment>Setting for how far up the screen subtitles sit, as a percentage</extracomment>
-        <translation>Posição absoluta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Text Opacity</source>
         <extracomment>Setting for how see-through subtitle text is</extracomment>
-        <translation>Opacidade do texto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Text Fill Color</source>
         <extracomment>Setting for the color of subtitle text</extracomment>
-        <translation>Cor de preenchimento de texto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>White</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Branco</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Light Gray</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Cinza-claro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Gray</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Cinza</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Dark Gray</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Cinza-escuro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Black</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Preto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Yellow</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Amarelo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Green</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Verde</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cyan</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Ciano</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Blue</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Azul</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Magenta</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Magenta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Red</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Vermelho</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Navy</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Azul-marinho</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Transparent</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback, where nothing is drawn</extracomment>
-        <translation>Transparente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Semi-transparent Black</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Preto semitransparente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Semi-transparent White</source>
         <extracomment>A color subtitles can use, in the subtitle style settings and during playback</extracomment>
-        <translation>Branco semitransparente</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shadow Color</source>
+        <extracomment>Setting for the color of the outline around subtitle text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shadow Opacity</source>
+        <extracomment>Setting for how see-through the outline around subtitle text is</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shadow Size (Blur)</source>
+        <extracomment>Setting for how thick the outline around subtitle text is</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Background Color</source>
         <extracomment>Setting for the color of the box behind subtitle text</extracomment>
-        <translation>Cor de fundo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Background Opacity</source>
         <extracomment>Setting for how see-through the box behind subtitle text is</extracomment>
-        <translation>Opacidade do fundo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HDR Subtitles</source>
+        <extracomment>Settings page for a subtitle style used while HDR plays</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A separate style used while HDR is playing</source>
+        <extracomment>Description of the HDR Subtitles settings page</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Separate HDR Style</source>
         <extracomment>Setting that turns on a separate subtitle style for HDR</extracomment>
-        <translation>Estilo separado para HDR</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the style below whenever HDR content is playing. White is much brighter in HDR than in SDR, so a dimmer color here avoids the glare.</source>
+        <extracomment>Description of the Separate HDR Style setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Appearance</source>
         <extracomment>Title of the panel that changes the subtitle style during playback</extracomment>
-        <translation>Aparência das legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loading Animation</source>
         <extracomment>Settings page for the animation shown while something loads</extracomment>
-        <translation>Animação de carregamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Customize the loading animations used throughout Moonfin</source>
         <extracomment>Description of the Loading Animation settings page</extracomment>
-        <translation>Personalizar as animações de carregamento utilizadas em todo o Moonfin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loading Animation Configuration</source>
         <extracomment>Heading over the loading animation settings</extracomment>
-        <translation>Configuração da animação de carregamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Image</source>
         <extracomment>Setting for which image the loading animation shows</extracomment>
-        <translation>Imagem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moonfin Logo</source>
         <extracomment>An image the loading animation can show</extracomment>
-        <translation>Logótipo do Moonfin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spinner</source>
         <extracomment>An image the loading animation can show</extracomment>
-        <translation>Indicador de carregamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Runner</source>
         <extracomment>An image the loading animation can show</extracomment>
-        <translation>Corredor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moon Phases</source>
         <extracomment>An image the loading animation can show</extracomment>
-        <translation>Fases da Lua</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moonfin Phases</source>
         <extracomment>An image the loading animation can show</extracomment>
-        <translation>Fases do Moonfin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Neonfin Phases</source>
         <extracomment>An image the loading animation can show</extracomment>
-        <translation>Fases do Neonfin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Animation Size</source>
         <extracomment>Setting for how big the loading animation is</extracomment>
-        <translation>Tamanho da animação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Thumbnail</source>
         <extracomment>The smallest loading animation size</extracomment>
-        <translation>Miniatura</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Animation Position</source>
         <extracomment>Setting for where the loading animation sits on screen</extracomment>
-        <translation>Posição da animação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top-Left</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Superior esquerdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top-Center</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Superior central</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Top-Right</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Superior direito</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Middle-Left</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Centro esquerdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Middle-Right</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Centro direito</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bottom-Left</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Inferior esquerdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bottom-Center</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Inferior central</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bottom-Right</source>
         <extracomment>Where the loading animation sits on screen</extracomment>
-        <translation>Inferior direito</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bouncing</source>
         <extracomment>Where the loading animation sits on screen, drifting around and bouncing off the edges</extracomment>
-        <translation>Saltitante</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Animation Speed</source>
         <extracomment>Setting for how fast the loading animation moves</extracomment>
-        <translation>Velocidade da animação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Slow</source>
         <extracomment>How fast the loading animation moves</extracomment>
-        <translation>Lenta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moderate</source>
         <extracomment>How fast the loading animation moves</extracomment>
-        <translation>Moderada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fast</source>
         <extracomment>How fast the loading animation moves</extracomment>
-        <translation>Rápida</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ultra</source>
         <extracomment>How fast the loading animation moves</extracomment>
-        <translation>Ultrarrápida</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Text?</source>
+        <extracomment>Setting that shows the label under the loading animation</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loading Stream...</source>
         <extracomment>Shown under the loading animation while a video starts</extracomment>
-        <translation>A carregar fluxo...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You do not have permission to search for subtitles</source>
         <extracomment>Shown when the server refuses a subtitle search</extracomment>
-        <translation>Não tens permissão para pesquisar legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No subtitle provider is set up on the server</source>
         <extracomment>Shown when the server has nothing to search subtitles with</extracomment>
-        <translation>Nenhum fornecedor de legendas configurado no servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You do not have permission to download subtitles</source>
         <extracomment>Shown when the server refuses a subtitle download</extracomment>
-        <translation>Não tens permissão para transferir legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>That subtitle is no longer available</source>
         <extracomment>Shown when a subtitle picked from the search results is gone</extracomment>
-        <translation>Esta legenda já não está disponível</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle download failed</source>
         <extracomment>Shown when a subtitle download fails for any other reason</extracomment>
-        <translation>Falha ao transferir a legenda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The subtitle was downloaded but has not appeared yet</source>
         <extracomment>Shown when a downloaded subtitle hasnt shown up on the video after waiting for it</extracomment>
-        <translation>A legenda foi transferida, mas ainda não apareceu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Clock</source>
         <extracomment>Setting that shows or hides the clock in the top bar and the sidebar</extracomment>
-        <translation>Mostrar relógio</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show or hide the clock in the top bar and the sidebar</source>
+        <extracomment>Description of the Show Clock setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Group by Type</source>
         <extracomment>Library setting that lists a playlist library as one row per kind of playlist</extracomment>
-        <translation>Agrupar por tipo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video Playlists</source>
         <extracomment>Row title for playlists of movies, episodes and other videos</extracomment>
-        <translation>Playlists de vídeos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Music Video Playlists</source>
         <extracomment>Row title for playlists of music videos</extracomment>
-        <translation>Playlists de vídeos musicais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio Playlists</source>
         <extracomment>Row title for playlists of songs</extracomment>
-        <translation>Playlists de áudio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audiobook Playlists</source>
         <extracomment>Row title for playlists of audiobooks</extracomment>
-        <translation>Playlists de audiolivros</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Book Playlists</source>
         <extracomment>Row title for playlists of books</extracomment>
-        <translation>Playlists de livros</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Photo Playlists</source>
         <extracomment>Row title for playlists of photos</extracomment>
-        <translation>Playlists de fotografias</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mixed Playlists</source>
         <extracomment>Row title for playlists that hold more than one kind of item, or nothing yet</extracomment>
-        <translation>Playlists mistas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No items found</source>
         <extracomment>Shown in a library when nothing matches</extracomment>
-        <translation>Nenhum item encontrado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Download subtitles...</source>
         <extracomment>Subtitle track menu entry that opens the subtitle search</extracomment>
-        <translation>Transferir legendas...</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search using OpenSubtitles</source>
+        <extracomment>Description under the subtitle search entry in the subtitle track menu</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Download Subtitles</source>
         <extracomment>Title of the subtitle search dialog</extracomment>
-        <translation>Transferir legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Searching...</source>
         <extracomment>Shown while a search is running</extracomment>
-        <translation>A pesquisar...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No remote subtitles found</source>
         <extracomment>Shown when a subtitle search comes back empty</extracomment>
-        <translation>Nenhuma legenda remota encontrada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle search failed</source>
         <extracomment>Shown when a subtitle search fails for any other reason</extracomment>
-        <translation>Falha na pesquisa de legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Downloading subtitle…</source>
         <extracomment>Shown while a subtitle picked from the search results downloads</extracomment>
-        <translation>A transferir legenda…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>AI Translated</source>
         <extracomment>Badge on a subtitle search result that was translated by AI</extracomment>
-        <translation>Traduzida por IA</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Machine Translated</source>
         <extracomment>Badge on a subtitle search result that was machine translated</extracomment>
-        <translation>Tradução automática</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>SDH</source>
         <extracomment>Badge on a subtitle made for the deaf and hard of hearing</extracomment>
-        <translation>SDH</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Perfect match</source>
         <extracomment>Badge on a subtitle search result made for this exact file</extracomment>
-        <translation>Correspondência exata</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 download</source>
         <extracomment>Download count on a subtitle search result that was downloaded once</extracomment>
-        <translation>1 transferência</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{count} downloads</source>
         <extracomment>Download count on a subtitle search result. {count} is the number of downloads</extracomment>
-        <translation>{count} transferências</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>{fps} fps</source>
         <extracomment>Frame rate a subtitle search result was timed for. {fps} is the rate</extracomment>
-        <translation>{fps} fps</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trailers played behind the media bar</source>
+        <extracomment>Description of the media bar settings section for trailers</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Trailer Preview</source>
         <extracomment>Setting that plays the current title&apos;s trailer behind the media bar</extracomment>
-        <translation>Pré-visualização do trailer</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Auto-play trailers in the media bar after 3 seconds</source>
         <extracomment>Description of the Trailer Preview setting</extracomment>
-        <translation>Reproduz trailers automaticamente na barra de conteúdo após 3 segundos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mute Trailer Audio</source>
         <extracomment>Setting that silences trailer previews in the media bar</extracomment>
-        <translation>Silenciar áudio dos trailers</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mute trailer previews in the featured media bar</source>
+        <extracomment>Description of the Mute Trailer Audio setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Trailer Captions</source>
         <extracomment>Setting that shows YouTube captions on media bar trailers</extracomment>
-        <translation>Legendas dos trailers</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show captions on media bar trailer previews when YouTube has them</source>
+        <extracomment>Description of the Trailer Captions setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loading trailer...</source>
         <extracomment>Shown while a YouTube trailer is being found</extracomment>
-        <translation>A carregar trailer...</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trailer Not Available</source>
+        <extracomment>Title of the message shown when a trailer cant be played</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{count} trailers</source>
+        <extracomment>Count in the header of the trailer picker on the details screen</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subtitled</source>
+        <extracomment>Chip on a trailer in the trailer picker whose video has subtitles burned in</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This trailer is a link to a web page, which cant be opened here.</source>
+        <extracomment>Shown when a title&apos;s trailer link isnt a YouTube video</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Media Preview</source>
         <extracomment>Setting that plays a short clip of the focused home row card</extracomment>
-        <translation>Pré-visualização do conteúdo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play a short clip of the focused card after a moment on it. A series plays its next episode.</source>
+        <extracomment>Description of the Media Preview setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Preview Audio</source>
         <extracomment>Setting that plays the sound of a media preview</extracomment>
-        <translation>Pré-visualizar áudio</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play the sound of a media preview. Off keeps previews silent.</source>
+        <extracomment>Description of the Preview Audio setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seasonal Row</source>
         <extracomment>Home row of holiday movies, and the settings section that configures it</extracomment>
-        <translation>Secção sazonal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>New Year&apos;s</source>
         <extracomment>Seasonal row title around New Year</extracomment>
-        <translation>Ano Novo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Valentine&apos;s Day</source>
         <extracomment>Seasonal row title in the run up to February 14</extracomment>
-        <translation>Dia dos Namorados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Easter</source>
         <extracomment>Seasonal row title in the week before Easter</extracomment>
-        <translation>Páscoa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pride</source>
         <extracomment>Seasonal row title during June</extracomment>
-        <translation>Orgulho LGBTQIA+</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Halloween</source>
         <extracomment>Seasonal row title during October, and a seasonal effect of leaves, candy, bats and ghosts</extracomment>
-        <translation>Halloween</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Thanksgiving</source>
         <extracomment>Seasonal row title in the week up to Thanksgiving</extracomment>
-        <translation>Ação de Graças</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Christmas Movies</source>
         <extracomment>Seasonal row title from the day after US Thanksgiving to Boxing Day</extracomment>
-        <translation>Filmes de Natal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Lunar New Year</source>
         <extracomment>Seasonal row title around Lunar New Year</extracomment>
-        <translation>Ano Novo Lunar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Diwali</source>
         <extracomment>Seasonal row title in the week up to Diwali</extracomment>
-        <translation>Diwali</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All holidays</source>
+        <extracomment>Summary of the holiday picker when none is hidden</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Since you watched %1</source>
+        <extracomment>Home row title, %1 is the title the recommendations come from</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Library Order</source>
         <extracomment>Settings entry and panel title for arranging the libraries</extracomment>
-        <translation>Ordem das bibliotecas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose the order of your libraries</source>
         <extracomment>Description of the Library Order setting</extracomment>
-        <translation>Escolher a ordem das tuas bibliotecas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Your libraries appear in this order on My Media, the recently added rows and the navigation bar. The order is saved to your server account, so other apps you sign in to use it too.</source>
         <extracomment>Explains the Library Order panel</extracomment>
-        <translation>As tuas bibliotecas aparecem por esta ordem em O meu conteúdo, nas secções de adições recentes e na barra de navegação. A ordem é guardada na tua conta do servidor e também utilizada por outras aplicações onde iniciares sessão.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Press left or right to move the highlighted library.</source>
         <extracomment>Hint on the Library Order panel</extracomment>
-        <translation>Prime esquerda ou direita para mover a biblioteca selecionada.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to load libraries</source>
         <extracomment>The Library Order panel could not read the libraries</extracomment>
-        <translation>Falha ao carregar bibliotecas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No libraries found</source>
         <extracomment>The Library Order panel has nothing to arrange</extracomment>
-        <translation>Nenhuma biblioteca encontrada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hidden</source>
         <extracomment>Under a library hidden from My Media in the Library Order panel</extracomment>
-        <translation>Oculto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Couldn&apos;t save the library order</source>
         <extracomment>Note shown when the server refused a new library order</extracomment>
-        <translation>Não foi possível guardar a ordem das bibliotecas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sections</source>
         <extracomment>Details screen setting that hides parts of the screen, and the group of sections under it</extracomment>
-        <translation>Secções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose which parts of the Details screen to show</source>
         <extracomment>Description of the Sections setting</extracomment>
-        <translation>Escolher as partes do ecrã de detalhes a apresentar</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only the sections the current Details screen style can show</source>
+        <extracomment>First line of the note over the Sections list, which runs on into the next line</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>are listed. Hiding one hides it in every style that has it.</source>
+        <extracomment>Second line of the note over the Sections list</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Header</source>
         <extracomment>Group of details screen sections at the top of the screen</extracomment>
-        <translation>Cabeçalho</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Person pages</source>
         <extracomment>Group of details screen sections on a person page</extracomment>
-        <translation>Páginas de pessoas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Logo</source>
         <extracomment>Details screen section, the title logo</extracomment>
-        <translation>Logótipo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shows the title as text when off</source>
         <extracomment>Under the Logo section switch</extracomment>
-        <translation>Mostrar o título em texto quando desativado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Tagline</source>
         <extracomment>Details screen section</extracomment>
-        <translation>Frase promocional</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Poster</source>
         <extracomment>Details screen section</extracomment>
-        <translation>Cartaz</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Also on collection pages</source>
         <extracomment>Under the Cast section switch</extracomment>
-        <translation>Também nas páginas de coleções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Directors &amp; writers</source>
         <extracomment>Details screen section</extracomment>
-        <translation>Realizadores e argumentistas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Also similar albums and artists</source>
         <extracomment>Under the More Like This section switch</extracomment>
-        <translation>Também álbuns e artistas semelhantes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>More episodes</source>
         <extracomment>Details screen section, the other episodes on an episode page</extracomment>
-        <translation>Mais episódios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>On episode pages</source>
         <extracomment>Under the More episodes section switch</extracomment>
-        <translation>Nas páginas de episódios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Media info</source>
         <extracomment>Details screen section</extracomment>
-        <translation>Informações multimédia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Version badge</source>
         <extracomment>Details screen section</extracomment>
-        <translation>Indicador de versão</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File, streams and Direct Play check</source>
         <extracomment>Under the Media info section switch</extracomment>
-        <translation>Ficheiro, fluxos e verificação da reprodução direta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genres &amp; tags</source>
         <extracomment>Seerr section on the details screen</extracomment>
-        <translation>Géneros e etiquetas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Streaming services</source>
+        <extracomment>Seerr section on the details screen</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Similar titles</source>
         <extracomment>Seerr section on the details screen</extracomment>
-        <translation>Títulos semelhantes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Collection banner</source>
         <extracomment>Seerr section on the details screen</extracomment>
-        <translation>Banner da coleção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Appearances</source>
         <extracomment>Seerr section on a person page</extracomment>
-        <translation>Participações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>On person pages</source>
         <extracomment>Under the Seerr person section switches</extracomment>
-        <translation>Nas páginas de pessoas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Crew credits</source>
         <extracomment>Seerr section on a person page</extracomment>
-        <translation>Créditos na equipa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Biography</source>
         <extracomment>Person page section</extracomment>
-        <translation>Biografia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Birthplace</source>
         <extracomment>Person page section</extracomment>
-        <translation>Local de nascimento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Guest appearances</source>
         <extracomment>Person page section</extracomment>
-        <translation>Participações especiais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Music videos</source>
         <extracomment>Person page section</extracomment>
-        <translation>Vídeos musicais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Clear</source>
         <extracomment>Sort and Filter row that empties one filter group</extracomment>
-        <translation>Limpar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No results</source>
         <extracomment>Under a Sort and Filter search that matches nothing</extracomment>
-        <translation>Nenhum resultado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>View Details</source>
         <extracomment>Playlist row menu entry that opens the title&apos;s page</extracomment>
-        <translation>Ver detalhes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Move Up</source>
         <extracomment>Playlist row menu entry that moves the row one place earlier</extracomment>
-        <translation>Subir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Move Down</source>
         <extracomment>Playlist row menu entry that moves the row one place later</extracomment>
-        <translation>Mover para baixo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playback languages</source>
         <extracomment>Setup wizard section with the audio and subtitle language choices</extracomment>
-        <translation>Idiomas de reprodução</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Optional</source>
         <extracomment>Tag beside a setup wizard section that can be left as it is</extracomment>
-        <translation>Opcional</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Default Audio Language</source>
         <extracomment>Setup wizard row for the preferred audio language</extracomment>
-        <translation>Idioma de áudio predefinido</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Prefer Default Audio Track</source>
         <extracomment>Setup wizard switch for playing the track the file marks as default</extracomment>
-        <translation>Preferir faixa de áudio predefinida</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pick the track the file marks as default before matching languages</source>
         <extracomment>Under the Prefer Default Audio Track switch in the setup wizard</extracomment>
-        <translation>Dar prioridade à faixa de áudio marcada como predefinida nos metadados do ficheiro antes de comparar os idiomas preferidos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Mode</source>
         <extracomment>Setup wizard row for when subtitles turn on</extracomment>
-        <translation>Modo de legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Default Subtitle Language</source>
         <extracomment>Setup wizard row for the preferred subtitle language</extracomment>
-        <translation>Idioma predefinido das legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Automatically loads and displays subtitles every time a video starts.</source>
         <extracomment>Describes the Always Play subtitle mode</extracomment>
-        <translation>Carrega e mostra legendas automaticamente sempre que um vídeo começa.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Automatically turns on subtitles if the default audio track is in a foreign language.</source>
         <extracomment>Describes the Smart subtitle mode</extracomment>
-        <translation>Ativa as legendas automaticamente se a faixa de áudio predefinida estiver num idioma estrangeiro.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Only loads subtitles explicitly tagged with the forced metadata flag.</source>
         <extracomment>Describes the Only Forced subtitle mode</extracomment>
-        <translation>Carrega apenas legendas explicitamente marcadas com o sinalizador de metadados &quot;forced&quot;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Completely disables automatic subtitle loading.</source>
         <extracomment>Describes the None subtitle mode</extracomment>
-        <translation>Desativa completamente o carregamento automático de legendas.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Plays tracks internally flagged in the media file&apos;s metadata as &quot;default&quot; or &quot;forced&quot;.</source>
         <extracomment>Describes the Default subtitle mode</extracomment>
-        <translation>Reproduz faixas marcadas internamente nos metadados do ficheiro multimédia como &quot;default&quot; ou &quot;forced&quot;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unlock notifications</source>
         <extracomment>Achievements screen switch for the Achievement Badges plugin&apos;s unlock banners</extracomment>
-        <translation>Notificações de conquistas desbloqueadas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show a notification when you unlock a badge</source>
         <extracomment>Under the Unlock notifications switch on the achievements screen</extracomment>
-        <translation>Mostrar uma notificação quando desbloqueares uma insígnia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not save your settings.</source>
         <extracomment>Shown under the Unlock notifications switch when the plugin wouldnt save it</extracomment>
-        <translation>Não foi possível guardar as tuas definições.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Achievement unlocked</source>
         <extracomment>Banner heading for one badge the user just unlocked</extracomment>
-        <translation>Conquista desbloqueada</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} achievements unlocked</source>
+        <extracomment>Banner heading for several badges unlocked at once</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+{0} more</source>
+        <extracomment>After the first few badge names in a banner, how many more there are</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show friends button</source>
+        <extracomment>Navigation bar setting for the Friends button</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Friends and chat from the Achievement Badges plugin</source>
         <extracomment>Under the Show friends button setting</extracomment>
-        <translation>Amigos e conversas através do plugin Achievement Badges</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Friends</source>
         <extracomment>Friends and chat from the Achievement Badges plugin, as a settings entry, a button and a screen title</extracomment>
-        <translation>Amigos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>See who&apos;s online and chat with people on this server</source>
         <extracomment>Under the Friends entry</extracomment>
-        <translation>Ver quem está online e conversar com pessoas deste servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Friend requests</source>
         <extracomment>Friends screen row and title for requests to and from other users</extracomment>
-        <translation>Pedidos de amizade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add friends</source>
         <extracomment>Friends screen row and title for finding people to add</extracomment>
-        <translation>Adicionar amigos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Privacy</source>
         <extracomment>Friends screen row and title for what friends can see</extracomment>
-        <translation>Privacidade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>New message</source>
         <extracomment>Starts a chat with one friend</extracomment>
-        <translation>Nova mensagem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>New group</source>
         <extracomment>Starts a group chat, and names one that was left untitled</extracomment>
-        <translation>Novo grupo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Group info</source>
         <extracomment>Opens the members and settings of a group chat</extracomment>
-        <translation>Informações do grupo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add people</source>
         <extracomment>Adds friends to a group chat</extracomment>
-        <translation>Adicionar pessoas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>That didn&apos;t work. Try again in a moment.</source>
         <extracomment>A friends or chat change the server turned down without saying why</extracomment>
-        <translation>Não foi possível concluir. Tenta novamente dentro de momentos.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request sent to {0}</source>
+        <extracomment>A friend request went to that user</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Watching {0}</source>
+        <extracomment>What an online friend is watching</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Online</source>
         <extracomment>A friend who is on now, and the heading over them</extracomment>
-        <translation>Online</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last watched {0}</source>
+        <extracomment>What an offline friend watched last</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last seen {0}</source>
+        <extracomment>When an offline friend was last on, like 5m ago</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Offline</source>
         <extracomment>A friend who isnt on, and the heading over them</extracomment>
-        <translation>Offline</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No unread messages</source>
         <extracomment>Under the Messages row when nothing is unread</extracomment>
-        <translation>Nenhuma mensagem por ler</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 unread message</source>
         <extracomment>Under the Messages row</extracomment>
-        <translation>1 mensagem por ler</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} unread messages</source>
+        <extracomment>Under the Messages row</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nothing waiting</source>
         <extracomment>Under the Friend requests row when none are waiting</extracomment>
-        <translation>Nenhum pedido pendente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 waiting for you</source>
         <extracomment>Under the Friend requests row</extracomment>
-        <translation>1 pedido à tua espera</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} waiting for you</source>
+        <extracomment>Under the Friend requests row</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Photo</source>
         <extracomment>Stands in for a photo sent in a chat</extracomment>
-        <translation>Fotografia</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You: {0}</source>
+        <extracomment>A chat preview of the last message, when the user sent it</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not load this. Check your connection and try again.</source>
         <extracomment>A friends screen the server didnt answer</extracomment>
-        <translation>Não foi possível carregar. Verifica a ligação e tenta novamente.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Find people on this server</source>
         <extracomment>Under the Add friends row</extracomment>
-        <translation>Encontrar pessoas neste servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>What your friends can see</source>
         <extracomment>Under the Privacy row</extracomment>
-        <translation>O que os teus amigos podem ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No friends yet. Add people from this server to see them here.</source>
         <extracomment>Friends screen with no friends</extracomment>
-        <translation>Ainda não tens amigos. Adiciona pessoas deste servidor para as veres aqui.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} keeps their profile private.</source>
+        <extracomment>A user who hides their profile</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Best streak: {0} days</source>
+        <extracomment>A user&apos;s best watch streak on their profile</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Showcase</source>
         <extracomment>The badges a user chose to show on their profile</extracomment>
-        <translation>Destaques</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove {0} from your friends? You can add them again later.</source>
+        <extracomment>Asked before removing a friend</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove friend</source>
         <extracomment>Removes a friend</extracomment>
-        <translation>Remover amigo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unblock {0}?</source>
+        <extracomment>Asked before unblocking a user</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unblock</source>
         <extracomment>Lets a blocked user message again</extracomment>
-        <translation>Desbloquear</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Block {0}? Neither of you will be able to message the other directly. Group chats you share stay open.</source>
+        <extracomment>Asked before blocking a user</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Block</source>
         <extracomment>Stops a user messaging you directly</extracomment>
-        <translation>Bloquear</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Send message</source>
         <extracomment>Opens a chat with this friend</extracomment>
-        <translation>Enviar mensagem</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open {0}</source>
+        <extracomment>Opens the title a friend is watching</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add as friend</source>
         <extracomment>Sends this user a friend request</extracomment>
-        <translation>Adicionar como amigo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No friend requests.</source>
         <extracomment>Friend requests screen with none either way</extracomment>
-        <translation>Nenhum pedido de amizade.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Waiting for you</source>
         <extracomment>Heading over friend requests other users sent</extracomment>
-        <translation>À tua espera</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} wants to be friends</source>
+        <extracomment>Under a friend request from that user</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Decline</source>
         <extracomment>Turns down a friend request</extracomment>
-        <translation>Recusar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Accept</source>
         <extracomment>Accepts a friend request</extracomment>
-        <translation>Aceitar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sent by you</source>
         <extracomment>Heading over friend requests the user sent</extracomment>
-        <translation>Enviados por ti</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel request</source>
         <extracomment>Takes back a friend request the user sent</extracomment>
-        <translation>Cancelar pedido</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take back the request you sent to {0}?</source>
+        <extracomment>Asked before taking back a friend request</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Search people</source>
         <extracomment>Placeholder and keyboard title for searching users</extracomment>
-        <translation>Pesquisar pessoas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No one matches that name.</source>
         <extracomment>A people search that found nobody</extracomment>
-        <translation>Ninguém corresponde a esse nome.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mute during playback</source>
         <extracomment>Friends privacy switch for message banners during playback</extracomment>
-        <translation>Silenciar durante a reprodução</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No message banners while a video is playing</source>
+        <extracomment>Under the Mute during playback switch</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Blocked users</source>
         <extracomment>Heading over the users the user blocked</extracomment>
-        <translation>Utilizadores bloqueados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Appear offline</source>
         <extracomment>Friends privacy switch</extracomment>
-        <translation>Aparecer offline</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Friends always see you as offline</source>
         <extracomment>Under the Appear offline switch</extracomment>
-        <translation>Os amigos veem-te sempre como offline</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide what I&apos;m watching</source>
         <extracomment>Friends privacy switch</extracomment>
-        <translation>Ocultar o que estou a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Friends still see you online, but not what&apos;s playing</source>
         <extracomment>Under the Hide what I&apos;m watching switch</extracomment>
-        <translation>Os amigos continuam a ver-te online, mas não sabem o que estás a reproduzir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide my last watched</source>
         <extracomment>Friends privacy switch</extracomment>
-        <translation>Ocultar o último conteúdo que vi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Friends won&apos;t see what you watched last while you&apos;re offline</source>
         <extracomment>Under the Hide my last watched switch</extracomment>
-        <translation>Os amigos não veem o último conteúdo que viste quando estás offline</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Message notifications</source>
         <extracomment>Friends privacy switch for message banners</extracomment>
-        <translation>Notificações de mensagens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show a banner when a friend messages you</source>
         <extracomment>Under the Message notifications switch</extracomment>
-        <translation>Mostrar um banner quando um amigo te enviar uma mensagem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Start a chat with a friend</source>
         <extracomment>Under the New message row</extracomment>
-        <translation>Iniciar uma conversa com um amigo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Chat with several friends at once</source>
         <extracomment>Under the New group row</extracomment>
-        <translation>Conversar com vários amigos ao mesmo tempo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No messages yet.</source>
         <extracomment>A chat or chat list with nothing in it</extracomment>
-        <translation>Ainda não há mensagens.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Group name</source>
         <extracomment>Label and keyboard title for naming a group chat</extracomment>
-        <translation>Nome do grupo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pick at least two friends</source>
         <extracomment>How many friends a new group needs</extracomment>
-        <translation>Escolher pelo menos dois amigos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create group</source>
         <extracomment>Makes the group chat</extracomment>
-        <translation>Criar grupo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>edited</source>
         <extracomment>Beside the time of a chat message that was changed</extracomment>
-        <translation>editada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seen</source>
         <extracomment>Beside the last message the user sent, once someone read it</extracomment>
-        <translation>Visualizada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sent</source>
         <extracomment>Beside the last message the user sent, before anyone read it</extracomment>
-        <translation>Enviada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Edit</source>
         <extracomment>Changes a chat message the user sent</extracomment>
-        <translation>Editar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete this message for everyone?</source>
         <extracomment>Asked before deleting a chat message</extracomment>
-        <translation>Eliminar esta mensagem para todos?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Editing message</source>
         <extracomment>Shown while the user changes a chat message</extracomment>
-        <translation>A editar mensagem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Write a message</source>
         <extracomment>Placeholder and keyboard title for a chat message</extracomment>
-        <translation>Escrever uma mensagem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Send</source>
         <extracomment>Sends a chat message</extracomment>
-        <translation>Enviar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1 member</source>
         <extracomment>How many people are in a group chat</extracomment>
-        <translation>1 membro</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>{0} members</source>
+        <extracomment>How many people are in a group chat</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You</source>
         <extracomment>The user themselves in a group member list</extracomment>
-        <translation>Tu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Owner</source>
         <extracomment>The member who made a group chat</extracomment>
-        <translation>Proprietário</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Admin</source>
         <extracomment>A member who can manage a group chat</extracomment>
-        <translation>Administrador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove admin</source>
         <extracomment>Takes a member off the group admins</extracomment>
-        <translation>Retirar função de administrador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Make admin</source>
         <extracomment>Lets a member manage the group chat</extracomment>
-        <translation>Tornar administrador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove from group</source>
         <extracomment>Takes a member out of a group chat</extracomment>
-        <translation>Remover membro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No one left to add.</source>
         <extracomment>Every friend is already in the group chat</extracomment>
-        <translation>Não há mais pessoas para adicionar.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Clear conversation</source>
         <extracomment>Deletes every message in a group chat</extracomment>
-        <translation>Limpar conversa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Leave group</source>
         <extracomment>Leaves a group chat</extracomment>
-        <translation>Sair do grupo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Leave this group? Someone will have to add you back to rejoin.</source>
         <extracomment>Asked before leaving a group chat</extracomment>
-        <translation>Sair deste grupo? Para voltares a participar, alguém terá de te adicionar novamente.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete every message in this chat for everyone in it?</source>
         <extracomment>Asked before clearing a group chat</extracomment>
-        <translation>Eliminar todas as mensagens desta conversa para todos os participantes?</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New message from {0}</source>
+        <extracomment>Banner heading for a chat message from that user</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seasonal Effects</source>
         <extracomment>Settings page and section for the seasonal effects drawn over the home screen</extracomment>
-        <translation>Efeitos sazonais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Visual effects and seasonal decorations</source>
         <extracomment>Under the Seasonal Effects settings page</extracomment>
-        <translation>Efeitos visuais e decorações sazonais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seasonal Surprise</source>
         <extracomment>Setting that picks the seasonal effect drawn over the home screen</extracomment>
-        <translation>Surpresa sazonal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Snow</source>
         <extracomment>Seasonal effect</extracomment>
-        <translation>Neve</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Christmas</source>
         <extracomment>Seasonal effect of snow with baubles and stars</extracomment>
-        <translation>Natal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fireworks</source>
         <extracomment>Seasonal effect</extracomment>
-        <translation>Fogos de artifício</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Confetti</source>
         <extracomment>Seasonal effect</extracomment>
-        <translation>Confetes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spring Petals</source>
         <extracomment>Seasonal effect of falling blossom petals with bees</extracomment>
-        <translation>Pétalas de primavera</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fireflies</source>
         <extracomment>Seasonal effect</extracomment>
-        <translation>Pirilampos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Falling Leaves</source>
         <extracomment>Seasonal effect</extracomment>
-        <translation>Folhas a cair</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Density</source>
         <extracomment>Setting for how many seasonal particles are drawn</extracomment>
-        <translation>Densidade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Light</source>
         <extracomment>Seasonal effect density with the fewest particles</extracomment>
-        <translation>Baixa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Normal</source>
         <extracomment>Seasonal effect density</extracomment>
-        <translation>Normal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Heavy</source>
         <extracomment>Seasonal effect density with the most particles</extracomment>
-        <translation>Alta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Settings Sync</source>
         <extracomment>Title of the settings sync panel and the settings group that opens it</extracomment>
-        <translation>Sincronização de definições</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Plugin Sync</source>
+        <extracomment>Settings entry that opens the settings sync panel</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sync status, profile, load, save and reset</source>
+        <extracomment>Description of the Server Plugin Sync setting</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This device syncs with the profile you pick until you pick another.</source>
         <extracomment>Caption under the Profile heading on the settings sync panel</extracomment>
-        <translation>Este dispositivo sincroniza com o perfil escolhido até selecionares outro.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Desktop</source>
         <extracomment>Settings sync profile shared by computers</extracomment>
-        <translation>Ambiente de trabalho</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mobile</source>
         <extracomment>Settings sync profile shared by phones and tablets</extracomment>
-        <translation>Móvel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>TV</source>
         <extracomment>Settings sync profile shared by TV apps</extracomment>
-        <translation>TV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Applies everywhere</source>
         <extracomment>Under the Global settings sync profile</extracomment>
-        <translation>Aplica-se em todos os dispositivos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Overrides Global</source>
         <extracomment>Under a device settings sync profile, whose settings win over the Global ones</extracomment>
-        <translation>Substitui o perfil global</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This device</source>
         <extracomment>Under the settings sync profile this kind of device follows by default</extracomment>
-        <translation>Este dispositivo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Load</source>
         <extracomment>Settings sync button that copies the profile from the server to this device</extracomment>
-        <translation>Carregar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Server to this device</source>
         <extracomment>Under the Load button on the settings sync panel</extracomment>
-        <translation>Do servidor para este dispositivo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This device to server</source>
         <extracomment>Under the Save button on the settings sync panel</extracomment>
-        <translation>Deste dispositivo para o servidor</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset {0} Profile</source>
+        <extracomment>Settings sync button, {0} is the profile name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connected, version {0}</source>
+        <extracomment>Settings sync panel, {0} is the Moonbase plugin version</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Plugin Not Detected</source>
         <extracomment>Settings sync panel when the Moonbase plugin can&apos;t be reached</extracomment>
-        <translation>Plugin não detetado</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install Moonbase on your server and turn on Enable Plugin.</source>
+        <extracomment>Settings sync panel when the Moonbase plugin can&apos;t be reached</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings sync is turned off on the server.</source>
+        <extracomment>Settings sync panel when the server admin has switched sync off</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sync on</source>
         <extracomment>Under the settings sync switch while it is on</extracomment>
-        <translation>Sincronização ativada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sync off</source>
         <extracomment>Under the settings sync switch while it is off</extracomment>
-        <translation>Sincronização desativada</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset the {0} profile?</source>
+        <extracomment>Title of the prompt before a settings sync profile is reset, {0} is the profile name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The server forgets what this profile holds, and every synced setting on this device goes back to its default.</source>
+        <extracomment>Prompt before a device settings sync profile is reset</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The server forgets every profile it holds for you, and every synced setting on this device goes back to its default.</source>
+        <extracomment>Prompt before the Global settings sync profile is reset</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loaded the {0} profile</source>
+        <extracomment>Note after settings were loaded from the server, {0} is the profile name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load settings from the server</source>
+        <extracomment>Note when loading settings from the server failed</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved to the {0} profile</source>
+        <extracomment>Note after this device&apos;s settings were saved to the server, {0} is the profile name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t save settings to the server</source>
+        <extracomment>Note when saving settings to the server failed</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset the {0} profile</source>
+        <extracomment>Note after a settings sync profile was reset, {0} is the profile name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t reset the {0} profile</source>
+        <extracomment>Note when resetting a settings sync profile failed, {0} is the profile name</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>24-Hour Clock</source>
-        <translation>Relógio de 24 horas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>APP INFO</source>
-        <translation>INFORMAÇÕES DA APLICAÇÃO</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Source Code</source>
-        <translation>Código-fonte</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Report an Issue</source>
-        <translation>Comunicar um problema</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Open the issue tracker on GitHub</source>
-        <translation>Abrir a página de problemas no GitHub</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Join Discord</source>
-        <translation>Juntar-se ao Discord</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Chat with the community</source>
-        <translation>Conversa com a comunidade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>LEGAL</source>
-        <translation>JURÍDICO</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Licenses</source>
-        <translation>Licenças</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Open-source license notices</source>
-        <translation>Avisos de licença de código aberto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Privacy Policy</source>
-        <translation>Política de privacidade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How Moonfin handles your data</source>
-        <translation>Como Moonfin trata os teus dados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Scan with your phone to open this link</source>
-        <translation>Lê o código com o telemóvel para abrir este link</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ASS/SSA Direct Play</source>
-        <translation>Reprodução direta ASS/SSA</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>AUDIO</source>
-        <translation>ÁUDIO</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Above bar, center</source>
-        <translation>Acima da barra ao centro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Above bar, left</source>
-        <translation>Acima da barra à esquerda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Above bar, right</source>
-        <translation>Acima da barra à direita</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Additional Ratings</source>
-        <translation>Classificações adicionais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Advanced</source>
-        <translation>Avançado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>App Theme</source>
-        <translation>Tema da aplicação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Audio Stream</source>
-        <translation>Fluxo de áudio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Auto Advance</source>
-        <translation>Avanço automático</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Auto Advance Interval</source>
-        <translation>Intervalo de avanço automático</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Auto Login</source>
-        <translation>Início de sessão automático</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Automatic Queuing</source>
-        <translation>Fila automática</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Automatically advance to next slide</source>
-        <translation>Avançar automaticamente para a imagem seguinte</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Automatically play the next episode when available.</source>
-        <translation>Reproduzir automaticamente o próximo episódio quando disponível.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Automatically show tab content while browsing tabs. Turn off to open and close each tab manually.</source>
-        <translation>Mostra automaticamente o conteúdo dos separadores enquanto navegas. Desativa para abrires e fechares cada separador manualmente.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Background Blur</source>
-        <translation>Desfoque do fundo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Below bar, center</source>
-        <translation>Abaixo da barra ao centro</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Below bar, left</source>
-        <translation>Abaixo da barra à esquerda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Below bar, right</source>
-        <translation>Abaixo da barra à direita</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Browsing Background Blur</source>
-        <translation>Desfoque de fundo ao navegar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>COLLECTIONS</source>
-        <translation>COLEÇÕES</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>CONTINUE WATCHING AND NEXT UP</source>
-        <translation>CONTINUAR A VER E A SEGUIR</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Capture media, login and network logs and send them to the server as a report</source>
-        <translation>Registar a reprodução, os inícios de sessão e a atividade de rede para um relatório que podes enviar ao servidor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Change PIN</source>
-        <translation>Alterar PIN</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Change subtitle modes, default languages, appearance, and rendering options.</source>
-        <translation>Altera os modos de legendas, os idiomas predefinidos, o aspeto e as opções de renderização.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose and reorder what metadata the details screen shows</source>
-        <translation>Escolher e ordenar os metadados apresentados no ecrã de detalhes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose between various media bar styles, or turn the media bar off</source>
-        <translation>Escolhe entre vários estilos de barra de conteúdo ou desativa a barra de conteúdo</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose how many Since You Watched rows to display (1-5)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose sorting method for completed items</source>
-        <translation>Escolher o método de ordenação dos itens concluídos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose type of items to recommend</source>
-        <translation>Escolher o tipo de itens a recomendar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose what is shown here, or hide it.</source>
-        <translation>Escolher o que aparece aqui ou ocultar esta indicação.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose what is shown on the right side of the music progress bar.</source>
-        <translation>Escolher o que aparece à direita da barra de progresso da música.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose which buttons the details screen shows</source>
-        <translation>Escolher os botões apresentados no ecrã de detalhes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose which buttons the player shows</source>
-        <translation>Escolher os botões apresentados no leitor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose which source item to base recommendations on</source>
-        <translation>Escolher o item de referência para as recomendações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose which time labels appear around the playback progress bar.</source>
-        <translation>Escolher as indicações de tempo apresentadas junto da barra de progresso.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classic is the original centered moonfin layout. Modern is a responsive cinematic layout. Spotlight is a hero-first layout with pop-up content cards. Nouveau is a full-screen layout with sections stacked down the page. Minimalist is artwork, one play button and the episodes.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Classic keeps per-row image type and info overlay. Modern uses portrait-to-backdrop rows.</source>
-        <translation>Clássico mantém o tipo de imagem e as informações sobrepostas de cada secção. Moderno apresenta cartões que passam de imagens verticais para imagens de fundo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Clock Display</source>
-        <translation>Visualização do relógio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Combine separate libraries of the same type for Recently Added and Recently Released home rows.</source>
-        <translation>Combinar bibliotecas do mesmo tipo nas secções Adicionados recentemente e Lançados recentemente da página inicial.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure Popular, Top Rated, and Trending TMDB lists.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Configure the maximum channels of your audio setup. Multichannel streams exceeding this limit will downmix or transcode.</source>
-        <translation>Configura o número máximo de canais do teu sistema de áudio. Os fluxos multicanal que excederem este limite serão misturados em menos canais ou transcodificados.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Controls, seeking, player buttons, and trick play</source>
-        <translation>Controlos, navegação no vídeo, botões do leitor e pré-visualização</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Customize how many action buttons appear before folding into the More Actions menu.</source>
-        <translation>Personalizar o número de botões de ação visíveis antes de os restantes passarem para o menu Mais ações.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Customize padding between home rows</source>
-        <translation>Personalizar o espaçamento entre as secções da página inicial</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Customize subtitle appearance</source>
-        <translation>Personalizar a aparência das legendas</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details Screen Backdrop</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Details Screen Style</source>
-        <translation>Estilo do ecrã de detalhes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Diagnostics &amp; Logging</source>
-        <translation>Diagnóstico e registos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Direct play ASS/SSA subtitles</source>
-        <translation>Legendas ASS/SSA com reprodução direta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Audio Rows</source>
-        <translation>Mostrar secções de áudio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Collections Rows</source>
-        <translation>Mostrar secções de coleções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Favorites Rows</source>
-        <translation>Mostrar secções de favoritos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Genres Rows</source>
-        <translation>Mostrar secções de géneros</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Playlist Rows</source>
-        <translation>Mostrar secções de playlists</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Rewatch Row</source>
-        <translation>Mostrar secção Voltar a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display Studio Row</source>
-        <translation>Mostrar secção de estúdios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display customizable posters that expand on focus. Disable to always show landscape thumbnail.</source>
-        <translation>Mostrar cartazes personalizáveis que se expandem quando selecionados. Desativa para mostrar sempre miniaturas horizontais.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Donate a coffee to the developer</source>
-        <translation>Oferecer um café ao programador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enable PIN Code</source>
-        <translation>Ativar código PIN</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enable and reorder the rating sources shown throughout the app</source>
-        <translation>Ativa e reordena as fontes de classificação mostradas em toda a aplicação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Expand TV shows to display each episode separately.</source>
-        <translation>Expandir as séries para mostrar cada episódio individualmente.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Expanded Tabs</source>
-        <translation>Separadores expandidos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.</source>
-        <translation>Expandido mostra um cartão completo com a imagem e a descrição do episódio. Mínimo mostra uma contagem decrescente compacta. Desativado oculta a apresentação por completo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>FAVORITES</source>
-        <translation>FAVORITOS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Featured content, appearance</source>
-        <translation>Conteúdo em destaque, aparência</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>GENRES</source>
-        <translation>GÉNEROS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>HDR</source>
-        <translation>HDR</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide Collection associated library items when browsing libraries</source>
-        <translation>Ocultar itens da biblioteca associados a coleções ao navegar pelas bibliotecas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide Media Description</source>
-        <translation>Ocultar descrição do conteúdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide adult content in results</source>
-        <translation>Ocultar conteúdo adulto nos resultados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Hide the movie or episode descriptive text.</source>
-        <translation>Ocultar o texto descritivo do filme ou do episódio.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home Screen Backdrop</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>How long a show stays in Next Up after you last watched it</source>
-        <translation>Durante quanto tempo uma série permanece em A seguir após a última vez que a viste</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>IMDb</source>
-        <translation>IMDb</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Include Collections</source>
-        <translation>Incluir coleções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Include Movies</source>
-        <translation>Incluir filmes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Include Previously Watched</source>
-        <translation>Incluir conteúdo já visto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Include Shows</source>
-        <translation>Incluir séries</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Include watched items in recommendations</source>
-        <translation>Incluir itens já vistos nas recomendações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Letterboxd</source>
-        <translation>Letterboxd</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Library Backdrops</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.</source>
-        <translation>Limitar a resolução máxima pedida pelo leitor. O conteúdo com maior resolução será transcodificado para uma resolução inferior.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Logging</source>
-        <translation>Registo de atividade</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loop Theme Music</source>
-        <translation>Repetir música temática</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Manage</source>
-        <translation>Gerir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Max Audio Channels</source>
-        <translation>Máximo de canais de áudio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Max Resolution</source>
-        <translation>Resolução máxima</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Max days in Next Up</source>
-        <translation>Máximo de dias em A seguir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Media Bar Style</source>
-        <translation>Estilo da barra de conteúdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Media Player Behavior</source>
-        <translation>Comportamento do leitor multimédia</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Media Segment Countdown</source>
-        <translation>Contagem decrescente dos segmentos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Media request integration</source>
-        <translation>Integração de pedido de conteúdo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Metacritic</source>
-        <translation>Metacritic</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Metacritic (User)</source>
-        <translation>Metacritic (utilizador)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moonbase plugin sync and customization profiles</source>
-        <translation>Sincronização com o plugin Moonbase e perfis de personalização</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Moonfin scores your own library, Jellyfin takes the picks from the server, TMDb uses Seerr, and Hybrid leads with the server then tops up locally</source>
-        <translation>O Moonfin ordena os itens da tua biblioteca por relevância. O Jellyfin utiliza as recomendações do servidor. O TMDB utiliza o Seerr. Híbrido começa pelas recomendações do servidor e acrescenta sugestões locais.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Music Player</source>
-        <translation>Leitor de música</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>My Rating</source>
-        <translation>A minha classificação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>MyAnimeList</source>
-        <translation>MyAnimeList</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>NSFW Filter</source>
-        <translation>Filtro NSFW</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Navbar style, toolbar buttons, appearance</source>
-        <translation>Estilo da barra de navegação, botões da barra de ferramentas, aparência</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Navigation, home screen, libraries, details page, and themes</source>
-        <translation>Navegação, página inicial, bibliotecas, página de detalhes e temas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Next Up Display</source>
-        <translation>Apresentação de A seguir</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Rows to Add</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Only the sections the current Details screen style can show are listed. Hiding one hides it in every style that has it.</source>
-        <translation>Só são apresentadas as secções disponíveis no estilo atual do ecrã de detalhes. Ocultar uma secção oculta-a em todos os estilos que a incluam.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>PLAYLISTS</source>
-        <translation>PLAYLISTS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Play is always first. Everything else is up to you.</source>
-        <translation>Reproduzir aparece sempre primeiro. Podes escolher os restantes.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Play theme music on detail pages</source>
-        <translation>Reproduzir música temática nas páginas de detalhes</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Play trailers/prerolls before a main feature</source>
-        <translation>Reproduzir trailers ou vídeos de abertura antes do conteúdo principal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playback Enhancements</source>
-        <translation>Melhorias de reprodução</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Playback controls are always shown. Everything below is up to you.</source>
-        <translation>Os controlos de reprodução estão sempre visíveis. Podes escolher os restantes abaixo.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Prefer Audio Description Tracks</source>
-        <translation>Preferir faixas de audiodescrição</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Prefer audio description tracks over normal tracks.</source>
-        <translation>Preferir faixas de audiodescrição em vez das faixas normais.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Press left or right to move the highlighted button.</source>
-        <translation>Prime esquerda ou direita para mover o botão selecionado.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Prioritize SDH/CC subtitle tracks when auto-selecting.</source>
-        <translation>Prioriza faixas de legenda SDH/CC ao selecionar automaticamente.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RECENTLY ADDED</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>REWATCH</source>
-        <translation>VOLTAR A VER</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rating Badges</source>
-        <translation>Selos de classificação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rating Labels</source>
-        <translation>Etiquetas de classificação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rating Sources</source>
-        <translation>Fontes de classificação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Read the recorded log and send a report</source>
-        <translation>Consultar os registos guardados e enviar um relatório</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recommendation Source</source>
-        <translation>Fonte de recomendações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recommendation System</source>
-        <translation>Sistema de recomendações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Repeat the track instead of playing it once</source>
-        <translation>Repetir a faixa em vez de a reproduzir uma única vez</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Replace Skip Outro with Next Up Display</source>
-        <translation>Substituir Saltar créditos finais por A seguir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Replace thumbnails on the details page with the series thumbnail</source>
-        <translation>Substituir miniaturas na página de detalhes pela miniatura da série</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reports</source>
-        <translation>Relatórios</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Roger Ebert</source>
-        <translation>Roger Ebert</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rotten Tomatoes (Audience)</source>
-        <translation>Rotten Tomatoes (público)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rotten Tomatoes (Critics)</source>
-        <translation>Rotten Tomatoes (crítica)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Row Padding</source>
-        <translation>Espaçamento entre secções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Row Type</source>
-        <translation>Tipo de secção</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Run setup again</source>
-        <translation>Executar configuração novamente</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>SINCE YOU WATCHED</source>
-        <translation>PORQUE VISTE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>STUDIOS</source>
-        <translation>ESTÚDIOS</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send Crash Reports to Server</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Audio rows in Home Sections.</source>
-        <translation>Mostrar secções de áudio na página inicial.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Collections rows in Home Sections.</source>
-        <translation>Mostrar secções de coleções na página inicial.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Favorite Movies, Series, and other favorite rows in Home Sections.</source>
-        <translation>Mostrar filmes, séries e outras secções de favoritos na página inicial.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Friends Button</source>
-        <translation>Mostrar botão de amigos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Genres rows in Home Sections.</source>
-        <translation>Mostrar secções de géneros na página inicial.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Individual Episodes</source>
-        <translation>Mostrar episódios individuais</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show MDBList and TMDB ratings</source>
-        <translation>Mostrar classificações MDBList e TMDB</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Messages Button</source>
-        <translation>Mostrar botão Mensagens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Movies, Series, or both in Genres rows.</source>
-        <translation>Mostrar filmes, séries ou ambos nas secções de géneros.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Playlist rows in Home Sections.</source>
-        <translation>Mostrar secções de playlists na página inicial.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Rewatch row in Home Sections</source>
-        <translation>Mostrar a secção Voltar a ver na página inicial</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Studio row in Home Sections.</source>
-        <translation>Mostrar a secção de estúdios na página inicial.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Technical Details</source>
-        <translation>Mostrar detalhes técnicos</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Text</source>
-        <translation>Mostrar texto</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show captions on YouTube trailers</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show codec, resolution, and stream information in banner summary</source>
-        <translation>Mostrar o codec, a resolução e as informações do fluxo no resumo do banner</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show decorative badges behind ratings</source>
-        <translation>Mostrar emblemas decorativos atrás das classificações</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show labels next to rating icons</source>
-        <translation>Mostrar etiquetas ao lado dos ícones de classificação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show libraries from all connected servers</source>
-        <translation>Mostrar bibliotecas de todos os servidores ligados</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show ratings on individual episodes</source>
-        <translation>Mostrar classificações em episódios individuais</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show season availability badges on media details pages</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show the Next Up overlay instead of the Skip Outro button.</source>
-        <translation>Mostrar a apresentação de A seguir em vez do botão Saltar créditos finais.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show the Seerr button in the navigation bar</source>
-        <translation>Mostrar o botão Seerr na barra de navegação</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show watched TV shows in the rewatch row</source>
-        <translation>Mostrar séries já vistas na secção Voltar a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show watched collections in the rewatch row</source>
-        <translation>Mostrar coleções já vistas na secção Voltar a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show watched movies in the rewatch row</source>
-        <translation>Mostrar filmes já vistos na secção Voltar a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Shuffle Content Type Filter</source>
-        <translation>Filtro de tipo de conteúdo aleatório</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sign-in, PIN code, Kids Mode, parental controls, and settings sync</source>
-        <translation>Início de sessão, PIN, modo infantil, controlo parental e sincronização de definições</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sort Collections rows by date added, release date, alphabetically, and more.</source>
-        <translation>Ordenar as secções de coleções por data de adição, data de lançamento, ordem alfabética e outros critérios.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sort Genres rows by date added, release date, alphabetically, and more.</source>
-        <translation>Ordenar as secções de géneros por data de adição, data de lançamento, ordem alfabética e outros critérios.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Source Collections</source>
-        <translation>Coleções de origem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Source Item</source>
-        <translation>Item de origem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Source Libraries</source>
-        <translation>Bibliotecas de origem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Source Type</source>
-        <translation>Tipo de origem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Still Watching Prompt</source>
-        <translation>Perguntar se ainda estás a ver</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Rendering</source>
-        <translation>Renderização de legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Subtitle Stream</source>
-        <translation>Fluxo de legendas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Choose what the Radarr and Sonarr rows show.</source>
-        <translation>Escolher o que as secções do Radarr e do Sonarr mostram.</translation>
+        <source>Toggle Upcoming Calendars from Radarr/Sonarr.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Trakt</source>
-        <translation>Trakt</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Turn metadata items on or off, and arrange the order they appear on the details screen.</source>
-        <translation>Ativar ou desativar os metadados e definir a ordem em que aparecem no ecrã de detalhes.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Turn rows on or off and change their order</source>
-        <translation>Ativar, desativar e ordenar secções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Use 24-hour time formatting wherever the clock is shown</source>
-        <translation>Utiliza a formatação de 24 horas sempre que o relógio for mostrado</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Use Series Thumbnails</source>
-        <translation>Utilizar miniaturas da série</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version {0}</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Video Player</source>
-        <translation>Leitor de vídeo</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?</source>
-        <translation>Ao retomar a reprodução (a partir de Continuar a ver ou de uma página de item de conteúdo), quantos segundos devem ser retrocedidos?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>When resuming playback after pressing the pause button, how many seconds should be rewound?</source>
-        <translation>Número de segundos a retroceder ao retomar a reprodução depois de uma pausa.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>White is much brighter in HDR than in SDR, so a dimmer style here avoids the glare</source>
-        <translation>O branco é muito mais brilhante em HDR do que em SDR. Um estilo menos luminoso evita o encandeamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Genre</source>
-        <translation>Género</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation>Secções</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Seerr</source>
-        <translation>Seerr</translation>
+        <translation type="unfinished"></translation>
+        <extracomment>Heading of a group of disabled rows in the Home Rows editor</extracomment>
+    </message>
+    <message>
+        <source>Genres and Studios</source>
+        <translation type="unfinished"></translation>
         <extracomment>Heading of a group of disabled rows in the Home Rows editor</extracomment>
     </message>
     <message>
         <source>External Lists</source>
-        <translation>Listas externas</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Heading of a group of disabled rows in the Home Rows editor</extracomment>
     </message>
     <message>
+        <source>This account can&apos;t sign in right now. It may be outside its allowed hours, locked or disabled. Try again later or ask an administrator.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Shown when the server refuses a sign in because the account can&apos;t be used right now, for example outside its access schedule</extracomment>
+    </message>
+    <message>
         <source>Lossless</source>
-        <translation>Sem perdas</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Part of the audio quality badge on the music player, for a lossless codec such as FLAC</extracomment>
     </message>
     <message>
+        <source>Collections row</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Under a collection&apos;s own row in the Home Rows editor</extracomment>
+    </message>
+    <message>
+        <source>Collections row from {0}</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Under a collection&apos;s own row in the Home Rows editor when it comes from another server. {0} is that server&apos;s name</extracomment>
+    </message>
+    <message>
+        <source>Genres row</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Under a genre&apos;s own row in the Home Rows editor</extracomment>
+    </message>
+    <message>
+        <source>Playlists row</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Under a playlist&apos;s own row in the Home Rows editor</extracomment>
+    </message>
+    <message>
         <source>Channel</source>
-        <translation>Canal</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel, for the Live TV channel playing</extracomment>
     </message>
     <message>
+        <source>Program</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A row label in the player&apos;s Playback Information panel, for the Live TV program airing now</extracomment>
+    </message>
+    <message>
         <source>Play Method</source>
-        <translation>Método de reprodução</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel: Direct Play, Direct Stream or Transcoding</extracomment>
     </message>
     <message>
+        <source>Why</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A row label in the player&apos;s Playback Information panel, listing why the server is converting the file</extracomment>
+    </message>
+    <message>
         <source>Bitrate</source>
-        <translation>Taxa de bits</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel</extracomment>
     </message>
     <message>
+        <source>Quality Limit</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A row label in the player&apos;s Playback Information panel, for the maximum streaming bitrate the viewer picked</extracomment>
+    </message>
+    <message>
         <source>Resolution</source>
-        <translation>Resolução</translation>
+        <translation type="unfinished"></translation>
+        <extracomment>A row label in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>Frame Rate</source>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel</extracomment>
     </message>
     <message>
         <source>Track</source>
-        <translation>Faixa</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel, naming the audio or subtitle track playing</extracomment>
     </message>
     <message>
+        <source>Delivery</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A row label in the player&apos;s Playback Information panel, for how the subtitles reach the player</extracomment>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A section title in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>Technical</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A section title in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
         <source>Player</source>
-        <translation>Leitor</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel, naming the playback engine</extracomment>
     </message>
     <message>
         <source>Device</source>
-        <translation>Dispositivo</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel, naming this Roku and its OS version</extracomment>
     </message>
     <message>
         <source>Transcode Reasons</source>
-        <translation>Razões de transcodificação</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A row label in the player&apos;s Playback Information panel, followed by the server&apos;s own reason names</extracomment>
     </message>
     <message>
         <source>Direct Stream</source>
-        <translation>Transmissão direta</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A play method in the player&apos;s Playback Information panel, where the server repackages the file without converting it</extracomment>
     </message>
     <message>
         <source>Transcoding</source>
-        <translation>Transcodificação</translation>
+        <translation type="unfinished"></translation>
         <extracomment>A play method in the player&apos;s Playback Information panel, where the server converts the file</extracomment>
     </message>
     <message>
         <source>Mono</source>
-        <translation>Mono</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Audio channels in the player&apos;s Playback Information panel</extracomment>
     </message>
     <message>
         <source>Stereo</source>
-        <translation>Estéreo</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Audio channels in the player&apos;s Playback Information panel</extracomment>
     </message>
     <message>
+        <source>5.1 surround</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Audio channels in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>7.1 surround</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Audio channels in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>{count} channels</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Audio channels in the player&apos;s Playback Information panel. {count} is the number of channels</extracomment>
+    </message>
+    <message>
         <source>Embedded</source>
-        <translation>Integrado</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Subtitle delivery in the player&apos;s Playback Information panel, for subtitles inside the file</extracomment>
     </message>
     <message>
         <source>External</source>
-        <translation>Externo</translation>
+        <translation type="unfinished"></translation>
         <extracomment>Subtitle delivery in the player&apos;s Playback Information panel, for subtitles in a file of their own</extracomment>
+    </message>
+    <message>
+        <source>Burned in by the server</source>
+        <translation type="unfinished"></translation>
+        <extracomment>Subtitle delivery in the player&apos;s Playback Information panel, for subtitles the server draws into the picture</extracomment>
+    </message>
+    <message>
+        <source>{value} (original {original})</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The bitrate row in the player&apos;s Playback Information panel while the server streams the file. {value} is what reaches the device and {original} is the file&apos;s own bitrate</extracomment>
+    </message>
+    <message>
+        <source>{value} (converted from {source})</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A row value in the player&apos;s Playback Information panel when the server converts it, for example AAC (converted from Dolby TrueHD)</extracomment>
+    </message>
+    <message>
+        <source>{value} ({size}, converted from {source})</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The resolution row in the player&apos;s Playback Information panel when the server scales the video, for example 1080p (1920×1080, converted from 4K)</extracomment>
+    </message>
+    <message>
+        <source>Playing the original file as is.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The note under Direct Play in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>The server is repackaging the file without converting it.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The note under Direct Stream in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>The server is converting the video so this device can play it.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The note under Transcoding in the player&apos;s Playback Information panel when only the video is converted</extracomment>
+    </message>
+    <message>
+        <source>The server is converting the audio so this device can play it.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The note under Transcoding in the player&apos;s Playback Information panel when only the audio is converted</extracomment>
+    </message>
+    <message>
+        <source>The server is converting the video and audio so this device can play it.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The note under Transcoding in the player&apos;s Playback Information panel when both are converted</extracomment>
+    </message>
+    <message>
+        <source>The server is converting this file so this device can play it.</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The note under Transcoding in the player&apos;s Playback Information panel when it isn&apos;t known which part is converted</extracomment>
+    </message>
+    <message>
+        <source>Transcoding is forced in settings</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play this file type</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, when the container isn&apos;t supported</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play this video format</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t display this HDR format</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play this audio format</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>Subtitles are being burned into the video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>The file couldn&apos;t be played directly</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for any reason the others don&apos;t cover</extracomment>
+    </message>
+    <message>
+        <source>{bitrate} is above the {limit} streaming limit</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example 68.4 Mbps is above the 20 Mbps streaming limit</extracomment>
+    </message>
+    <message>
+        <source>The bitrate is above the streaming limit</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, when the file&apos;s bitrate is over the limit</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t open {container} files</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t open MKV files</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {codec} video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play HEVC video</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {codec} {profile} video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play HEVC Main 10 video</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {codec} level {level} video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play HEVC level 5.1 video</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {bits}-bit video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play 10-bit video</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {resolution} video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play 4K video</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {fps} fps video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play 59.94 fps video</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play interlaced video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play anamorphic video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t display {range}</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t display Dolby Vision Profile 7</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {format} audio</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play DTS audio</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {fullFormat}</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play Dolby TrueHD with Atmos</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {channels} audio</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play 7.1 audio</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {rate} kHz audio</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play 96 kHz audio</extracomment>
+    </message>
+    <message>
+        <source>This device can&apos;t play {bits}-bit audio</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example This device can&apos;t play 24-bit audio</extracomment>
+    </message>
+    <message>
+        <source>The audio track is in a separate file</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>This device can only play the first audio track</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel</extracomment>
+    </message>
+    <message>
+        <source>{format} subtitles are being burned into the video</source>
+        <translation type="unfinished"></translation>
+        <extracomment>A reason in the player&apos;s Playback Information panel, for example PGS subtitles are being burned into the video</extracomment>
+    </message>
+    <message>
+        <source>Roku native player</source>
+        <translation type="unfinished"></translation>
+        <extracomment>The Player row in the player&apos;s Playback Information panel, naming the Roku&apos;s own video player</extracomment>
+    </message>
+    <message>
+        <source>Keyboard Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Native uses your TV&apos;s own keyboard. Classic is the original Moonfin keyboard. Glass is a frosted panel with larger keys. Docked fills the bottom of the screen and shows what you type above the keys.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Native</source>
+        <extracomment>Keyboard style option: the TV&apos;s own keyboard</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Glass</source>
         <extracomment>Keyboard style option: a see-through panel with larger keys</extracomment>
-        <translation>Glass</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Input</source>
         <extracomment>Settings heading over the keyboard options</extracomment>
-        <translation>Entrada</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Audio &amp; Subtitles</source>
-        <translation>Áudio e legendas</translation>
+        <source>space</source>
+        <extracomment>Label on the on-screen keyboard&apos;s space bar</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Navigation Bar</source>
-        <translation>Barra de navegação</translation>
+        <source>for accents</source>
+        <extracomment>On-screen keyboard hint shown after the remote&apos;s options key, which opens the accents behind a key</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Navigation Style</source>
-        <translation>Estilo de navegação</translation>
-    </message>
-    <message>
-        <source>Media Bar</source>
-        <translation>Barra de conteúdo</translation>
-    </message>
-    <message>
-        <source>Details Page</source>
-        <translation>Página de detalhes</translation>
-    </message>
-    <message>
-        <source>Everything centred in one stack.</source>
-        <translation>Tudo centrado e disposto na vertical.</translation>
-    </message>
-    <message>
-        <source>Hero-first, with pop-up cards for cast and extras.</source>
-        <translation>Destaque para a imagem principal, com cartões sobrepostos para elenco e extras.</translation>
-    </message>
-    <message>
-        <source>Full-screen, with sections stacked instead of tabs.</source>
-        <translation>Ecrã inteiro, com secções na vertical em vez de separadores.</translation>
-    </message>
-    <message>
-        <source>Playlist Sort Options</source>
-        <translation>Opções de ordenação da playlist</translation>
-    </message>
-    <message>
-        <source>Release Order (Ascending)</source>
-        <translation>Ordem de lançamento (crescente)</translation>
-    </message>
-    <message>
-        <source>Release Order (Descending)</source>
-        <translation>Ordem de lançamento (decrescente)</translation>
-    </message>
-    <message>
-        <source>Alphabetical</source>
-        <translation>Alfabético</translation>
-    </message>
-    <message>
-        <source>Display Options</source>
-        <translation>Opções de visualização</translation>
-    </message>
-    <message>
-        <source>Release Date (Ascending)</source>
-        <translation>Data de lançamento (crescente)</translation>
-    </message>
-    <message>
-        <source>Release Date (Descending)</source>
-        <translation>Data de lançamento (decrescente)</translation>
-    </message>
-    <message>
-        <source>Group Contributions</source>
-        <translation>Agrupar contribuições</translation>
-    </message>
-    <message>
-        <source>Group multiple roles</source>
-        <translation>Agrupar vários papéis</translation>
-    </message>
-    <message>
-        <source>Filmography</source>
-        <translation>Filmografia</translation>
-    </message>
-    <message>
-        <source>Custom Order</source>
-        <translation>Ordem personalizada</translation>
-    </message>
-    <message>
-        <source>Saved Servers</source>
-        <translation>Servidores guardados</translation>
-    </message>
-    <message>
-        <source>Discovered Servers</source>
-        <translation>Servidores descobertos</translation>
-    </message>
-    <message>
-        <source>None found</source>
-        <translation>Nenhum encontrado</translation>
-    </message>
-    <message>
-        <source>Add Server</source>
-        <translation>Adicionar servidor</translation>
-    </message>
-    <message>
-        <source>Remove Server</source>
-        <translation>Remover servidor</translation>
-    </message>
-    <message>
-        <source>Server Address</source>
-        <translation>Endereço do servidor</translation>
-    </message>
-    <message>
-        <source>Emby Connect</source>
-        <translation>Emby Connect</translation>
-    </message>
-    <message>
-        <source>Sign in with your Emby Connect account</source>
-        <translation>Inicia sessão com a tua conta Emby Connect</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation>Ligar</translation>
-    </message>
-    <message>
-        <source>Jellyfin</source>
-        <translation>Jellyfin</translation>
-    </message>
-    <message>
-        <source>Continue</source>
-        <translation>Continuar</translation>
-    </message>
-    <message>
-        <source>Who&apos;s watching?</source>
-        <translation>Quem está a ver?</translation>
-    </message>
-    <message>
-        <source>Enter this code on your server&apos;s web dashboard:</source>
-        <translation>Introduz este código no painel web do teu servidor:</translation>
-    </message>
-    <message>
-        <source>Waiting for authorization...</source>
-        <translation>A aguardar autorização...</translation>
-    </message>
-    <message>
-        <source>Quick Connect is disabled</source>
-        <translation>O Quick Connect está desativado</translation>
-    </message>
-    <message>
-        <source>Email or Username</source>
-        <translation>E-mail ou nome de utilizador</translation>
-    </message>
-    <message>
-        <source>Select Server</source>
-        <translation>Selecionar servidor</translation>
-    </message>
-    <message>
-        <source>Sign Out All Users</source>
-        <translation>Terminar sessão de todos os utilizadores</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation>Ativo</translation>
-    </message>
-    <message>
-        <source>Set a new PIN code</source>
-        <translation>Definir um novo código PIN</translation>
-    </message>
-    <message>
-        <source>Remove PIN</source>
-        <translation>Remover PIN</translation>
-    </message>
-    <message>
-        <source>Remove PIN code protection</source>
-        <translation>Remover proteção do código PIN</translation>
-    </message>
-    <message>
-        <source>Forgot PIN?</source>
-        <translation>Esqueceste-te do PIN?</translation>
-    </message>
-    <message>
-        <source>Unable to connect to server</source>
-        <translation>Não foi possível ligar ao servidor</translation>
-    </message>
-    <message>
-        <source>Auto Hide Skip Button</source>
-        <translation>Ocultar automaticamente o botão Saltar</translation>
-    </message>
-    <message>
-        <source>Automatically dismiss the skip intro and outro button after a few seconds.</source>
-        <translation>Ocultar automaticamente o botão para saltar introduções e créditos finais após alguns segundos.</translation>
-    </message>
-    <message>
-        <source>Fetching subtitles</source>
-        <translation>A obter legendas</translation>
-    </message>
-    <message>
-        <source>Skip {segment}</source>
-        <translation>Saltar {segment}</translation>
-    </message>
-    <message>
-        <source>Ends in {time}</source>
-        <translation>Termina em {time}</translation>
-    </message>
-    <message>
-        <source>Full Screen</source>
-        <translation>Ecrã inteiro</translation>
-    </message>
-    <message>
-        <source>Sort Collections rows in ascending or descending order.</source>
-        <translation>Ordenar as secções de coleções por ordem crescente ou decrescente.</translation>
-    </message>
-    <message>
-        <source>Sort Audio rows by date added, release date, alphabetically, and more.</source>
-        <translation>Ordenar as secções de áudio por data de adição, data de lançamento, ordem alfabética e outros critérios.</translation>
-    </message>
-    <message>
-        <source>Sort Audio rows in ascending or descending order.</source>
-        <translation>Ordenar as secções de áudio por ordem crescente ou decrescente.</translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation>Filtro</translation>
-    </message>
-    <message>
-        <source>Artist</source>
-        <translation>Artista</translation>
-    </message>
-    <message>
-        <source>Runtime</source>
-        <translation>Duração</translation>
-    </message>
-    <message>
-        <source>Release Date</source>
-        <translation>Data de lançamento</translation>
-    </message>
-    <message>
-        <source>Play Count</source>
-        <translation>Contagem de reproduções</translation>
-    </message>
-    <message>
-        <source>Played Status</source>
-        <translation>Estado de reprodução</translation>
-    </message>
-    <message>
-        <source>In Progress</source>
-        <translation>Em curso</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation>Tipo</translation>
-    </message>
-    <message>
-        <source>Clear Filters</source>
-        <translation>Limpar filtros</translation>
-    </message>
-    <message>
-        <source>Enable direct play for Live TV</source>
-        <translation>Ativar a reprodução direta de TV em direto</translation>
-    </message>
-    <message>
-        <source>Switch User</source>
-        <translation>Trocar utilizador</translation>
-    </message>
-    <message>
-        <source>Playlist order</source>
-        <translation>Ordem da playlist</translation>
-    </message>
-    <message>
-        <source>Group By</source>
-        <translation>Agrupar por</translation>
-    </message>
-    <message>
-        <source>Decade (Year)</source>
-        <translation>Década (ano)</translation>
-    </message>
-    <message>
-        <source>Parental Rating</source>
-        <translation>Classificação etária</translation>
-    </message>
-    <message>
-        <source>Studio</source>
-        <translation>Estúdio</translation>
-    </message>
-    <message>
-        <source>Album Artists</source>
-        <translation>Artistas do álbum</translation>
-    </message>
-    <message>
-        <source>Like</source>
-        <translation>Gostei</translation>
-    </message>
-    <message>
-        <source>Dislike</source>
-        <translation>Não gostei</translation>
-    </message>
-    <message>
-        <source>Library</source>
-        <translation>Biblioteca</translation>
-    </message>
-    <message>
-        <source>All Libraries</source>
-        <translation>Todas as bibliotecas</translation>
-    </message>
-    <message>
-        <source>Scroll Direction</source>
-        <translation>Direção de deslocamento</translation>
-    </message>
-    <message>
-        <source>Image Type</source>
-        <translation>Tipo de imagem</translation>
-    </message>
-    <message>
-        <source>Poster Size</source>
-        <translation>Tamanho do cartaz</translation>
-    </message>
-    <message>
-        <source>Grouping</source>
-        <translation>Agrupamento</translation>
-    </message>
-    <message>
-        <source>Playlist Types</source>
-        <translation>Tipos de playlist</translation>
-    </message>
-    <message>
-        <source>Music Video</source>
-        <translation>Vídeo musical</translation>
-    </message>
-    <message>
-        <source>Audio (Music)</source>
-        <translation>Áudio (música)</translation>
-    </message>
-    <message>
-        <source>Audiobook</source>
-        <translation>Audiolivro</translation>
-    </message>
-    <message>
-        <source>Book</source>
-        <translation>Livro</translation>
-    </message>
-    <message>
-        <source>Mixed</source>
-        <translation>Mista</translation>
-    </message>
-    <message>
-        <source>Overview</source>
-        <translation>Sinopse</translation>
-    </message>
-    <message>
-        <source>Music</source>
-        <translation>Música</translation>
-    </message>
-    <message>
-        <source>Recently Added</source>
-        <translation>Adicionados recentemente</translation>
-    </message>
-    <message>
-        <source>Shuffle All</source>
-        <translation>Reproduzir tudo aleatoriamente</translation>
-    </message>
-    <message>
-        <source>All Genres</source>
-        <translation>Todos os géneros</translation>
-    </message>
-    <message>
-        <source>{count} genres</source>
-        <translation>{count} géneros</translation>
-    </message>
-    <message>
-        <source>All Episodes</source>
-        <translation>Todos os episódios</translation>
-    </message>
-    <message>
-        <source>Failed to load recordings</source>
-        <translation>Falha ao carregar gravações</translation>
-    </message>
-    <message>
-        <source>Record This Program</source>
-        <translation>Gravar este programa</translation>
-    </message>
-    <message>
-        <source>Record This Episode</source>
-        <translation>Gravar este episódio</translation>
-    </message>
-    <message>
-        <source>Cancel This Recording</source>
-        <translation>Cancelar esta gravação</translation>
-    </message>
-    <message>
-        <source>Next series recording: {dateTime}</source>
-        <translation>Próxima gravação da série: {dateTime}</translation>
-    </message>
-    <message>
-        <source>Series recording is scheduled, but the guide has no upcoming episodes</source>
-        <translation>A gravação da série está agendada, mas o guia não apresenta próximos episódios</translation>
-    </message>
-    <message>
-        <source>Sort Order</source>
-        <translation>Sentido da ordenação</translation>
-    </message>
-    <message>
-        <source>Rating</source>
-        <translation>Classificação</translation>
-    </message>
-    <message>
-        <source>Popularity</source>
-        <translation>Popularidade</translation>
-    </message>
-    <message>
-        <source>IMDb Lists</source>
-        <translation>Listas do IMDb</translation>
-    </message>
-    <message>
-        <source>TMDB Lists</source>
-        <translation>Listas TMDB</translation>
-    </message>
-    <message>
-        <source>Seerr Discover Sliders</source>
-        <translation>Carrosséis de descoberta do Seerr</translation>
-    </message>
-    <message>
-        <source>Seerr Discovery Rows</source>
-        <translation>Secções de descoberta do Seerr</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>Título</translation>
-    </message>
-    <message>
-        <source>Seerr Settings</source>
-        <translation>Definições do Seerr</translation>
-    </message>
-    <message>
-        <source>Request Collection</source>
-        <translation>Pedir coleção</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>Selecionar tudo</translation>
-    </message>
-    <message>
-        <source>requested</source>
-        <translation>Pedido</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation>Falhou</translation>
-    </message>
-    <message>
-        <source>Series Continuing · Future Seasons Can Be Requested</source>
-        <translation>Série em exibição · Podes pedir futuras temporadas</translation>
-    </message>
-    <message>
-        <source>What&apos;s wrong?</source>
-        <translation>Qual é o problema?</translation>
-    </message>
-    <message>
-        <source>Submit Report</source>
-        <translation>Enviar relatório</translation>
-    </message>
-    <message>
-        <source>Keep</source>
-        <translation>Manter</translation>
-    </message>
-    <message>
-        <source>Failed to cancel request</source>
-        <translation>Falha ao cancelar o pedido</translation>
-    </message>
-    <message>
-        <source>Failed to update request</source>
-        <translation>Falha ao atualizar o pedido</translation>
-    </message>
-    <message>
-        <source>Request failed</source>
-        <translation>Falha no pedido</translation>
-    </message>
-    <message>
-        <source>Requested by</source>
-        <translation>Pedido por</translation>
-    </message>
-    <message>
-        <source>Primary</source>
-        <translation>Principal</translation>
-    </message>
-    <message>
-        <source>Vertical Offset</source>
-        <translation>Deslocamento vertical</translation>
-    </message>
-    <message>
-        <source>Connecting to server...</source>
-        <translation>A ligar ao servidor...</translation>
-    </message>
-    <message>
-        <source>Connection timed out. Check the address and your network.</source>
-        <translation>O tempo de ligação expirou. Verifica o endereço e a rede.</translation>
-    </message>
-    <message>
-        <source>Failed to connect. Check the address and try again.</source>
-        <translation>Falha na ligação. Verifica o endereço e tenta novamente.</translation>
-    </message>
-    <message>
-        <source>Invalid username or password.</source>
-        <translation>Nome de utilizador ou palavra-passe inválidos.</translation>
-    </message>
-    <message>
-        <source>PIN</source>
-        <translation>PIN</translation>
-    </message>
-    <message>
-        <source>Select a Server</source>
-        <translation>Selecionar um servidor</translation>
-    </message>
-    <message>
-        <source>Server error. Please try again later.</source>
-        <translation>Erro do servidor. Tenta novamente mais tarde.</translation>
-    </message>
-    <message>
-        <source>Signing in...</source>
-        <translation>A iniciar sessão...</translation>
-    </message>
-    <message>
-        <source>Saved</source>
-        <translation>Guardado</translation>
-    </message>
-    <message>
-        <source>30 days</source>
-        <translation>30 dias</translation>
-    </message>
-    <message>
-        <source>90 days</source>
-        <translation>90 dias</translation>
-    </message>
-    <message>
-        <source>Card Size</source>
-        <translation>Tamanho do cartão</translation>
-    </message>
-    <message>
-        <source>Grandparents</source>
-        <translation>Avós</translation>
-    </message>
-    <message>
-        <source>Image Type per Row</source>
-        <translation>Tipo de imagem por secção</translation>
-    </message>
-    <message>
-        <source>Configure image type for each enabled home row</source>
-        <translation>Configurar o tipo de imagem de cada secção ativa na página inicial</translation>
-    </message>
-    <message>
-        <source>Images</source>
-        <translation>Imagens</translation>
-    </message>
-    <message>
-        <source>Missing</source>
-        <translation>Em falta</translation>
-    </message>
-    <message>
-        <source>+{count} more</source>
-        <translation>+{count} mais</translation>
-    </message>
-    <message>
-        <source>Request</source>
-        <translation>Pedir</translation>
-    </message>
-    <message>
-        <source>S{season} E{episode}</source>
-        <translation>T{season} E{episode}</translation>
-    </message>
-    <message>
-        <source>Digital</source>
-        <translation>Digital</translation>
-    </message>
-    <message>
-        <source>Radarr and Sonarr Calendars</source>
-        <translation>Calendários do Radarr e Sonarr</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation>Visualizar</translation>
-    </message>
-    <message>
-        <source>Looks</source>
-        <translation>Aspeto</translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation>Ações</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation>Automático</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>Estado</translation>
-    </message>
-    <message>
-        <source>Install</source>
-        <translation>Instalar</translation>
-    </message>
-    <message>
-        <source>Installed</source>
-        <translation>Instalado</translation>
-    </message>
-    <message>
-        <source>Restart Server</source>
-        <translation>Reiniciar servidor</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation>Aberto</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation>Acerca de</translation>
-    </message>
-    <message>
-        <source>Pause</source>
-        <translation>Pausa</translation>
-    </message>
-    <message>
-        <source>Paused</source>
-        <translation>Em pausa</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>Início</translation>
-    </message>
-    <message>
-        <source>Static</source>
-        <translation>Estático</translation>
-    </message>
-    <message>
-        <source>Playing</source>
-        <translation>A reproduzir</translation>
-    </message>
-    <message>
-        <source>On</source>
-        <translation>Ligado</translation>
-    </message>
-    <message>
-        <source>Download failed</source>
-        <translation>Falha na transferência</translation>
-    </message>
-    <message>
-        <source>Downloaded</source>
-        <translation>Transferido</translation>
-    </message>
-    <message>
-        <source>Queued</source>
-        <translation>Na fila</translation>
-    </message>
-    <message>
-        <source>Downloading</source>
-        <translation>A transferir</translation>
-    </message>
-    <message>
-        <source>Watch with group</source>
-        <translation>Ver com o grupo</translation>
-    </message>
-    <message>
-        <source>No episodes loaded</source>
-        <translation>Nenhum episódio carregado</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>Selecionar</translation>
-    </message>
-    <message>
-        <source>Home Row Info Overlay</source>
-        <translation>Informações sobrepostas na página inicial</translation>
-    </message>
-    <message>
-        <source>Show title and metadata when browsing home rows</source>
-        <translation>Mostrar o título e os metadados ao navegar nas secções da página inicial</translation>
-    </message>
-    <message>
-        <source>SyncPlay Group</source>
-        <translation>Grupo SyncPlay</translation>
+        <source>close</source>
+        <extracomment>On-screen keyboard hint shown after the remote&apos;s back key</extracomment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

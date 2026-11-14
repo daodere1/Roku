@@ -5,7 +5,7 @@ import "pkg:/source/utils/themeSpec.bs"
 namespace themeRegistry
 
     function BuiltInIds() as object
-        return ["moonfin", "neon_pulse", "8bit_hero"]
+        return ["spesha-style", "speshflix", "speshprime", "speshapple", "moonfin", "neon_pulse", "8bit_hero"]
     end function
 
     function IsBuiltIn(id as dynamic) as boolean

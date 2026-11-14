@@ -2,19 +2,15 @@ import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/MoonfinPlugin.bs"
 import "pkg:/source/api/sdk.bs"
 import "pkg:/source/utils/externalList.bs"
-import "pkg:/source/utils/mediaBarNewRelease.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/parentalControls.bs"
-import "pkg:/source/utils/recentRows.bs"
-
-const MEDIA_BAR_FIELDS = "Overview,People,Genres,CommunityRating,OfficialRating,ProductionYear,RunTimeTicks,ProviderIds,RemoteTrailers"
 
 sub init()
     m.top.functionName = "getMediaBarData"
 end sub
 
 sub getMediaBarData()
-    sourceType = LCase(m.top.sourceType ?? "random")
+    sourceType = LCase(m.top.sourceType ?? "library")
     allowedCollectionTypes = getAllowedCollectionTypes()
     includeTypes = getAllowedIncludeTypes()
 
@@ -27,13 +23,17 @@ sub getMediaBarData()
     ' falls back to what it shows with nothing picked.
     externalItems = getExternalItems(parseStringArraySetting(m.top.externalListIds), includeTypes)
 
-    ' Every source reads the picked libraries and collections together. The views only list
-    ' libraries the account can open, so a saved pick it lost access to drops out here, and with
-    ' every pick gone the bar draws from all the libraries.
-    libraryIds = getLibraryIds(allowedCollectionTypes)
-    parentIds = filterIdsBySelection(libraryIds, selectedLibraryIds)
-    parentIds.append(selectedCollectionIds)
-    if parentIds.count() = 0 and externalItems.count() = 0 then parentIds = libraryIds
+    parentIds = []
+    if sourceType = "collection"
+        parentIds = selectedCollectionIds
+        if parentIds.count() = 0 and externalItems.count() = 0 then parentIds = getCollectionAndPlaylistIds()
+    else
+        ' The views only list libraries the account can open, so a saved pick it lost access to
+        ' drops out here, and with every pick gone the bar draws from them all
+        libraryIds = getLibraryIds(allowedCollectionTypes)
+        if selectedLibraryIds.count() > 0 then parentIds = filterIdsBySelection(libraryIds, selectedLibraryIds)
+        if parentIds.count() = 0 and externalItems.count() = 0 then parentIds = libraryIds
+    end if
 
     query = {
         userId: m.top.userId,
@@ -43,18 +43,12 @@ sub getMediaBarData()
         sortBy: "Random",
         hasBackdrop: true,
         imageTypes: "Backdrop",
-        limit: m.top.featuredCount * 2,
-        fields: MEDIA_BAR_FIELDS,
+        limit: sourceType = "collection" ? 50 : m.top.featuredCount * 2,
+        fields: "Overview,People,Genres,CommunityRating,OfficialRating,ProductionYear,RunTimeTicks,ProviderIds,RemoteTrailers",
         personTypes: "Actor,GuestStar"
     }
-    ' The dated sources read the newest titles instead, and one with nothing in its window falls
-    ' back to the random draw. Library titles come first, so one an outside list repeats keeps its
-    ' server item.
-    pool = []
-    if sourceType = "recentlyadded" or sourceType = "recentlyreleased" or sourceType = "newreleases"
-        pool = readDatedSources(shuffleArray(parentIds), sourceType, includeTypes, excludedGenreNames)
-    end if
-    if pool.count() = 0 then pool = readSources(shuffleArray(parentIds), query, excludedGenreNames)
+    ' Library titles come first, so one an outside list repeats keeps its server item
+    pool = readSources(shuffleArray(parentIds), query, excludedGenreNames)
     ' A chart can hold hundreds of titles, so beside a library it gets as many places as the bar
     ' has slides
     externalItems = shuffleArray(filterAndDedupeItems(externalItems))
@@ -68,103 +62,59 @@ end sub
 ' Reads the sources six at a time in their shuffled order, and skips one still waiting for a slot
 ' once there are twice as many usable titles as the bar shows. Blocked titles and excluded genres
 ' are left out as they arrive, so they dont count toward that.
-function readSources(parentIds as object, query as object, excludedGenreNames as object, path = "/Items/" as string) as object
+function readSources(parentIds as object, query as object, excludedGenreNames as object) as object
     port = CreateObject("roMessagePort")
     running = {}
     nextSource = 0
     items = []
     seen = {}
+    deadline = CreateObject("roTimespan")
+    deadline.Mark()
+    published = false
     while true
+        if deadline.TotalMilliseconds() >= 10000 then exit while
         while running.count() < 6 and nextSource < parentIds.count() and items.count() < m.top.featuredCount * 2
             query.parentId = parentIds[nextSource]
             nextSource++
-            req = APIRequest(path, query)
+            req = APIRequest("/Items/", query)
             if req <> invalid
-                ' A Plex server is answered by its bridge, one source at a time
-                if plexUrls.Owns(req.GetUrl())
-                    keepFetched(getJson(req), items, seen, excludedGenreNames)
-                else
-                    req.setMessagePort(port)
-                    if siloStartGet(req) then running[req.GetIdentity().ToStr()] = req
-                end if
+                req.setMessagePort(port)
+                if req.AsyncGetToString() then running[req.GetIdentity().ToStr()] = req
             end if
         end while
         if running.count() = 0 then exit while
 
-        ' A Silo request is answered at once, as a stand-in URL event
-        msg = siloWait(30000, port)
-        if not isUrlEvent(msg) then exit while
+        remaining = 10000 - deadline.TotalMilliseconds()
+        if remaining <= 0 then exit while
+        msg = wait(remaining, port)
+        if type(msg) <> "roUrlEvent" then exit while
         running.Delete(msg.GetSourceIdentity().ToStr())
 
-        if msg.GetResponseCode() = 200 then keepFetched(ParseJson(msg.GetString()), items, seen, excludedGenreNames)
+        if msg.GetResponseCode() = 200
+            json = ParseJson(msg.GetString())
+            fetched = isChainValid(json, "items") ? json.items : []
+            if excludedGenreNames.count() > 0 then fetched = filterItemsByExcludedGenres(fetched, excludedGenreNames)
+            for each item in parentalControls.WithoutBlockedItems(fetched)
+                if not seen.DoesExist(item.Id)
+                    seen[item.Id] = true
+                    items.push(item)
+                end if
+            end for
+            ' Show the first usable library without waiting for slower libraries.
+            if not published
+                initial = filterAndDedupeItems(items)
+                if initial.count() > 0
+                    m.top.mediaBarData = { items: shuffleArray(initial).slice(0, m.top.featuredCount), partial: true }
+                    published = true
+                end if
+            end if
+        end if
     end while
+    for each key in running
+        running[key].AsyncCancel()
+    end for
     return items
 end function
-
-' The newest titles of a dated source, read the way the random draw is. New Seasons & Episodes
-' asks for the episodes, since a series' own date is its first season's.
-function readDatedSources(parentIds as object, sourceType as string, includeTypes as string, excludedGenreNames as object) as object
-    query = { userId: m.top.userId, includeItemTypes: includeTypes, limit: 40, fields: MEDIA_BAR_FIELDS, personTypes: "Actor,GuestStar" }
-    if sourceType = "recentlyadded" then return withoutWatchedIfHidden(withBackdrops(readSources(parentIds, query, excludedGenreNames, "/Items/Latest")))
-
-    query.recursive = true
-    query.sortBy = "PremiereDate"
-    query.sortOrder = "Descending"
-    query.excludeItemTypes = "BoxSet,CollectionFolder"
-    query.hasBackdrop = true
-    if sourceType = "recentlyreleased"
-        query.maxPremiereDate = CreateObject("roDateTime").ToISOString()
-        if m.top.hideWatched then query.filters = "IsUnplayed"
-        return withoutWatchedIfHidden(readSources(parentIds, query, excludedGenreNames))
-    end if
-
-    ' Movies only, so nothing here, and the bar falls back to random titles
-    if includeTypes = "Movie" then return []
-    days = m.top.newReleaseDays
-    now = CreateObject("roDateTime").AsSeconds()
-    since = CreateObject("roDateTime")
-    since.FromSeconds(now - days * 86400)
-    episodeQuery = { userId: m.top.userId, includeItemTypes: "Episode", recursive: true, sortBy: "PremiereDate", sortOrder: "Descending", minPremiereDate: since.ToISOString(), limit: 300 }
-    seriesIds = []
-    for each episode in mediaBarNewRelease.RecentlyAired(readSources(parentIds, episodeQuery, []), now, days)
-        seriesId = toString(episode.LookupCI("SeriesId"))
-        if seriesId <> "" and not inArray(seriesIds, seriesId) then seriesIds.push(seriesId)
-        if seriesIds.count() >= 40 then exit for
-    end for
-    if seriesIds.count() = 0 then return []
-
-    items = []
-    keepFetched(getJson(APIRequest("/Items/", { userId: m.top.userId, ids: seriesIds.Join(","), fields: MEDIA_BAR_FIELDS, personTypes: "Actor,GuestStar" })), items, {}, excludedGenreNames)
-    return withBackdrops(items)
-end function
-
-' The Recently Added and Recently Released pools follow Hide Watched like their rows
-function withoutWatchedIfHidden(items as object) as object
-    if not m.top.hideWatched then return items
-    return recentRows.WithoutWatched(items)
-end function
-
-' The Latest list and a lookup by id can't be asked for backdrops only
-function withBackdrops(items as object) as object
-    kept = []
-    for each item in items
-        tags = item.LookupCI("BackdropImageTags")
-        if type(tags) = "roArray" and tags.count() > 0 then kept.push(item)
-    end for
-    return kept
-end function
-
-sub keepFetched(json as dynamic, items as object, seen as object, excludedGenreNames as object)
-    ' The Latest list comes back as a bare array
-    fetched = type(json) = "roArray" ? json : (isChainValid(json, "items") ? json.items : [])
-    if excludedGenreNames.count() > 0 then fetched = filterItemsByExcludedGenres(fetched, excludedGenreNames)
-    for each item in parentalControls.WithoutBlockedItems(fetched)
-        if not seen.DoesExist(item.Id)
-            seen[item.Id] = true
-            items.push(item)
-        end if
-    end for
-end sub
 
 ' The first titles of the shuffled pool, with only the outside ones that make it looked up on
 ' TMDB. One that turns out to be an excluded genre or to have no backdrop gives its place to
@@ -255,15 +205,13 @@ function getExternalItems(listIds as object, includeTypes as string) as object
         if isValid(query) then req = APIRequest("/Moonfin/CustomRows/Items", externalList.Localized(query))
         if isValid(req)
             req.setMessagePort(port)
-            ' siloStartGet answers a Silo request itself, through Moonbase, and starts any other
-            if siloStartGet(req) then pending[req.GetIdentity().toStr()] = { req: req, query: query }
+            if req.AsyncGetToString() then pending[req.GetIdentity().toStr()] = { req: req, query: query }
         end if
     end for
 
     while pending.count() > 0
-        ' A Silo request is answered at once, as a stand-in URL event
-        msg = siloWait(30000, port)
-        if not isUrlEvent(msg) then exit while
+        msg = wait(30000, port)
+        if type(msg) <> "roUrlEvent" then exit while
 
         key = msg.GetSourceIdentity().toStr()
         entry = pending[key]
@@ -349,14 +297,14 @@ sub addExternalDetails(items as object)
             req = APIRequest("/Moonfin/Tmdb/Details", query)
             if isValid(req)
                 req.setMessagePort(port)
-                if siloStartGet(req) then pending[req.GetIdentity().toStr()] = { req: req, item: item }
+                if req.AsyncGetToString() then pending[req.GetIdentity().toStr()] = { req: req, item: item }
             end if
         end if
     end for
 
     while pending.count() > 0
-        msg = siloWait(15000, port)
-        if not isUrlEvent(msg) then exit while
+        msg = wait(15000, port)
+        if type(msg) <> "roUrlEvent" then exit while
 
         key = msg.GetSourceIdentity().toStr()
         entry = pending[key]
@@ -450,6 +398,28 @@ function filterIdsBySelection(candidateIds as object, selectedIds as object) as 
     end for
 
     return filtered
+end function
+
+function getCollectionAndPlaylistIds() as object
+    ids = []
+    data = api.items.Get({
+        userId: m.top.userId,
+        includeItemTypes: "BoxSet,Playlist",
+        recursive: true,
+        sortBy: "SortName",
+        sortOrder: "Ascending",
+        limit: 500
+    })
+
+    if not isChainValid(data, "items") then return ids
+
+    for each item in data.items
+        if isValidAndNotEmpty(item.id)
+            ids.push(item.id)
+        end if
+    end for
+
+    return ids
 end function
 
 function getExcludedGenreNames(excludedGenreIds as object) as object

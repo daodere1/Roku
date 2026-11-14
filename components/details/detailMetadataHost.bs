@@ -178,9 +178,11 @@ sub drawUpcomingBadge(text as string)
     contentW = iconW + iconGap + bounds.width
     bg.width = contentW + padH * 2
     bg.height = m.badgeHeight ?? (bounds.height + STATUS_PAD_V * 2)
-    bg.blendColor = themeChrome.Accent()
+    bg.blendColor = "#202830FF"
+    label.color = "#FFFFFFFF"
 
     if isValid(icon)
+        icon.blendColor = "#FFFFFFFF"
         icon.translation = [padH, (bg.height - icon.height) / 2]
     end if
     label.translation = [padH + iconW + iconGap, (bg.height - bounds.height) / 2]
@@ -311,16 +313,12 @@ end function
 sub setBackdropImage(itemData as object)
     backdropPoster = m.top.findNode("backdrop")
     if not isValid(backdropPoster) then return
-    ' Hidden rather than left empty, since some cards fall back to this picture for their art
-    backdropPoster.visible = get_user_setting_bool("ui.itemdetail.showBackdrop", true)
 
-    backdropUrl = backdropImageUrl(itemData, backdropRequestParams({ "maxWidth": 1920, "maxHeight": 1080, "quality": 90 }))
-    if isValid(backdropUrl) then backdropPoster.uri = backdropUrl
-end sub
-
-function backdropImageUrl(itemData as object, params as object) as dynamic
     ' A Seerr title has no library images, so it carries finished TMDB urls instead
-    if isValidAndNotEmpty(itemData._externalBackdropUrl) then return itemData._externalBackdropUrl
+    if isValidAndNotEmpty(itemData._externalBackdropUrl)
+        backdropPoster.uri = itemData._externalBackdropUrl
+        return
+    end if
 
     serverBaseUrl = invalid
     if isChainValid(itemData, "_serverUrl")
@@ -331,9 +329,23 @@ function backdropImageUrl(itemData as object, params as object) as dynamic
     end if
 
     backdropSource = backdropSourceFor(itemData)
-    if not isValid(backdropSource.imageTag) then return invalid
+    if not isValid(backdropSource.imageTag) then return
 
-    params["Tag"] = backdropSource.imageTag
-    if isValid(serverBaseUrl) then return buildImageURLForServer(serverBaseUrl, backdropSource.backdropItemId, backdropSource.imageVersion, params)
-    return ImageURL(backdropSource.backdropItemId, backdropSource.imageVersion, params)
-end function
+    params = backdropRequestParams({
+        "maxWidth": 1920,
+        "maxHeight": 1080,
+        "quality": 90,
+        "Tag": backdropSource.imageTag
+    })
+
+    backdropUrl = invalid
+    if isValid(serverBaseUrl)
+        backdropUrl = buildImageURLForServer(serverBaseUrl, backdropSource.backdropItemId, backdropSource.imageVersion, params)
+    else
+        backdropUrl = ImageURL(backdropSource.backdropItemId, backdropSource.imageVersion, params)
+    end if
+
+    if isValid(backdropUrl)
+        backdropPoster.uri = backdropUrl
+    end if
+end sub

@@ -42,11 +42,6 @@ namespace fileFacts
         held = chainLookupReturn(source, "Name", "")
         if isValidAndNotEmpty(held) then return held.Trim()
 
-        return fileFacts.DiskName(source)
-    end function
-
-    ' The last part of the file's path, the name it has on disk
-    function DiskName(source as dynamic) as string
         path = chainLookupReturn(source, "Path", "")
         if not isValidAndNotEmpty(path) then return ""
 
@@ -171,7 +166,7 @@ namespace fileFacts
     ' the next day. A new roDateTime starts at the current time, so a string it cant read has
     ' to be caught before it is parsed.
     function AddedOn(dateCreated as dynamic) as string
-        if not isServerDate(dateCreated) or Len(dateCreated) < 19 then return ""
+        if not isString(dateCreated) or Len(dateCreated) < 19 then return ""
         if Mid(dateCreated, 5, 1) <> "-" or Mid(dateCreated, 11, 1) <> "T" then return ""
 
         date = CreateObject("roDateTime")

@@ -1,4 +1,3 @@
-import "pkg:/source/api/MoonfinPlugin.bs"
 import "pkg:/source/enums/ColorPalette.bs"
 import "pkg:/source/enums/KeyCode.bs"
 import "pkg:/source/enums/PosterLoadStatus.bs"
@@ -9,7 +8,6 @@ import "pkg:/source/utils/kidsMode.bs"
 import "pkg:/source/utils/libraryOrder.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/multiserver.bs"
-import "pkg:/source/utils/profileCarousel.bs"
 import "pkg:/source/utils/serverMessages.bs"
 import "pkg:/source/utils/settingsGlyphs.bs"
 import "pkg:/source/utils/unreadBadge.bs"
@@ -38,7 +36,6 @@ const MUSIC_CARD_INNER = 236
 
 sub init()
     m.top.id = "sidebar"
-    fitMaskToScreen(m.top.findNode("avatarMask"))
 
     m.bgSolid = m.top.findNode("sidebarBgSolid")
     m.bgEdge = m.top.findNode("sidebarBgEdge")
@@ -99,12 +96,10 @@ sub init()
     m.genresItem = createNavItem("genres", "pkg:/images/icons/masks.webp", "Genres", "0xFFFFFF")
     m.liveTvItem = createNavItem("livetv", "pkg:/images/icons/livetv.webp", "Live TV", "0xFFFFFF")
     m.seerrItem = createNavItem("seerr", "pkg:/images/icons/settings/seerr.webp", "Seerr")
-    m.calendarItem = createNavItem("calendar", "pkg:/images/icons/calendar.webp", "Calendar")
     m.librariesItem = createNavItem("libraries", "pkg:/images/icons/library.webp", "Libraries")
     m.messagesItem = createNavItem("messages", "pkg:/images/icons/messages.webp", "Messages")
     m.friendsItem = createNavItem("friends", "pkg:/images/icons/friends.webp", "Friends")
     m.settingsItem = createNavItem("settings", "pkg:/images/icons/settings.webp", "Settings")
-    m.syncPlayItem = createNavItem("syncplay", "pkg:/images/icons/userGroup.webp", "SyncPlay")
 
     loadNavbarSettings()
     m.global.observeField("session", "onSessionChanged")
@@ -216,7 +211,6 @@ end function
 
 sub rebuildNavItems()
     m.navItemsGroup.removeChildrenIndex(m.navItemsGroup.getChildCount(), 0)
-    m.top.libraries = m.libraryData
 
     m.navItems = []
     m.navItems.push(m.homeItem)
@@ -235,11 +229,8 @@ sub rebuildNavItems()
 
     seerrEnabled = parseBoolSetting(m.global.session.user.settings["seerr.enabled"])
     if not kids and seerrEnabled and m.seerrButtonEnabled
-        ' Silo answers requests itself, so there it's Requests rather than the Seerr it stands in for
-        m.seerrItem.label.text = isSiloServer() ? tr("Requests") : "Seerr"
         m.navItems.push(m.seerrItem)
     end if
-    if not kids and calendarButtonShown() then m.navItems.push(m.calendarItem)
 
     individually = not kids and m.librariesEnabled and m.librariesIndividually
     if not kids and m.librariesEnabled and not individually then m.navItems.push(m.librariesItem)
@@ -260,15 +251,6 @@ sub rebuildNavItems()
     ' colour slot for a button that cant open
     if not kids and m.friendsButtonEnabled and socialAvailable() then m.navItems.push(m.friendsItem)
 
-    syncPlayManager = m.global.syncPlayManager
-    ' Core's and Smart-TV's Watch Parties button switch, which Moonbase carries
-    if not kids and m.syncPlayButtonEnabled and isValid(syncPlayManager) and syncPlayManager.callFunc("isEnabled")
-        ' On Silo the button opens Silo's own Watch Parties, as Core's does
-        m.syncPlayItem.label.text = "SyncPlay"
-        if isSiloServer() then m.syncPlayItem.label.text = tr("Watch Parties")
-        m.navItems.push(m.syncPlayItem)
-    end if
-
     m.navItems.push(m.settingsItem)
 
     for each item in m.navItems
@@ -282,10 +264,6 @@ sub rebuildNavItems()
     unreadBadge.Apply(m.messagesItem, ICON_SIZE, serverMessages.UnreadCount())
     applyFriendsBadge()
 end sub
-
-function calendarButtonShown() as boolean
-    return parseBoolSetting(m.global.session.user.settings["navbar.show_calendar"], invalid, true) and moonfinPlugin.IsCalendarAvailable()
-end function
 
 function socialAvailable() as boolean
     return achievementsModel.SocialAvailable(chainLookupReturn(m.global, "session.achievementsInfo", invalid))
@@ -342,9 +320,7 @@ sub layoutSidebar()
         yCursor += itemHeight(item) + itemMargin(item)
     end for
 
-    ' The avatar stays selected while focus is in the page, but only lights up while the
-    ' sidebar has focus
-    if m.avatarSelected and m.sidebarHasFocus
+    if m.avatarSelected
         highlightUser()
     else
         dehighlightUser()
@@ -641,7 +617,6 @@ sub loadNavbarSettings()
     m.seerrButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_seerr"], invalid, true)
     m.messagesButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_messages"], invalid, false)
     m.friendsButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_friends"], invalid, false)
-    m.syncPlayButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_syncplay"], invalid, true)
     m.navbarAlwaysExpanded = parseBoolSetting(m.global.session.user.settings["navbar.alwaysExpanded"], invalid, false)
 
     m.lastNavbarSettings = {
@@ -655,10 +630,7 @@ sub loadNavbarSettings()
         showSeerr: m.global.session.user.settings["navbar.show_seerr"],
         showMessages: m.global.session.user.settings["navbar.show_messages"],
         showFriends: m.global.session.user.settings["navbar.show_friends"],
-        showSyncPlay: m.global.session.user.settings["navbar.show_syncplay"],
-        watchParties: m.global.session.user.settings["watchParty.enabled"],
         social: socialAvailable(),
-        calendar: calendarButtonShown(),
         alwaysExpanded: m.global.session.user.settings["navbar.alwaysExpanded"]
     }
 end sub
@@ -689,10 +661,7 @@ sub onSessionChanged()
         showSeerr: parseBoolSetting(m.global.session.user.settings["navbar.show_seerr"], invalid, true),
         showMessages: parseBoolSetting(m.global.session.user.settings["navbar.show_messages"], invalid, false),
         showFriends: parseBoolSetting(m.global.session.user.settings["navbar.show_friends"], invalid, false),
-        showSyncPlay: parseBoolSetting(m.global.session.user.settings["navbar.show_syncplay"], invalid, true),
-        watchParties: parseBoolSetting(m.global.session.user.settings["watchParty.enabled"], invalid, true),
         social: socialAvailable(),
-        calendar: calendarButtonShown(),
         alwaysExpanded: parseBoolSetting(m.global.session.user.settings["navbar.alwaysExpanded"])
     }
     lastSettings = {
@@ -706,13 +675,10 @@ sub onSessionChanged()
         showSeerr: parseBoolSetting(m.lastNavbarSettings.showSeerr, invalid, true),
         showMessages: parseBoolSetting(m.lastNavbarSettings.showMessages, invalid, false),
         showFriends: parseBoolSetting(m.lastNavbarSettings.showFriends, invalid, false),
-        showSyncPlay: parseBoolSetting(m.lastNavbarSettings.showSyncPlay, invalid, true),
-        watchParties: parseBoolSetting(m.lastNavbarSettings.watchParties, invalid, true),
         social: m.lastNavbarSettings.social = true,
-        calendar: m.lastNavbarSettings.calendar = true,
         alwaysExpanded: parseBoolSetting(m.lastNavbarSettings.alwaysExpanded)
     }
-    if currentSettings.shuffle <> lastSettings.shuffle or currentSettings.favorites <> lastSettings.favorites or currentSettings.genres <> lastSettings.genres or currentSettings.liveTv <> lastSettings.liveTv or currentSettings.libraries <> lastSettings.libraries or currentSettings.individually <> lastSettings.individually or currentSettings.seerr <> lastSettings.seerr or currentSettings.showSeerr <> lastSettings.showSeerr or currentSettings.showMessages <> lastSettings.showMessages or currentSettings.showFriends <> lastSettings.showFriends or currentSettings.showSyncPlay <> lastSettings.showSyncPlay or currentSettings.watchParties <> lastSettings.watchParties or currentSettings.social <> lastSettings.social or currentSettings.calendar <> lastSettings.calendar or currentSettings.alwaysExpanded <> lastSettings.alwaysExpanded
+    if currentSettings.shuffle <> lastSettings.shuffle or currentSettings.favorites <> lastSettings.favorites or currentSettings.genres <> lastSettings.genres or currentSettings.liveTv <> lastSettings.liveTv or currentSettings.libraries <> lastSettings.libraries or currentSettings.individually <> lastSettings.individually or currentSettings.seerr <> lastSettings.seerr or currentSettings.showSeerr <> lastSettings.showSeerr or currentSettings.showMessages <> lastSettings.showMessages or currentSettings.showFriends <> lastSettings.showFriends or currentSettings.social <> lastSettings.social or currentSettings.alwaysExpanded <> lastSettings.alwaysExpanded
         loadNavbarSettings()
         rebuildNavItems()
         if m.navbarAlwaysExpanded
@@ -792,32 +758,20 @@ end sub
 
 sub updateUser()
     if isValid(m.userName) then m.userName.text = m.top.currentUser
-    ' Leaving Home clears the name but the avatar stays as it is
-    if m.top.currentUser = "" then return
-    initials = m.top.findNode("userInitials")
-    if m.top.currentUserProfileImage = ""
-        ' Setting no picture over no picture fires nothing, so the initial is drawn here
-        showUserAvatar("")
-    else if isValid(initials) and initials.visible
-        initials.text = profileCarousel.Initial(m.top.currentUser)
-    end if
 end sub
 
 sub updateUserProfileImage()
     m.userAvatar.observeField("loadStatus", "onPosterLoadStatusChanged")
-    showUserAvatar(m.top.currentUserProfileImage)
+    if isValid(m.userAvatar) then m.userAvatar.uri = m.top.currentUserProfileImage
 end sub
 
 sub onPosterLoadStatusChanged()
     if m.userAvatar.loadStatus <> PosterLoadStatus.LOADING
         m.userAvatar.unobserveField("loadStatus")
     end if
-    ' A user without a picture gets a not found, so their initial shows instead
-    if m.userAvatar.loadStatus = PosterLoadStatus.FAILED then showUserAvatar("")
-end sub
-
-sub showUserAvatar(uri as string)
-    profileCarousel.ShowAvatar(m.userAvatar, m.top.findNode("userInitials"), uri, m.top.currentUser, chainLookupReturn(m.global, "session.user.id", ""))
+    if m.userAvatar.loadStatus = PosterLoadStatus.FAILED
+        if m.userAvatar.loadWidth = 0 then m.userAvatar.uri = "pkg:/images/baseline_person_white_48dp.webp"
+    end if
 end sub
 
 sub highlightUser()
@@ -945,25 +899,12 @@ function handleOKKey() as boolean
         m.global.sceneManager.callFunc("pushScene", seerrDiscovery)
         return true
 
-    else if item.id = "calendar"
-        m.global.sceneManager.callFunc("pushScene", CreateObject("roSGNode", "CalendarScreen"))
-        return true
-
     else if item.id = "messages"
         m.global.sceneManager.callFunc("serverMessagesDialog")
         return true
 
     else if item.id = "friends"
         m.global.sceneManager.callFunc("friends")
-        return true
-
-    else if item.id = "syncplay" and isSiloServer()
-        m.global.watchParty.callFunc("open")
-        return true
-
-    else if item.id = "syncplay"
-        syncPlayManager = m.global.syncPlayManager
-        if isValid(syncPlayManager) then syncPlayManager.callFunc("showGroupsDialog")
         return true
 
     else if item.id = "settings"

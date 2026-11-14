@@ -1,4 +1,5 @@
 import "pkg:/components/liveTv/guide/guideStore.bs"
+import "pkg:/components/manager/ViewCreator.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/enums/KeyCode.bs"
 import "pkg:/source/utils/config.bs"
@@ -7,6 +8,9 @@ import "pkg:/source/utils/liveTvLastChannel.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/recordAiring.bs"
 import "pkg:/source/utils/settingsSync.bs"
+import "pkg:/source/utils/speshLiveFilters.brs"
+import "pkg:/source/utils/speshLivePlayback.brs"
+import "pkg:/source/utils/tvKeyboard.bs"
 
 const ROW_HEIGHT = 87
 const GRID_HEIGHT = 708
@@ -22,7 +26,7 @@ const MAX_GUIDE_HISTORY = 86400
 ' A re-anchor waits this long after the last press, so the window never moves under the viewer
 const REANCHOR_INPUT_QUIET_MS = 1000
 const WINDOW_BAR_PREVIOUS = 0
-const WINDOW_BAR_LAST = 5
+const WINDOW_BAR_LAST = 15
 const CHIP_RAIL_WIDTH = 1820
 const BAR_WIDTH = 1826
 const SORT_SETTING = "livetv.channelSortBy"
@@ -70,6 +74,10 @@ sub init()
     m.freeRows = []
     m.dialog = invalid
     m.syncTasks = []
+    m.speshFilters = { country: "", sports: "", tag: "", query: "" }
+    m.speshKeyboard = invalid
+    m.view = invalid
+    m.speshFullscreen = false
     resetViewState()
 
     buildChips()
@@ -82,6 +90,10 @@ sub init()
     m.reanchorTimer.observeField("fire", "onReanchorTick")
     scheduleReanchor()
     m.top.findNode("numberTimer").observeField("fire", "onChannelNumberSettled")
+    m.channelHoldTimer = m.top.findNode("channelHoldTimer")
+    m.channelHoldTimer.observeField("fire", "onChannelHeld")
+    m.channelHoldId = ""
+    m.channelMenuId = ""
     m.top.findNode("toastTimer").observeField("fire", "hideToast")
     m.artworkTimer = m.top.findNode("artworkTimer")
     m.artworkTimer.observeField("fire", "onArtworkSettled")
@@ -120,11 +132,17 @@ end sub
 ' A fresh store at the live edge. The sort is read again since another device may have synced a
 ' new one in.
 sub openGuide()
+    m.guideCacheScope = liveTvLastChannel.scopeKey()
+    m.guideCacheLoadedAt = invalid
     storeInit(liveTvGuide.NormalizeSort(m.global.session.user.settings[SORT_SETTING]))
     storeLoad({ guideWindow: m.guideWindow, windowStart: liveTvGuide.LeftEdge(liveTvGuide.NowSeconds()), livePosition: true })
 end sub
 
 sub OnScreenShown(isReturning = false as boolean)
+    if isValid(m.speshKeyboard)
+        m.speshKeyboard.setFocus(true)
+        return
+    end if
     m.top.setFocus(true)
     if isReturning then reopenGuide()
 end sub
@@ -137,6 +155,19 @@ sub reopenGuide()
     m.numberOverlay.visible = false
     m.scrollAnimation.control = "stop"
     m.artworkTimer.control = "stop"
+    now = liveTvGuide.NowSeconds()
+    if isValid(m.guideCacheLoadedAt) and isValid(m.store)
+        age = now - m.guideCacheLoadedAt
+        sameScope = m.guideCacheScope = liveTvLastChannel.scopeKey()
+        sameSort = m.store.sortBy = liveTvGuide.NormalizeSort(m.global.session.user.settings[SORT_SETTING])
+        if sameScope and sameSort and age >= 0 and age < 120 and m.store.state = "ready" and now < m.store.windowEnd
+            m.didRestoreFocus = false
+            m.area = "grid"
+            onStoreChanged()
+            scheduleReanchor()
+            return
+        end if
+    end if
     resetViewState()
     m.rowsLayer.translation = [0, 0]
     scheduleReanchor()
@@ -144,6 +175,11 @@ sub reopenGuide()
 end sub
 
 sub OnScreenHidden()
+    cancelChannelHold()
+    stopSpeshPreview()
+    m.artworkTimer.control = "stop"
+    tvKeyboard.Release(m.speshKeyboard, ["submitted", "cancelled"])
+    m.speshKeyboard = invalid
     m.scrollAnimation.control = "stop"
 end sub
 
@@ -191,7 +227,17 @@ sub buildWindowBar()
         { icon: "chevron_right.webp", text: "" },
         { icon: "sort.webp", text: "" },
         { icon: "calendar.webp", text: "" },
-        { icon: "dvr.webp", text: tr("Recordings") }
+        { icon: "dvr.webp", text: tr("Recordings") },
+        { icon: "", text: tr("Search") },
+        { icon: "", text: tr("Channel #") },
+        { icon: "", text: tr("Country") },
+        { icon: "", text: tr("Sports package") },
+        { icon: "", text: tr("Tags") },
+        { icon: "", text: tr("Fullscreen") },
+        { icon: "", text: tr("Stop") },
+        { icon: "chevron_left.webp", text: tr("Prev") },
+        { icon: "chevron_right.webp", text: tr("Next") },
+        { icon: "", text: tr("Last") }
     ]
     for each spec in specs
         button = CreateObject("roSGNode", "Group")
@@ -241,7 +287,7 @@ sub buildWindowBar()
     labelLeft = x + 12
 
     right = BAR_WIDTH
-    for i = 5 to 3 step -1
+    for i = WINDOW_BAR_LAST to 3 step -1
         right -= m.barButtons[i].width
         m.barButtons[i].group.translation = [right, 0]
         if i > 3 then right -= 6
@@ -329,6 +375,9 @@ sub onStoreChanged()
     m.version++
     m.lineup = storeFilteredChannels()
     state = m.store.state
+    if state = "ready" and not isValid(m.guideCacheLoadedAt)
+        m.guideCacheLoadedAt = liveTvGuide.NowSeconds()
+    end if
 
     showGrid = state = "ready" and m.lineup.count() > 0
     m.ruler.visible = showGrid
@@ -359,6 +408,8 @@ sub reactToStore()
     prevState = m.prevState
     m.prevState = currentState
     if currentState <> "ready" then return
+    ' Async guide updates must not move selection underneath an active modal.
+    if isValid(m.speshKeyboard) or isValid(m.dialog) then return
 
     ids = []
     for each channel in m.lineup
@@ -410,6 +461,11 @@ end sub
 sub prefetchMoreRows()
     if m.store.state <> "ready" then return
     lastBuiltRow = m.scrollRow + VISIBLE_ROWS + OVERSCAN_ROWS * 2
+    if not liveTvGuide.IsCategoryFilter(m.store.filter)
+        ids = storeVisibleMissing(m.lineup, m.scrollRow, lastBuiltRow + PROGRAM_PREFETCH_ROWS, liveTvGuide.NowSeconds())
+        if ids.count() > 0 then storeEnsure(ids)
+        return
+    end if
     if storeHasMore() and lastBuiltRow + PROGRAM_PREFETCH_ROWS >= storeHighWaterRows() then storeLoadMore()
 end sub
 
@@ -427,6 +483,8 @@ sub onGuideStep(stepName as string, ctx as object, ok as boolean)
         ' A failed refresh keeps what the guide already holds
     else if stepName = "dialogDone"
         onDialogActionDone(ctx, ok)
+    else if stepName = "channelFavoriteDone"
+        if ok then showToast(ctx.success) else showToast(ctx.failure)
     else if stepName = "seriesRuleLoaded"
         onSeriesRuleLoaded(ctx, ok)
     end if
@@ -585,6 +643,10 @@ end function
 
 ' Previews the focused program, or what the focused channel is airing now
 sub updateHero()
+    if isValid(m.view) and m.view.speshPlayingChannelId <> ""
+        updateSpeshPlayingHero()
+        return
+    end if
     ref = m.focusRef
     channel = invalid
     if not ref.railFocused and isValid(ref.program)
@@ -943,6 +1005,7 @@ sub onReanchored(ctx as object)
 end sub
 
 sub onClockTick()
+    prefetchMoreRows()
     m.clockNow = liveTvGuide.NowSeconds()
     for each key in m.rowNodes
         m.rowNodes[key].now = m.clockNow
@@ -958,11 +1021,124 @@ end sub
 sub watchChannel(channelId as string)
     channel = storeChannelForId(channelId)
     if not isValid(channel) then return
+    if isValid(m.view)
+        if m.view.id = channelId
+            setSpeshFullscreen(true)
+        else
+            if not m.view.callFunc("speshTune", channel) then return
+        end if
+        return
+    end if
     queue = m.global.queueManager
     queue.callFunc("clear")
     queue.callFunc("setLiveTvLineup", m.lineup)
     queue.callFunc("push", { id: channelId, type: "video" })
-    queue.callFunc("playQueue")
+    CreateVideoPlayerView(m.top)
+    m.view.observeField("speshReturnToGuide", "onSpeshReturnToGuide")
+    m.view.observeField("backPressed", "onSpeshPlayerExit")
+    m.view.observeField("speshPlayingChannelId", "updateHero")
+    m.view.observeField("speshNowNext", "updateHero")
+    m.hero.previewActive = true
+    setSpeshFullscreen(false)
+end sub
+
+sub switchSpeshChannel(direction as integer)
+    if not isValid(m.view) then return
+    target = invalid
+    if direction = 0
+        target = storeChannelForId(m.view.speshPreviousChannelId)
+    else
+        target = speshAdjacentChannel(m.lineup, m.view.speshPlayingChannelId, direction)
+    end if
+    if isValid(target) then m.view.callFunc("speshTune", target)
+end sub
+
+sub updateSpeshPlayingHero()
+    channel = storeChannelForId(m.view.speshPlayingChannelId)
+    if not isValid(channel) then return
+    now = liveTvGuide.NowSeconds()
+    programs = storeUnfilteredFor(channel.Id)
+    data = m.view.speshNowNext
+    if isValid(data) and data.channelId = channel.Id and isValid(data.programs)
+        if data.programs.Count() > 0 then programs = data.programs
+    end if
+    pair = speshProgramPair(programs, now)
+    currentTitle = tr("Guide unavailable")
+    currentTime = ""
+    nextTitle = tr("Guide unavailable")
+    if isValid(pair.now)
+        currentTitle = pair.now.Name ?? ""
+        currentTime = liveTvGuide.ClockTime(pair.now.startSec) + " - " + liveTvGuide.ClockTime(pair.now.endSec)
+    end if
+    if isValid(pair.next)
+        nextTitle = pair.next.Name ?? ""
+        nextTitle = liveTvGuide.ClockTime(pair.next.startSec) + "  " + nextTitle
+    end if
+    m.hero.model = {
+        title: channel.Name ?? "", programTitle: tr("Now") + ": " + currentTitle,
+        programSubtitle: "", timeLabel: currentTime, badgeLabel: tr("Playing"),
+        synopsis: tr("Next") + ": " + nextTitle, isLive: true
+    }
+end sub
+
+sub setSpeshFullscreen(fullscreen as boolean)
+    if not isValid(m.view) then return
+    m.speshFullscreen = fullscreen
+    m.view.speshPreview = not fullscreen
+    for each id in ["hero", "chipRail", "windowBar", "guideSection"]
+        m.top.findNode(id).visible = not fullscreen
+    end for
+    if fullscreen
+        m.numberOverlay.visible = false
+        hideToast()
+    end if
+    if fullscreen
+        m.view.translation = [0, 0]
+        m.view.width = 1920
+        m.view.height = 1080
+        m.view.setFocus(true)
+    else
+        m.view.translation = [35, 59]
+        m.view.width = 372
+        m.view.height = 209
+        m.view.setFocus(false)
+        if not isValid(m.speshKeyboard) and not isValid(m.dialog) then m.top.findNode("guideFocus").setFocus(true)
+    end if
+end sub
+
+sub onSpeshReturnToGuide()
+    setSpeshFullscreen(false)
+    focusWindowBar(11)
+end sub
+
+sub onSpeshPlayerExit()
+    stopSpeshPreview()
+    focusWindowBar(11)
+end sub
+
+sub stopSpeshPreview()
+    if not isValid(m.view) then return
+    m.view.setFocus(false)
+    if not isValid(m.speshKeyboard) and not isValid(m.dialog) then m.top.findNode("guideFocus").setFocus(true)
+    m.view.unobserveField("speshReturnToGuide")
+    m.view.unobserveField("backPressed")
+    m.view.unobserveField("state")
+    m.view.unobserveField("speshPlayingChannelId")
+    m.view.unobserveField("speshNowNext")
+    m.view.callFunc("speshStop")
+    if isValid(m.getPlaybackInfoTask)
+        m.getPlaybackInfoTask.unobserveField("data")
+        m.getPlaybackInfoTask.control = TaskControl.STOP
+    end if
+    m.top.removeChild(m.view)
+    m.view = invalid
+    m.speshFullscreen = false
+    for each id in ["hero", "chipRail", "windowBar", "guideSection"]
+        m.top.findNode(id).visible = true
+    end for
+    m.hero.previewActive = false
+    m.global.queueManager.callFunc("clear")
+    updateHero()
 end sub
 
 sub openRecordings()
@@ -1048,6 +1224,73 @@ sub openProgramDialog(program as object)
         buttons: buttons
     })
     m.dialogProgram = program
+end sub
+
+sub openSpeshFilter(field as string)
+    m.speshFilterField = field
+    values = [""]
+    candidates = []
+    if field = "country"
+        candidates = ["US", "PR", "DR", "CH"]
+    else if field = "sports"
+        candidates = ["NBA", "NFL", "MLB", "NHL", "NCAAB", "NCAAF", "UFC", "PPV"]
+    else
+        tags = {}
+        for each channel in m.store.channels
+            for each tag in speshChannelTags(channel)
+                if tag.ToStr() <> "" then tags[tag.ToStr()] = true
+            end for
+        end for
+        candidates = tags.Keys()
+    end if
+    values.append(candidates)
+    options = []
+    for each value in values
+        label = value
+        if value = "" then label = tr("All")
+        options.push({ label: label, selected: m.speshFilters[field] = value })
+    end for
+    m.speshFilterValues = values
+    titles = { country: "Country", sports: "Sports package", tag: "Tags" }
+    openDialog("speshFilter", { type: "sort", title: tr(titles[field]), options: options })
+end sub
+
+sub openSpeshKeyboard(numberOnly as boolean)
+    if isValid(m.speshKeyboard) then return
+    m.pendingMove = invalid
+    m.speshNumberEntry = numberOnly
+    title = tr("Search channels")
+    text = m.speshFilters.query
+    if numberOnly
+        title = tr("Channel Number")
+        text = ""
+    end if
+    purpose = "search"
+    if numberOnly then purpose = "channelNumber"
+    m.speshKeyboard = tvKeyboard.Open(m.top.getScene(), { title: title, text: text, purpose: purpose })
+    if not isValid(m.speshKeyboard) then return
+    m.speshKeyboard.observeField("submitted", "onSpeshKeyboardSubmitted")
+    m.speshKeyboard.observeField("cancelled", "onSpeshKeyboardCancelled")
+end sub
+
+sub onSpeshKeyboardCancelled()
+    tvKeyboard.Release(m.speshKeyboard, ["submitted", "cancelled"])
+    m.speshKeyboard = invalid
+    m.top.findNode("guideFocus").setFocus(true)
+    focusWindowBar(m.lastBarIndex)
+end sub
+
+sub onSpeshKeyboardSubmitted()
+    text = m.speshKeyboard.text.Trim()
+    onSpeshKeyboardCancelled()
+    if m.speshNumberEntry
+        m.channelNumber = text
+        onChannelNumberSettled()
+    else
+        m.speshFilters.query = text
+        storeCustomFiltersChanged()
+        focusWindowBar(m.lastBarIndex)
+    end if
 end sub
 
 ' Which episodes a new series rule records, or the rule's current choice when it has one
@@ -1148,7 +1391,10 @@ sub openDate()
 end sub
 
 sub onDialogDismissed()
-    if m.dialogType = "program" or m.dialogType = "series"
+    if m.dialogType = "channelMenu"
+        closeDialogNode()
+        returnToChannelRow()
+    else if m.dialogType = "program" or m.dialogType = "series"
         closeDialog()
     else
         closeDialogNode()
@@ -1158,6 +1404,30 @@ end sub
 
 sub onDialogAction(event as object)
     action = event.getData()
+    if m.dialogType = "channelMenu"
+        channelId = m.channelMenuId
+        channel = storeChannelForId(channelId)
+        closeDialogNode()
+        returnToChannelRow()
+        if not isValid(channel) then return
+        if action.option = 2
+            message = tr("Added to favorite channels")
+            if liveTvGuide.IsFavoriteChannel(channel) then message = tr("Removed from favorite channels")
+            storeToggleChannelFavorite(channelId, { then: "channelFavoriteDone", success: message, failure: tr("Failed to update favorite channel") })
+        else
+            watchChannel(channelId)
+            setSpeshFullscreen(action.option = 0)
+        end if
+        return
+    end if
+    if m.dialogType = "speshFilter"
+        value = m.speshFilterValues[action.option]
+        m.speshFilters[m.speshFilterField] = value
+        closeDialogNode()
+        storeCustomFiltersChanged()
+        focusWindowBar(m.lastBarIndex)
+        return
+    end if
     if m.dialogType = "sort"
         key = liveTvGuide.ChannelSorts()[action.option]
         saveSort(key)
@@ -1341,8 +1611,51 @@ function pageDirection(key as string) as integer
     return 0
 end function
 
+sub cancelChannelHold()
+    m.channelHoldTimer.control = "stop"
+    m.channelHoldId = ""
+end sub
+
+sub onChannelHeld()
+    channelId = m.channelHoldId
+    cancelChannelHold()
+    if channelId = "" or isValid(m.dialog) or isValid(m.speshKeyboard) then return
+    if m.area <> "grid" or not m.gridOnChannel then return
+    openChannelMenu(channelId, true)
+end sub
+
+sub openChannelMenu(channelId as string, held = false as boolean)
+    channel = storeChannelForId(channelId)
+    if not isValid(channel) then return
+    m.channelMenuId = channelId
+    favoriteLabel = tr("Add to Favorites")
+    if liveTvGuide.IsFavoriteChannel(channel) then favoriteLabel = tr("Remove from Favorites")
+    openDialog("channelMenu", { type: "sort", title: channel.Name ?? tr("Channel"), options: [
+        { label: tr("Watch Full Screen") }, { label: tr("Preview") }, { label: favoriteLabel }
+    ] })
+    ' Repeated OK events from the held button must not immediately choose the first action.
+    m.dialog.waitForOkRelease = held
+end sub
+
 function onKeyEvent(key as string, press as boolean) as boolean
+    if key = KeyCode.OK and m.channelHoldId <> ""
+        if press then return true
+        channelId = m.channelHoldId
+        cancelChannelHold()
+        if not isValid(m.dialog) and not isValid(m.speshKeyboard) then watchChannel(channelId)
+        return true
+    end if
+    if press and key <> KeyCode.OK and m.channelHoldId <> "" then cancelChannelHold()
     if not press then return false
+    ' If a preview callback stole focus, Back must still dismiss the borrowed keyboard.
+    if isValid(m.speshKeyboard)
+        if key = KeyCode.BACK
+            onSpeshKeyboardCancelled()
+        else
+            m.speshKeyboard.setFocus(true)
+        end if
+        return true
+    end if
     if isValid(m.dialog) then return true
 
     digit = digitOf(key)
@@ -1352,6 +1665,10 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
 
     if key = KeyCode.BACK
+        if isValid(m.view)
+            stopSpeshPreview()
+            return true
+        end if
         if consumeBackIfExploring() then return true
         m.disposed = true
         m.global.sceneManager.callFunc("popScene")
@@ -1385,6 +1702,15 @@ function handleChipKey(key as string) as boolean
     return true
 end function
 
+sub returnToChannelRow()
+    if m.lineup.count() = 0 then return
+    index = lineupIndexOf(m.focusRef.channelId)
+    if index < 0 then index = m.gridRow
+    if index < 0 then index = 0
+    if index >= m.lineup.count() then index = m.lineup.count() - 1
+    focusChannelRow(index)
+end sub
+
 function handleBarKey(key as string) as boolean
     index = m.barIndex
     if key = KeyCode.LEFT
@@ -1394,7 +1720,7 @@ function handleBarKey(key as string) as boolean
     else if key = KeyCode.UP
         focusChip(0)
     else if key = KeyCode.DOWN
-        focusChannelRow(0)
+        returnToChannelRow()
     else if key = KeyCode.OK
         if index = 0
             shiftGuideWindow(-m.store.guideWindow, false, true)
@@ -1408,6 +1734,24 @@ function handleBarKey(key as string) as boolean
             openDate()
         else if index = 5
             openRecordings()
+        else if index = 6 or index = 7
+            openSpeshKeyboard(index = 7)
+        else if index = 8
+            openSpeshFilter("country")
+        else if index = 9
+            openSpeshFilter("sports")
+        else if index = 10
+            openSpeshFilter("tag")
+        else if index = 11
+            setSpeshFullscreen(true)
+        else if index = 12
+            stopSpeshPreview()
+        else if index = 13
+            switchSpeshChannel(-1)
+        else if index = 14
+            switchSpeshChannel(1)
+        else if index = 15
+            switchSpeshChannel(0)
         end if
     end if
     return true
@@ -1439,8 +1783,16 @@ function handleChannelKey(key as string, index as integer) as boolean
         focusProgramFromChannel(index)
     else if key = KeyCode.LEFT
         onNavigationKey()
+        if isValid(m.view)
+            focusWindowBar(11)
+        else
+            focusWindowBar(6)
+        end if
     else if key = KeyCode.OK
-        watchChannel(m.lineup[index].Id)
+        m.channelHoldId = m.lineup[index].Id
+        m.channelHoldTimer.control = "start"
+    else if key = KeyCode.OPTIONS
+        openChannelMenu(m.lineup[index].Id)
     end if
     return true
 end function

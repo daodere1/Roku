@@ -6,7 +6,7 @@ import "pkg:/source/utils/misc.bs"
 ' task, and a step that has to wait carries on from the task's answer through a named step.
 
 ' Programs load lazily, this many channels at a time, instead of one request for the whole lineup
-const STORE_PROGRAM_BATCH = 50
+const STORE_PROGRAM_BATCH = 24
 ' Category filters walk the lineup in larger server filtered batches, so a sparse genre can
 ' surface channels well past the first page of the plain guide
 const STORE_CATEGORY_BATCH = 200
@@ -29,6 +29,8 @@ sub storeInit(sortBy as string)
         atLivePosition: true,
         programsByChannel: {},
         programsLoaded: {},
+        programsInFlight: {},
+        programsRetryAfter: {},
         programsHighWater: 0,
         loadingMore: false,
         categoryPrograms: {},
@@ -158,25 +160,26 @@ end function
 
 function storeFilteredChannels() as object
     filter = m.store.filter
-    if filter = "all" then return m.store.channels
+    source = speshFilterChannels(m.store.channels, m.speshFilters)
+    if filter = "all" then return source
 
     kept = []
     if filter = "favorites"
-        for each channel in m.store.channels
+        for each channel in source
             if liveTvGuide.IsFavoriteChannel(channel) then kept.push(channel)
         end for
         return kept
     end if
 
     if m.store.categoryLoadedFor <> filter then return kept
-    for each channel in m.store.channels
+    for each channel in source
         if m.store.categoryPrograms.DoesExist(channel.Id) then kept.push(channel)
     end for
     return kept
 end function
 
 function storeHasMore() as boolean
-    if liveTvGuide.IsCategoryFilter(m.store.filter) then return m.store.categoryHighWater < m.store.channels.count()
+    if liveTvGuide.IsCategoryFilter(m.store.filter) then return m.store.categoryHighWater < speshFilterChannels(m.store.channels, m.speshFilters).count()
     return m.store.programsHighWater < m.store.channels.count()
 end function
 
@@ -228,12 +231,19 @@ sub storeApplyPrograms(ids as object, programs as object)
 end sub
 
 sub storeSendBatch(ids as object, ctx as object, highWater as integer)
+    for each id in ids
+        if m.store.programsInFlight.DoesExist(id)
+            m.store.programsInFlight[id]++
+        else
+            m.store.programsInFlight[id] = 1
+        end if
+    end for
     storeSend({
         kind: "programs",
         ids: ids,
         from: m.store.windowStart,
         upto: m.store.windowEnd,
-        tag: { op: "batch", gen: m.store.programGeneration, highWater: highWater, ctx: ctx }
+        tag: { op: "batch", gen: m.store.programGeneration, ids: ids, highWater: highWater, ctx: ctx }
     })
 end sub
 
@@ -268,21 +278,51 @@ sub storeOnBatch(response as object, tag as object)
         if ctx.stopOnStale <> true then storeContinue(ctx)
         return
     end if
+    for each id in tag.ids
+        if m.store.programsInFlight.DoesExist(id)
+            m.store.programsInFlight[id]--
+            if m.store.programsInFlight[id] <= 0 then m.store.programsInFlight.Delete(id)
+        end if
+    end for
     if not response.ok
+        if not isValid(m.store.programsRetryAfter) then m.store.programsRetryAfter = {}
+        retryAt = CreateObject("roDateTime").AsSeconds() + 15
+        for each id in tag.ids
+            m.store.programsRetryAfter[id] = retryAt
+        end for
         storeContinue(ctx, false)
         return
     end if
     storeApplyPrograms(response.ids, response.programs)
-    if tag.highWater >= 0 then m.store.programsHighWater = tag.highWater
+    if tag.highWater > m.store.programsHighWater then m.store.programsHighWater = tag.highWater
     storeContinue(ctx)
 end sub
 
 ' Fetches only the channels asked for that arent in hand yet, even when they sit past the scroll
 ' high water mark
+function storeVisibleMissing(lineup as object, first as integer, last as integer, now as integer) as object
+    ids = []
+    if m.store.programsInFlight.count() >= STORE_PROGRAM_BATCH * 2 then return ids
+    if first < 0 then first = 0
+    if last >= lineup.count() then last = lineup.count() - 1
+    for index = first to last
+        id = lineup[index].Id
+        retryAt = 0
+        if isValid(m.store.programsRetryAfter)
+            if m.store.programsRetryAfter.DoesExist(id) then retryAt = m.store.programsRetryAfter[id]
+        end if
+        if not m.store.programsLoaded.DoesExist(id) and not m.store.programsInFlight.DoesExist(id) and now >= retryAt
+            ids.push(id)
+            if ids.count() >= STORE_PROGRAM_BATCH then exit for
+        end if
+    end for
+    return ids
+end function
+
 sub storeEnsure(ids as object)
     missing = []
     for each id in ids
-        if not m.store.programsLoaded.DoesExist(id) and isValid(storeChannelForId(id)) then missing.push(id)
+        if not m.store.programsLoaded.DoesExist(id) and not m.store.programsInFlight.DoesExist(id) and isValid(storeChannelForId(id)) then missing.push(id)
     end for
     if missing.count() = 0
         onStoreChanged()
@@ -309,6 +349,8 @@ sub storeResetPrograms()
     m.store.programGeneration++
     m.store.programsByChannel = {}
     m.store.programsLoaded = {}
+    m.store.programsInFlight = {}
+    m.store.programsRetryAfter = {}
     m.store.programsHighWater = 0
     storeResetCategory()
 end sub
@@ -337,7 +379,8 @@ sub storeWalkStep(walk as object)
         return
     end if
 
-    count = m.store.channels.count()
+    channels = speshFilterChannels(m.store.channels, m.speshFilters)
+    count = channels.count()
     found = m.store.categoryPrograms.count() - walk.startRows
     if m.store.categoryHighWater >= count or (found >= STORE_CATEGORY_MIN_ROWS and m.store.categoryHighWater >= walk.minHighWater)
         storeContinue(walk.ctx)
@@ -350,7 +393,7 @@ sub storeWalkStep(walk as object)
     if upto > count then upto = count
     ids = []
     for i = m.store.categoryHighWater to upto - 1
-        id = m.store.channels[i].Id
+        id = channels[i].Id
         if not m.store.categoryQueried.DoesExist(id) then ids.push(id)
     end for
     if ids.count() = 0
@@ -555,6 +598,15 @@ end sub
 ' ------------------------------------------------------------------------------------------------
 ' Sort, filter and window
 ' ------------------------------------------------------------------------------------------------
+
+sub storeCustomFiltersChanged()
+    m.store.loadingMore = false
+    if liveTvGuide.IsCategoryFilter(m.store.filter)
+        storeLoadCategoryPrograms()
+    else
+        onStoreChanged()
+    end if
+end sub
 
 sub storeSetSortBy(value as string)
     if m.store.sortBy = value then return

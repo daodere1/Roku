@@ -1,5 +1,4 @@
 import "pkg:/source/api/baserequest.bs"
-import "pkg:/source/api/MoonfinPlugin.bs"
 import "pkg:/source/api/sdk.bs"
 import "pkg:/source/enums/ColorPalette.bs"
 import "pkg:/source/enums/KeyCode.bs"
@@ -9,7 +8,6 @@ import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/kidsMode.bs"
 import "pkg:/source/utils/libraryOrder.bs"
 import "pkg:/source/utils/multiserver.bs"
-import "pkg:/source/utils/profileCarousel.bs"
 import "pkg:/source/utils/serverMessages.bs"
 import "pkg:/source/utils/settingsGlyphs.bs"
 import "pkg:/source/utils/themeChrome.bs"
@@ -39,7 +37,6 @@ const SCREEN_MIDDLE = 960
 
 sub init()
     m.top.id = "overhang"
-    fitMaskToScreen(m.top.findNode("backgroundMask"))
 
     m.navContainer = m.top.findNode("navContainer")
     m.navClipGroup = m.top.findNode("navClipGroup")
@@ -98,12 +95,10 @@ sub init()
     m.genresItem = createNavItem("genres", "pkg:/images/icons/masks.webp", "Genres", "0xFFFFFF")
     m.liveTvItem = createNavItem("livetv", "pkg:/images/icons/livetv.webp", "Live TV", "0xFFFFFF")
     m.seerrItem = createNavItem("seerr", "pkg:/images/icons/settings/seerr.webp", "Seerr")
-    m.calendarItem = createNavItem("calendar", "pkg:/images/icons/calendar.webp", "Calendar")
     m.librariesItem = createNavItem("libraries", "pkg:/images/icons/library.webp", "Libraries")
     m.messagesItem = createNavItem("messages", "pkg:/images/icons/messages.webp", "Messages")
     m.friendsItem = createNavItem("friends", "pkg:/images/icons/friends.webp", "Friends")
     m.settingsItem = createNavItem("settings", "pkg:/images/icons/settings.webp", "Settings")
-    m.syncPlayItem = createNavItem("syncplay", "pkg:/images/icons/userGroup.webp", "SyncPlay")
 
     loadNavbarSettings()
     m.global.observeField("session", "onSessionChanged")
@@ -180,7 +175,6 @@ end function
 
 sub rebuildNavItems()
     m.navItemsGroup.removeChildrenIndex(m.navItemsGroup.getChildCount(), 0)
-    m.top.libraries = m.libraryData
 
     m.navItems = []
     m.navItems.push(m.homeItem)
@@ -201,11 +195,8 @@ sub rebuildNavItems()
 
     seerrEnabled = parseBoolSetting(m.global.session.user.settings["seerr.enabled"])
     if not kids and seerrEnabled and m.seerrButtonEnabled
-        ' Silo answers requests itself, so there it's Requests rather than the Seerr it stands in for
-        m.seerrItem.label.text = isSiloServer() ? tr("Requests") : "Seerr"
         m.navItems.push(m.seerrItem)
     end if
-    if not kids and calendarButtonShown() then m.navItems.push(m.calendarItem)
 
     individually = not kids and m.librariesEnabled and m.librariesIndividually
     if not kids and m.librariesEnabled and not individually then m.navItems.push(m.librariesItem)
@@ -226,15 +217,6 @@ sub rebuildNavItems()
     ' colour slot for a button that cant open
     if not kids and m.friendsButtonEnabled and socialAvailable() then m.navItems.push(m.friendsItem)
 
-    syncPlayManager = m.global.syncPlayManager
-    ' Core's and Smart-TV's Watch Parties button switch, which Moonbase carries
-    if not kids and m.syncPlayButtonEnabled and isValid(syncPlayManager) and syncPlayManager.callFunc("isEnabled")
-        ' On Silo the button opens Silo's own Watch Parties, as Core's does
-        m.syncPlayItem.label.text = "SyncPlay"
-        if isSiloServer() then m.syncPlayItem.label.text = tr("Watch Parties")
-        m.navItems.push(m.syncPlayItem)
-    end if
-
     m.navItems.push(m.settingsItem)
 
     for each item in m.navItems
@@ -248,10 +230,6 @@ sub rebuildNavItems()
     applyFriendsBadge()
 end sub
 
-function calendarButtonShown() as boolean
-    return parseBoolSetting(m.global.session.user.settings["navbar.show_calendar"], invalid, true) and moonfinPlugin.IsCalendarAvailable()
-end function
-
 function socialAvailable() as boolean
     return achievementsModel.SocialAvailable(chainLookupReturn(m.global, "session.achievementsInfo", invalid))
 end function
@@ -263,14 +241,12 @@ end sub
 
 sub layoutNavbar()
     themed = themeChrome.IsActive()
-    ' Core and Smart-TV fill the focused button with the theme's on-surface colour rather than
-    ' the accent the focus rings use. The ink is surface, the colour a theme pairs with it
-    focusIconColor = themed ? themeChrome.Surface() : "0x000000FF"
-    focusLabelColor = themed ? themeChrome.Surface() : "#000000"
+    focusIconColor = themed ? themeChrome.OnAccent() : "0x000000FF"
+    focusLabelColor = themed ? themeChrome.OnAccent() : "#000000"
     idleIconColor = themed ? themeChrome.OnBackground() : invalid
     idleLabelColor = themed ? themeChrome.OnBackground() : "#FFFFFF"
 
-    m.focusPill.blendColor = themed ? themeChrome.OnSurface() : "0xFFFFFFFF"
+    m.focusPill.blendColor = themed ? themeChrome.Accent() : "0xFFFFFFFF"
 
     if themed and isValid(m.navbarBg)
         m.navbarBg.blendColor = themeChrome.Surface()
@@ -325,9 +301,7 @@ sub layoutNavbar()
         end if
     end for
 
-    ' The avatar stays selected while focus is down in the page, so coming back up lands on
-    ' it, but it only lights up while the bar has focus
-    if m.avatarSelected and m.navHasFocus
+    if m.avatarSelected
         highlightUser()
     else
         dehighlightUser()
@@ -630,7 +604,6 @@ sub loadNavbarSettings()
     m.seerrButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_seerr"], invalid, true)
     m.messagesButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_messages"], invalid, false)
     m.friendsButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_friends"], invalid, false)
-    m.syncPlayButtonEnabled = parseBoolSetting(m.global.session.user.settings["navbar.show_syncplay"], invalid, true)
     m.navbarAlwaysExpanded = parseBoolSetting(m.global.session.user.settings["navbar.alwaysExpanded"], invalid, false)
 
     m.lastNavbarSettings = {
@@ -644,10 +617,7 @@ sub loadNavbarSettings()
         showSeerr: m.global.session.user.settings["navbar.show_seerr"],
         showMessages: m.global.session.user.settings["navbar.show_messages"],
         showFriends: m.global.session.user.settings["navbar.show_friends"],
-        showSyncPlay: m.global.session.user.settings["navbar.show_syncplay"],
-        watchParties: m.global.session.user.settings["watchParty.enabled"],
         social: socialAvailable(),
-        calendar: calendarButtonShown(),
         alwaysExpanded: m.global.session.user.settings["navbar.alwaysExpanded"],
         kids: m.global.session.user.settings["global.kids.enabled"]
     }
@@ -679,10 +649,7 @@ sub onSessionChanged()
         showSeerr: parseBoolSetting(m.global.session.user.settings["navbar.show_seerr"], invalid, true),
         showMessages: parseBoolSetting(m.global.session.user.settings["navbar.show_messages"], invalid, false),
         showFriends: parseBoolSetting(m.global.session.user.settings["navbar.show_friends"], invalid, false),
-        showSyncPlay: parseBoolSetting(m.global.session.user.settings["navbar.show_syncplay"], invalid, true),
-        watchParties: parseBoolSetting(m.global.session.user.settings["watchParty.enabled"], invalid, true),
         social: socialAvailable(),
-        calendar: calendarButtonShown(),
         alwaysExpanded: parseBoolSetting(m.global.session.user.settings["navbar.alwaysExpanded"]),
         kids: parseBoolSetting(m.global.session.user.settings["global.kids.enabled"])
     }
@@ -697,14 +664,11 @@ sub onSessionChanged()
         showSeerr: parseBoolSetting(m.lastNavbarSettings.showSeerr, invalid, true),
         showMessages: parseBoolSetting(m.lastNavbarSettings.showMessages, invalid, false),
         showFriends: parseBoolSetting(m.lastNavbarSettings.showFriends, invalid, false),
-        showSyncPlay: parseBoolSetting(m.lastNavbarSettings.showSyncPlay, invalid, true),
-        watchParties: parseBoolSetting(m.lastNavbarSettings.watchParties, invalid, true),
         social: m.lastNavbarSettings.social = true,
-        calendar: m.lastNavbarSettings.calendar = true,
         alwaysExpanded: parseBoolSetting(m.lastNavbarSettings.alwaysExpanded),
         kids: parseBoolSetting(m.lastNavbarSettings.kids)
     }
-    if currentSettings.shuffle <> lastSettings.shuffle or currentSettings.favorites <> lastSettings.favorites or currentSettings.genres <> lastSettings.genres or currentSettings.liveTv <> lastSettings.liveTv or currentSettings.libraries <> lastSettings.libraries or currentSettings.individually <> lastSettings.individually or currentSettings.seerr <> lastSettings.seerr or currentSettings.showSeerr <> lastSettings.showSeerr or currentSettings.showMessages <> lastSettings.showMessages or currentSettings.showFriends <> lastSettings.showFriends or currentSettings.showSyncPlay <> lastSettings.showSyncPlay or currentSettings.watchParties <> lastSettings.watchParties or currentSettings.social <> lastSettings.social or currentSettings.calendar <> lastSettings.calendar or currentSettings.alwaysExpanded <> lastSettings.alwaysExpanded or currentSettings.kids <> lastSettings.kids
+    if currentSettings.shuffle <> lastSettings.shuffle or currentSettings.favorites <> lastSettings.favorites or currentSettings.genres <> lastSettings.genres or currentSettings.liveTv <> lastSettings.liveTv or currentSettings.libraries <> lastSettings.libraries or currentSettings.individually <> lastSettings.individually or currentSettings.seerr <> lastSettings.seerr or currentSettings.showSeerr <> lastSettings.showSeerr or currentSettings.showMessages <> lastSettings.showMessages or currentSettings.showFriends <> lastSettings.showFriends or currentSettings.social <> lastSettings.social or currentSettings.alwaysExpanded <> lastSettings.alwaysExpanded or currentSettings.kids <> lastSettings.kids
         loadNavbarSettings()
         rebuildNavItems()
     end if
@@ -807,32 +771,20 @@ end sub
 
 sub updateUser()
     if isValid(m.overlayCurrentUser) then m.overlayCurrentUser.text = m.top.currentUser
-    ' Leaving Home clears the name but the avatar stays as it is
-    if m.top.currentUser = "" then return
-    initials = m.top.findNode("overlayCurrentUserInitials")
-    if m.top.currentUserProfileImage = ""
-        ' Setting no picture over no picture fires nothing, so the initial is drawn here
-        showUserAvatar("")
-    else if isValid(initials) and initials.visible
-        initials.text = profileCarousel.Initial(m.top.currentUser)
-    end if
 end sub
 
 sub updateUserProfileImage()
     m.profileImage.observeField("loadStatus", "onPosterLoadStatusChanged")
-    showUserAvatar(m.top.currentUserProfileImage)
+    if isValid(m.profileImage) then m.profileImage.uri = m.top.currentUserProfileImage
 end sub
 
 sub onPosterLoadStatusChanged()
     if m.profileImage.loadStatus <> PosterLoadStatus.LOADING
         m.profileImage.unobserveField("loadStatus")
     end if
-    ' A user without a picture gets a not found, so their initial shows instead
-    if m.profileImage.loadStatus = PosterLoadStatus.FAILED then showUserAvatar("")
-end sub
-
-sub showUserAvatar(uri as string)
-    profileCarousel.ShowAvatar(m.profileImage, m.top.findNode("overlayCurrentUserInitials"), uri, m.top.currentUser, chainLookupReturn(m.global, "session.user.id", ""))
+    if m.profileImage.loadStatus = PosterLoadStatus.FAILED
+        if m.profileImage.loadWidth = 0 then m.profileImage.uri = "pkg:/images/baseline_person_white_48dp.webp"
+    end if
 end sub
 
 sub highlightUser()
@@ -1040,25 +992,12 @@ function handleOKKey() as boolean
         m.global.sceneManager.callFunc("pushScene", seerrDiscovery)
         return true
 
-    else if item.id = "calendar"
-        m.global.sceneManager.callFunc("pushScene", CreateObject("roSGNode", "CalendarScreen"))
-        return true
-
     else if item.id = "messages"
         m.global.sceneManager.callFunc("serverMessagesDialog")
         return true
 
     else if item.id = "friends"
         m.global.sceneManager.callFunc("friends")
-        return true
-
-    else if item.id = "syncplay" and isSiloServer()
-        m.global.watchParty.callFunc("open")
-        return true
-
-    else if item.id = "syncplay"
-        syncPlayManager = m.global.syncPlayManager
-        if isValid(syncPlayManager) then syncPlayManager.callFunc("showGroupsDialog")
         return true
 
     else if item.id = "settings"

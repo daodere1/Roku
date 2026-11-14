@@ -1,9 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile as rawReadFile, writeFile, mkdtemp, rm, glob, access, readdir } from 'node:fs/promises';
-const readFile = async (...args) => {
-    const res = await rawReadFile(...args);
-    return typeof res === 'string' ? res.replace(/\r\n/g, '\n') : res;
-};
+import { readFile, writeFile, mkdtemp, rm, glob, access, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { Writable } from 'node:stream';
@@ -58,13 +54,10 @@ const selections = {
     'source/utils/logRedaction.bs': null,
     'source/utils/youtubeTrailer.bs': null,
     'source/utils/tmdbReviews.bs': null,
-    'source/utils/episodeCast.bs': null,
     'source/utils/detailCompatibility.bs': null,
     'source/utils/parentalFilter.bs': null,
     'source/utils/externalList.bs': null,
     'source/utils/seasonalRow.bs': null,
-    'source/utils/galleryGlow.bs': null,
-    'source/utils/afterHours.bs': null,
     'source/utils/seasonalEffects.bs': null,
     'source/utils/liveRecovery.bs': null,
     'source/utils/deviceCapabilities.bs': ['getSubtitleProfiles', 'transcodableAudioCodecOf', 'transcodeAudioCodecPicks', 'canTranscodeAudioCodecAway', 'keptAudioCodecs', 'applyTranscodeAudioCodecs'],
@@ -75,55 +68,32 @@ const selections = {
     'source/utils/settingsMetrics.bs': null,
     'source/utils/ratingSourceList.bs': null,
     'source/utils/homeRowGroups.bs': null,
-    'source/utils/searchGroups.bs': null,
-    'source/utils/SeerrUtils.bs': ['SeerrEscapeJsonString', 'SeerrJsonFromPairs', 'SeerrFormatJson', 'SeerrFormatJsonValue', 'SeerrStreamingRegion', 'SeerrStreamingProviders', 'SeerrRequestDownloadSummary', 'SeerrDownloadEntryState', 'SeerrDownloadStateRank', 'SeerrParseTimeLeft', 'SeerrTimeLeftText', 'SeerrDownloadLabel', 'SeerrDownloadLabelParts', 'SeerrDownloadStateWord', 'SeerrDownloadBarColor', 'SeerrDownloadSizeText', 'SeerrByteUnit', 'SeerrScaleBytes', 'SeerrQueueHasWork', 'SeerrDownloadKey', 'SeerrIsNumber', 'isValidStringValue', 'IsSeerrSeriesPart', 'SeerrDownloadIsStuck', 'SeerrArrEntryKey', 'SeerrArrGoneFromQueue', 'SeerrArrQueueHasTitle', 'SeerrArrFlagIs', 'SeerrArrQueueForSeasons', 'SeerrArrNotFoundYet', 'SeerrRequestNotFoundYet', 'SeerrArrReason', 'SeerrArrHealthy', 'SeerrArrServiceName', 'SeerrArrQueuePath', 'SeerrArrRemovePath', 'SeerrIdText', 'SeerrLower', 'SeerrArrQueuePathForDetails', 'SeerrDetailDownload', 'SeerrMediaNotFoundYet', 'SeerrReplaceableDownload'],
+    'source/utils/SeerrUtils.bs': ['SeerrEscapeJsonString', 'SeerrJsonFromPairs', 'SeerrFormatJson', 'SeerrFormatJsonValue', 'SeerrStreamingRegion', 'SeerrStreamingProviders'],
     'source/utils/libraryOrder.bs': null,
     'source/utils/detailSectionLayout.bs': null,
     'source/utils/trackLabels.bs': null,
     'source/utils/fileFacts.bs': null,
-    'components/personCreditsHost.bs': ['formatPersonDate', 'personAge'],
-    'source/utils/detailImages.bs': null,
-    'components/details/SpotlightCards.bs': ['spotlightEpisodeSeason', 'spotlightEpisodeOrder', 'spotlightEpisodeFirst', 'spotlightBuilderPersonBackdrops', 'spotlightFirstUnused', 'spotlightBackdropOnlyUrl'],
     'source/utils/playbackFacts.bs': null,
-    'source/utils/mediaBadges.bs': null,
     'source/utils/librarySorts.bs': null,
     'source/utils/libraryGroupBy.bs': null,
     'source/utils/libraryCard.bs': null,
-    'source/utils/libraryPreview.bs': null,
-    'source/utils/homeCards.bs': null,
-    'source/utils/calendarEntries.bs': null,
     'source/utils/incompleteRecordings.bs': null,
     'source/utils/favoriteTabs.bs': null,
     'source/utils/homePreview.bs': null,
     'source/utils/remoteSubtitles.bs': null,
     'source/utils/quickConnectUrl.bs': null,
     'source/utils/playlistSortFilter.bs': null,
-    'source/utils/collectionSort.bs': null,
-    'source/utils/personCredits.bs': null,
     'source/utils/accessSchedule.bs': null,
     'source/utils/musicCategories.bs': null,
-    'source/utils/moonbaseInstall.bs': null,
-    'source/utils/watchPartyModel.bs': null,
-    'source/utils/recentRows.bs': null,
-    'components/settings/SettingsLivePreview.bs': ['headerLayout', 'navbarButtons', 'inLibraryOrder', 'optionRange', 'optionsFit', 'playerMoment', 'drawsHomeRows', 'sampleReleaseShows', 'seerrStyleOf', 'homeBlur', 'followerTarget'],
-    'components/settings/SettingsPlayerPreview.bs': ['arrangedOsdButtons', 'osdTimeText', 'clockAt', 'subtitleBottom', 'seekBarY', 'timeRowShows', 'promptAt', 'segmentSpan', 'scrubPauses'],
-    'components/calendar/calendarHost.bs': ['calendarUsePrefs'],
-    'components/settings/settingsEditors.bs': ['editorArrangement'],
-    'components/settings/settings.bs': ['settingPath', 'previewSceneTable'],
-    'components/details/stage/StageChipRow.bs': ['columnShares'],
-    'components/details/QuickLookItemDetails.bs': ['buttonCap'],
-    'source/utils/playbackOverlay.bs': null,
-    'source/utils/subtitleStyle.bs': null,
     'components/music/musicCategoryHost.bs': ['landingCell', 'enteredCell'],
     'components/extras/collectionLookup.bs': ['findParents', 'namedCollection', 'namedFirst', 'membership'],
-    'components/extras/LoadExtrasTask.bs': ['personRoleIn', 'sortedFeatures', 'featureComesFirst'],
+    'components/extras/LoadExtrasTask.bs': ['personRoleIn'],
     'components/details/detailTrackHost.bs': ['SetUpVideoOptions', 'SetUpAudioOptions', 'detailServerSubtitleIndex', 'audioOrdinal', 'audioStreamPosition'],
     'source/enums/VideoType.bs': null,
     'source/enums/MediaStreamType.bs': null,
     'source/enums/PlaybackMethod.bs': null,
     'source/enums/SubtitleSelection.bs': null,
     'source/enums/ItemType.bs': null,
-    'source/enums/PosterLoadStatus.bs': null,
     'source/MainEventHandlers.bs': ['isLiveTvChannel'],
     'source/utils/embyFeatures.bs': null,
     'components/embyPreview/EmbyPreviewTask.bs': ['loadPreviewData'],
@@ -132,26 +102,22 @@ const selections = {
     'components/ItemGrid/LoadVideoContentTask.bs': ['playbackResourceURL', 'resolvePlaybackURL', 'playbackPort', 'normalizedPlaybackPort', 'playbackUsesServerAuth', 'isHTTPStream', 'getTranscodeReasons', 'addVideoContentURL', 'addSourceCodecs', 'shouldBurnInSubtitle', 'transcodeCopiesVideo', 'audioPlaysDirect', 'containersOverlap', 'liveDirectStreamFormat'],
     'components/ItemGrid/LoadItemsTask2.bs': ['getTargetImageURL', 'getTargetServerUrl', 'isUsingRemoteServer'],
     'source/api/userauth.bs': ['passwordLoginRequest', 'validPasswordLogin', 'passwordLoginError', 'signInRefusedMessage', 'AuthenticateViaQuickConnect'],
-    'source/utils/config.bs': ['current_user_id', 'get_user_setting', 'settingOr', 'getSavedUsers', 'savedUserFirst'],
-    'source/utils/misc.bs': ['normalizeDetailScreenStyleToken', 'isLocalhost', 'isSupportedMediaServer', 'isSiloSystemInfo', 'urlCandidates', 'isValid', 'isAllValid', 'isStringEqual', 'isChainValid', 'chainLookupReturn', 'chainLookup', 'isValidAndNotEmpty', 'serverVersionMeetsMinimumRequirements', 'playlistRenumbersAfterDelete', 'toString', 'isSeerrFilterRow', 'getHomeBackdropBlurAmount', 'getHomeBackdropStyle', 'inArray', 'guidKey', 'isString', 'toBoolean', 'leftPad', 'secondsToHuman', 'isServerDate', 'releaseDay', 'stableSorted', 'arrangeByStoredOrder', 'collectionPlaylist', 'shuffleArray'],
+    'source/utils/config.bs': ['current_user_id', 'get_user_setting'],
+    'source/utils/misc.bs': ['isLocalhost', 'isSupportedMediaServer', 'urlCandidates', 'isValid', 'isAllValid', 'isStringEqual', 'isChainValid', 'chainLookupReturn', 'chainLookup', 'isValidAndNotEmpty', 'serverVersionMeetsMinimumRequirements', 'playlistRenumbersAfterDelete', 'toString', 'getHomeBackdropBlurAmount', 'getHomeBackdropStyle', 'inArray', 'guidKey', 'isString', 'toBoolean', 'leftPad', 'arrangeByStoredOrder', 'collectionPlaylist', 'shuffleArray'],
     'source/ShowScenes.bs': ['ServerVersionCheck', 'startDetailExtras'],
     'source/utils/multiserver.bs': ['buildURLForSession', 'buildImageURLForServer', 'librariesByServer'],
     'source/api/Items.bs': ['ItemMetaData', 'playbackDeviceProfile', 'asksForServerStream', 'audioQualityLabel'],
     'components/video/VideoPlayerView.bs': ['startEmbyPreview', 'nextTranscodeStep', 'retryAction', 'streamSummary', 'liveFallbackMethod', 'liveReResolveRequest', 'liveReconnectingLabel', 'rokuAudioTrack'],
     'components/itemMenu/ItemMenuTask.bs': ['playlistRenumbered'],
     'components/home/Home.bs': ['blurMatchingLoadWidth'],
-    'components/home/HomeItem.bs': ['onPosterLoadStatusChanged', 'retryPoster'],
     'components/home/HomeRows.bs': ['toNormalizedString'],
-    'components/tasks/MultiServerTask.bs': ['withSortFields', 'withField'],
-    'components/home/LoadItemsTask.bs': ['isPlaylistOrder', 'playableMembers', 'normalizeLatestItems', 'oneCardPerSeries', 'seriesCardForLatestItem', 'firstItems', 'providerKeys', 'indexByProviderIds', 'getBoolSetting', 'getStringSetting', 'appendRadarrCalendar', 'radarrRowRelease', 'appendSonarrCalendar', 'sonarrRowPicks', 'sonarrEpisodeCode', 'calendarSubtitle', 'sortByCalendarDate', 'rowSortByParam', 'rowSortOrderParam'],
+    'components/home/LoadItemsTask.bs': ['isPlaylistOrder', 'playableMembers', 'oneCardPerSeries', 'seriesCardForLatestItem', 'firstItems', 'providerKeys', 'indexByProviderIds'],
     'components/home/MediaBarTask.bs': ['pickSlides', 'keepSlide', 'filterAndDedupeItems', 'dedupeKeys', 'externalSlideItem', 'addExternalDetails', 'applyExternalDetails', 'filterItemsByExcludedGenres'],
-    'source/api/Image.bs': ['ImageURL', 'metadataPosterURL', 'chapterImageURL'],
+    'source/api/Image.bs': ['ImageURL', 'metadataPosterURL'],
     'components/account/AccountDialog.bs': ['accountImageURL'],
-    'components/config/SigninScene.bs': ['showsQuickConnect'],
+    'components/config/SigninScene.bs': ['checkQuickConnectEnabled'],
     'source/utils/parsedUrl.bs': ['ParsedUrl', '__ParsedUrl_ToString'],
-    'source/utils/plexUrls.bs': null,
-    'source/api/plex/PlexMapper.bs': null,
-    'source/api/baserequest.bs': ['plexServerURL', 'plexAnswer', 'plexAnswered', 'plexAnswerText', 'buildParams', 'buildServerURL', 'buildURL', 'buildURLForServer', 'buildAuthHeader', 'buildAuthHeaderForServer', 'APIRequest', 'APIRequestForServer', 'authRequest', 'authRequestForServer', 'setCertificateAuthority', 'getJson', 'noteAccessRefused', 'noteRefusalIn', 'postPlaybackInfo', 'requestCanceled'],
+    'source/api/baserequest.bs': ['buildParams', 'buildServerURL', 'buildURL', 'buildURLForServer', 'buildAuthHeader', 'buildAuthHeaderForServer', 'APIRequest', 'APIRequestForServer', 'authRequest', 'authRequestForServer', 'setCertificateAuthority', 'getJson', 'noteAccessRefused', 'noteRefusalIn', 'postPlaybackInfo', 'requestCanceled'],
 };
 let source = 'namespace bslib\n' + bslib.source + '\nend namespace\n' + await readFile('source/enums/String.bs', 'utf8');
 for (const [file, names] of Object.entries(selections)) {
@@ -167,8 +133,6 @@ for (const [file, names] of Object.entries(selections)) {
     }
 }
 source += '\n' + (await readFile('source/ShowScenes.bs', 'utf8')).match(/^const minimumServerVersion = .+$/m)[0];
-source += '\n' + (await readFile('components/details/QuickLookItemDetails.bs', 'utf8')).match(/^const QL_MAX_BUTTONS = .+$/m)[0];
-source += '\n' + (await readFile('components/settings/SettingsPlayerPreview.bs', 'utf8')).match(/^const \w+ = .+$/gm).join('\n');
 source += '\n' + (await readFile('source/api/EmbyConnect.bs', 'utf8')).replace(/^import .*$/gm, '').replace(/    function Request\([^]*?    end function/, await readFile('test/emby-connect-transport.bs', 'utf8'));
 source += '\n' + await readFile('test/emby-connect.bs', 'utf8');
 source += '\n' + await readFile('test/emby-features.bs', 'utf8');
@@ -179,23 +143,18 @@ source += '\n' + await readFile('test/review-regressions.bs', 'utf8');
 source += '\n' + await readFile('test/accent-folding.bs', 'utf8');
 source += '\n' + await readFile('test/quick-connect-url.bs', 'utf8');
 source += '\n' + await readFile('test/sign-in-refused.bs', 'utf8');
-source += '\n' + await readFile('test/saved-users.bs', 'utf8');
 source += '\n' + await readFile('test/access-schedule.bs', 'utf8');
 source += '\n' + await readFile('test/log-redaction.bs', 'utf8');
 source += '\n' + await readFile('test/youtube-trailer.bs', 'utf8');
 source += '\n' + await readFile('test/playback-fallback.bs', 'utf8');
 source += '\n' + await readFile('test/home-backdrop-blur.bs', 'utf8');
 source += '\n' + await readFile('test/home-backdrop-style.bs', 'utf8');
-source += '\n' + await readFile('test/home-poster-retry.bs', 'utf8');
 source += '\n' + await readFile('test/subtitle-burn-in.bs', 'utf8');
 source += '\n' + await readFile('test/seasonal-row.bs', 'utf8');
-source += '\n' + await readFile('test/after-hours.bs', 'utf8');
 source += '\n' + await readFile('test/live-recovery.bs', 'utf8');
 source += '\n' + await readFile('test/caption-download.bs', 'utf8');
 source += '\n' + await readFile('test/subtitle-profiles.bs', 'utf8');
 source += '\n' + (await readFile('components/extras/collectionLookup.bs', 'utf8')).match(/^const MAX_COLLECTIONS = .+$/m)[0];
-source += '\n' + (await readFile('components/home/LoadItemsTask.bs', 'utf8')).match(/^const LATEST_MEDIA_LIMIT = .+$/m)[0];
-source += '\n' + await readFile('test/recent-rows.bs', 'utf8');
 source += '\n' + await readFile('test/collection-lookup.bs', 'utf8');
 source += '\n' + await readFile('test/seerr-missing-collection.bs', 'utf8');
 source += '\n' + await readFile('test/seerr-json.bs', 'utf8');
@@ -205,9 +164,6 @@ source += '\n' + await readFile('test/library-order.bs', 'utf8');
 source += '\n' + await readFile('test/detail-sections.bs', 'utf8');
 source += '\n' + await readFile('test/rating-sources.bs', 'utf8');
 source += '\n' + await readFile('test/home-row-groups.bs', 'utf8');
-source += '\n' + await readFile('test/home-reload-settings.bs', 'utf8');
-source += '\n' + await readFile('test/row-sort-settings.bs', 'utf8');
-source += '\n' + await readFile('test/search-groups.bs', 'utf8');
 source += '\n' + await readFile('test/settings-metrics.bs', 'utf8');
 source += '\n' + await readFile('test/library-filters.bs', 'utf8');
 source += '\n' + await readFile('test/library-group-by.bs', 'utf8');
@@ -215,39 +171,8 @@ source += '\n' + await readFile('test/library-sorts.bs', 'utf8');
 source += '\n' + await readFile('test/item-menu.bs', 'utf8');
 source += '\n' + await readFile('test/episode-browser.bs', 'utf8');
 source += '\n' + await readFile('test/anime-markers.bs', 'utf8');
-// The rest of the poster labels reach for the server and the session
-const posterLabelsFile = await readFile('source/utils/posterLabels.bs', 'utf8');
-source += '\nnamespace posterLabels\n' + posterLabelsFile.match(/^    const .+$/gm).join('\n') + '\n';
-for (const name of ['Context', 'WordSet', 'ItemIdOf', 'Shown', 'Entry', 'SizeFactor', 'Colors', 'ParseHex', 'Luminance', 'Tint']) {
-    const match = posterLabelsFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing posterLabels.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/poster-labels.bs', 'utf8');
 source += '\n' + await readFile('test/transcode-audio.bs', 'utf8');
 source += '\n' + await readFile('test/person-role.bs', 'utf8');
-source += '\n' + await readFile('test/episode-cast.bs', 'utf8');
-// The rest of the Plex playback rules reach for the server
-const plexPlaybackFile = await readFile('source/api/plex/PlexPlayback.bs', 'utf8');
-source += '\n' + plexPlaybackFile.match(/^const PLEX_HLS_AUDIO_CODECS = .+$/m)[0] + '\nnamespace plexPlayback\n';
-for (const name of ['Names', 'HlsAudio']) {
-    const match = plexPlaybackFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing plexPlayback.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/plex-mapper.bs', 'utf8');
-// The rest of plex.tv goes to the network
-const plexTvFile = await readFile('source/api/plexTv.bs', 'utf8');
-source += '\n' + plexTvFile.match(/^const PLEX_PORT = .+$/m)[0] + '\nnamespace plexTv\n';
-for (const name of ['ConnectionRank', 'ServerFromResource', 'Settled', 'MachineIdOf', 'AddressCandidates']) {
-    const match = plexTvFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing plexTv.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/plex-tv.bs', 'utf8');
 // The rest of the guide rules use loops this interpreter cant parse
 const liveTvGuideFile = await readFile('source/utils/liveTvGuide.bs', 'utf8');
 source += '\n' + liveTvGuideFile.match(/^const GUIDE_MINUTE = .+$/m)[0] + '\nnamespace liveTvGuide\n';
@@ -260,108 +185,28 @@ source += '\nend namespace\n';
 source += '\n' + await readFile('test/live-tv-guide.bs', 'utf8');
 source += '\n' + (await readFile('source/utils/recordAiring.bs', 'utf8')).replace(/^import .*$/gm, '');
 source += '\n' + await readFile('test/record-airing.bs', 'utf8');
-for (const [file, test] of [['source/utils/heldSeek.bs', 'test/held-seek.bs'], ['source/utils/secondarySubtitle.bs', 'test/secondary-subtitle.bs'], ['source/utils/liveWindow.bs', 'test/live-window.bs'], ['source/utils/subtitleText.bs', 'test/subtitle-text.bs'], ['source/utils/osdControls.bs', 'test/osd-controls.bs']]) {
-    source += '\n' + (await readFile(file, 'utf8')).replace(/^import .*$/gm, '') + '\n' + await readFile(test, 'utf8');
-}
-source += '\n' + await readFile('test/server-date.bs', 'utf8');
-source += '\n' + await readFile('test/special-features.bs', 'utf8');
-source += '\n' + await readFile('test/spotlight-episodes.bs', 'utf8');
-// The rest of the Minimalist rules reach for the server and the session, which these tests don't have
-const minimalistRulesFile = await readFile('source/utils/minimalistRules.bs', 'utf8');
-source += '\n' + minimalistRulesFile.match(/^const MINIMALIST_(?:TYPES|EPISODE_TYPES) = .+$/gm).join('\n') + '\nnamespace minimalistRules\n';
-for (const name of ['Draws', 'ShowsEpisodes', 'ShowsExtrasButton']) {
-    const match = minimalistRulesFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing minimalistRules.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/minimalist-extras.bs', 'utf8');
 const settingsSyncFile = await readFile('source/utils/settingsSync.bs', 'utf8');
 source += '\nnamespace settingsSync\n' + settingsSyncFile.match(/^    const .+$/gm).join('\n') + '\n';
-for (const name of ['SubtitleModes', 'MediaBarSource', 'PluginToRoku', 'RokuToPlugin', 'ImageTypeName', 'EncodeRowImageTypes', 'RowImageTypeKeys', 'DecodeRowImageTypes', 'ProfileNames', 'NormalizeProfile', 'ActiveProfile', 'ProfileTitle', 'ProfilePath', 'ResolvedPath', 'ResetPath', 'ProfilePush', 'ProfileBody', 'DeleteProfile', 'SiloSectionIn', 'SiloSectionOut', 'WithCombinedFavorites']) {
+for (const name of ['SubtitleModes', 'PluginToRoku', 'RokuToPlugin', 'ProfileNames', 'NormalizeProfile', 'ActiveProfile', 'ProfileTitle', 'ProfilePath', 'ResolvedPath', 'ResetPath', 'ProfilePush', 'ProfileBody', 'DeleteProfile']) {
     source += '\n' + settingsSyncFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'))[0];
 }
 source += '\nend namespace\n';
 source += '\n' + await readFile('test/settings-sync-values.bs', 'utf8');
-source += '\n' + await readFile('test/home-cards.bs', 'utf8');
-// Home's rows in the settings preview, without Look, which reads the saved settings
-const homeRowsPreviewFile = await readFile('source/utils/homeRowsPreview.bs', 'utf8');
-source += '\nnamespace homeRowsPreview\n' + homeRowsPreviewFile.match(/^    const .+$/gm).join('\n') + '\n';
-for (const name of ['Arrange', 'Merged', 'WithGenresSort', 'FocusIndex', 'Shows', 'ItemShows', 'SeerrMark', 'Laid', 'CardArt', 'FirstOf', 'CardText']) {
-    const match = homeRowsPreviewFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing homeRowsPreview.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/home-rows-preview.bs', 'utf8');
-// The preview stacks Home's rows with the room HomeRows keeps under them
-const homeRowsRoom = await readFile('components/home/HomeRows.bs', 'utf8');
-for (const [rowsName, previewName] of [['ROW_TITLE_BAND', 'TITLE_BAND'], ['CLASSIC_CAPTION_ROOM', 'CLASSIC_ROOM'], ['MODERN_CAPTION_ROOM', 'MODERN_ROOM'], ['MODERN_INFO_ROOM', 'MODERN_INFO_ROOM'], ['MODERN_RATINGS_ROOM', 'MODERN_RATINGS_ROOM']]) {
-    assert.equal(homeRowsPreviewFile.match(new RegExp(`const ${previewName} = (\\d+)`))[1], homeRowsRoom.match(new RegExp(`^const ${rowsName} = (\\d+)`, 'm'))[1], `The preview's ${previewName} is HomeRows' ${rowsName}`);
-}
-source += '\n' + await readFile('test/calendar-entries.bs', 'utf8');
-source += '\n' + await readFile('test/arr-calendar-rows.bs', 'utf8');
-source += '\n' + await readFile('test/moonbase-install.bs', 'utf8');
-source += '\n' + await readFile('test/watch-party.bs', 'utf8');
 source += '\n' + (await readFile('source/utils/keyboardLayouts.bs', 'utf8')).replace(/^import .*$/gm, '');
 source += '\n' + await readFile('test/keyboard-layouts.bs', 'utf8');
-source += '\n' + await readFile('source/utils/profileCarousel.bs', 'utf8');
-source += '\n' + await readFile('test/profile-carousel.bs', 'utf8');
 source += '\n' + await readFile('test/settings-sync-profile.bs', 'utf8');
 source += '\n' + await readFile('test/seasonal-effects.bs', 'utf8');
 source += '\n' + await readFile('test/audio-track.bs', 'utf8');
 source += '\n' + await readFile('test/audio-quality.bs', 'utf8');
 source += '\n' + await readFile('test/subtitle-selection.bs', 'utf8');
-// The registry reads and writes stay out, since this interpreter has no registry, so nothing is
-// remembered when a screen asks
-const trackMemoryFile = await readFile('source/utils/trackMemory.bs', 'utf8');
-source += '\n' + trackMemoryFile.match(/^const TRACK_MEMORY_\w+ = .+$/gm).join('\n') + '\nnamespace trackMemory\n';
-for (const name of ['Empty', 'WithPick', 'Take', 'Push', 'Pick', 'RememberedAudio', 'RememberedSubtitle', 'SeriesPref', 'MatchSeries', 'NamedTracks', 'OfType', 'Position', 'StreamWithIndex', 'HasIndex', 'StreamIndex', 'TrackLanguage', 'TrackName', 'SaysForced']) {
-    const match = trackMemoryFile.match(new RegExp(`^    (?:function|sub) ${name}\\([^]*?^    end (?:function|sub)`, 'm'));
-    assert.ok(match, `Missing trackMemory.${name}`);
-    source += '\n' + match[0];
-}
-source += '\n    function Load() as object\n        return trackMemory.Empty()\n    end function\nend namespace\n';
-source += '\n' + await readFile('test/track-memory.bs', 'utf8');
-// The PIN decisions without the registry or the server, and with a stand in for the hash, which
-// this interpreter has no digest for
-for (const [file, constants, space, names, extra] of [
-    ['source/utils/pinLockout.bs', /^const PIN_\w+ = .+$/gm, 'pinLockout', ['IsPinShaped', 'Matches', 'RecordRemaining', 'RecordFailure', 'FormatWait', 'TooManyAttempts'], '    function HashPin(pin as string) as string\n        return "#" + pin\n    end function\n'],
-    ['source/api/serverPin.bs', /^const SERVER_PIN_\w+ = .+$/gm, 'serverPin', ['VerifyVerdict', 'WriteVerdict', 'Locked', 'IsBoolean', 'ErrorIs'], ''],
-    ['source/utils/signInPin.bs', /^const SIGN_IN_\w+ = .+$/gm, 'signInPin', ['NoPin', 'RecordFrom', 'IsEnabled', 'Patched', 'Settled', 'VerifyHere', 'AfterStatus', 'AfterVerify', 'Refusal', 'AfterStore', 'Message', 'AccountKey', 'MarkForgotten', 'TakeForgottenUsername', 'NoteProvedSignIn', 'TakeProvedSignIn', 'TakeForgotten'], '']
-]) {
-    const text = await readFile(file, 'utf8');
-    source += '\n' + text.match(constants).join('\n') + `\nnamespace ${space}\n` + extra;
-    for (const name of names) {
-        const match = text.match(new RegExp(`^    (?:function|sub) ${name}\\([^]*?^    end (?:function|sub)`, 'm'));
-        assert.ok(match, `Missing ${space}.${name}`);
-        source += '\n' + match[0];
-    }
-    source += '\nend namespace\n';
-}
-source += '\n' + await readFile('test/sign-in-pin.bs', 'utf8');
 source += '\n' + await readFile('test/file-facts.bs', 'utf8');
 source += '\n' + await readFile('test/playback-facts.bs', 'utf8');
 source += '\n' + await readFile('test/favorite-tabs.bs', 'utf8');
 source += '\n' + await readFile('test/home-preview.bs', 'utf8');
 source += '\n' + await readFile('test/remote-subtitles.bs', 'utf8');
 source += '\n' + await readFile('test/playlist-sort-filter.bs', 'utf8');
-source += '\n' + await readFile('test/collection-sort.bs', 'utf8');
-source += '\n' + await readFile('test/person-credits.bs', 'utf8');
-source += '\n' + await readFile('test/spotlight-person.bs', 'utf8');
 source += '\n' + await readFile('test/music-categories.bs', 'utf8');
 source += '\n' + await readFile('test/incomplete-recordings.bs', 'utf8');
-// The rest of the arrangement helpers use loops this interpreter can't parse, and the stand ins in
-// test/detail-sections.bs cover them
-const buttonLayoutFile = await readFile('source/utils/buttonLayout.bs', 'utf8');
-source += '\n' + buttonLayoutFile.match(/^const OSD_\w+ = .+$/gm).join('\n') + '\nnamespace buttonLayout\n' + buttonLayoutFile.match(/^    const OSD_\w+ = .+$/gm).join('\n') + '\n';
-for (const name of ['OsdCandidates', 'OsdSecondaryX', 'Ordered', 'Arrange']) {
-    const match = buttonLayoutFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing buttonLayout.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/settings-live-preview.bs', 'utf8');
 const moonfinPluginFile = await readFile('source/api/MoonfinPlugin.bs', 'utf8');
 source += '\nnamespace moonfinPlugin\n';
 for (const name of ['InfoFromPing', 'WithUserToken', 'AreTmdbThumbsAvailable', 'AreTmdbReviewsSupported', 'AreTmdbDetailsSupported', 'GetTmdbId', 'TmdbThumbURL', 'StudioImageURL', 'IsEnabled', 'IncompleteRecordingsSupported', 'CanKeepAsComplete', 'ExtendedCompleteShowingsSupported', 'IsPluginInstalled', 'ParseBoolSetting', 'RatingsSetting', 'RatingsBool', 'IsRatingsEnabled', 'IsEpisodeRatingsEnabled']) {
@@ -375,28 +220,13 @@ source += '\n' + await readFile('test/ratings-scope.bs', 'utf8');
 // The rest of the row layout uses loops this interpreter cant parse, and the outside lists only need these
 const homeRowLayoutFile = await readFile('source/utils/homeRowLayout.bs', 'utf8');
 source += '\nnamespace homeRowLayout\n' + homeRowLayoutFile.match(/^    const .+$/gm).join('\n') + '\n';
-for (const name of ['Catalogue', 'ExternalCharts', 'OfficialChart', 'DiscoverChart', 'ExternalChart', 'Passthrough', 'AsText', 'Sources', 'SourceFor', 'ServerId', 'ServerKey', 'ServerOf', 'SourceFromId', 'IsOwnServer', 'IsSliderRow', 'RowToggles', 'ReloadsHome']) {
+for (const name of ['Catalogue', 'Passthrough', 'AsText', 'Sources', 'SourceFor', 'ServerId', 'ServerKey', 'SourceFromId', 'IsOwnServer', 'IsSliderRow']) {
     source += '\n' + homeRowLayoutFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'))[0];
 }
 source += '\nend namespace\n';
-// The merge sort alone, since the rest of the library scope asks the server
-const libraryScopeFile = await readFile('source/utils/libraryScope.bs', 'utf8');
-source += '\nnamespace libraryScope\n';
-for (const name of ['Sorted', 'Before', 'SortSource', 'SortKey', 'PaddedNumbers', 'AsText']) {
-    const match = libraryScopeFile.match(new RegExp(`^    function ${name}\\([^]*?^    end function`, 'm'));
-    assert.ok(match, `Missing libraryScope.${name}`);
-    source += '\n' + match[0];
-}
-source += '\nend namespace\n';
-source += '\n' + await readFile('test/multi-server-sort.bs', 'utf8');
 source += '\n' + await readFile('test/media-bar-external.bs', 'utf8');
-source += '\n' + (await readFile('source/utils/mediaBarNewRelease.bs', 'utf8')).replace(/^import .*$/gm, '');
-source += '\n' + await readFile('test/media-bar-new-release.bs', 'utf8');
 source += '\n' + (await readFile('source/utils/seerrSliders.bs', 'utf8')).replace(/^import .*$/gm, '');
 source += '\n' + await readFile('test/seerr-sliders.bs', 'utf8');
-source += '\n' + (await readFile('source/utils/SeerrUtils.bs', 'utf8')).match(/^const SEERR_(?:MEDIA|REQUEST)_\w+ = .+$/gm).join('\n');
-source += '\n' + (await readFile('source/utils/seerrRequestRules.bs', 'utf8')).replace(/^import .*$/gm, '');
-source += '\n' + await readFile('test/seerr-requests.bs', 'utf8');
 // The whole markdown reader uses loops this interpreter cant parse, and the reviews only need Strip
 source += '\nnamespace messageMarkdown\n' + (await readFile('source/utils/messageMarkdown.bs', 'utf8')).match(/^    function Strip\([^]*?^    end function/m)[0] + '\nend namespace\n';
 source += '\n' + await readFile('test/tmdb-reviews.bs', 'utf8');
@@ -411,13 +241,6 @@ for (const name of [
 }
 source += '\nend namespace\n';
 source += '\n' + await readFile('test/achievement-unlocks.bs', 'utf8');
-for (const file of ['source/api/silo/SiloSession.bs', 'source/api/silo/SiloMapper.bs', 'source/api/silo/SiloMediaSources.bs', 'source/api/silo/SiloImages.bs', 'source/api/silo/SiloAccount.bs', 'source/api/silo/SiloPager.bs', 'source/api/silo/SiloCatalog.bs', 'source/api/silo/SiloHome.bs', 'source/api/silo/SiloActions.bs', 'source/api/silo/SiloPlayback.bs', 'source/api/silo/SiloExtras.bs', 'source/api/silo/SiloSeerr.bs', 'source/api/silo/SiloRouter.bs', 'source/api/silo/SiloWatchParty.bs']) {
-    source += '\n' + (await readFile(file, 'utf8')).replace(/^import .*$/gm, '');
-}
-source += '\n' + await readFile('test/silo.bs', 'utf8');
-source += '\n' + await readFile('test/silo-watch-party.bs', 'utf8');
-source += '\n' + (await readFile('source/utils/siloRoomSocket.bs', 'utf8')).replace(/^import .*$/gm, '');
-source += '\n' + await readFile('test/silo-room-socket.bs', 'utf8');
 source += '\n' + await readFile('test/friends-chat.bs', 'utf8');
 // Keep the SDK callers themselves: only their URL-transfer boundary is a fixture.
 const sdk = await readFile('source/api/sdk.bs', 'utf8');
@@ -453,19 +276,15 @@ try {
     await rm(directory, { recursive: true, force: true });
 }
 
-// The server list opens Add Server, which offers an address or Emby Connect and shows the server it
-// found before anyone signs in
-assert.match(await readFile('components/config/SetServerScreen.xml', 'utf8'), /<AddServerDialog id="addServerDialog"/, 'Add Server opens over the server list');
-assert.match(await readFile('components/config/SetServerScreen.bs', 'utf8'), /const SERVER_HOLD_SECONDS = 0\.5/, 'Holding OK on a saved server offers to remove it');
-const addServerDialog = await readFile('components/login/AddServerDialog.bs', 'utf8');
-assert.match(addServerDialog, /m\.top\.embyConnectChosen = true/, 'Add Server offers Emby Connect');
-assert.match(addServerDialog, /sub onFoundServerChanged\(\)[^]*?showStep\("found"\)/, 'and shows the server it found');
-const serverFlow = await readFile('source/ShowScenes.bs', 'utf8');
-assert.match(serverFlow, /else if request\.fromDialog = true[^]*?screen\.foundServer = \{/, 'which the sign in flow answers before opening the server');
-assert.match(serverFlow, /if CreateEmbyConnectGroup\(\)/);
-assert.match(serverFlow, /if shownUsers > 0\s+goto user_select/, 'Back from sign in returns to the accounts Who\'s watching listed');
+// Verify that the packaged entry screen exposes both routes and wires Connect.
+const entry = await readFile('components/config/SetServerScreen.xml', 'utf8');
+assert.match(entry, /id="addServerButton"\s+text="Enter Server URL"/);
+assert.match(entry, /id="embyConnectButton"\s+text="Emby Connect"/);
+assert.match(await readFile('source/ShowScenes.bs', 'utf8'), /if CreateEmbyConnectGroup\(\)/);
 assert.match(await readFile('components/embyConnect/EmbyConnectScene.xml', 'utf8'), /extends="SigninScene"/);
-process.stdout.write('PASS: sign-in entry wiring (8 checks)\n');
+const signinShown = (await readFile('components/config/SigninScene.bs', 'utf8')).match(/sub OnScreenShown\([^]*?end sub/)[0];
+assert.match(signinShown, /m\.top\.lastFocus\.setFocus\(true\)\s+else if not m\.quickConnectGroup\.visible\s+m\.config\.setFocus\(true\)/, 'Sign-in hands the form focus when Quick Connect has not');
+process.stdout.write('PASS: sign-in entry wiring (5 checks)\n');
 
 for (const detailStyle of ['components/details/SpotlightItemDetails.bs', 'components/details/MinimalistItemDetails.bs']) {
     const detailSource = await readFile(detailStyle, 'utf8');
@@ -503,12 +322,9 @@ const showScenes = await readFile('source/ShowScenes.bs', 'utf8');
 assert.match(showScenes, /if not group\.hasField\("detailExtrasTask"\) then group\.addField/, 'Detail extras task can be restarted on one screen');
 
 const buttonHost = await readFile('components/details/detailButtonHost.bs', 'utf8');
-assert.match(buttonHost.match(/sub onDetailExtrasChanged\(\)[^]*?end sub/)[0], /rebuildButtonRow\(\)/, 'A late extras answer rebuilds the button row');
-const toggleWatched = buttonHost.match(/sub toggleWatched\(\)[^]*?end sub/)[0];
-assert.match(toggleWatched, /itemData\.UserData\.PlaybackPositionTicks = 0[^]*?if hadProgress then rebuildButtonRow\(\)/, 'Marking watched or unwatched drops the Resume button');
-const rebuildRow = buttonHost.match(/sub rebuildButtonRow\(\)[^]*?end sub/)[0];
-assert.match(rebuildRow, /selectedId = m\.buttonGroups\[previousIndex\]\.id/, 'Async button rebuild remembers logical selection');
-assert.match(rebuildRow, /m\.currentButtonIndex = i[^]*?if focusedId <> "" then focusButton\(i\)/, 'Async button rebuild restores index without stealing focus');
+const extrasChanged = buttonHost.match(/sub onDetailExtrasChanged\(\)[^]*?end sub/)[0];
+assert.match(extrasChanged, /selectedId = m\.buttonGroups\[previousIndex\]\.id/, 'Async button rebuild remembers logical selection');
+assert.match(extrasChanged, /m\.currentButtonIndex = i[^]*?if focusedId <> "" then focusButton\(i\)/, 'Async button rebuild restores index without stealing focus');
 
 const remoteItems = await readFile('source/api/Items.bs', 'utf8');
 const remoteMetadata = remoteItems.match(/function ItemMetaDataForServer\([^]*?end function/)[0];
@@ -524,7 +340,7 @@ const playstateWrites = await readFile('components/PlaystateTask.bs', 'utf8');
 assert.match(playstateWrites, /APIRequestForServer\([^]*?"UserPlayedItems\/" \+ itemId/, 'Remote playstate writes use canonical routes');
 assert.doesNotMatch(playstateWrites, /normalizedUrl \+ "\/Users\//, 'Remote playstate writes do not concatenate legacy routes');
 assert.match(playstateWrites, /resp\.AddHeader\("Content-Type", "application\/json"\)\s+code = requestResponse\(resp, "POST", params\)\.status\s+closeEmbyPlayback\(serverData, requestParams, code >= 200 and code < 300\)/, 'A stop the server took isnt followed by a second close of its live stream');
-assert.match(await readFile('components/video/VideoPlayerView.bs', 'utf8'), /sendPlaystate\(state, params, state = "stop" and isValidAndNotEmpty\(params\.LiveStreamId\)\)/, 'A live stop goes on a task of its own');
+assert.match(await readFile('components/video/VideoPlayerView.bs', 'utf8'), /sendPlaystate\(state, params, ownTask or \(state = "stop" and isValidAndNotEmpty\(params\.LiveStreamId\)\)\)/, 'Live stops and forced final progress reports go on their own tasks');
 
 const signOut = (await readFile('source/api/userauth.bs', 'utf8')).match(/sub SignOut\([^]*?end sub/)[0];
 assert.match(signOut, /m\.global\.removeField\("collectionOwners"\)/, 'Signing out drops the collections the last account was told about');
@@ -535,20 +351,7 @@ for (const locale of ['en_US', 'ca', 'de_DE', 'fr', 'fr_CA', 'pt_BR']) {
     assert.match(await readFile(`locale/${locale}/translations.ts`, 'utf8'), /<source>Since you watched %1<\/source>[^]*?<translation>[^<]*%1[^<]*<\/translation>/, `${locale} has the Since you watched title`);
 }
 
-assert.match(await readFile('source/utils/settingsSync.bs', 'utf8'), /"kind": "pluginDynamic",\s+"type": "none",\s+"enabled": enabled,\s+"order": order,\s+"serverId": owner,\s+"pluginSource": entry\.source,\s+"pluginSection": section,\s+"pluginAdditionalData": entry\.itemId,\s+"pluginDisplayText": entry\.title\s+\}/, 'A picked row goes to the server with its keys as the other clients spell them');
-assert.match(await readFile('components/settings/settings.bs', 'utf8'), /"homeSections": settingsSync\.HomeSectionsPayload\(\),\s+"homeRowOrder": settingsSync\.RowOrderPayload\(\)/, 'The home layout goes to the server under its keys as spelled, since BrightScript lowercases bare keys');
 assert.match(await readFile('source/utils/settingsSync.bs', 'utf8'), /pluginKey: "hiddenDetailSectionsTv", rokuKey: "ui\.itemdetail\.hiddenSections", type: "jsonArray"/, 'The hidden detail sections travel with the other clients');
-assert.match(await readFile('source/utils/settingsSync.bs', 'utf8'), /\{ pluginKey: "hideWatchedInRecentRows", rokuKey: "ui\.home\.hideWatchedInRecentRows", type: "bool" \}/, 'Hide Watched travels with the other clients');
-assert.match(await readFile('source/utils/userConfigSync.bs', 'utf8'), /"ui\.home\.hideWatchedInRecentRows"\) then return "HidePlayedInLatest"/, 'Hide Watched follows the account setting the server hides played titles by');
-assert.match(await readFile('source/Main.bs', 'utf8'), /not isValid\(get_user_setting\(recentRows\.HIDE_WATCHED_SETTING\)\) and toBoolean\(chainLookupReturn\(m\.global\.session, "user\.Configuration\.HidePlayedInLatest", false\)\)/, 'Someone who never set Hide Watched starts from their account');
-const recentLoader = await readFile('components/home/LoadItemsTask.bs', 'utf8');
-assert.match(recentLoader.match(/function loadRecentlyReleased\([^]*?end function/)[0], /if hideWatched then params\.filters = "IsUnplayed"/, 'Recently Released asks for unplayed titles while Hide Watched is on');
-assert.match(recentLoader.match(/function loadLatestMedia\([^]*?end function/)[0], /params\.limit = LATEST_FULL_PAGE/, 'A Recently Added row Hide Watched left short asks once for a full page');
-assert.match(await readFile('components/home/HomeRows.bs', 'utf8'), /HIDE_WATCHED_SETTING, false\) then params\.Filters = "IsUnplayed"/, 'The multi-server Recently Released row follows Hide Watched');
-assert.match(await readFile('components/home/MediaBarTask.bs', 'utf8'), /if m\.top\.hideWatched then query\.filters = "IsUnplayed"/, 'The media bar Recently Released pool follows Hide Watched');
-const recentOptions = await readFile('components/settings/settings.bs', 'utf8');
-assert.match(recentOptions, /takeSettings\(configTree, \["ui\.home\.hideWatchedInRecentRows", /, 'Hide Watched leads the recent rows options');
-assert.match(recentOptions, /settingsSection\("RECENTLY ADDED AND RELEASED"\)/, 'The recent rows options name both rows');
 
 const multiServerUtils = await readFile('source/utils/multiserver.bs', 'utf8');
 const imageBuilder = multiServerUtils.match(/function buildImageURLForServer\([^]*?end function/)[0];
@@ -571,8 +374,6 @@ assert.ok(scannedRoutes > 100, 'The route scan found the app sources');
 // The device lowercases a bare key in a literal, which the player API turns away, and brs doesnt.
 const youtubeSource = await readFile('source/utils/youtubeTrailer.bs', 'utf8');
 assert.ok(['"videoId":', '"clientName":', '"clientVersion":', '"contentCheckOk":', '"racyCheckOk":', '["visitorData"]'].every(key => youtubeSource.includes(key)), 'The YouTube request keeps its camelCase keys');
-// brs has no roEVPDigest, so the SponsorBlock lookup is pinned here instead of run.
-assert.match(youtubeSource.match(/function SponsorRequestUrl[^]*?end function/)[0], /digest\.Setup\("sha256"\)[^]*SPONSOR_URL \+ "\/" \+ LCase\(Left\(digest\.Process\(bytes\), 4\)\) \+ "\?categories="/, 'SponsorBlock is asked by hash prefix, not by video ID');
 
 const seerrTask = await readFile('components/seerr/SeerrAPITask.bs', 'utf8');
 assert.match(seerrTask, /url = buildServerURL\(serverUrl, targetPath, queryParams\)/, 'Plugin proxy preserves saved server query through shared compositor');
@@ -606,8 +407,10 @@ const resumeHelper = quickplaySource.match(/sub applyResumeStartingPoint\([^]*?e
 assert.match(resumeHelper, /positionTicks <= 0 then return[^]*?item\.startingPoint = positionTicks/, 'Resume helper only copies positive playback positions');
 
 const seriesLocal = quickplaySource.match(/sub seriesLocal\([^]*?end sub/)[0];
-assert.match(seriesLocal, /if quickplayFromResume[^]*?GetResumeItems\([^]*?applyResumeStartingPoint\(data\.Items\[0\]\)/, 'Local series Resume prefers a resumable episode and copies its position');
-assert.match(seriesLocal, /GetNextUp\([^]*?if quickplayFromResume then quickplay\.applyResumeStartingPoint\(data\.Items\[0\]\)/, 'Local Next Up fallback preserves a resume position when present');
+assert.match(seriesLocal, /if quickplayFromResume[^]*?APIRequest\("\/shows\/" \+ itemNode.id \+ "\/episodes"[^]*?speshResumeTicks\(episode\) > 0[^]*?applyResumeStartingPoint\(episode\)/, 'Series Resume validates episode progress before queueing');
+assert.ok(seriesLocal.includes('"EnableResumable": true'), 'Series Next Up includes resumable episodes');
+assert.match(seriesLocal, /APIRequest\("\/shows\/nextup"[^]*?if quickplayFromResume then quickplay\.applyResumeStartingPoint\(data\.Items\[0\]\)/, 'Local Next Up fallback preserves a resume position when present');
+assert.match(seriesLocal, /\}\), 8000\)\s+if not isValid\(data\)\s+stopLoadingSpinner\(\)\s+return/, 'Failed series lookup stops loading without selecting another episode');
 
 const seriesRemoteStart = quickplaySource.indexOf('    sub seriesForServer(');
 const seriesRemoteEnd = quickplaySource.indexOf("    ' More than one TV Show Series.", seriesRemoteStart);
@@ -750,7 +553,7 @@ process.stdout.write('PASS: spotlight sections (3 checks)\n');
 // A card left in a selection field opens again when a favorite or watched change rewrites it, and
 // that rewrite has to leave the card's type alone.
 const extrasSelections = [
-    ['ModernItemDetails', /sub openSelectedItem\(item as object\)[^]*?end if\s+m\.extrasGrid\.selectedItem = item\s+m\.extrasGrid\.selectedItem = invalid/],
+    ['ModernItemDetails', /sub openSelectedItem\(item as object\)\s+m\.extrasGrid\.selectedItem = item\s+m\.extrasGrid\.selectedItem = invalid/],
     ['SpotlightItemDetails', /m\.extrasGrid\.selectedItem = item\s+m\.extrasGrid\.selectedItem = invalid/],
 ];
 for (const [detailStyle, clearsSelection] of extrasSelections) {
@@ -782,26 +585,8 @@ process.stdout.write('PASS: live load wiring (3 checks)\n');
 const episodePick = playerView.match(/sub onEpisodePicked\([^]*?end sub/)[0];
 assert.match(episodePick, /ReportPlayback\("stop"\)\s+m\.top\.unobserveField\("state"\)/, 'Switching episodes reports the old one stopped before the state observer comes off');
 assert.match(episodePick, /startingPoint = episodeBrowser\.ResumeTicks\(episode\)[^]*?callFunc\("push", episode\)/, 'The picked episode carries its resume point into the queue');
-assert.match(await readFile('source/utils/buttonLayout.bs', 'utf8'), /id: "episodes", nodeId: "showEpisodes"/, 'The player offers the Episodes button');
-assert.match(await readFile('components/video/OSD.bs', 'utf8'), /buttonLayout\.OsdCandidates\(m\.top\.hasChapters, m\.top\.hasEpisodes, m\.top\.hasSubtitles, m\.top\.hasPeople, m\.top\.canFavorite\)/, 'from the same list the settings preview draws');
+assert.match(await readFile('components/video/OSD.bs', 'utf8'), /id: "episodes", nodeId: "showEpisodes"/, 'The player offers the Episodes button');
 assert.match(await readFile('source/utils/buttonLayout.bs', 'utf8'), /id: "chapters"[^]*?id: "episodes"[^]*?id: "subtitles"/, 'Episodes sits between Chapters and Subtitles in Player Buttons');
-// Every setting that changes how subtitles look shows on the Player preview, and the style rows reach their own screen
-const settingsScreen = await readFile('components/settings/settings.bs', 'utf8');
-const previewTable = settingsScreen.match(/function previewSceneTable\(\)[^]*?end function/)[0];
-const subtitleLooks = [...(await readFile('settings/settings.json', 'utf8')).matchAll(/"settingName": "(playback\.subs\.(?:custom|style\.\w+))"/g)].map(match => match[1]);
-assert.ok(subtitleLooks.length >= 22, 'The subtitle style settings are found');
-for (const key of subtitleLooks) assert.ok(previewTable.includes(`"${key}": "player"`), `${key} shows on the Player preview`);
-// The skip button and the end of episode settings show on the Player preview, which pins its prompts
-// where the player does
-for (const key of ['playback.mediasegments.intro', 'playback.mediasegments.outro', 'playback.mediasegments.countdown', 'playback.nextupbehavior', 'playback.nextuptimeout', 'playback.showNextAirDate', 'playback.replaceskipoutrowithnextup', 'playback.trickplay.pauseWhileScrubbing']) {
-    assert.ok(previewTable.includes(`"${key}": "player"`), `${key} shows on the Player preview`);
-}
-const playerPreviewSource = await readFile('components/settings/SettingsPlayerPreview.bs', 'utf8');
-for (const name of ['OVERLAY_EDGE', 'OVERLAY_BOTTOM', 'SKIP_PROMPT_TOP']) {
-    assert.equal(playerPreviewSource.match(new RegExp(`^const ${name} = (\\d+)`, 'm'))[1], playerView.match(new RegExp(`^const ${name} = (\\d+)`, 'm'))[1], `The preview's ${name} is the player's`);
-}
-const styleRows = settingsScreen.match(/Left\(item\.settingName \?\? "", (\d+)\) = "(playback\.subs\.style\.)"/);
-assert.equal(Number(styleRows[1]), styleRows[2].length, 'The style rows are matched on their whole prefix');
 const episodeOverlay = await readFile('components/video/EpisodeBrowserOverlay.bs', 'utf8');
 const episodeOverlayXml = await readFile('components/video/EpisodeBrowserOverlay.xml', 'utf8');
 assert.match(episodeOverlayXml, /<DetailTabBar id="seasonBar" visible="false" escapeLeft="true" \/>/, 'The episode browser picks seasons on the shared tab bar');
@@ -810,57 +595,6 @@ assert.doesNotMatch(episodeOverlay, /Press BACK to close/, 'The episode browser 
 assert.match(episodeOverlay, /requestMarker[^]*?pillSize = "compact"/, 'The episode browser rows carry their anime markers');
 assert.match(playerView, /m\.episodeOverlay\.logoUri = osdLogo\.uri/, 'The episode browser header is the series logo');
 process.stdout.write('PASS: episode browser wiring (9 checks)\n');
-const chapterOverlay = await readFile('components/video/ChapterListOverlay.bs', 'utf8');
-assert.match(chapterOverlay, /key = KeyCode\.LEFT[^]*?m\.focusIndex--[^]*?key = KeyCode\.RIGHT[^]*?m\.focusIndex\+\+/, 'The chapter row moves with Left and Right');
-assert.doesNotMatch(chapterOverlay, /KeyCode\.(UP|DOWN)/, 'Up and Down stay in the chapter row');
-assert.match(chapterOverlay, /return key <> KeyCode\.PLAY/, 'Play and pause still reach the player under the chapter row');
-assert.match(chapterOverlay, /visual\.thumb\.uri = "" and visual\.thumbUrl <> "" and i >= m\.scrollCol - THUMB_MARGIN/, 'Chapter images load only near the visible cards');
-assert.match(playerView, /thumbUrl: chapterImageURL\(m\.top\.id, i, m\.chapters\[i\]\.LookupCI\("ImageTag"\), serverBase, authToken\)/, 'Each chapter card gets its image from the item it plays');
-assert.match(await readFile('components/details/ModernItemDetails.bs', 'utf8'), /chapterImageURL\(itemId, i, ch\.LookupCI\("ImageTag"\), serverBase, authToken\)/, 'Modern builds chapter images with the same helper as the player');
-assert.match(chapterOverlay, /createChild\("ScrollingLabel"\)[^]*?if focused then repeatCount = -1/, 'A long chapter name scrolls on the focused card only');
-process.stdout.write('PASS: chapter row wiring (7 checks)\n');
-const osdFile = await readFile('components/video/OSD.bs', 'utf8');
-assert.match(osdFile, /sub resetFocusToDefaultButton\(\)[^]*?else\s+focusOnSeekbar\(\)/, 'The controls open on the seek bar, as Core\'s do');
-assert.match(osdFile, /sub moveAlongRow\([^]*?focusControlGroup\("secondary", 0\)/, 'Right runs from the transport buttons onto the rest of the row');
-assert.match(playerView, /if key = KeyCode\.OK\s+if not stateAllowsOSD\(\) then return true\s+handleVideoPlayPauseAction\(\)\s+showOSD\(\)/, 'OK with the controls hidden plays or pauses and brings them up');
-assert.match(playerView, /openControlMenu\("showSpeedMenu"[^]*?openControlMenu\("showQualityMenu"/, 'Speed and Bitrate open in the track pickers\' panel');
-assert.match(await readFile('components/manager/ViewCreator.bs', 'utf8'), /callFunc\("showControlsOn", "showAudioMenu"\)[^]*?callFunc\("showControlsOn", "showSubtitleMenu"\)/, 'The audio and subtitle pickers hand back to their buttons');
-process.stdout.write('PASS: player controls wiring (5 checks)\n');
-
-// Every row on the Calendar screen that the calendar draws moves the preview to it, week start on the month
-// grid. The release types are shared with the Upcoming Movies row and the select action only acts on a
-// press, so those leave it alone. Card image only shows for the style that draws it
-const findCalendarPage = (nodes) => {
-    for (const node of nodes) {
-        if (node.requires === 'calendar' && node.children) return node;
-        const found = node.children && findCalendarPage(node.children);
-        if (found) return found;
-    }
-    return null;
-};
-const calendarRows = findCalendarPage(JSON.parse(await readFile('settings/settings.json', 'utf8'))).children.filter(row => row.settingName);
-assert.ok(calendarRows.length >= 17, 'The Calendar settings are found');
-for (const { settingName } of calendarRows) {
-    const shared = settingName.startsWith('calendar.radarr.show') || settingName === 'calendar.selectAction';
-    assert.equal(previewTable.includes(`"${settingName}": "calendar"`), !shared, `${settingName} ${shared ? 'leaves the preview where it is' : 'shows on the Calendar preview'}`);
-}
-assert.equal(calendarRows.find(row => row.settingName === 'calendar.imageType').requires, 'setting:calendar.style=countdown', 'Card image only shows with the Countdown style');
-process.stdout.write(`PASS: calendar preview scenes (${calendarRows.length + 2} checks)\n`);
-
-// The library rows move the preview to the library copy, the music style stays put, the chip comes
-// last, and the copy never takes focus, runs the loading spinner or writes anything global
-const libraryRows = ['ui.library.style', 'ui.library.groupItemsIntoCollections', 'ui.library.showMediaDetails', 'ui.library.cardTitles', 'ui.library.showBackdrops', 'libraryPosterOrientation'];
-for (const key of libraryRows) assert.ok(previewTable.includes(`"${key}": "library"`), `${key} shows on the Library preview`);
-assert.ok(previewTable.includes('"ui.library.musicStyle": "library"'), 'The music library style draws the music library on the same scene');
-assert.match(settingsScreen, /if sceneId = "library" then shown = m\.hasVideoLibrary or m\.hasMusicLibrary/, 'The chip shows with a video or a music library');
-assert.match(settingsScreen, /const PREVIEW_SCENES = \[[^\]]*"calendar", "library"\]/, 'The Library chip comes last, after Calendar');
-const libraryCopy = await readFile('components/settings/SettingsLibraryPreview.bs', 'utf8') + await readFile('components/settings/settingsMusicPreview.bs', 'utf8');
-assert.doesNotMatch(libraryCopy, /setFocus|takeFocus|LoadingSpinner|m\.global\.\w+\s*=|addFields|callFunc\("(?:pushScene|popScene)/, 'The library copies take no focus and change nothing global');
-const musicRows = await readFile('components/settings/SettingsMusicTask.bs', 'utf8');
-assert.doesNotMatch(musicRows, /AlbumArtists|"MusicArtist"|IsFavorite/, 'The music copies only ask for the rows their first screen shows');
-// An assocarray field nobody set reads back as invalid on the device, so the copy falls back to an empty page while it loads
-assert.match(libraryCopy, /page = m\.top\.page \?\? \{\}/, 'The library copy draws its loading state without a page');
-process.stdout.write(`PASS: library preview scene (${libraryRows.length + 6} checks)\n`);
 
 const animeTask = await readFile('components/anime/AnimeMarkersTask.bs', 'utf8');
 assert.equal((animeTask.match(/labelStyle = body\.LookupCI\("labelStyle"\)|labelStyle: body\.LookupCI\("labelStyle"\)/g) || []).length, 2, 'Both marker answers carry the admin\'s label style');
@@ -888,121 +622,23 @@ assert.match(await readFile('components/extras/ExtrasRowList.bs', 'utf8'), /for 
 assert.match(await readFile('components/details/ModernItemDetails.bs', 'utf8'), /label: tr\("Collections"\), kind: "collections"/, 'Modern puts more than one collection under a Collections tab');
 process.stdout.write('PASS: parent collections wiring (3 checks)\n');
 
-// A collection's playlist sorts, each collection row leads with its collection, and a show looks its collections up
-assert.match(await readFile('components/details/detailCollectionHost.bs', 'utf8'), /function collectionQueue\(\) as object\s+return collectionSort\.Apply\(collectionPlaylist\(collectionMembers\(\)\)/, 'Play, Shuffle and the playlist rows all follow the order picked');
-assert.match(parentCollection, /parentNode\.appendChild\(collectionCard\(collection\)\)\s+for each item in/, 'Each collection row leads with the collection itself');
-assert.match(extrasTask, /itemKind = "series"\) and not hidden\.DoesExist\("collections"\) then loadParentCollection/, 'A show looks up the collections it is in');
-assert.match(extrasTask, /seerrMissingCollection\.SlotByRelease\(parentalControls\.WithoutBlockedItems\(held\), missing\)/, 'A collection\'s own page slots its missing titles in by release');
-assert.match(await readFile('components/details/SpotlightItemDetails.bs', 'utf8'), /itemType = "series"\) and detailSectionLayout\.Shows\("collections"\) then mode = "parents"/, 'So does Spotlight');
-assert.match(await readFile('components/details/ModernItemDetails.bs', 'utf8'), /TAB_RANK_STUDIOS = 5\n[^]*?TAB_RANK_PLAYLIST = 6\nconst TAB_RANK_CHAPTERS = 7/, 'Modern puts the Playlist tab after Studios and before Chapters');
-assert.match(await readFile('components/details/SpotlightCards.bs', 'utf8'), /items = s\.collectionQueue[^]*?headerAction: \{ label: s\.collectionSortLabel \}/, 'Spotlight\'s playlist order lists the sorted queue under a sort button');
-assert.match(await readFile('source/utils/nouveauLayout.bs', 'utf8'), /NOUVEAU_SECTION_EXTRAS\)\s+if state\.parentCollectionCount > 0 and state\.itemType <> "boxset" then sections\.push\(NOUVEAU_SECTION_PARENT_COLLECTIONS\)\s+if IncludesDiscovery/, 'Nouveau puts the collection rails after the extras and before discovery, never on a collection');
-process.stdout.write('PASS: collection sort wiring (8 checks)\n');
-
 // The row's sync keys, layout slot and strict filter live in files the harness cant load
 // whole, so they are checked where they are declared.
 const settingsSyncSource = await readFile('source/utils/settingsSync.bs', 'utf8');
 assert.match(settingsSyncSource, /\{ pluginKey: "seasonalRowEnabled", rokuKey: "seasonal\.row\.enabled", type: "bool" \}/, 'The seasonal switch syncs as a bool');
 assert.match(settingsSyncSource, /\{ pluginKey: "seasonalRowCountry", rokuKey: "seasonal\.row\.country", type: "direct" \}/, 'The seasonal country syncs as text');
 assert.match(settingsSyncSource, /\{ pluginKey: "seasonalRowHiddenHolidays", rokuKey: "seasonal\.row\.hiddenHolidays", type: "jsonArray" \}/, 'The hidden holidays sync as a list');
-assert.match(settingsSyncSource, /\{ pluginKey: "seasonalRowAllYear", rokuKey: "seasonal\.row\.allYear", type: "bool" \}/, 'Show All Year syncs as a bool');
 assert.match(settingsSyncSource.match(/function GetRowToggleMappings\([^]*?end function/)[0], /"rewatch", "seasonal"/, 'The pulled layout drives the seasonal switch');
 const rowLayoutSource = await readFile('source/utils/homeRowLayout.bs', 'utf8');
 assert.match(rowLayoutSource, /\{ id: "nextup", label: "Next Up" \},\s*\{ id: "seasonal", label: "Seasonal Row" \}/, 'An unarranged seasonal row sits after Next Up');
 assert.match(rowLayoutSource, /seasonal: "seasonal\.row\.enabled"/, 'The seasonal row answers to its own switch');
-assert.match(rowLayoutSource.match(/function IsEnabled\([^]*?end function/)[0], /if id = "seasonal" or id = "mdblist_watching_now" then return homeRowLayout\.LegacySwitchOn\(id\)/, 'A layout without the seasonal or watching now row leaves it to the old switch');
-assert.match(rowLayoutSource.match(/function RowToggleOn\([^]*?end function/)[0], /available = homeRowLayout\.ExternalRowAvailable\(sectionKey\)\s+if isValid\(available\) then return available/, 'An external row is offered and built while the server can fill it, not by a switch');
-assert.match(settingsSyncSource.match(/function HomeSectionsPayload\([^]*?end function/)[0], /not homeRowLayout\.IsExternalRow\(id\) and not homeRowLayout\.RowToggleOn\(id, toggles\)/, 'An external row goes over as it\'s set, even while the server can\'t fill it');
-assert.match(settingsSyncSource, /\{ pluginKey: "mdblistApiKey", rokuKey: "plugin\.mdblist\.apiKey", type: "direct", skipRegistry: true, receiveOnly: true \}/, 'The MDBList key is only read');
-assert.match(await readFile('components/settings/settings.bs', 'utf8'), /profile\.Append\(settingsSync\.LegacyRowSwitches\(\)\)/, 'The old row switches follow the layout for older app versions');
+assert.match(rowLayoutSource.match(/function IsEnabled\([^]*?end function/)[0], /if id = "seasonal" then return homeRowLayout\.RowToggleOn\(id\)/, 'A layout without the seasonal row leaves it to the switch');
 const loadItemsSource = await readFile('components/home/LoadItemsTask.bs', 'utf8');
-assert.match(loadItemsSource, /startsWith\("plugindynamic:"\)\s+m\.top\.content = posterLabels\.Attach\(parentalControls\.WithoutUnratedOrBlockedItems\(/, 'Chart rows drop unrated titles once a rating is blocked');
+assert.match(loadItemsSource, /startsWith\("plugindynamic:"\)\s+m\.top\.content = parentalControls\.WithoutUnratedOrBlockedItems\(/, 'Chart rows drop unrated titles once a rating is blocked');
 assert.match(loadItemsSource, /startsWith\("seerr_"\)\s+m\.top\.content = parentalControls\.WithoutBlockedItems\(/, 'Seerr rows keep the usual filter');
 assert.match(loadItemsSource.match(/function loadSeasonalRow\([^]*?end function/)[0], /WithoutBlockedItems\(owned\)[^]*?WithoutUnratedOrBlockedItems\(suggestions\)/, 'Owned titles keep the usual filter and suggestions the strict one');
-assert.match(loadItemsSource.match(/function loadSeasonalRow\([^]*?end function/)[0], /seasonalRow\.ALL_YEAR_SETTING, false\) then params\.allYear = "true"/, 'Show All Year asks the plugin for a row outside the holiday dates');
 assert.match(await readFile('components/home/LoadItemsTask.xml', 'utf8'), /<field id="rowKey" type="string"/, 'The row task reports which holiday it loaded');
-assert.match(await readFile('components/settings/settings.bs', 'utf8'), /settingName = seasonalRow\.ALL_YEAR_SETTING then m\.homeRowsSwitched = true/, 'Switching Show All Year lays Home out again');
-process.stdout.write('PASS: seasonal row wiring (14 checks)\n');
-
-// After Hours opens after seven presses of Version, and every sprite, image and sound it names by
-// string ships in the package
-const aboutScreen = await readFile('components/settings/settings.bs', 'utf8');
-assert.match(aboutScreen, /title: "Version",[^}]*afterHours: true/, 'The Version row in About counts presses toward After Hours');
-assert.match(aboutScreen, /if isValid\(selectedItem\.afterHours\)\s+pressVersion\(\)/, 'and OK on it is a press');
-const arcadeKit = await readFile('components/afterHours/arcadeKit.bs', 'utf8');
-const arcadeArt = [...arcadeKit.match(/function ahArtTable\(\)[^]*?end function/)[0].matchAll(/^\s+(\w+): \[/gm)].map((match) => match[1]);
-const arcadeFiles = await Promise.all(['bufferRun.bs', 'fastForward.bs', 'cableCrawl.bs', 'caseStack.bs', 'pixelPurge.bs', 'AfterHours.bs'].map((name) => readFile(`components/afterHours/${name}`, 'utf8')));
-const arcadeImages = [arcadeKit, ...arcadeFiles].join('\n').matchAll(/ahImage\([^,]+, "(\w+)",|AH_ART \+ "(\w+)\.webp"/g);
-const afterHoursImages = [...arcadeArt, ...[...arcadeImages].map((match) => match[1] ?? match[2]),
-    ...['buffer-run', 'fast-forward', 'cable-crawl', 'case-stack', 'pixel-purge'].map((id) => `thumb_${id}`),
-    ...['blue', 'purple', 'coral'].map((color) => `marquee_${color}`),
-    ...[0, 1, 2].flatMap((tone) => [0, 1, 2, 3, 4, 5].map((seed) => `block${tone}${seed}`)), 'keyframe1', 'keyframe2', 'keyframe3'];
-const castSprites = [...(await readFile('source/utils/afterHours.bs', 'utf8')).match(/function Cast\(id as string\)[^]*?end function/)[0].matchAll(/\["(\w+)", "/g)].map((match) => match[1]);
-assert.equal(castSprites.length, 31, 'How to play lists every enemy, obstacle and powerup');
-for (const name of [...afterHoursImages, ...castSprites]) await access(`images/afterHours/${name}.webp`);
-for (const name of castSprites) assert.ok(arcadeArt.includes(name), `${name} is in the sprite table`);
-const arcade = await readFile('components/afterHours/AfterHours.bs', 'utf8');
-for (const [, name] of arcade.match(/function soundLengths\(\)[^]*?end function/)[0].matchAll(/(\w+): \d+/g)) await access(`sounds/afterHours/${name}.wav`);
-await access('sounds/afterHours/menu-loop.mp3');
-assert.match(arcade, /const AH_VOICES = 4/, 'After Hours plays four sounds at most, since the firmware refuses a sixth');
-assert.match(arcade.match(/sub showMenu\(\)[^]*?end sub/)[0], /warmDemo\(\)/, 'The menu demo starts a couple of seconds into a run');
-assert.match(await readFile('bsconfig.json', 'utf8'), /"sounds\/\*\*\/\*\.\*"/, 'The sounds folder ships');
-process.stdout.write(`PASS: After Hours wiring (${afterHoursImages.length} images)\n`);
-
-// Watching Now row wiring
-assert.match(settingsSyncSource, /\{ pluginKey: "mdblistWatchingNowEnabled", rokuKey: "mdblist\.watchingnow\.enabled", type: "bool" \}/, 'The watching now switch syncs as a bool');
-assert.match(settingsSyncSource.match(/function GetRowToggleMappings\([^]*?end function/)[0], /"mdblist_watching_now"/, 'The pulled layout drives the watching now switch');
-assert.match(rowLayoutSource, /\{ id: "mdblist_watching_now", label: "Watching on MDBList" \}/, 'The catalogue offers the watching now row');
-assert.match(rowLayoutSource, /mdblist_watching_now: "mdblist\.watchingnow\.enabled"/, 'The watching now row answers to its own switch');
-assert.match(loadItemsSource.match(/function loadWatchingNowRow\([^]*?end function/)[0], /WithoutUnratedOrBlockedItems\(results\)/, 'Watching now row applies unrated and blocked filters');
-assert.match(loadItemsSource.match(/function loadWatchingNowRow\([^]*?end function/)[0], /APIRequest\("\/Moonfin\/MdbList\/WatchingNow", \{ profile: "tv" \}\)/, 'Watching now asks with the tv profile');
-assert.match(loadItemsSource.match(/function customRowCard\([^]*?end function/)[0], /if not isValidAndNotEmpty\(tmdbId\) and not isValidAndNotEmpty\(imdbId\) then return invalid/, 'Chart titles with only an IMDb id keep their card');
-const watchingNowRows = await readFile('components/home/HomeRows.bs', 'utf8');
-assert.match(watchingNowRows.match(/sub onWatchingNowRefreshFired\([^]*?end sub/)[0], /kidsMode\.Enabled\(\) or /, 'Kids Mode stops the watching now refresh');
-assert.match(watchingNowRows.match(/sub onWatchingNowRefreshFired\([^]*?end sub/)[0], /activeScene\.isSubType\("VideoPlayerView"\) then return/, 'The watching now refresh waits out the video player, as in Core');
-assert.match(watchingNowRows.match(/sub updateCustomDynamicRowItems\([^]*?end sub/)[0], /if homeRowIndexById\(rowId\) >= 0 then return/, 'A failed or empty refresh keeps the watching now cards up, as in Core');
-assert.match(loadItemsSource.match(/function loadWatchingNowRow\([^]*?end function/)[0], /customRowCard\(item, \{\}\)/, 'Watching now cards are outside titles, as in Core');
-assert.match(await readFile('components/home/Home.xml', 'utf8'), /rowTitleComponentName="HomeRowTitle"/, 'Home rows draw their titles with the row title component');
-assert.match(await readFile('source/utils/misc.bs', 'utf8'), /if isSeerrFilterRow\(rowId\) or inArray\(\["mdblist_watching_now", "watch_parties", "studios", "audio", "resumeaudio"\], rowId\) then return false/, 'Watching now keeps its wide cards in modern rows, as do Watch Parties, Seerr\'s browse rows, Studios and audio rows');
-assert.match((await readFile('components/settings/settings.bs', 'utf8')).match(/sub dismissPanel\([^]*?end sub/)[0], /if m\.homeRowsSwitched = true[^]*?behind\.callFunc\("reload"\)/, 'Closing settings reloads Home after a row is switched on or off');
-process.stdout.write('PASS: watching now row wiring (15 checks)\n');
-
-// Home stays loaded behind Settings, so every setting that decides which rows Home builds, or what
-// goes in them, has Settings tell Home to build its rows again when it closes
-const reloadSettings = await readFile('components/settings/settings.bs', 'utf8');
-const quotedNames = (name) => [...homeRowLayoutFile.match(new RegExp(`function ${name}\\([^]*?end function`))[0].matchAll(/"([\w.]+)"/g)].map((match) => match[1]);
-const reloadList = quotedNames('ReloadsHome');
-const reloadCovered = [...reloadList, ...quotedNames('RowToggles')];
-const reloadSettingsTree = JSON.parse(await readFile('settings/settings.json', 'utf8'));
-const settingNames = new Set();
-const homeRowSections = ['Home Row Toggles', 'IMDb Lists', 'TMDB Lists', 'Seerr Lists', 'Upcoming Calendars'];
-const homeRowSettingNames = [];
-const sectionsFound = new Set();
-(function walk(node) {
-    if (Array.isArray(node)) return node.forEach(walk);
-    if (!node || typeof node !== 'object') return;
-    if (node.settingName) settingNames.add(node.settingName);
-    if (homeRowSections.includes(node.title) && Array.isArray(node.children)) {
-        sectionsFound.add(node.title);
-        for (const child of node.children) if (child.settingName) homeRowSettingNames.push(child.settingName);
-    }
-    Object.values(node).forEach(walk);
-})(reloadSettingsTree);
-assert.equal(sectionsFound.size, homeRowSections.length, 'Every Home row section is found in settings.json');
-for (const name of homeRowSettingNames) assert.ok(reloadCovered.includes(name), `${name} has Home build its rows again`);
-for (const name of reloadList) assert.ok(settingNames.has(name), `${name} is a setting in settings.json`);
-for (const name of ['onKeyGridSubmit', 'boolSettingChanged', 'applyRadioChoice']) {
-    assert.match(reloadSettings.match(new RegExp(`sub ${name}\\([^]*?^end sub`, 'm'))[0], /if homeRowLayout\.ReloadsHome\(selectedSetting\.settingName\) then m\.homeRowsSwitched = true/, `${name} has Home build its rows again for a Home row setting`);
-}
-assert.match(reloadSettings.match(/sub saveHomeRowLayout\([^]*?end sub/)[0], /m\.homeRowsSwitched = true/, 'Saving the Rows layout has Home build its rows again');
-assert.match(reloadSettings.match(/sub dismissPanel\([^]*?end sub/)[0], /commitOpenEditor\(\)[^]*?if m\.homeRowsSwitched = true/, 'The Rows editor is saved before Settings decides whether Home builds its rows again');
-// A refresh skips a row that was switched off without taking it away, so Settings over another screen asks for a reload
-assert.match(reloadSettings.match(/sub dismissPanel\([^]*?end sub/)[0], /if m\.homeRowsSwitched = true[^]*?behind\.callFunc\("reload"\)\s+else[^]*?m\.global\.homeNeedsReload = true\s+end if/, 'Closing Settings over another screen has Home build its rows again once it shows');
-assert.match(await readFile('source/Main.bs', 'utf8'), /homeNeedsReload: false,/, 'The pending Home reload starts off');
-const homeShown = (await readFile('components/home/Home.bs', 'utf8')).match(/sub OnScreenShown\([^]*?^end sub/m)[0];
-assert.match(homeShown, /needsRowReload = chainLookupReturn\(m\.global, "homeNeedsReload", false\)\s+if needsRowReload then m\.global\.homeNeedsReload = false\s+if not m\.isFirstRun/, 'Home clears the pending reload when it shows, first run included');
-assert.match(homeShown, /if needsRowReload[^]*?reload\(\)\s+else if not _isReturning or needsPlaybackRefresh\s+refresh\(\)/, 'Home builds its rows from scratch for the pending reload instead of refreshing them');
-process.stdout.write(`PASS: Home reload settings wiring (${homeRowSettingNames.length + reloadList.length + 10} checks)\n`);
+process.stdout.write('PASS: seasonal row wiring (11 checks)\n');
 
 // A picked collection row asks for its members alone, follows a stored Playlist Order and opens
 // a series into its episodes in order when asked
@@ -1011,39 +647,6 @@ assert.match(loadItemsSource.match(/function collectionRowItems\([^]*?end functi
 assert.match(loadItemsSource.match(/function expandSeriesToEpisodes\([^]*?end function/)[0], /SortBy: "ParentIndexNumber,IndexNumber",\s+SortOrder: "Ascending"/, 'A series opens into its episodes in order');
 assert.match(await readFile('settings/settings.json', 'utf8'), /"settingName": "ui\.home\.collectionsRowSortBy"[^]*?"id": "playlistOrder"/, 'Playlist Order is offered for the collection rows');
 process.stdout.write('PASS: collection row wiring (4 checks)\n');
-
-// The Collections and Audio rows take their sort and sort order from Row Options, or from another client
-const rowSortSettings = JSON.parse(await readFile('settings/settings.json', 'utf8'));
-const rowSortSetting = (name) => {
-    let found;
-    (function walk(node) {
-        if (found || !node || typeof node !== 'object') return;
-        if (node.settingName === name) found = node;
-        else Object.values(node).forEach(walk);
-    })(rowSortSettings);
-    return found;
-};
-const optionIds = (name) => rowSortSetting(name).options.map((option) => option.id).join(',');
-assert.equal(rowSortSetting('ui.home.collectionsRowSortOrder').default, 'ascending', 'Collections stay ascending until another order is picked');
-assert.equal(optionIds('ui.home.collectionsRowSortOrder'), 'ascending,descending', 'Collections offer both orders under the names the plugin syncs');
-assert.equal(rowSortSetting('ui.home.audioRowsSortBy').default, 'name', 'Audio goes by name until another sort is picked, like Core');
-assert.equal(optionIds('ui.home.audioRowsSortBy'), 'name,dateAdded,premiereDate,runtime,random', 'Audio offers the sorts Core offers, under the names the plugin syncs');
-assert.equal(rowSortSetting('ui.home.audioRowsSortOrder').default, 'ascending', 'Audio goes ascending until another order is picked, like Core');
-assert.equal(optionIds('ui.home.audioRowsSortOrder'), 'ascending,descending', 'Audio offers both orders');
-const rowOptionGroups = (await readFile('components/settings/settings.bs', 'utf8'));
-assert.match(rowOptionGroups, /title: "AUDIO", settings: takeSettings\(configTree, \["ui\.home\.displayAudioRows", "ui\.home\.audioRowsSortBy", "ui\.home\.audioRowsSortOrder"\]\)/, 'The audio sort settings sit under the Audio row in Row Options');
-assert.match(rowOptionGroups, /title: "COLLECTIONS", settings: takeSettings\(configTree, \["ui\.home\.displayCollectionsRows", "ui\.home\.collectionsRowSortBy", "ui\.home\.collectionsRowSortOrder",/, 'The Collections sort order sits under its sort in Row Options');
-for (const [pluginKey, rokuKey] of [['collectionsRowSortOrder', 'ui.home.collectionsRowSortOrder'], ['audioRowsSortBy', 'ui.home.audioRowsSortBy'], ['audioRowsSortOrder', 'ui.home.audioRowsSortOrder']]) {
-    assert.ok(settingsSyncSource.includes(`{ pluginKey: "${pluginKey}", rokuKey: "${rokuKey}", type: "direct" }`), `${rokuKey} syncs with the plugin as ${pluginKey}`);
-}
-assert.match(loadItemsSource.match(/function collectionRowItems\([^]*?end function/)[0], /params\.SortBy = rowSortByParam\(sortBy\)\s+params\.SortOrder = rowSortOrderParam\(getStringSetting\(settings, "ui\.home\.collectionsRowSortOrder", "ascending"\)\)/, 'A collection row is asked for in its sort order, and a stored Playlist Order is left as stored');
-assert.match(loadItemsSource.match(/function loadCollections\([^]*?end function/)[0], /SortOrder: rowSortOrderParam\(getStringSetting\(settings, "ui\.home\.collectionsRowSortOrder", "ascending"\)\)/, 'The Collections row is asked for in its sort order');
-const audioRow = loadItemsSource.match(/function loadAudio\(\)[^]*?end function/)[0];
-assert.match(audioRow, /SortBy: rowSortByParam\(getStringSetting\(settings, "ui\.home\.audioRowsSortBy", "name"\)\)/, 'The Audio row is asked for in its sort');
-assert.match(audioRow, /DateCreated,PremiereDate,SortName",/, 'The Audio row asks for what a list joined from several libraries is sorted on');
-assert.match(loadItemsSource.match(/function loadCollections\([^]*?end function/)[0], /DateCreated,PremiereDate,SortName",/, 'So does the Collections row');
-assert.match(audioRow, /SortOrder: rowSortOrderParam\(getStringSetting\(settings, "ui\.home\.audioRowsSortOrder", "ascending"\)\)/, 'The Audio row is asked for in its sort order');
-process.stdout.write('PASS: Collections and Audio row sort settings wiring (17 checks)\n');
 
 // Chart rows match their titles against the library, by provider id on Emby and through a paged
 // index of the library's ids on Jellyfin, and a TMDB chart types its titles from its path
@@ -1056,7 +659,7 @@ assert.match(await readFile('components/home/MediaBarTask.bs', 'utf8'), /APIRequ
 process.stdout.write('PASS: external rows wiring (6 checks)\n');
 
 // Library lists keep each server's order and leave out what an Emby user hid from My Media
-assert.match(await readFile('components/tasks/MultiServerTask.bs', 'utf8'), /itemsArray = withoutHiddenViews\(itemsArray, embyHiddenViews\(userSession\)\)/, 'Multi-server views drop the libraries an Emby user hid');
+assert.match(await readFile('components/tasks/MultiServerTask.bs', 'utf8'), /itemsArray = withoutHiddenViews\(itemsArray, embyHiddenViews\(reqInfo\.userSession\)\)/, 'Multi-server views drop the libraries an Emby user hid');
 for (const nav of ['components/Sidebar.bs', 'components/JFOverhang.bs']) {
     const navSource = await readFile(nav, 'utf8');
     assert.match(navSource, /for each lib in librariesByServer\(allLibs\)/, `${nav} keeps each server's library order`);
@@ -1064,13 +667,6 @@ for (const nav of ['components/Sidebar.bs', 'components/JFOverhang.bs']) {
 }
 assert.match(await readFile('components/Sidebar.bs', 'utf8'), /if isEmbyServer\(\) then views = withoutHiddenViews\(views, chainLookupReturn\(m\.global, "session\.user\.configuration\.MyMediaExcludes", \[\]\)\)/, 'The nav list drops the libraries an Emby user hid');
 process.stdout.write('PASS: library order wiring (6 checks)\n');
-
-// A list joined from several servers is sorted again, with each server asked for the values it sorts on
-const multiServerTaskSource = await readFile('components/tasks/MultiServerTask.bs', 'utf8');
-assert.match(multiServerTaskSource, /sortsJoinedList = sessions\.count\(\) > 1 and LCase\(endpoint\) = "\/items"/, 'Only a list joined from several servers on the route that sorts by SortBy is sorted again');
-assert.match(multiServerTaskSource, /params = withProviderIds\(params\)\s+if sortsJoinedList then params = withSortFields\(params\)/, 'A list that is sorted again asks for the values it is sorted by');
-assert.match(multiServerTaskSource, /if sortsJoinedList then results = libraryScope\.Sorted\(results, params\)/, 'A list joined from several servers is sorted again');
-process.stdout.write('PASS: multi-server sort wiring (3 checks)\n');
 
 // Deleting or moving a playlist row names its entry id, which Emby keeps apart from the item's id
 assert.match(await readFile('source/api/Items.bs', 'utf8'), /tmp\.playlistItemId = \(item\.LookupCI\("PlaylistItemId"\) \?\? ""\)\.ToStr\(\)/, 'Each playlist row keeps its entry id');
@@ -1080,7 +676,7 @@ assert.match(itemMenuTask, /taskRequest\(`Playlists\/\$\{request\.playlistId\}\/
 const itemMenuHostSource = await readFile('components/itemMenu/itemMenuHost.bs', 'utf8');
 assert.match(itemMenuHostSource.match(/sub itemMenuChangePlaylist\([^]*?end sub/)[0], /rows\.removeChildIndex\(from\)[^]*?m\.top\.callFunc\("playlistRowsChanged", target\)[^]*?runItemMenuTask/, 'The row goes before the server answers');
 assert.match(itemMenuHostSource.match(/sub onItemMenuPlaylistChanged\([^]*?end sub/)[0], /rows\.insertChild\(row, request\.from\)/, 'And comes back if the server refuses');
-assert.match(mainActions, /APIRequest\(`\/Playlists\/\$\{playlistID\}\/Items`, \{ EntryIds: entryID \}\)[^]*?requestResponse\(req, "DELETE"\)/, 'The delete names the entry id');
+assert.match(mainActions, /APIRequest\(`\/Playlists\/\$\{playlistID\}\/Items`, \{ EntryIds: entryID \}\)[^]*?req\.SetRequest\("DELETE"\)/, 'The delete names the entry id');
 assert.match(mainActions.match(/sub removeItemFromMyList\([^]*?end sub/)[0], /MainAction\.removeItemFromPlaylist\(playlistID, MainAction\.playlistEntryId\(playlistID, itemID\)\)/, 'My List takes a title out by its entry id too');
 const playlistViewHost = await readFile('components/music/playlistViewHost.bs', 'utf8');
 assert.match(playlistViewHost.match(/function playlistViewRows\([^]*?end function/)[0], /m\.top\.activeTracks = shownRows\s+return shownRows/, 'A playlist screen shows the rows playback reads');
@@ -1155,9 +751,6 @@ const glyphTable = await readFile('source/utils/settingsGlyphs.bs', 'utf8');
 const glyphNames = [...glyphTable.matchAll(/^\s+"([a-z0-9_]+)":\s+&h[0-9A-F]+/gm)].map(match => match[1]);
 assert.ok(glyphNames.includes((await readFile('settings/settings.json', 'utf8')).match(/"settingName": "navbar\.show_friends",\s+"glyph": "([a-z0-9_]+)"/)[1]), 'The Friends button setting draws its glyph');
 process.stdout.write('PASS: friends and chat wiring (19 checks)\n');
-assert.match(settingsSource, /if requirement = "liveTv" then return libraryOrder\.HasLiveTv\(libraryOrder\.Loaded\(\)\)/, 'The Live TV button setting goes by the libraries the bar loaded');
-assert.match(await readFile('settings/settings.json', 'utf8'), /"settingName": "navbar\.show_livetv",[^}]*"requires": "liveTv"/, 'and only shows where one of them is Live TV');
-process.stdout.write('PASS: Live TV button setting (2 checks)\n');
 
 // The seasonal effects sync under Core's names, run only while home is on screen, and draw
 // from images that all ship with the app
@@ -1195,25 +788,6 @@ assert.ok(glyphNames.includes(findSetting(settingsTree, 'seasonal.surprise').gly
 assert.ok(glyphNames.includes(findSetting(settingsTree, 'seasonal.density').glyph), 'The density draws its glyph');
 process.stdout.write('PASS: seasonal effects wiring (12 checks)\n');
 
-// The effect previews over Home while its own rows have focus and goes with them, the follower lands on
-// Home's focused card while its switch has focus, and only one effect runs at a time since Home's stops
-// under Settings
-for (const key of ['seasonal.surprise', 'seasonal.density', 'seasonal.follower']) assert.ok(previewTable.includes(`"${key}": "home"`), `${key} shows on the Home preview`);
-const effectPreview = await readFile('components/settings/SettingsLivePreview.bs', 'utf8');
-assert.match(effectPreview, /inArray\(\["seasonal\.surprise", "seasonal\.density"\], state\.focusedSetting\)/, 'The effect only runs while one of its rows has focus');
-assert.match(effectPreview, /m\.effect\.callFunc\("halt"\)\s+m\.effect = invalid\s+end if\s+m\.holder\.removeChildrenIndex/, 'The preview stops its effect before it takes it away');
-const effectRunner = await readFile('components/seasonal/SeasonalEffects.bs', 'utf8');
-assert.match(effectRunner.match(/sub preview\([^]*?end sub/)[0], /unobserveFieldScoped\("overlaySettingsChanged"\)[^]*?runEffect\(effect, density, tried\.follow = true and isValid\(tried\.target\)\)/, 'The preview effect stops listening for saves and builds followers only where it\'s told they land');
-assert.match(homeSource.match(/sub onSettingsOpen\([^]*?end sub/)[0], /settingsOpen = true\s+m\.seasonalEffects\.callFunc\("halt"\)[^]*?isSameNode\(m\.top\) then m\.seasonalEffects\.callFunc\("play"\)/, "Home's effect stops under Settings and comes back once it closes over Home");
-// The stage's frame shows only along its edges, so it's clipped to bands there rather than redrawn over the whole stage on every frame of an effect
-assert.doesNotMatch(await readFile('components/settings/SettingsLivePreview.xml', 'utf8'), /stage24/, 'No stage frame image spans the whole stage');
-assert.match(effectPreview, /clip\.clippingRect = band[^]*?stage24cover[^]*?stage24s2/, 'The stage corners and line are drawn in clipped bands');
-// The preview's particles hold still while the remote is in use, through the same hold home uses on a low end device
-assert.match(effectRunner.match(/sub preview\([^]*?end sub/)[0], /m\.holdsOnAnyTier = true/, 'The preview effect holds on any device');
-assert.match(effectRunner.match(/sub hold\([^]*?end sub/)[0], /m\.tier <> "low" and not m\.holdsOnAnyTier/, 'Through the one hold home uses');
-assert.match(effectPreview.match(/sub redraw\([^]*?end sub/)[0], /m\.effect\.callFunc\("hold"\)/, 'Every change on the remote holds the preview effect');
-process.stdout.write('PASS: seasonal effect preview (12 checks)\n');
-
 // Sync follows the profile picked on this device, which stays local, and the panel that picks it
 // loads, saves and resets on a task
 const syncSource = await readFile('source/utils/settingsSync.bs', 'utf8');
@@ -1249,15 +823,9 @@ assert.match(keyboardSource, /if entry = "IME"\s+openStylePicker\(\)/, 'The keyb
 assert.match(keyboardSource, /if m\.pickingStyle\s+pickStyle\(value\)/, 'Picking a style saves it and switches the keyboard');
 assert.deepEqual(keyboardStyle.options.map(option => option.id), ['native', 'classic', 'glass', 'docked'], 'The keyboard styles keep the values the profile stores');
 assert.match(settingsSource, /input = takeSettings\(configTree, \["ui\.keyboard\.style"\]\)[^]*generalChildren\.push\(settingsSection\("Input"\)\)\s+generalChildren\.Append\(input\)/, 'Keyboard Style sits under General > Input');
-assert.match(syncFunction('GetMappings'), /\{ pluginKey: "dateFormat", rokuKey: "ui\.dateFormat", type: "dateFormat" \}/, 'The date format syncs under the profile\'s name');
-const dateFormat = findSetting(settingsTree, 'ui.dateFormat');
-assert.equal(dateFormat.default, 'system', 'Locale Default is the date format default');
-assert.deepEqual(dateFormat.options.map(option => option.id), ['system', 'monthDay', 'dayMonth'], 'The date formats keep the values the profile stores');
-assert.match(settingsSource, /clock = takeSettings\(configTree, \["ui\.showClock", "playback\.use24hourclock", "ui\.dateFormat"\]\)/, 'Date Format sits with the clock settings');
 const styleStrings = await readFile('locale/en_US/translations.ts', 'utf8');
 for (const name of ['Video Library Style', 'Docked', 'Show', 'Display', 'Music Library Style', 'Quick Access', 'Immersive', 'Keyboard Style', 'Native', 'Classic', 'Glass', 'Input']) assert.match(styleStrings, new RegExp(`<source>${name}</source>`), `${name} is translated`);
-for (const name of ['Date Format', 'Locale Default', 'Month / Day (Nov 10)', 'Day / Month (10 Nov)']) assert.ok(styleStrings.includes(`<source>${name}</source>`), `${name} is translated`);
-process.stdout.write('PASS: settings sync profiles (53 checks)\n');
+process.stdout.write('PASS: settings sync profiles (45 checks)\n');
 
 // Every glyph a setting names is in the icon font, and the font and its table cover the same characters
 const settingsJsonText = await readFile('settings/settings.json', 'utf8');
@@ -1317,20 +885,17 @@ const discoverSource = await readFile('components/seerr/SeerrDiscoveryScreen.bs'
 assert.match(discoverSource, /m\.modernRows = isModernHomeRows\(\)\s+m\.modernFocusCard = m\.top\.findNode\("modernFocusCard"\)/, 'Discover reads the home rows style');
 assert.match(discoverSource, /if m\.modernRows then applyModernLayout\(\)/, 'Only modern rows change Discover\'s layout');
 assert.match(discoverSource.match(/function discoverCardUris\([^]*?end function/)[0], /TmdbThumbURL\(item\.mediaType, item\.tmdbId\)[^]*?\[item\.backdropUrl, item\.hdPosterUrl\]/, 'The card tries the thumb, then the backdrop, then the poster');
-assert.match(discoverSource, /details\.mediaType = entry\.mediaType/, 'A request card takes its media type from the request');
+assert.match(discoverSource, /details\.mediaType = requestInfo\.type/, 'A request card takes its media type from the request');
 assert.match(await readFile('components/seerr/SeerrDiscoveryScreen.xml', 'utf8'), /<ModernFocusCard id="modernFocusCard"/, 'Discover hosts the shared card');
 assert.match(await readFile('components/home/Home.xml', 'utf8'), /<ModernFocusCard id="modernFocusCard" translation="\[111, 225\]"/, 'Home hosts the shared card where its own used to be');
 
 // Settings are stored flat, so a dotted path that splits the key never finds Prefer Thumbnails
 const homeRowsSource = await readFile('components/home/HomeRows.bs', 'utf8');
-assert.doesNotMatch(miscSource, /"user\.settings\.ui\.home\.preferThumbnails"/, 'Prefer Thumbnails is read by its flat key');
-assert.match(miscSource, /chainLookupReturn\(m\.global\.session, "user\.settings\.`ui\.home\.preferThumbnails`", false\)/, 'Prefer Thumbnails has one reader');
-// Every row's cards take Core's sizes and the art for the row's image type in one place
-assert.doesNotMatch(homeRowsSource, /usePoster = not prefersThumbnails\(\)|imageWidth = row\.imageWidth/, 'No row picks its own card size or art');
-assert.match(homeRowsSource.match(/sub layOutRow\([^]*?end sub/)[0], /imageType = homeCards\.RowImageType\(rowId, musicRow\)/, 'A Classic row takes its image type');
-assert.match(homeRowsSource.match(/sub layOutRow\([^]*?end sub/)[0], /row\.modernCards = modern and not musicRow and useModernCardsForRow\(rowId\)/, 'Music rows keep square cards that never widen in Modern');
-assert.match(homeRowsSource.match(/sub setRowItemSize\([^]*?end sub/)[0], /heights\.push\(ROW_TITLE_BAND \+ room \+ row\.cursorSize\[1\]\)[^]*?if FormatJson\(heights\) <> FormatJson\(m\.top\.rowHeights\) then m\.top\.rowHeights = heights/, 'and each row is as tall as its tallest card, written only when it changes');
-assert.match(await readFile('components/home/HomeItem.bs', 'utf8'), /isStringEqual\(itemData\.type, ItemType\.EPISODE\) and not prefersThumbnails\(\) then wide\.Reverse\(\)/, 'Prefer Thumbnails picks an episode\'s own image over its series\' art');
+assert.doesNotMatch(homeRowsSource, /"user\.settings\.ui\.home\.preferThumbnails"/, 'Prefer Thumbnails is read by its flat key');
+assert.match(homeRowsSource, /chainLookupReturn\(m\.global\.session, "user\.settings\.`ui\.home\.preferThumbnails`", false\)/, 'Prefer Thumbnails has one reader');
+assert.match(homeRowsSource.match(/sub updateCustomDynamicRowItems\([^]*?end sub/)[0], /row\.usePoster = not prefersThumbnails\(\)/, 'Seerr, chart and seasonal rows follow Prefer Thumbnails');
+assert.match(homeRowsSource.match(/sub updateSinceYouWatchedItems\([^]*?end sub/)[0], /row\.usePoster = not prefersThumbnails\(\)/, 'Since you watched follows Prefer Thumbnails');
+assert.match(homeRowsSource.match(/function internalRowConfig\([^]*?end function/)[0], /radarr_calendar: \{[^}]*usePoster: not prefersThumbnails\(\) \}[^]*sonarr_calendar: \{[^}]*usePoster: not prefersThumbnails\(\) \}/, 'The calendar rows follow Prefer Thumbnails');
 const homeData = await readFile('components/data/HomeData.bs', 'utf8');
 assert.match(homeData, /sub setTitledThumb\([^]*?m\.top\.thumbnailURL = thumbUrl\s+m\.top\.widePosterURL = thumbUrl/, 'The titled thumb leads a card\'s wide art');
 assert.doesNotMatch(homeData.match(/sub setTitledThumb\([^]*?end sub/)[0], /backdropURL/, 'The page behind a card keeps the plain backdrop');
@@ -1363,7 +928,7 @@ assert.match(previewHome.match(/sub hideModernFocusCard\([^]*?end sub/)[0], /^\s
 assert.match(previewHome.match(/sub onHomeRowsFocusChanged\([^]*?end sub/)[0], /if not m\.homeRows\.isInFocusChain\(\)\s+stopPreview\(\)\s+return/, 'Focus leaving the rows stops the preview');
 assert.match(previewHome.match(/sub onItemDetailsLoaded\([^]*?end sub/)[0], /m\.previewDetails = json/, 'The details a card already fetched feed its preview');
 const previewController = await readFile('components/home/modernPreview.bs', 'utf8');
-assert.match(await readFile('components/home/Home.bs', 'utf8'), /observeFieldScoped\("settingsOpen", "onSettingsOpen"\)[^]*?sub onSettingsOpen\(\)\s+onPreviewSettingsOpen\(\)/, 'Home watches the settings overlay');
+assert.match(previewController, /observeFieldScoped\("settingsOpen", "onPreviewSettingsOpen"\)/, 'Home watches the settings overlay');
 assert.match(previewController.match(/sub onPreviewSettingsOpen\([^]*?end sub/)[0], /settingsOpen = true[^]*?stopPreview\(\)/, 'Opening settings stops the preview');
 assert.match(previewController.match(/sub onHomeRowsQuickPlay\([^]*?end sub/)[0], /stopPreview\(\)/, 'The Play key stops the preview before the player comes');
 assert.doesNotMatch(previewController, /playstateTask|Sessions\/Playing/, 'A preview never reports playback');
@@ -1406,14 +971,7 @@ assert.doesNotMatch(previewHome, /"ui\.home\.showBackdrop"/, 'Home never reads t
 assert.match(previewHome, /maskUri = "pkg:\/images\/backdropCornerMask\.png"/, 'The corner backdrop fades out through its mask');
 assert.match(previewHome, /maskUri = "pkg:\/images\/backdropTopMask\.webp"/, 'The top backdrop fades out through its mask');
 for (const name of ['Full Screen', 'Corner', 'Top']) assert.match(previewStrings, new RegExp(`<source>${name}</source>`), `${name} is translated`);
-// The settings preview draws the style behind its rows through Home's helper and masks, and draws a tried style with its switch
-assert.ok(previewTable.includes('"ui.home.backdropStyle": "home"') && previewTable.includes('"ui.home.showBackdrop": "home"'), 'The backdrop style and its switch show on the Home preview');
-assert.match(previewSettingsScreen, /if m\.tryKey = "ui\.home\.backdropStyle" then values\["ui\.home\.showBackdrop"\] = \(values\[m\.tryKey\] <> "off"\)\.ToStr\(\)/, 'A tried style is drawn with the switch it saves');
-const rowsPreview = await readFile('components/setup/SetupHomeRowsPreview.bs', 'utf8');
-assert.ok(rowsPreview.includes('"pkg:/images/backdropCornerMask.png"') && rowsPreview.includes('"pkg:/images/backdropTopMask.webp"'), 'The preview fades its backdrop through Home\'s masks');
-assert.match(await readFile('components/setup/SetupDetailPreview.bs', 'utf8'), /sub drawBackdrop\(pal as object\)\s+if m\.live and not m\.pageLayout\.showBackdrop then return/, 'Every detail style drops its picture when the switch is off');
-assert.match(await readFile('components/details/detailMetadataHost.bs', 'utf8'), /sub setBackdropImage\(itemData as object\)[^]*?backdropPoster\.visible = get_user_setting_bool\("ui\.itemdetail\.showBackdrop", true\)/, 'The detail screens that share the backdrop setter drop their picture when the switch is off');
-process.stdout.write('PASS: home backdrop style wiring (16 checks)\n');
+process.stdout.write('PASS: home backdrop style wiring (11 checks)\n');
 
 // Continue Watching and Next Up cards play on select through one check the press and the card menu share
 assert.match(homeRowsSource.match(/function playsOnSelect\([^]*?end function/)[0], /if rowId <> "resume" and rowId <> "nextup" then return false\s+return isStringEqual\(get_user_setting\("ui\.home\.continueWatchingDefaultAction"\), "play"\)/, 'Only Continue Watching and Next Up rows play on select, and only when the setting says play');
@@ -1448,13 +1006,10 @@ assert.match(libraryXml, /<LibrarySortDialog id="displayDialog" visible="false" 
 assert.doesNotMatch(libraryXml, /LibrarySettingsDialog/, 'The cycling settings dialog is gone');
 assert.match(libraryScene, /title: tr\("Group By"\),\s+closeOnPick: true,/, 'A Group By pick closes its dialog');
 assert.match(await readFile('components/ItemGrid/LoadItemsTask2.bs', 'utf8'), /Fields: "[^"]*Genres, Studios"/, 'Items carry the genres and studios Group By reads');
-assert.match(await readFile('components/ItemGrid/LoadItemsTask2.bs', 'utf8'), /Fields: "[^"]*ProductionYear, OfficialRating, CommunityRating, CriticRating, Status[^"]*"/, 'Items carry the year, ratings and status Emby leaves off unless asked');
 assert.match(settingsSyncSource, /\{ pluginKey: "libraryCardTitles", rokuKey: "ui\.library\.cardTitles", type: "bool" \}/, 'Titles Under Posters syncs under Core\'s name');
 assert.match(settingsSyncSource, /\{ pluginKey: "libraryPosterSize", rokuKey: "ui\.library\.posterSize", type: "direct" \}/, 'The library poster size syncs under Core\'s name');
 assert.match(settingsSyncSource, /\{ pluginKey: "playlistPosterSize", rokuKey: "ui\.library\.playlistPosterSize", type: "direct" \}/, 'The playlist poster size syncs under Core\'s name');
-assert.match(settingsSyncSource, /\{ pluginKey: "posterSize", rokuKey: "ui\.posterSize", type: "direct" \}/, 'Card Size syncs both ways under Core\'s name');
-assert.match(settingsSyncSource, /\{ pluginKey: "homeImageTypeContinueWatching", rokuKey: "ui\.home\.rowImageType\.resume", type: "imageType" \}/, 'Continue Watching\'s image type syncs on its own key');
-assert.match(settingsSyncSource, /\{ pluginKey: "homeRowsImageTypeOverride", rokuKey: "ui\.home\.rowsImageTypeOverride", type: "bool", receiveOnly: true \}/, 'The type for every row only arrives');
+assert.match(settingsSyncSource, /pluginKey: "posterSize", rokuKey: "ui\.posterSize"[^}]*receiveOnly: true/, 'The general poster size is only read');
 assert.equal(findSetting(settingsTree, 'ui.library.cardTitles').default, 'true', 'Titles Under Posters starts on');
 assert.equal(findSetting(settingsTree, 'itemgrid.forgetFilters'), null, 'Forget Filters is gone');
 assert.doesNotMatch(mainSource, /clearOldLibraryFilters/, 'Filters are no longer wiped at start');
@@ -1512,14 +1067,8 @@ assert.match(classicHomeXml, /<Group id="detailsSection" translation="\[111, 120
 const overviewTop = Number(classicHomeSource.match(/const OVERVIEW_TOP = (\d+)/)[1]);
 const overviewLine = Number(classicHomeSource.match(/const OVERVIEW_LINE_HEIGHT = (\d+)/)[1]);
 assert.equal(120 + overviewTop + 3 * overviewLine, 440, 'Three overview lines end above the rows');
-assert.match(classicHomeSource, /m\.homeRows\.translation = m\.homeRowInfoOverlay \? \[111, 450\] : \[111, 170\]/, 'The rows stay at 450 under the info area, and sit higher without it');
-assert.match(classicHomeSource, /m\.detailsSection\.visible = m\.homeRowInfoOverlay/, 'The info area shows only while Home Row Info Overlay is on');
-assert.match(await readFile('source/utils/misc.bs', 'utf8'), /function showsHomeRowInfoOverlay\(\) as boolean\s+if isModernHomeRows\(\) then return false\s+return get_user_setting_bool\("ui\.home\.rowInfoOverlay", true\)/, 'Only Classic rows show the info area, and it is on until turned off');
-assert.match(await readFile('settings/settings.json', 'utf8'), /"title": "Home Row Info Overlay",\s+"description": "Show title and metadata when browsing home rows",\s+"settingName": "ui\.home\.rowInfoOverlay",\s+"glyph": "info_outline",\s+"requires": "setting:ui\.home\.rowsStyle=v1",\s+"type": "bool",\s+"default": "true"/, 'Home Row Info Overlay is offered with Classic rows and starts on, as in Core');
-assert.match(await readFile('source/utils/settingsSync.bs', 'utf8'), /pluginKey: "homeRowInfoOverlay", rokuKey: "ui\.home\.rowInfoOverlay", type: "bool"/, 'Home Row Info Overlay syncs with the plugin under the key Core and Smart-TV use');
-for (const text of ['Home Row Info Overlay', 'Show title and metadata when browsing home rows']) assert.ok(previewStrings.includes(`<source>${text}</source>`), `${text} is translated`);
-assert.match(classicHomeSource.match(/sub reload\(\)[^]*?end sub/)[0], /if not m\.modernHomeRows and m\.homeRowInfoOverlay <> get_user_setting_bool\("ui\.home\.rowInfoOverlay", true\)\s+m\.homeRowInfoOverlay = not m\.homeRowInfoOverlay\s+if isValid\(m\.mediaBar\) and not m\.mediaBar\.visible then applyMediaBarLayout\(false\)/, 'Turning Home Row Info Overlay on or off in Settings lays the Classic rows out again when Settings closes');
-assert.match(await readFile('components/home/HomeRows.bs', 'utf8'), /const CLASSIC_CAPTION_ROOM = 118\s+const MODERN_CAPTION_ROOM = 123\s+const MODERN_INFO_ROOM = 292/, 'Rows keep room under the cards for three caption lines, and Modern rows for the focused card\'s details');
+assert.match(classicHomeSource, /m\.homeRows\.translation = m\.modernHomeRows \? \[111, 170\] : \[111, 450\]/, 'The rows stay at 450');
+assert.match(await readFile('components/home/HomeRows.bs', 'utf8'), /itemHeight = 380\s+if not isModernHomeRows\(\) then itemHeight = 415/, 'Classic rows make room for the second line under the cards');
 assert.match(classicHomeXml, /<RatingsRow id="homeRatings"[^>]*singleLine="true"/, 'Home shows its ratings as single line chips');
 process.stdout.write('PASS: classic home info area wiring\n');
 
@@ -1529,7 +1078,6 @@ assert.match(await readFile('source/utils/misc.bs', 'utf8'), /return \(padding -
 const mediaBarTaskWiring = await readFile('components/home/MediaBarTask.bs', 'utf8');
 assert.match(mediaBarTaskWiring, /while running\.count\(\) < 6 and nextSource < parentIds\.count\(\) and items\.count\(\) < m\.top\.featuredCount \* 2/, 'The media bar reads six sources at a time and stops at twice what it shows');
 assert.match(mediaBarTaskWiring, /pool = readSources\(shuffleArray\(parentIds\), query, excludedGenreNames\)/, 'It reads its sources in a shuffled order');
-assert.match(mediaBarTaskWiring, /parentIds = filterIdsBySelection\(libraryIds, selectedLibraryIds\)\s+parentIds\.append\(selectedCollectionIds\)/, 'Every source reads the picked libraries and collections together');
 for (const file of ['components/JFOverhang.bs', 'components/Sidebar.bs']) {
     assert.match(await readFile(file, 'utf8'), /callFunc\("getActiveScene"\)\?\.subtype\(\), "Home"\)\s+m\.top\.itemSelected = "homeAgain"/, `${file} tells Home it was pressed on Home`);
 }
@@ -1540,8 +1088,8 @@ assert.match(mediaBarWiring, /if item\.id <> m\.failedBannerId then art = banner
 const homeRowsWiring = await readFile('components/home/HomeRows.bs', 'utf8');
 assert.match(homeRowsWiring, /m\.emptySections\[sectionTitle\] = true/, 'A section that comes back empty is remembered');
 assert.equal((homeRowsWiring.match(/if not sectionExists\(sectionName\) and not knownEmpty\(sectionName\)/g) || []).length, 12, 'Every placeholder skips a section known to be empty');
-assert.match(homeRowsWiring, /const EAGER_SECTION_COUNT = 8\s+const NEAR_ROWS_ABOVE = 2\s+const NEAR_ROWS_BELOW = 5\s+const LATE_ROW_LOADS = 3/, 'Picked rows past the first eight wait for focus to come near');
-assert.match(homeRowsWiring, /if holdsBack\(i, sectionName\)\s+holdBack\(sectionName\)/, 'Held back rows only get a placeholder');
+assert.match(homeRowsWiring, /import "pkg:\/components\/home\/homeLoading.bs"/, 'SpeshTV uses its bounded eager background scheduler');
+assert.doesNotMatch(homeRowsWiring, /if holdsBack\(i, sectionName\)\s+holdBack\(sectionName\)/, 'Later rows enter the queue without waiting for focus');
 const syncWiring = await readFile('source/utils/settingsSync.bs', 'utf8');
 for (const key of ['imdb', 'tmdb', 'seerr']) {
     assert.match(syncWiring, new RegExp(`\\{ pluginKey: "${key}RowsSortBy", rokuKey: "${key}\\.rowsSortBy", type: "direct" \\}`), `The ${key} sort syncs`);
@@ -1550,106 +1098,6 @@ for (const key of ['imdb', 'tmdb', 'seerr']) {
 assert.match(syncWiring, /if source = "seerr" then return settingsSync\.SliderRowFromSection\(section, serverKey\)/, 'A Seerr slider section from the server becomes a slider row');
 assert.match(syncWiring, /if not homeRowLayout\.IsSliderRow\(id\) then order\.push\(id\)/, 'Slider rows stay out of the flat order');
 process.stdout.write('PASS: home and media bar wiring\n');
-
-// Seerr requests
-assert.match(await readFile('components/home/LoadItemsTask.bs', 'utf8'), /if endpoint = "\/api\/v1\/media" then found = hydrateRecentlyAdded\(found\)/, 'Recently Added cards take their titles and art from the details');
-const seasonDetailsWiring = await readFile('components/tvshows/SeasonDetails.bs', 'utf8');
-assert.match(seasonDetailsWiring, /loadSeerrBlock\(json\)/, 'A season page looks its series up in Seerr');
-assert.match(seasonDetailsWiring, /if Left\(action, 5\) = "seerr"/, 'and hands its Seerr buttons to the request flow');
-assert.match(await readFile('source/utils/seerrDetailHost.bs', 'utf8'), /initialSeason/, 'Report Issue starts on the season or episode it was opened from');
-assert.match(await readFile('source/utils/seerrButtons.bs', 'utf8'), /seerrRequestRules\.Cancelable\(requests, true, CanManageRequests\(permissions\), CurrentSeerrUserId\(\)\)/, 'Cancel only shows for a request the viewer can take back');
-assert.match(await readFile('source/utils/seerrButtons.bs', 'utf8'), /seerrButtons\.Entry\("seerrManage", "[^"]+", tr\("Get a different release"\), "seerrDifferentRelease"\)/, 'Get a different release rides in the Manage Requests slot, so the synced arrangement needs no new id');
-assert.match(await readFile('components/details/detailButtonHost.bs', 'utf8'), /seerrButtons\.Candidates\(m\.seerrDetails, seerrMediaType\(\), seerrSwapQueue\(\)\)/, 'The detail row hands the arr queue to its Seerr buttons');
-assert.match(await readFile('source/utils/seerrDetailHost.bs', 'utf8'), /function seerrSwapQueue\(\) as dynamic\n    if isValid\(m\.seerrSeries\) then return invalid\n    if IsSeerrSeriesPart\(seerrItemJson\(\)\) then return invalid/, 'Only the title\'s own page offers a release swap, never a season or episode page');
-assert.match(await readFile('components/seerr/SeerrAPITask.bs', 'utf8'), /if usePluginRoot then urlTransfer\.RetainBodyOnError\(true\)/, 'A plugin endpoint keeps its error body, so a swap can tell a download already gone from a failure');
-assert.match(await readFile('components/seerr/SeerrRequestsScreen.bs', 'utf8'), /sub loadArrQueues\(entries as object\)\n    ' [^\n]+\n    if m\.tab = "issues" then return/, 'The Issues tab reads no arr queues');
-assert.match(await readFile('source/api/MoonfinPlugin.bs', 'utf8'), /arrQueueAvailable: result\.arrQueueAvailable \?\? false/, 'Ping keeps whether Moonbase reads the arr queue, false on older plugins');
-const browseWiring = await readFile('components/seerr/SeerrGenreBrowseScreen.bs', 'utf8');
-assert.match(browseWiring, /const SEERR_POSTER_SIZE_SETTING = "ui\.seerr\.posterSize"/, 'The browse screen keeps a poster size of its own');
-assert.doesNotMatch(syncWiring, /ui\.seerr\.posterSize/, 'and it stays on the device');
-assert.match(browseWiring, /libraryCard\.PosterSize\(get_user_setting\(SEERR_POSTER_SIZE_SETTING\), library\)/, 'It follows the library size until one is picked');
-assert.match(discoverSource, /posterSize = libraryCard\.PosterSize\(invalid, get_user_setting\("ui\.posterSize"\)\)/, 'Discover follows the account\'s poster size, with Grandparents drawn as Extra Large');
-assert.match(browseWiring, /CanRequestMovies\(permissions\) and requestable/, 'Request Collection only shows when a film can still be asked for');
-assert.match(browseWiring, /"sortBy": sortValue\(\)/, 'Browse quotes sortBy, since a bare key reaches Seerr lowercased on the device');
-const requestsWiring = await readFile('components/seerr/SeerrRequestsScreen.bs', 'utf8');
-assert.match(requestsWiring, /if status = SEERR_REQUEST_PENDING and m\.canManageRequests then return \["approve", "decline"\]/, 'A moderator answers a pending request from its poster');
-assert.match(requestsWiring, /chainLookupReturn\(entry, "requestedBy\.id", -1\) = m\.seerrUserId then return \["cancel"\]/, 'and anyone else can take back their own');
-process.stdout.write('PASS: Seerr request wiring\n');
-
-// Details
-const trackHostWiring = await readFile('components/details/detailTrackHost.bs', 'utf8');
-assert.match(trackHostWiring, /trackMemory\.RememberedSubtitle\(trackMemory\.Load\(\)/, 'The details screen shows a remembered subtitle as chosen');
-assert.match(trackHostWiring, /SetDefaultAudioTrack\(itemData, false\)/, 'and a new version starts from the server\'s audio rather than a remembered one');
-assert.match(trackHostWiring, /rememberTrack\("audio", m\.top\.selectedAudioStreamIndex\)/, 'An audio pick on details is remembered');
-assert.match(await readFile('components/manager/ViewCreator.bs', 'utf8'), /trackMemory\.Remember\(m\.view\.videoId, m\.view\.showID, "subtitle"/, 'and so is a subtitle pick in the player');
-assert.match(await readFile('components/ItemGrid/LoadVideoContentTask.bs', 'utf8'), /not rememberedSubtitle and toBoolean/, 'A remembered subtitle isn\'t dropped by the text only setting');
-assert.match(await readFile('source/ShowScenes.bs', 'utf8'), /if itemType = "playlist" then return "ModernItemDetails"/, 'A playlist opens in Modern under every style but Classic');
-assert.match(await readFile('source/ShowScenes.bs', 'utf8'), /if isStringEqual\(style, "stage"\)[^]*?minimalistRules\.Draws\(itemType\) then return "StageItemDetails"\s+return "ModernItemDetails"/, 'Stage draws the video pages and hands the rest to Modern');
-assert.match(await readFile('source/utils/SeerrUtils.bs', 'utf8'), /if style = "stage" then return "StageItemDetails"/, 'A title only in Seerr opens in Stage too');
-assert.match(await readFile('source/ShowScenes.bs', 'utf8'), /if isStringEqual\(style, "premiere"\)[^]*?minimalistRules\.Draws\(itemType\) then return "PremiereItemDetails"\s+return "ModernItemDetails"/, 'Premiere draws the video pages and hands the rest to Modern');
-assert.match(await readFile('source/utils/SeerrUtils.bs', 'utf8'), /if style = "premiere" then return "PremiereItemDetails"/, 'A title only in Seerr opens in Premiere too');
-assert.match(await readFile('source/ShowScenes.bs', 'utf8'), /if isStringEqual\(style, "frost"\)[^]*?minimalistRules\.Draws\(itemType\) then return "FrostItemDetails"\s+return "ModernItemDetails"/, 'Frost draws the video pages and hands the rest to Modern');
-assert.match(await readFile('source/utils/SeerrUtils.bs', 'utf8'), /if style = "frost" then return "FrostItemDetails"/, 'A title only in Seerr opens in Frost too');
-assert.match(await readFile('source/ShowScenes.bs', 'utf8'), /if isStringEqual\(style, "quickLook"\)[^]*?minimalistRules\.Draws\(itemType\) and not \(isValid\(top\) and top\.isSubtype\("QuickLookItemDetails"\)\) then return "QuickLookItemDetails"\s+return "ModernItemDetails"/, 'Quick Look draws Stage\'s pages in its drawer, and what the drawer opens and every other page is Modern');
-assert.match(await readFile('source/utils/SeerrUtils.bs', 'utf8'), /if style = "quickLook" then return "QuickLookItemDetails"/, 'A title only in Seerr opens in the drawer too');
-assert.match(await readFile('components/data/SceneManager.bs', 'utf8'), /if not drawsOverScene\(newGroup\) then currentGroup\.visible = false/, 'The screen under the drawer stays showing');
-for (const file of ['ModernItemDetails', 'SpotlightItemDetails', 'MinimalistItemDetails']) {
-    assert.match(await readFile(`components/details/${file}.bs`, 'utf8'), /if picksItemOnScreen\(/, `${file} plays the episode on screen when it's picked from its own list`);
-}
-assert.match(await readFile('components/extras/ExtrasRowList.bs', 'utf8'), /m\.top\.playOnScreen = true/, 'and so does the Classic episode row');
-assert.match(await readFile('components/details/detailButtonHost.bs', 'utf8'), /if itemType <> "episode" and itemType <> "season" then return invalid/, 'A season leads back to its series too');
-const seasonWiring = await readFile('components/tvshows/SeasonDetails.bs', 'utf8');
-assert.match(seasonWiring, /buttonLayout\.Arrange\(offered, m\.global\.session\.user\.settings\[DETAIL_ORDER_SETTING\], m\.global\.session\.user\.settings\[DETAIL_HIDDEN_SETTING\]\)/, 'The Classic season row follows the button order and hidden buttons');
-assert.match(seasonWiring, /buttonLayout\.CountSplit\(configs\.count\(\)/, 'and the button count');
-assert.match(seasonWiring, /action: "goToSeries"/, 'and offers Go to Series');
-assert.equal((await readFile('source/ShowScenes.bs', 'utf8')).match(/group\.itemContent = seasonMetaData\n    group\.objects/g)?.length, 2, 'Both Classic season paths hand the season over before its episodes');
-assert.match(await readFile('components/details/detailButtonHost.bs', 'utf8'), /button\.id <> "extrasButton" then exit for/, 'Extras never folds behind More');
-assert.match(syncWiring, /\{ pluginKey: "personPageSortOption", rokuKey: "ui\.itemdetail\.personSortOption", type: "direct" \}/, 'The person page sort follows the account');
-assert.match(syncWiring, /\{ pluginKey: "personPageGroupItems", rokuKey: "ui\.itemdetail\.personGroupItems", type: "bool" \}/, 'and so does grouping repeated roles');
-const personShowScenes = await readFile('source/ShowScenes.bs', 'utf8');
-assert.match(personShowScenes, /screen = detailScreenComponent\("person"\)\s+if screen <> "ItemDetails"/, 'A person opens in the chosen detail style, with Classic keeping its own screen');
-const personButtonHost = await readFile('components/details/detailButtonHost.bs', 'utf8');
-assert.match(personButtonHost, /= "person" and \(personDisplayForKids or not kidsMode\.Enabled\(\)\)\s+arranged = withPersonDisplay\(arranged\)/, 'A person page puts Display beside Favorite, outside Kids Mode except on Nouveau');
-assert.match(personButtonHost, /if buttonAction = "personDisplay"\s+handleScreenButtonAction\(buttonAction\)\s+return/, 'and Display opens without the page reloading after');
-assert.match(await readFile('components/details/NouveauItemDetails.bs', 'utf8'), /addArrangedButtons\(\[favoriteCandidate\([^\n]*\)\], true\)/, 'Nouveau keeps Display in Kids Mode');
-const personHost = await readFile('components/personCreditsHost.bs', 'utf8');
-assert.match(personHost, /entries = personCredits\.SortCards\(entries, personCredits\.SortOption\(\)\)/, 'The library filmography follows the Display sort');
-assert.match(personHost, /personCredits\.SortCredits\(personCredits\.Shaped\(usable, isCrew, group\), option\)/, 'and Seerr credits are grouped and sorted the same way');
-assert.match(personHost, /if followsDisplay\s+option = personCredits\.SortOption\(\)\s+group = personCredits\.GroupsRoles\(\)/, 'A person drawn from Seerr alone keeps every credit by title');
-assert.match(await readFile('components/PersonDetails.bs', 'utf8'), /shownSeerrCredits\(response\.data, m\.top\.seerrPersonId = ""\)/, 'and the Classic screen tells the two apart');
-const modernPerson = await readFile('components/details/ModernItemDetails.bs', 'utf8');
-assert.match(modernPerson, /if isPerson\(\)\s+renderPersonContent\(itemData\)\s+return/, 'A person on the Modern page skips everything a playable title loads');
-assert.match(modernPerson, /if isPerson\(\)\s+addArrangedButtons\(\[favoriteCandidate\(m\.top\.itemContent\.json\)\]\)\s+return true/, 'and its row is Favorite and Display');
-assert.match(modernPerson, /pushSection\(filmography\.movies, [^\n]*tr\("Movies"\)[^\n]*\n\s+if filmography\.series\.count\(\) > 0 then pushSection\(filmography\.series, [^\n]*tr\("TV Shows"\)/, 'Its tabs are Movies and TV Shows');
-for (const file of ['ModernItemDetails', 'SpotlightItemDetails', 'NouveauItemDetails', '../PersonDetails']) {
-    assert.match(await readFile(`components/details/${file}.bs`, 'utf8'), /if personDisplayOpen\(\) then return true/, `${file} leaves the keys to the Display dialog while it's up`);
-}
-const spotlightPerson = await readFile('components/details/SpotlightItemDetails.bs', 'utf8');
-assert.match(await readFile('components/details/SpotlightCards.bs', 'utf8'), /else if itemType = "person"\s+return \["filmography", "appearances", "crew"\]/, 'A Spotlight person gets Filmography, Appearances and Crew cards');
-assert.match(spotlightPerson, /if isPerson\(\)\s+addArrangedButtons\(\[favoriteCandidate\(m\.top\.itemContent\.json\)\]\)\s+return true/, 'with Favorite and Display beside it');
-assert.match(spotlightPerson, /if not isPerson\(\) or isValidAndNotEmpty\(itemData\.BackdropImageTags\) then setBackdropImage/, 'A person never gets their headshot as a backdrop');
-assert.match(await readFile('components/seerr/SeerrPoster.bs', 'utf8'), /if itemData\.hasField\("seerrCredit"\) then credit = itemData\.seerrCredit/, 'A Seerr credit card names the part under the title');
-process.stdout.write('PASS: details wiring\n');
-
-// Libraries, sign in and accounts
-assert.match(await readFile('components/itemMenu/ItemMenuTask.bs', 'utf8'), /op = "hideFromResume"[^]*?UserItems\/\$\{itemId\}\/HideFromResume`, \{ UserId: taskUserId\(\), Hide: "true" \}\), "POST"\)/, 'Emby hides an item from resume through its own route');
-assert.match(await readFile('components/itemMenu/itemMenuHost.bs', 'utf8'), /if response\.success and response\.request\.op = "played" then itemMenuPatchUserData/, 'and keeps the progress it showed');
-const calendarTask = await readFile('components/home/LoadItemsTask.bs', 'utf8');
-assert.match(calendarTask, /day = calendarEntries\.DayOfText\(when\)\s+if day >= today/, 'A Radarr release stays on the row through its own day');
-assert.match(calendarTask, /start = calendarEntries\.DateText\(calendarEntries\.TodayNumber\(\) - 1\)/, 'and the calendar is read from a day early, so all of today comes back in any time zone');
-assert.match(await readFile('components/genres/GenresScreen.bs', 'utf8'), /allServers: genreData\.unified = true/, 'A merged genre opens on every server');
-assert.match(libraryScene, /if m\.top\.genreFilter\.allServers = true\s+m\.loadItemsTask\.allServers = true\s+m\.loadItemsTask\.genreNames/, 'asking each one by name');
-assert.match(libraryScene, /server = libraryServer\(\)\s+m\.loadItemsTask\.serverUrl = server\.serverUrl/, 'A library from another server is read from that server');
-assert.match(await readFile('components/ItemGrid/LoadItemsTask2.bs', 'utf8'), /serverParams\.StartIndex = offsets\[key\] \?\? 0[^]*?m\.top\.serverOffsets = offsets/, 'and each server pages on from its own last page');
-const pinGateFlow = await readFile('source/ShowScenes.bs', 'utf8');
-assert.match(pinGateFlow, /record = signInPin\.Refresh\(before\)\s+signInPin\.SaveIfChanged\(userId, before, record\)\s+if not signInPin\.IsEnabled\(record\) then return "passed"/, 'The PIN gate asks the server before it shows');
-assert.match(pinGateFlow, /if password <> "" then signInPin\.NoteProvedSignIn/, 'A password sign in proves who the account is');
-assert.match(pinGateFlow, /forgottenName = signInPin\.TakeForgottenUsername\(m\.global\.session\.server\.url\)/, 'and Forgot PIN lands on that sign in');
-assert.match(await readFile('source/Main.bs', 'utf8'), /if pinGate = "forgot"[^]*?unset_setting\("active_user"\)[^]*?goto app_start/, 'Forgot PIN signs the account out to sign in again');
-const pinSettings = await readFile('components/settings/settings.bs', 'utf8');
-assert.match(pinSettings, /if selectedSetting\.settingName = SIGN_IN_PIN_ENABLED_KEY\s+if signInPin\.IsEnabled\(signInPinRecord\(\)\)\s+openSignInPinFlow\("disable"\)/, 'Turning the PIN off asks for it first');
-assert.doesNotMatch(pinSettings, /lockBehindPin/, 'and turning it on no longer locks the app straight away');
-process.stdout.write('PASS: libraries and sign in wiring\n');
 
 const guideSource = await readFile('components/liveTv/guide/LiveTvGuide.bs', 'utf8');
 const guideDialog = guideSource.match(/sub openProgramDialog\([^]*?end sub/)[0];
@@ -1666,51 +1114,3 @@ assert.match(recordingsSource, /else if response\.kind = "cancelTimer"\s+'[^\n]*
 assert.match((await readFile('source/api/Items.bs', 'utf8')).match(/function searchMedia\([^]*?end function/)[0], /if includePrograms\s+liveTv = api\.items\.Get\(\{[^}]*"IncludeItemTypes": "LiveTvProgram"/, 'Search only asks for Live TV programs when it is told to');
 assert.match((await readFile('components/search/SearchResults.bs', 'utf8')).match(/sub onViewsLoaded\([^]*?end sub/)[0], /isStringEqual\(view\.LookupCI\("CollectionType"\), "livetv"\) then m\.searchTask\.liveTv = true/, 'Search adds Live TV programs only on a server with a Live TV library');
 process.stdout.write('PASS: Live TV recording wiring (10 checks)\n');
-
-// Held seeking, the second subtitle track and live rewind
-const heldPlayer = await readFile('components/video/VideoPlayerView.bs', 'utf8');
-assert.match(heldPlayer, /seconds = hold\.direction \* heldSeek\.SecondsFor\(hold\.base, hold\.count\)/, 'A held key steps by the growing hold step');
-assert.match(heldPlayer, /function onKeyEvent\(key as string, press as boolean\) as boolean\s+'[^\n]*\s+if not press and \(key = KeyCode\.LEFT or key = KeyCode\.RIGHT\) then endHeldSeek\(\)/, 'and lets go when the key comes up, before anything else can take the release');
-assert.match(heldPlayer, /custom = m\.global\.session\.user\.settings\["playback\.subs\.custom"\] = true or m\.top\.secondarySubtitleIndex >= 0/, 'A second track has the player draw the first one too');
-assert.match(heldPlayer, /if secondary\s+m\.subtitleOffsetOverlay\.limit = SECONDARY_DELAY_LIMIT_MS/, 'The offset panel stops the second track five seconds out');
-assert.match(await readFile('components/manager/ViewCreator.bs', 'utf8'), /if m\.view\.callFunc\("offersSecondarySubtitles"\)\s+m\.subtitleSelector\.mode = "slot"/, 'The Subtitles button asks which track first while a second one is on offer');
-const subtitleSettings = await readFile('components/settings/settings.bs', 'utf8');
-assert.match(subtitleSettings, /"playback\.subs\.language", "playback\.subs\.secondary\.enabled", "playback\.subs\.secondary\.language", "playback\.subs\.fallbackLanguage"/, 'The secondary settings sit after the default language');
-assert.match(heldPlayer, /m\.liveWindow = liveWindow\.WindowFor\(m\.top\.duration\)/, 'A live stream works out its rewind window from the duration');
-assert.match(heldPlayer, /sub jumpToLive\(\)[^]*?m\.top\.seek = 999999/, 'Jump to Live seeks past the end, which Roku holds at its live point');
-process.stdout.write('PASS: held seek, secondary subtitle and live rewind wiring (8 checks)\n');
-
-// Back from Watch Parties goes one step: settings stays open under the screen, and the screen leaves
-// the stack before it says it closed, so settings takes focus after the screen under it has
-const partySettings = await readFile('components/settings/settings.bs', 'utf8');
-const partyScreen = await readFile('components/watchParty/WatchPartiesScreen.bs', 'utf8');
-assert.match(partySettings, /selectedItem\.settingName = "watchParty\.open"\s+openWatchParties\(\)/, 'Open Watch Parties keeps settings open');
-assert.doesNotMatch(partySettings.match(/sub openWatchParties\(\)[^]*?end sub/)[0], /dismissPanel/, 'and doesn\'t dismiss it');
-assert.match(partySettings, /sub onWatchPartiesClosed\(event as object\)[^]*?m\.top\.visible = true[^]*?m\.settingsMenu\.setFocus\(true\)/, 'Closing the screen brings settings back on its row');
-assert.match(partyScreen, /sub closeScreen\(\)\s+m\.global\.sceneManager\.callFunc\("popScene"\)\s+m\.top\.closed = true/, 'The screen pops itself before it says it closed');
-assert.match(partyScreen, /if key = KeyCode\.BACK\s+closeScreen\(\)\s+return true/, 'BACK on the room list closes it');
-assert.match(partyScreen, /if key = KeyCode\.BACK then closeScreen\(\)/, 'and so does BACK in the lobby');
-process.stdout.write('PASS: Watch Parties back navigation (6 checks)\n');
-
-// A party's item plays alone, focus after Remove and Back, and the screen's keyboard handing focus back
-const partyPlayer = await readFile('components/video/VideoPlayerView.bs', 'utf8');
-assert.match(partyPlayer, /if queuePos = 0 and queueCount <= 1 and not wpActive\(\)/, 'A party player doesn\'t queue the season around its episode');
-assert.match(await readFile('components/ItemGrid/LoadVideoContentTask.bs', 'utf8'), /if isValid\(video\.showID\) and not partyItem/, 'and the load doesn\'t queue the next episodes for it');
-assert.match((await readFile('components/watchParty/WatchPartyPanel.bs', 'utf8')).match(/sub runAction\([^]*?end sub/)[0], /act\("remove", "Remove", \{ "member_id": arg \}\)\s+'[^\n]*\s+wpRowsPark\("people"\)/, 'Remove parks focus on the people heading');
-assert.match(partyScreen, /if isReturning then m\.wpRows\.focus = -1/, 'Back from the player starts the lobby on its first button');
-assert.match(partyScreen.match(/sub releaseKeyboard\(\)[^]*?end sub/)[0], /m\.top\.setFocus\(true\)/, 'The screen takes focus back when its keyboard closes');
-process.stdout.write('PASS: Watch Parties player and focus wiring (5 checks)\n');
-
-// The watchlist pages by Seerr's titles alone, however many library titles lead it on Silo, and names its shows
-const favoritesTask = await readFile('components/favorites/LoadFavoritesTask.bs', 'utf8');
-const watchlistPage = favoritesTask.match(/function watchlistPage\([^]*?end function/)[0];
-assert.match(watchlistPage, /fetched: 0, lastPage: true \}/, 'Library titles don\'t count toward the next watchlist page');
-assert.match(watchlistPage, /result\.fetched = answer\.results\.count\(\)/, 'Only Seerr\'s titles do');
-assert.match(watchlistPage, /if isValid\(answer\.totalPages\) then result\.lastPage = page >= answer\.totalPages/, 'A page knows whether another follows');
-assert.match(favoritesTask, /function loadedThrough\([^]*?if page\.lastPage and startIndex \+ page\.fetched < page\.total then return page\.total - startIndex/, 'and the last one makes the tab whole, so page 1 and the library\'s titles aren\'t asked for again');
-assert.match(favoritesTask, /fetched\.watchlist = loadedThrough\(page, 0\)/);
-assert.match(favoritesTask, /\{ watchlist: loadedThrough\(page, startIndex\) \}/);
-assert.match(watchlistPage, /if isSiloServer\(\)\s+for each node in siloWatchlistNodes\(\)\s+if page = 1 then nodes\.push\(node\)/, 'Every page leaves out what the library already shows, though only the first shows it');
-assert.match(await readFile('components/favorites/FavoritesScreen.bs', 'utf8'), /if pageFetched = 0 then m\.counts\[tabKey\] = m\.fetchedByTab\[tabKey\]/, 'An empty tab page ends paging');
-assert.match(favoritesTask.match(/function watchlistNode\([^]*?end function/)[0], /if title = "" then title = toString\(item\.LookupCI\("name"\) \?\? ""\)/, 'A show on the watchlist takes its name when its title comes back empty');
-process.stdout.write('PASS: Favorites watchlist paging and names (5 checks)\n');

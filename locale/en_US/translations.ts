@@ -115,14 +115,6 @@
         <translation>Chapters</translation>
     </message>
     <message>
-        <source>Carousel</source>
-        <translation>Carousel</translation>
-    </message>
-    <message>
-        <source>Modern cards over a panel with the focused title's details.</source>
-        <translation>Modern cards over a panel with the focused title's details.</translation>
-    </message>
-    <message>
         <source>Cast</source>
         <translation>Cast</translation>
     </message>
@@ -688,6 +680,10 @@
         <translation>Series finished</translation>
     </message>
     <message>
+        <source>Server not found, is it online?</source>
+        <translation>Server not found, is it online?</translation>
+    </message>
+    <message>
         <source>Show messages button</source>
         <translation>Show messages button</translation>
     </message>
@@ -724,11 +720,6 @@
     <message>
         <source>Spotlight</source>
         <translation>Spotlight</translation>
-    </message>
-    <message>
-        <source>Stage</source>
-        <extracomment>Details screen style that leads with the poster, with play under it and the details beside it</extracomment>
-        <translation>Stage</translation>
     </message>
     <message>
         <source>Stats</source>
@@ -905,6 +896,10 @@
         <translation>Change User</translation>
     </message>
     <message>
+        <source>Change Server</source>
+        <translation>Change Server</translation>
+    </message>
+    <message>
         <source>Sign Out</source>
         <translation>Sign Out</translation>
     </message>
@@ -995,11 +990,6 @@
     <message>
         <source>Audio</source>
         <translation>Audio</translation>
-    </message>
-    <message>
-        <source>Audio &amp; Subtitles</source>
-        <extracomment>Heading over the audio, subtitle and version pickers on a details screen</extracomment>
-        <translation>Audio &amp; Subtitles</translation>
     </message>
     <message>
         <source>Server</source>
@@ -1283,51 +1273,6 @@
         <source>Full-screen, with sections stacked instead of tabs.</source>
         <extracomment>Setup wizard description of the Nouveau details screen</extracomment>
         <translation>Full-screen, with sections stacked instead of tabs.</translation>
-    </message>
-    <message>
-        <source>The title centered over a full screen backdrop, with everything else down the page.</source>
-        <extracomment>Setup wizard description of the Premiere details screen</extracomment>
-        <translation>The title centered over a full screen backdrop, with everything else down the page.</translation>
-    </message>
-    <message>
-        <source>Quick Look</source>
-        <extracomment>The details screen style that opens a drawer over the screen the title was picked on</extracomment>
-        <translation>Quick Look</translation>
-    </message>
-    <message>
-        <source>A drawer over the screen you were on, with play and the basics, and the full page a press away.</source>
-        <extracomment>Setup wizard description of the Quick Look details screen</extracomment>
-        <translation>A drawer over the screen you were on, with play and the basics, and the full page a press away.</translation>
-    </message>
-    <message>
-        <source>Frost</source>
-        <extracomment>The details screen style that floats the title in a glass window over a blurred copy of its art, with tabs under the buttons</extracomment>
-        <translation>Frost</translation>
-    </message>
-    <message>
-        <source>The title in a glass window over its blurred art, with tabs under the buttons.</source>
-        <extracomment>Setup wizard description of the Frost details screen</extracomment>
-        <translation>The title in a glass window over its blurred art, with tabs under the buttons.</translation>
-    </message>
-    <message>
-        <source>Open full page</source>
-        <extracomment>Button at the foot of the Quick Look drawer that opens the title&apos;s full details page</extracomment>
-        <translation>Open full page</translation>
-    </message>
-    <message>
-        <source>Back to close</source>
-        <extracomment>Hint on the Quick Look drawer saying the Back button closes it</extracomment>
-        <translation>Back to close</translation>
-    </message>
-    <message>
-        <source>^0 of ^1</source>
-        <extracomment>How many of a season&apos;s episodes were watched, on a season card in the Quick Look drawer. ^0 is the number watched and ^1 the number in the season.</extracomment>
-        <translation>^0 of ^1</translation>
-    </message>
-    <message>
-        <source>The poster up front, with play under it and the details beside it.</source>
-        <extracomment>Setup wizard description of the Stage details screen</extracomment>
-        <translation>The poster up front, with play under it and the details beside it.</translation>
     </message>
     <message>
         <source>Year</source>
@@ -1627,16 +1572,6 @@
         <source>You can search for Titles, People, Live TV Channels and more</source>
         <translation>You can search for Titles, People, Live TV Channels and more</translation>
         <extracomment>Help text in search results</extracomment>
-    </message>
-    <message>
-        <source>Smart Search</source>
-        <extracomment>Search results row of library titles the server matched to a query written in plain words</extracomment>
-        <translation>Smart Search</translation>
-    </message>
-    <message>
-        <source>Smart Search on Seerr</source>
-        <extracomment>Search results row of titles not in the library that the server matched to a query written in plain words, which can be requested through Seerr</extracomment>
-        <translation>Smart Search on Seerr</translation>
     </message>
     <message>
         <source>%1 of %2</source>
@@ -2311,6 +2246,16 @@
         <source>Remember the currently logged in user and try to log them in again next time you start the Jellyfin app.</source>
         <translation>Remember the currently logged in user and try to log them in again next time you start Jellyfin.</translation>
         <extracomment>User Setting - Setting description</extracomment>
+    </message>
+    <message>
+        <source>Custom Trickplay</source>
+        <translation>Custom Trickplay</translation>
+        <extracomment>User Setting - Title for option</extracomment>
+    </message>
+    <message>
+        <source>Display custom trickplay images even if this Roku says it&apos;s displaying its own. This may cause the two images to overlay on top of each other.</source>
+        <translation>Display custom trickplay images even if this Roku says it&apos;s displaying its own. This may cause the two images to overlay on top of each other.</translation>
+        <extracomment>User Setting - Description for option</extracomment>
     </message>
     <message>
         <source>Force Transcoding</source>
@@ -3333,66 +3278,6 @@
         <translation>Playlist Order</translation>
     </message>
     <message>
-        <source>Playlist Sort Options</source>
-        <extracomment>Title of the picker for the order a collection&apos;s playlist is shown and played in</extracomment>
-        <translation>Playlist Sort Options</translation>
-    </message>
-    <message>
-        <source>Server Order</source>
-        <extracomment>A collection playlist sort choice: the order the server keeps the collection in</extracomment>
-        <translation>Server Order</translation>
-    </message>
-    <message>
-        <source>Release Order (Ascending)</source>
-        <extracomment>A collection playlist sort choice: oldest release first</extracomment>
-        <translation>Release Order (Ascending)</translation>
-    </message>
-    <message>
-        <source>Release Order (Descending)</source>
-        <extracomment>A collection playlist sort choice: newest release first</extracomment>
-        <translation>Release Order (Descending)</translation>
-    </message>
-    <message>
-        <source>Alphabetical</source>
-        <extracomment>A sort choice for a collection&apos;s playlist or a person&apos;s credits: by title from A to Z</extracomment>
-        <translation>Alphabetical</translation>
-    </message>
-    <message>
-        <source>Display Options</source>
-        <extracomment>Title of the dialog a person page&apos;s Display button opens, which sorts their credits and groups repeated roles</extracomment>
-        <translation>Display Options</translation>
-    </message>
-    <message>
-        <source>Release Date (Ascending)</source>
-        <extracomment>A sort choice for a person&apos;s credits: oldest release first</extracomment>
-        <translation>Release Date (Ascending)</translation>
-    </message>
-    <message>
-        <source>Release Date (Descending)</source>
-        <extracomment>A sort choice for a person&apos;s credits: newest release first</extracomment>
-        <translation>Release Date (Descending)</translation>
-    </message>
-    <message>
-        <source>Group Contributions</source>
-        <extracomment>Heading in a person page&apos;s Display Options over the switch that groups repeated roles</extracomment>
-        <translation>Group Contributions</translation>
-    </message>
-    <message>
-        <source>Group multiple roles</source>
-        <extracomment>Switch in a person page&apos;s Display Options that shows a title they worked on in several roles once, with every role listed</extracomment>
-        <translation>Group multiple roles</translation>
-    </message>
-    <message>
-        <source>Filmography</source>
-        <extracomment>Title of the Spotlight card that holds the movies and shows a person is in</extracomment>
-        <translation>Filmography</translation>
-    </message>
-    <message>
-        <source>Custom Order</source>
-        <extracomment>A collection playlist sort choice: the order someone arranged the collection in through Moonbase</extracomment>
-        <translation>Custom Order</translation>
-    </message>
-    <message>
         <source>You&apos;re set. Here&apos;s what else is in here.</source>
         <translation>You&apos;re set. Here&apos;s what else is in here.</translation>
     </message>
@@ -3841,9 +3726,9 @@
         <translation>{count} titles</translation>
     </message>
     <message>
-        <source>Moonfin Recommends</source>
+        <source>SpeshTV Recommends</source>
         <extracomment>Recommendations scored by Moonfin</extracomment>
-        <translation>Moonfin Recommends</translation>
+        <translation>SpeshTV Recommends</translation>
     </message>
     <message>
         <source>TMDb</source>
@@ -4501,244 +4386,19 @@
         <translation>PIN Code</translation>
     </message>
     <message>
+        <source>Default PIN: 0000</source>
+        <extracomment>Description of the PIN Code setting before a PIN has been chosen</extracomment>
+        <translation>Default PIN: 0000</translation>
+    </message>
+    <message>
         <source>Enter a 4-digit PIN used to unlock the app when PIN protection is enabled.</source>
         <extracomment>Shown beside the keypad when choosing the PIN the PIN screen asks for</extracomment>
         <translation>Enter a 4-digit PIN used to unlock the app when PIN protection is enabled.</translation>
     </message>
     <message>
-        <source>Saved Servers</source>
-        <extracomment>Heading over the servers this device has signed in to, on the server list</extracomment>
-        <translation>Saved Servers</translation>
-    </message>
-    <message>
-        <source>Discovered Servers</source>
-        <extracomment>Heading over the servers found on the local network, on the server list</extracomment>
-        <translation>Discovered Servers</translation>
-    </message>
-    <message>
-        <source>None found</source>
-        <extracomment>Shown under Discovered Servers when no server answered on the local network</extracomment>
-        <translation>None found</translation>
-    </message>
-    <message>
-        <source>Add Server</source>
-        <extracomment>Button at the foot of the server list, and the title of the dialog it opens</extracomment>
-        <translation>Add Server</translation>
-    </message>
-    <message>
-        <source>Remove Server</source>
-        <extracomment>Title of the question asked when OK is held on a saved server</extracomment>
-        <translation>Remove Server</translation>
-    </message>
-    <message>
-        <source>Remove &quot;{0}&quot; from your servers?</source>
-        <extracomment>Question asked before removing a saved server. {0} is the server&apos;s name</extracomment>
-        <translation>Remove &quot;{0}&quot; from your servers?</translation>
-    </message>
-    <message>
-        <source>Choose how you&apos;d like to connect.</source>
-        <extracomment>Line under the title of the Add Server dialog&apos;s first step</extracomment>
-        <translation>Choose how you&apos;d like to connect.</translation>
-    </message>
-    <message>
-        <source>Server Address</source>
-        <extracomment>Choice on the Add Server dialog, and the label over the address field</extracomment>
-        <translation>Server Address</translation>
-    </message>
-    <message>
-        <source>Jellyfin, Emby or Silo on your network or online</source>
-        <extracomment>Line under the Server Address choice on the Add Server dialog</extracomment>
-        <translation>Jellyfin, Emby or Silo on your network or online</translation>
-    </message>
-    <message>
-        <source>Emby Connect</source>
-        <extracomment>Choice on the Add Server dialog, and the title of the Emby Connect sign in</extracomment>
-        <translation>Emby Connect</translation>
-    </message>
-    <message>
-        <source>Sign in with your Emby Connect account</source>
-        <extracomment>Line under the Emby Connect choice and the Emby Connect sign in title</extracomment>
-        <translation>Sign in with your Emby Connect account</translation>
-    </message>
-    <message>
-        <source>The same address you&apos;d open in a browser, including the port.</source>
-        <extracomment>Line under the title of the Add Server dialog&apos;s address step</extracomment>
-        <translation>The same address you&apos;d open in a browser, including the port.</translation>
-    </message>
-    <message>
-        <source>Enter the server name or ip address</source>
-        <extracomment>Title of the keyboard that types a server address</extracomment>
-        <translation>Enter the server name or ip address</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <extracomment>Button that tries the typed server address</extracomment>
-        <translation>Connect</translation>
-    </message>
-    <message>
-        <source>Checking {0}</source>
-        <extracomment>Hint while a server address is tried. {0} is the address</extracomment>
-        <translation>Checking {0}</translation>
-    </message>
-    <message>
-        <source>Check the address and port, and that the server is running.</source>
-        <extracomment>Why a server address didn&apos;t connect, under Unable to connect to server</extracomment>
-        <translation>Check the address and port, and that the server is running.</translation>
-    </message>
-    <message>
-        <source>Server found</source>
-        <extracomment>Title of the Add Server step that shows the server that answered</extracomment>
-        <translation>Server found</translation>
-    </message>
-    <message>
-        <source>Jellyfin</source>
-        <extracomment>Chip naming the kind of server Add Server found</extracomment>
-        <translation>Jellyfin</translation>
-    </message>
-    <message>
-        <source>Emby</source>
-        <extracomment>Chip naming the kind of server Add Server found</extracomment>
-        <translation>Emby</translation>
-    </message>
-    <message>
-        <source>Silo</source>
-        <extracomment>Chip naming the kind of server Add Server found</extracomment>
-        <translation>Silo</translation>
-    </message>
-    <message>
-        <source>Version {0}</source>
-        <extracomment>Chip with the version of the server Add Server found. {0} is the version</extracomment>
-        <translation>Version {0}</translation>
-    </message>
-    <message>
-        <source>Continue to choose who&apos;s signing in.</source>
-        <extracomment>Line under the server Add Server found</extracomment>
-        <translation>Continue to choose who&apos;s signing in.</translation>
-    </message>
-    <message>
-        <source>Use a different address</source>
-        <extracomment>Button that goes back to the address step from the server Add Server found</extracomment>
-        <translation>Use a different address</translation>
-    </message>
-    <message>
-        <source>Continue</source>
-        <extracomment>Button that opens the server Add Server found</extracomment>
-        <translation>Continue</translation>
-    </message>
-    <message>
-        <source>Who&apos;s watching?</source>
-        <extracomment>Title of the screen that lists a server&apos;s accounts</extracomment>
-        <translation>Who&apos;s watching?</translation>
-    </message>
-    <message>
-        <source>Connecting to {0}</source>
-        <extracomment>Line under the Sign In title. {0} is the server&apos;s name</extracomment>
-        <translation>Connecting to {0}</translation>
-    </message>
-    <message>
-        <source>Enter this code on your server&apos;s web dashboard:</source>
-        <extracomment>Line over the Quick Connect code on the sign in screen</extracomment>
-        <translation>Enter this code on your server&apos;s web dashboard:</translation>
-    </message>
-    <message>
-        <source>Waiting for authorization...</source>
-        <extracomment>Shown under the Quick Connect code until another device approves it</extracomment>
-        <translation>Waiting for authorization...</translation>
-    </message>
-    <message>
-        <source>Or scan this with a phone that&apos;s signed in to your server</source>
-        <extracomment>Caption under the Quick Connect QR code</extracomment>
-        <translation>Or scan this with a phone that&apos;s signed in to your server</translation>
-    </message>
-    <message>
-        <source>Quick Connect is disabled</source>
-        <extracomment>Shown when the server has Quick Connect switched off, as the sign in screen moves to the password form</extracomment>
-        <translation>Quick Connect is disabled</translation>
-    </message>
-    <message>
-        <source>The sign in request timed out. Try again.</source>
-        <extracomment>Shown when a Quick Connect code was never approved</extracomment>
-        <translation>The sign in request timed out. Try again.</translation>
-    </message>
-    <message>
-        <source>Email or Username</source>
-        <extracomment>Placeholder in the first field of the Emby Connect sign in</extracomment>
-        <translation>Email or Username</translation>
-    </message>
-    <message>
-        <source>Select Server</source>
-        <extracomment>Button on the user switcher that goes to the server list</extracomment>
-        <translation>Select Server</translation>
-    </message>
-    <message>
-        <source>Sign Out All Users</source>
-        <extracomment>Button on the user switcher that signs every saved account out</extracomment>
-        <translation>Sign Out All Users</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <extracomment>Line under the account in use on the user switcher</extracomment>
-        <translation>Active</translation>
-    </message>
-    <message>
-        <source>Signed in as {0} on {1}</source>
-        <extracomment>Top of the user switcher, naming the account in use ({0}) and its server ({1})</extracomment>
-        <translation>Signed in as {0} on {1}</translation>
-    </message>
-    <message>
-        <source>Signed in on this device</source>
-        <extracomment>Line under an account on Who&apos;s watching when the Roku already holds its sign in</extracomment>
-        <translation>Signed in on this device</translation>
-    </message>
-    <message>
-        <source>Password required</source>
-        <extracomment>Line under an account on Who&apos;s watching that needs a password to sign in</extracomment>
-        <translation>Password required</translation>
-    </message>
-    <message>
-        <source>PIN required</source>
-        <extracomment>Line under a Plex Home member on Who&apos;s watching who signs in with a PIN</extracomment>
-        <translation>PIN required</translation>
-    </message>
-    <message>
-        <source>PIN synced</source>
-        <extracomment>Description of the Enable PIN Code switch when the account&apos;s PIN is kept on the server and holds on every device</extracomment>
-        <translation>PIN synced</translation>
-    </message>
-    <message>
-        <source>Set a new PIN code</source>
-        <extracomment>Description of the Change PIN setting</extracomment>
-        <translation>Set a new PIN code</translation>
-    </message>
-    <message>
-        <source>Remove PIN</source>
-        <extracomment>Setting that removes the account&apos;s sign in PIN after asking for it</extracomment>
-        <translation>Remove PIN</translation>
-    </message>
-    <message>
-        <source>Remove PIN code protection</source>
-        <extracomment>Description of the Remove PIN setting</extracomment>
-        <translation>Remove PIN code protection</translation>
-    </message>
-    <message>
-        <source>Enter your 4-digit PIN</source>
-        <extracomment>Shown in the keypad when Settings asks for the current sign in PIN before turning it off, changing it or removing it</extracomment>
-        <translation>Enter your 4-digit PIN</translation>
-    </message>
-    <message>
-        <source>Forgot PIN?</source>
-        <extracomment>Button on the PIN screen that clears the PIN once the account signs in again with its password or Quick Connect</extracomment>
-        <translation>Forgot PIN?</translation>
-    </message>
-    <message>
-        <source>The PIN on the server couldn&apos;t be cleared. If it&apos;s still set, ask a server administrator to remove it.</source>
-        <extracomment>Shown on the PIN screen when Forgot PIN couldn&apos;t clear a PIN the server keeps, which only an administrator can do</extracomment>
-        <translation>The PIN on the server couldn&apos;t be cleared. If it&apos;s still set, ask a server administrator to remove it.</translation>
-    </message>
-    <message>
-        <source>Unable to connect to server</source>
-        <extracomment>Shown when the server couldn&apos;t be reached to make a change it has to agree to</extracomment>
-        <translation>Unable to connect to server</translation>
+        <source>Configured 4-digit PIN</source>
+        <extracomment>Description of the PIN Code setting once a PIN has been chosen</extracomment>
+        <translation>Configured 4-digit PIN</translation>
     </message>
     <message>
         <source>Blocked Ratings</source>
@@ -4862,7 +4522,7 @@
     </message>
     <message>
         <source>Premiere</source>
-        <extracomment>Guide filter and program tag for a program&apos;s first airing, and the details screen style that centers the title over a backdrop filling the screen</extracomment>
+        <extracomment>Guide filter and program tag for a program&apos;s first airing</extracomment>
         <translation>Premiere</translation>
     </message>
     <message>
@@ -6612,13 +6272,13 @@
     </message>
     <message>
         <source>Focus Follower</source>
-        <extracomment>Setting that shows the holiday piece, like Halloween&apos;s planchette, that follows the selected item on Home</extracomment>
+        <extracomment>Setting that shows the holiday piece, like Halloween's planchette, that follows the selected item on Home</extracomment>
         <translation>Focus Follower</translation>
     </message>
     <message>
-        <source>A holiday piece, like Halloween&apos;s planchette, follows what you select on Home</source>
+        <source>A holiday piece, like Halloween's planchette, follows what you select on Home</source>
         <extracomment>Description of the Focus Follower setting</extracomment>
-        <translation>A holiday piece, like Halloween&apos;s planchette, follows what you select on Home</translation>
+        <translation>A holiday piece, like Halloween's planchette, follows what you select on Home</translation>
     </message>
     <message>
         <source>Auto Hide Skip Button</source>
@@ -7016,8 +6676,8 @@
         <translation>Choose which time labels appear around the playback progress bar.</translation>
     </message>
     <message>
-        <source>How a movie or show looks when you open it.</source>
-        <translation>How a movie or show looks when you open it.</translation>
+        <source>Classic is the original centered moonfin layout. Modern is a responsive cinematic layout. Spotlight is a hero-first layout with pop-up content cards. Nouveau is a full-screen layout with sections stacked down the page. Minimalist is artwork, one play button and the episodes.</source>
+        <translation>Classic is the original centered moonfin layout. Modern is a responsive cinematic layout. Spotlight is a hero-first layout with pop-up content cards. Nouveau is a full-screen layout with sections stacked down the page. Minimalist is artwork, one play button and the episodes.</translation>
     </message>
     <message>
         <source>Classic keeps per-row image type and info overlay. Modern uses portrait-to-backdrop rows.</source>
@@ -7030,6 +6690,10 @@
     <message>
         <source>Combine separate libraries of the same type for Recently Added and Recently Released home rows.</source>
         <translation>Combine separate libraries of the same type for Recently Added and Recently Released home rows.</translation>
+    </message>
+    <message>
+        <source>Configure Popular, Top Rated, and Trending TMDB lists.</source>
+        <translation>Configure Popular, Top Rated, and Trending TMDB lists.</translation>
     </message>
     <message>
         <source>Configure the maximum channels of your audio setup. Multichannel streams exceeding this limit will downmix or transcode.</source>
@@ -7347,8 +7011,8 @@
         <translation>Prioritize SDH/CC subtitle tracks when auto-selecting.</translation>
     </message>
     <message>
-        <source>RECENTLY ADDED AND RELEASED</source>
-        <translation>RECENTLY ADDED AND RELEASED</translation>
+        <source>RECENTLY ADDED</source>
+        <translation>RECENTLY ADDED</translation>
     </message>
     <message>
         <source>REWATCH</source>
@@ -7511,22 +7175,8 @@
         <translation>Show ratings on individual episodes</translation>
     </message>
     <message>
-        <source>Show the Seerr status on posters and seasons across the app</source>
-        <translation>Show the Seerr status on posters and seasons across the app</translation>
-    </message>
-    <message>
-        <source>Badge Style</source>
-        <extracomment>Seerr setting that picks how posters show their request status</extracomment>
-        <translation>Badge Style</translation>
-    </message>
-    <message>
-        <source>Badge puts Seerr&apos;s dot in a corner. Banner runs the status across the top of the poster.</source>
-        <translation>Badge puts Seerr&apos;s dot in a corner. Banner runs the status across the top of the poster.</translation>
-    </message>
-    <message>
-        <source>Badge</source>
-        <extracomment>Badge Style option that marks a poster with Seerr&apos;s small status dot</extracomment>
-        <translation>Badge</translation>
+        <source>Show season availability badges on media details pages</source>
+        <translation>Show season availability badges on media details pages</translation>
     </message>
     <message>
         <source>Show the Next Up overlay instead of the Skip Outro button.</source>
@@ -7561,26 +7211,6 @@
         <translation>Sort Collections rows by date added, release date, alphabetically, and more.</translation>
     </message>
     <message>
-        <source>Sort Collections rows in ascending or descending order.</source>
-        <extracomment>Settings Menu - Description for the Sort Order option of the Collections rows</extracomment>
-        <translation>Sort Collections rows in ascending or descending order.</translation>
-    </message>
-    <message>
-        <source>Audio Rows Sorting</source>
-        <extracomment>Settings Menu - Title for the option that picks how the Audio rows are sorted</extracomment>
-        <translation>Audio Rows Sorting</translation>
-    </message>
-    <message>
-        <source>Sort Audio rows by date added, release date, alphabetically, and more.</source>
-        <extracomment>Settings Menu - Description for the Audio Rows Sorting option</extracomment>
-        <translation>Sort Audio rows by date added, release date, alphabetically, and more.</translation>
-    </message>
-    <message>
-        <source>Sort Audio rows in ascending or descending order.</source>
-        <extracomment>Settings Menu - Description for the Sort Order option of the Audio rows</extracomment>
-        <translation>Sort Audio rows in ascending or descending order.</translation>
-    </message>
-    <message>
         <source>Sort Genres rows by date added, release date, alphabetically, and more.</source>
         <translation>Sort Genres rows by date added, release date, alphabetically, and more.</translation>
     </message>
@@ -7613,8 +7243,8 @@
         <translation>Subtitle Stream</translation>
     </message>
     <message>
-        <source>Choose what the Radarr and Sonarr rows show.</source>
-        <translation>Choose what the Radarr and Sonarr rows show.</translation>
+        <source>Toggle Upcoming Calendars from Radarr/Sonarr.</source>
+        <translation>Toggle Upcoming Calendars from Radarr/Sonarr.</translation>
     </message>
     <message>
         <source>Trakt</source>
@@ -7635,6 +7265,10 @@
     <message>
         <source>Use Series Thumbnails</source>
         <translation>Use Series Thumbnails</translation>
+    </message>
+    <message>
+        <source>Version {0}</source>
+        <translation>Version {0}</translation>
     </message>
     <message>
         <source>Video Player</source>
@@ -8136,37 +7770,37 @@
     <message>
         <source>Time&apos;s up</source>
         <translation>Time&apos;s up</translation>
-        <extracomment>Title of the screen shown when the signed in user&apos;s access schedule has closed</extracomment>
+        <extracomment>Title of the screen shown when the signed in user's access schedule has closed</extracomment>
     </message>
     <message>
         <source>This account isn&apos;t available right now.</source>
         <translation>This account isn&apos;t available right now.</translation>
-        <extracomment>Shown on the Time&apos;s up screen</extracomment>
+        <extracomment>Shown on the Time's up screen</extracomment>
     </message>
     <message>
         <source>You can use it again today at {0}.</source>
         <translation>You can use it again today at {0}.</translation>
-        <extracomment>Shown on the Time&apos;s up screen; {0} is a time of day</extracomment>
+        <extracomment>Shown on the Time's up screen; {0} is a time of day</extracomment>
     </message>
     <message>
         <source>You can use it again tomorrow at {0}.</source>
         <translation>You can use it again tomorrow at {0}.</translation>
-        <extracomment>Shown on the Time&apos;s up screen; {0} is a time of day</extracomment>
+        <extracomment>Shown on the Time's up screen; {0} is a time of day</extracomment>
     </message>
     <message>
         <source>You can use it again on {0} at {1}.</source>
         <translation>You can use it again on {0} at {1}.</translation>
-        <extracomment>Shown on the Time&apos;s up screen; {0} is a day of the week and {1} a time of day</extracomment>
+        <extracomment>Shown on the Time's up screen; {0} is a day of the week and {1} a time of day</extracomment>
     </message>
     <message>
         <source>Switch User</source>
         <translation>Switch User</translation>
-        <extracomment>Button on the Time&apos;s up screen that opens the list of users</extracomment>
+        <extracomment>Button on the Time's up screen that opens the list of users</extracomment>
     </message>
     <message>
         <source>You can use it again on {0}, {1} {2} at {3}.</source>
         <translation>You can use it again on {0}, {1} {2} at {3}.</translation>
-        <extracomment>Shown on the Time&apos;s up screen when the next opening is a week or more away; {0} is a day of the week, {1} a month, {2} the day of the month and {3} a time of day</extracomment>
+        <extracomment>Shown on the Time's up screen when the next opening is a week or more away; {0} is a day of the week, {1} a month, {2} the day of the month and {3} a time of day</extracomment>
     </message>
     <message>
         <source>Playlist order</source>
@@ -8320,12 +7954,12 @@
     </message>
     <message>
         <source>Overview</source>
-        <extracomment>The first pill on the music category strip, which goes back to the music library&apos;s own screen</extracomment>
+        <extracomment>The first pill on the music category strip, which goes back to the music library's own screen</extracomment>
         <translation>Overview</translation>
     </message>
     <message>
         <source>Music</source>
-        <extracomment>The music library&apos;s name when the server gives none</extracomment>
+        <extracomment>The music library's name when the server gives none</extracomment>
         <translation>Music</translation>
     </message>
     <message>
@@ -8434,9 +8068,9 @@
         <translation>Rediscover</translation>
     </message>
     <message>
-        <source>Favorites you haven&apos;t played lately</source>
+        <source>Favorites you haven't played lately</source>
         <extracomment>Line under the Rediscover mix on the music Songs screen</extracomment>
-        <translation>Favorites you haven&apos;t played lately</translation>
+        <translation>Favorites you haven't played lately</translation>
     </message>
     <message>
         <source>1 play</source>
@@ -8460,7 +8094,7 @@
     </message>
     <message>
         <source>Open Playlist</source>
-        <extracomment>Button on the music Playlists screen that opens the playlist&apos;s own screen</extracomment>
+        <extracomment>Button on the music Playlists screen that opens the playlist's own screen</extracomment>
         <translation>Open Playlist</translation>
     </message>
     <message>
@@ -8498,12 +8132,12 @@
     </message>
     <message>
         <source>Keep as Complete</source>
-        <extracomment>Detail and Recordings button, and its row in the button layout editor, that clears a recording&apos;s Incomplete mark</extracomment>
+        <extracomment>Detail and Recordings button, and its row in the button layout editor, that clears a recording's Incomplete mark</extracomment>
         <translation>Keep as Complete</translation>
     </message>
     <message>
         <source>Marked as complete</source>
-        <extracomment>Toast after Keep as Complete clears a recording&apos;s Incomplete mark</extracomment>
+        <extracomment>Toast after Keep as Complete clears a recording's Incomplete mark</extracomment>
         <translation>Marked as complete</translation>
     </message>
     <message>
@@ -8518,7 +8152,7 @@
     </message>
     <message>
         <source>{0} of {1} min</source>
-        <extracomment>Minutes an incomplete recording caught, out of the program&apos;s length</extracomment>
+        <extracomment>Minutes an incomplete recording caught, out of the program's length</extracomment>
         <translation>{0} of {1} min</translation>
     </message>
     <message>
@@ -8533,12 +8167,12 @@
     </message>
     <message>
         <source>No complete showing found</source>
-        <extracomment>No later showing of an incomplete recording&apos;s program to record</extracomment>
+        <extracomment>No later showing of an incomplete recording's program to record</extracomment>
         <translation>No complete showing found</translation>
     </message>
     <message>
         <source>The series recording will skip this showing</source>
-        <extracomment>Note on a program a series recording covers but won&apos;t record</extracomment>
+        <extracomment>Note on a program a series recording covers but won't record</extracomment>
         <translation>The series recording will skip this showing</translation>
     </message>
     <message>
@@ -8583,22 +8217,22 @@
     </message>
     <message>
         <source>Series recording updated</source>
-        <extracomment>Toast after a series recording&apos;s episode choice changes</extracomment>
+        <extracomment>Toast after a series recording's episode choice changes</extracomment>
         <translation>Series recording updated</translation>
     </message>
     <message>
         <source>Unable to update series recording</source>
-        <extracomment>Toast when a series recording can&apos;t be read or changed</extracomment>
+        <extracomment>Toast when a series recording can't be read or changed</extracomment>
         <translation>Unable to update series recording</translation>
     </message>
     <message>
         <source>Failed to load recordings</source>
-        <extracomment>Toast when the player&apos;s Record button can&apos;t read the program&apos;s recordings</extracomment>
+        <extracomment>Toast when the player's Record button can't read the program's recordings</extracomment>
         <translation>Failed to load recordings</translation>
     </message>
     <message>
         <source>Record This Program</source>
-        <extracomment>Player Record dialog row for a program that isn&apos;t a series</extracomment>
+        <extracomment>Player Record dialog row for a program that isn't a series</extracomment>
         <translation>Record This Program</translation>
     </message>
     <message>
@@ -8638,12 +8272,12 @@
     </message>
     <message>
         <source>1 min already aired</source>
-        <extracomment>Beside the Record prompt&apos;s progress bar</extracomment>
+        <extracomment>Beside the Record prompt's progress bar</extracomment>
         <translation>1 min already aired</translation>
     </message>
     <message>
         <source>{minutes} min already aired</source>
-        <extracomment>Beside the Record prompt&apos;s progress bar</extracomment>
+        <extracomment>Beside the Record prompt's progress bar</extracomment>
         <translation>{minutes} min already aired</translation>
     </message>
     <message>
@@ -8653,13 +8287,13 @@
     </message>
     <message>
         <source>Already set to record</source>
-        <extracomment>On the Record prompt&apos;s future showing when someone already set it to record</extracomment>
+        <extracomment>On the Record prompt's future showing when someone already set it to record</extracomment>
         <translation>Already set to record</translation>
     </message>
     <message>
-        <source>Matched by title and description only. Check it&apos;s the same program.</source>
+        <source>Matched by title and description only. Check it's the same program.</source>
         <extracomment>Record prompt caution when the plugin matched the future showing by its title and description</extracomment>
-        <translation>Matched by title and description only. Check it&apos;s the same program.</translation>
+        <translation>Matched by title and description only. Check it's the same program.</translation>
     </message>
     <message>
         <source>The descriptions differ, so this may be a different program.</source>
@@ -8683,7 +8317,7 @@
     </message>
     <message>
         <source>Record Now Only</source>
-        <extracomment>Record prompt button that records only what&apos;s airing</extracomment>
+        <extracomment>Record prompt button that records only what's airing</extracomment>
         <translation>Record Now Only</translation>
     </message>
     <message>
@@ -8712,9 +8346,9 @@
         <translation>Recording started. A future showing will be recorded too.</translation>
     </message>
     <message>
-        <source>Recording started, but couldn&apos;t request a future showing.</source>
-        <extracomment>Toast when the future showing couldn&apos;t be booked</extracomment>
-        <translation>Recording started, but couldn&apos;t request a future showing.</translation>
+        <source>Recording started, but couldn't request a future showing.</source>
+        <extracomment>Toast when the future showing couldn't be booked</extracomment>
+        <translation>Recording started, but couldn't request a future showing.</translation>
     </message>
     <message>
         <source>The future showing will be recorded.</source>
@@ -8722,9 +8356,9 @@
         <translation>The future showing will be recorded.</translation>
     </message>
     <message>
-        <source>Couldn&apos;t request the future showing, so nothing will be recorded.</source>
-        <extracomment>Toast when only the future showing was asked for and it couldn&apos;t be booked</extracomment>
-        <translation>Couldn&apos;t request the future showing, so nothing will be recorded.</translation>
+        <source>Couldn't request the future showing, so nothing will be recorded.</source>
+        <extracomment>Toast when only the future showing was asked for and it couldn't be booked</extracomment>
+        <translation>Couldn't request the future showing, so nothing will be recorded.</translation>
     </message>
     <message>
         <source>Sorting</source>
@@ -8808,2344 +8442,13 @@
     </message>
     <message>
         <source>Seerr Discover Sliders</source>
-        <extracomment>Heading over the custom rows a Seerr admin added to Seerr&apos;s Discover page</extracomment>
+        <extracomment>Heading over the custom rows a Seerr admin added to Seerr's Discover page</extracomment>
         <translation>Seerr Discover Sliders</translation>
     </message>
     <message>
         <source>Seerr Discovery Rows</source>
         <extracomment>Line under a row in the Home Rows editor that comes from a Seerr Discover slider</extracomment>
         <translation>Seerr Discovery Rows</translation>
-    </message>
-    <message>
-        <source>All Items</source>
-        <extracomment>Seerr browse filter choice that shows every title</extracomment>
-        <translation>All Items</translation>
-    </message>
-    <message>
-        <source>Available Only</source>
-        <extracomment>Seerr browse filter choice that shows only titles already in the library</extracomment>
-        <translation>Available Only</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <extracomment>Seerr browse sort choice that orders titles by name</extracomment>
-        <translation>Title</translation>
-    </message>
-    <message>
-        <source>Seerr Settings</source>
-        <extracomment>Heading of the dialog the gear button opens on the Seerr browse screen</extracomment>
-        <translation>Seerr Settings</translation>
-    </message>
-    <message>
-        <source>Request Collection</source>
-        <extracomment>Button and dialog heading for requesting every film in a Seerr collection</extracomment>
-        <translation>Request Collection</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <extracomment>Checkbox at the top of the Request Collection dialog. The count of films that can be requested follows it</extracomment>
-        <translation>Select All</translation>
-    </message>
-    <message>
-        <source>Request ^0 movies</source>
-        <extracomment>Submit button of the Request Collection dialog. ^0 is how many films are ticked</extracomment>
-        <translation>Request ^0 movies</translation>
-    </message>
-    <message>
-        <source>Requesting ^0 of ^1...</source>
-        <extracomment>Submit button of the Request Collection dialog while it sends. ^0 is the film being sent and ^1 how many in all</extracomment>
-        <translation>Requesting ^0 of ^1...</translation>
-    </message>
-    <message>
-        <source>requested</source>
-        <extracomment>After a count in the note shown once a collection request finishes, as in 3 requested</extracomment>
-        <translation>requested</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <extracomment>After a count in the note shown once a collection request finishes, as in 1 failed</extracomment>
-        <translation>failed</translation>
-    </message>
-    <message>
-        <source>S^0</source>
-        <extracomment>Short season label on a season pick in the Seerr request dialog. ^0 is the season number</extracomment>
-        <translation>S^0</translation>
-    </message>
-    <message>
-        <source>Series Continuing · Future Seasons Can Be Requested</source>
-        <extracomment>Banner in the Seerr request dialog for a series that is still airing and fully in the library</extracomment>
-        <translation>Series Continuing · Future Seasons Can Be Requested</translation>
-    </message>
-    <message>
-        <source>Episode ^0</source>
-        <extracomment>Episode pick in the Seerr Report Issue dialog. ^0 is the episode number</extracomment>
-        <translation>Episode ^0</translation>
-    </message>
-    <message>
-        <source>What&apos;s wrong?</source>
-        <extracomment>Label over the text box in the Seerr Report Issue dialog</extracomment>
-        <translation>What&apos;s wrong?</translation>
-    </message>
-    <message>
-        <source>Submit Report</source>
-        <extracomment>Button that sends a Seerr issue report</extracomment>
-        <translation>Submit Report</translation>
-    </message>
-    <message>
-        <source>Keep</source>
-        <extracomment>Button in the Cancel Request dialog that keeps the request</extracomment>
-        <translation>Keep</translation>
-    </message>
-    <message>
-        <source>Cancel request for &quot;^0&quot;?</source>
-        <extracomment>Question in the Cancel Request dialog. ^0 is the title</extracomment>
-        <translation>Cancel request for &quot;^0&quot;?</translation>
-    </message>
-    <message>
-        <source>Cancel ^0 requests for &quot;^1&quot;?</source>
-        <extracomment>Question in the Cancel Request dialog when a title has several open requests. ^0 is how many and ^1 is the title</extracomment>
-        <translation>Cancel ^0 requests for &quot;^1&quot;?</translation>
-    </message>
-    <message>
-        <source>Failed to cancel request</source>
-        <extracomment>Note shown when Seerr refuses to cancel a request</extracomment>
-        <translation>Failed to cancel request</translation>
-    </message>
-    <message>
-        <source>Failed to update request</source>
-        <extracomment>Note shown when Seerr refuses to approve or decline a request</extracomment>
-        <translation>Failed to update request</translation>
-    </message>
-    <message>
-        <source>Request failed</source>
-        <extracomment>Note shown when Seerr refuses a request and gives no reason</extracomment>
-        <translation>Request failed</translation>
-    </message>
-    <message>
-        <source>Requested by</source>
-        <extracomment>Line on a Seerr request tile when the requester&apos;s name goes on the line under it</extracomment>
-        <translation>Requested by</translation>
-    </message>
-    <message>
-        <source>Requested by ^0</source>
-        <extracomment>Line on a Seerr request naming who asked for it. ^0 is the requester&apos;s name</extracomment>
-        <translation>Requested by ^0</translation>
-    </message>
-    <message>
-        <source>Secondary Subtitles</source>
-        <extracomment>Setting that shows a second subtitle track at the same time as the first</extracomment>
-        <translation>Secondary Subtitles</translation>
-    </message>
-    <message>
-        <source>Show a second subtitle track at the same time. The subtitle menu then asks for the primary or secondary track first</source>
-        <extracomment>Description of the Secondary Subtitles setting</extracomment>
-        <translation>Show a second subtitle track at the same time. The subtitle menu then asks for the primary or secondary track first</translation>
-    </message>
-    <message>
-        <source>Preferred Secondary Subtitle Language</source>
-        <extracomment>Setting for the language the second subtitle track&apos;s list puts first</extracomment>
-        <translation>Preferred Secondary Subtitle Language</translation>
-    </message>
-    <message>
-        <source>Primary</source>
-        <extracomment>In the player&apos;s subtitle menu, the row that picks the first subtitle track</extracomment>
-        <translation>Primary</translation>
-    </message>
-    <message>
-        <source>Secondary</source>
-        <extracomment>In the player&apos;s subtitle menu, the row that picks the second subtitle track</extracomment>
-        <translation>Secondary</translation>
-    </message>
-    <message>
-        <source>Secondary Subtitle Track</source>
-        <extracomment>Title of the player&apos;s list and appearance panel for the second subtitle track</extracomment>
-        <translation>Secondary Subtitle Track</translation>
-    </message>
-    <message>
-        <source>Vertical Offset</source>
-        <extracomment>Slider that moves the two subtitle tracks up together, as a share of the screen height</extracomment>
-        <translation>Vertical Offset</translation>
-    </message>
-    <message>
-        <source>{0} isn&apos;t shared with this account.</source>
-        <extracomment>Shown when a Plex Home member picks a server that isn&apos;t shared with them. {0} is the server name</extracomment>
-        <translation>{0} isn&apos;t shared with this account.</translation>
-    </message>
-    <message>
-        <source>By address, or with a Plex or Emby Connect account</source>
-        <extracomment>Subtitle of the Add Server tile on the server list</extracomment>
-        <translation>By address, or with a Plex or Emby Connect account</translation>
-    </message>
-    <message>
-        <source>Connecting to server...</source>
-        <extracomment>Status while the Plex sign-in connects to the chosen server</extracomment>
-        <translation>Connecting to server...</translation>
-    </message>
-    <message>
-        <source>Connection timed out. Check the address and your network.</source>
-        <extracomment>Plex sign-in error when the request timed out</extracomment>
-        <translation>Connection timed out. Check the address and your network.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t reach server. Check the address and that the server is running.</source>
-        <extracomment>Plex sign-in error when the server didn&apos;t answer</extracomment>
-        <translation>Couldn&apos;t reach server. Check the address and that the server is running.</translation>
-    </message>
-    <message>
-        <source>Failed to connect. Check the address and try again.</source>
-        <extracomment>Plex sign-in error for any other failure</extracomment>
-        <translation>Failed to connect. Check the address and try again.</translation>
-    </message>
-    <message>
-        <source>Go to plex.tv/link on any device and enter this code</source>
-        <extracomment>Instruction above the code on the Plex sign-in screen</extracomment>
-        <translation>Go to plex.tv/link on any device and enter this code</translation>
-    </message>
-    <message>
-        <source>Invalid username or password.</source>
-        <extracomment>Sign-in error when the account details were turned down</extracomment>
-        <translation>Invalid username or password.</translation>
-    </message>
-    <message>
-        <source>No Plex servers found on this account</source>
-        <extracomment>Shown on the Plex server list when the account has no servers</extracomment>
-        <translation>No Plex servers found on this account</translation>
-    </message>
-    <message>
-        <source>Or scan this with a phone that&apos;s signed in to Plex</source>
-        <extracomment>Caption under the QR code on the Plex sign-in screen</extracomment>
-        <translation>Or scan this with a phone that&apos;s signed in to Plex</translation>
-    </message>
-    <message>
-        <source>PIN</source>
-        <extracomment>Placeholder of the password field when a Plex Home member signs in with their PIN</extracomment>
-        <translation>PIN</translation>
-    </message>
-    <message>
-        <source>Plex servers don&apos;t take client logs.</source>
-        <extracomment>Shown when sending the diagnostic log while signed in to a Plex server</extracomment>
-        <translation>Plex servers don&apos;t take client logs.</translation>
-    </message>
-    <message>
-        <source>Select a Server</source>
-        <extracomment>Title of the list of Plex servers on the account</extracomment>
-        <translation>Select a Server</translation>
-    </message>
-    <message>
-        <source>Server error. Please try again later.</source>
-        <extracomment>Plex sign-in error when plex.tv answered with a server error</extracomment>
-        <translation>Server error. Please try again later.</translation>
-    </message>
-    <message>
-        <source>Signing in...</source>
-        <extracomment>Label of the Sign In button while the Plex password sign-in runs</extracomment>
-        <translation>Signing in...</translation>
-    </message>
-    <message>
-        <source>Sign in with a password</source>
-        <extracomment>Button on the Plex code screen that switches to the email and password form</extracomment>
-        <translation>Sign in with a password</translation>
-    </message>
-    <message>
-        <source>Sign in with Plex</source>
-        <extracomment>Title of the Plex sign-in screen and of its choice in the Add Server dialog</extracomment>
-        <translation>Sign in with Plex</translation>
-    </message>
-    <message>
-        <source>Unable to connect to {0}</source>
-        <extracomment>Plex server list error when the chosen server didn&apos;t answer. {0} is the server name</extracomment>
-        <translation>Unable to connect to {0}</translation>
-    </message>
-    <message>
-        <source>Use your Plex account to find its servers</source>
-        <extracomment>Detail line of the Plex choice in the Add Server dialog</extracomment>
-        <translation>Use your Plex account to find its servers</translation>
-    </message>
-    <message>
-        <source>Verification code</source>
-        <extracomment>Field on the Plex password form that appears when the account has two-step verification</extracomment>
-        <translation>Verification code</translation>
-    </message>
-    <message>
-        <source>Waiting for you to approve the code...</source>
-        <extracomment>Status under the code on the Plex sign-in screen while the app waits for approval</extracomment>
-        <translation>Waiting for you to approve the code...</translation>
-    </message>
-    <message>
-        <source>Works with Jellyfin, Emby and Silo. A Plex address opens the Plex sign-in.</source>
-        <extracomment>Hint under the address field in the Add Server dialog</extracomment>
-        <translation>Works with Jellyfin, Emby and Silo. A Plex address opens the Plex sign-in.</translation>
-    </message>
-    <message>
-        <source>Live preview</source>
-        <extracomment>Label over the preview beside the settings list that draws a screen of the app as settings change</extracomment>
-        <translation>Live preview</translation>
-    </message>
-    <message>
-        <source>Shows on the {0} preview</source>
-        <extracomment>Under the settings live preview, says the focused setting changes the named preview screen. {0} is the screen, like Home</extracomment>
-        <translation>Shows on the {0} preview</translation>
-    </message>
-    <message>
-        <source>Not shown in the preview</source>
-        <extracomment>Under the settings live preview, says the focused setting has no visible effect in the preview</extracomment>
-        <translation>Not shown in the preview</translation>
-    </message>
-    <message>
-        <source>Saved</source>
-        <extracomment>Tag on the saved choice while a settings picker tries another one in the live preview</extracomment>
-        <translation>Saved</translation>
-    </message>
-    <message>
-        <source>New Seasons &amp; Episodes</source>
-        <extracomment>Media bar source: series with episodes that aired recently</extracomment>
-        <translation>New Seasons &amp; Episodes</translation>
-    </message>
-    <message>
-        <source>Choose which titles the Media Bar picks from its source libraries and collections: random ones, the newest, or series with new episodes.</source>
-        <extracomment>Description of the Media Bar Source setting</extracomment>
-        <translation>Choose which titles the Media Bar picks from its source libraries and collections: random ones, the newest, or series with new episodes.</translation>
-    </message>
-    <message>
-        <source>New Release Banner</source>
-        <extracomment>Setting that flags series in the media bar when new episodes aired recently</extracomment>
-        <translation>New Release Banner</translation>
-    </message>
-    <message>
-        <source>Flag series with a new season or new episodes that aired recently.</source>
-        <extracomment>Description of the New Release Banner setting</extracomment>
-        <translation>Flag series with a new season or new episodes that aired recently.</translation>
-    </message>
-    <message>
-        <source>New Release Window</source>
-        <extracomment>Setting for how many days an episode counts as new in the media bar</extracomment>
-        <translation>New Release Window</translation>
-    </message>
-    <message>
-        <source>How long after an episode airs it still counts as new.</source>
-        <extracomment>Description of the New Release Window setting</extracomment>
-        <translation>How long after an episode airs it still counts as new.</translation>
-    </message>
-    <message>
-        <source>New Series</source>
-        <extracomment>Media bar label on a series whose first season was released recently</extracomment>
-        <translation>New Series</translation>
-    </message>
-    <message>
-        <source>New Season</source>
-        <extracomment>Media bar label on a series whose latest season was released all at once recently</extracomment>
-        <translation>New Season</translation>
-    </message>
-    <message>
-        <source>New Episodes</source>
-        <extracomment>Media bar label on a series with one or more episodes that aired recently</extracomment>
-        <translation>New Episodes</translation>
-    </message>
-    <message>
-        <source>7 days</source>
-        <extracomment>A number of days</extracomment>
-        <translation>7 days</translation>
-    </message>
-    <message>
-        <source>14 days</source>
-        <extracomment>A number of days</extracomment>
-        <translation>14 days</translation>
-    </message>
-    <message>
-        <source>30 days</source>
-        <extracomment>A number of days</extracomment>
-        <translation>30 days</translation>
-    </message>
-    <message>
-        <source>60 days</source>
-        <extracomment>A number of days</extracomment>
-        <translation>60 days</translation>
-    </message>
-    <message>
-        <source>90 days</source>
-        <extracomment>A number of days</extracomment>
-        <translation>90 days</translation>
-    </message>
-    <message>
-        <source>Watching on MDBList</source>
-        <extracomment>Home row of what MDBList users are watching right now, and the setting that turns it on</extracomment>
-        <translation>Watching on MDBList</translation>
-    </message>
-    <message>
-        <source>{users} watching now · {movies} movies · {shows} shows</source>
-        <extracomment>Live counts under the Watching on MDBList row title. Keep {users}, {movies} and {shows}</extracomment>
-        <translation>{users} watching now · {movies} movies · {shows} shows</translation>
-    </message>
-    <message>
-        <source>{users} watched today · {movies} movies · {shows} shows</source>
-        <extracomment>Counts for the day under the Watching on MDBList row title. Keep {users}, {movies} and {shows}</extracomment>
-        <translation>{users} watched today · {movies} movies · {shows} shows</translation>
-    </message>
-    <message>
-        <source>{count} watching</source>
-        <extracomment>How many MDBList users are watching a title, on its Watching on MDBList card. Keep {count}</extracomment>
-        <translation>{count} watching</translation>
-    </message>
-    <message>
-        <source>Card Size</source>
-        <extracomment>Home Screen setting for how big the cards on the home rows are</extracomment>
-        <translation>Card Size</translation>
-    </message>
-    <message>
-        <source>Grandparents</source>
-        <extracomment>The biggest Card Size, bigger than Extra Large</extracomment>
-        <translation>Grandparents</translation>
-    </message>
-    <message>
-        <source>Image Type per Row</source>
-        <extracomment>Home Screen setting that opens a list of the home rows, each with a choice of poster, thumbnail or banner art</extracomment>
-        <translation>Image Type per Row</translation>
-    </message>
-    <message>
-        <source>Configure image type for each enabled home row</source>
-        <extracomment>Description of the Image Type per Row setting</extracomment>
-        <translation>Configure image type for each enabled home row</translation>
-    </message>
-    <message>
-        <source>Images</source>
-        <extracomment>Header over the list of home rows on the Image Type per Row screen</extracomment>
-        <translation>Images</translation>
-    </message>
-    <message>
-        <source>Calendar</source>
-        <extracomment>Name of the screen of upcoming episodes and movies from Sonarr and Radarr, on the navigation bar and as the screen title</extracomment>
-        <translation>Calendar</translation>
-    </message>
-    <message>
-        <source>Full calendar</source>
-        <extracomment>Button on the calendar that opens the month grid</extracomment>
-        <translation>Full calendar</translation>
-    </message>
-    <message>
-        <source>Upcoming</source>
-        <extracomment>Calendar tab listing episodes and movies that haven&apos;t aired yet</extracomment>
-        <translation>Upcoming</translation>
-    </message>
-    <message>
-        <source>Recently aired</source>
-        <extracomment>Calendar tab listing episodes and movies from the last few days</extracomment>
-        <translation>Recently aired</translation>
-    </message>
-    <message>
-        <source>Ready to watch</source>
-        <extracomment>Calendar row of recent episodes and movies that are already in the library</extracomment>
-        <translation>Ready to watch</translation>
-    </message>
-    <message>
-        <source>Coming up this week</source>
-        <extracomment>Calendar row of episodes and movies airing in the next seven days</extracomment>
-        <translation>Coming up this week</translation>
-    </message>
-    <message>
-        <source>Nothing coming up</source>
-        <extracomment>Calendar message when no episodes or movies are scheduled</extracomment>
-        <translation>Nothing coming up</translation>
-    </message>
-    <message>
-        <source>Nothing aired recently</source>
-        <extracomment>Calendar message when nothing aired in the last few days</extracomment>
-        <translation>Nothing aired recently</translation>
-    </message>
-    <message>
-        <source>Nothing on this day</source>
-        <extracomment>Calendar message under a day with no episodes or movies</extracomment>
-        <translation>Nothing on this day</translation>
-    </message>
-    <message>
-        <source>Starts in</source>
-        <extracomment>Label over the countdown to the next episode or movie</extracomment>
-        <translation>Starts in</translation>
-    </message>
-    <message>
-        <source>days</source>
-        <extracomment>Unit under the days number of the calendar countdown</extracomment>
-        <translation>days</translation>
-    </message>
-    <message>
-        <source>hr</source>
-        <extracomment>Unit under the hours number of the calendar countdown</extracomment>
-        <translation>hr</translation>
-    </message>
-    <message>
-        <source>{day} at {time}</source>
-        <extracomment>When an episode airs, like Today at 9:00 PM. Keep {day} and {time}</extracomment>
-        <translation>{day} at {time}</translation>
-    </message>
-    <message>
-        <source>All day</source>
-        <extracomment>Time column of a calendar entry with no time of day, like a movie release</extracomment>
-        <translation>All day</translation>
-    </message>
-    <message>
-        <source>Series premiere</source>
-        <extracomment>Tag on the first episode of a series</extracomment>
-        <translation>Series premiere</translation>
-    </message>
-    <message>
-        <source>New season</source>
-        <extracomment>Tag on the first episode of a new season</extracomment>
-        <translation>New season</translation>
-    </message>
-    <message>
-        <source>Finale</source>
-        <extracomment>Tag on the last episode of a season</extracomment>
-        <translation>Finale</translation>
-    </message>
-    <message>
-        <source>Midseason finale</source>
-        <extracomment>Tag on the last episode before a season&apos;s mid-season break</extracomment>
-        <translation>Midseason finale</translation>
-    </message>
-    <message>
-        <source>Series finale</source>
-        <extracomment>Tag on the last episode of a series</extracomment>
-        <translation>Series finale</translation>
-    </message>
-    <message>
-        <source>NEW</source>
-        <extracomment>Short tag on a month grid day that has a premiere</extracomment>
-        <translation>NEW</translation>
-    </message>
-    <message>
-        <source>In library</source>
-        <extracomment>Tag on a calendar entry that is already on the server</extracomment>
-        <translation>In library</translation>
-    </message>
-    <message>
-        <source>Missing</source>
-        <extracomment>Tag on a calendar entry that aired but isn&apos;t on the server</extracomment>
-        <translation>Missing</translation>
-    </message>
-    <message>
-        <source>Not monitored</source>
-        <extracomment>Tag on a calendar entry that Sonarr or Radarr won&apos;t download</extracomment>
-        <translation>Not monitored</translation>
-    </message>
-    <message>
-        <source>+{count} more</source>
-        <extracomment>Month grid day cell when more titles air that day than fit. Keep {count}</extracomment>
-        <translation>+{count} more</translation>
-    </message>
-    <message>
-        <source>Movie details</source>
-        <extracomment>Button that opens a movie&apos;s details page from the calendar</extracomment>
-        <translation>Movie details</translation>
-    </message>
-    <message>
-        <source>Request</source>
-        <extracomment>Button that opens a title&apos;s Seerr page to request it</extracomment>
-        <translation>Request</translation>
-    </message>
-    <message>
-        <source>S{season} E{episode}</source>
-        <extracomment>Season and episode number on a calendar entry, like S1 E2. Keep {season} and {episode}</extracomment>
-        <translation>S{season} E{episode}</translation>
-    </message>
-    <message>
-        <source>In {days} days ({date})</source>
-        <extracomment>When the next episode airs or a movie comes out, on the end of episode card and the upcoming home rows, like In 6 days (Nov 11). Keep {days} and {date}</extracomment>
-        <translation>In {days} days ({date})</translation>
-    </message>
-    <message>
-        <source>Cinema</source>
-        <extracomment>Release format of a movie in the calendar</extracomment>
-        <translation>Cinema</translation>
-    </message>
-    <message>
-        <source>Digital</source>
-        <extracomment>Release format of a movie in the calendar</extracomment>
-        <translation>Digital</translation>
-    </message>
-    <message>
-        <source>Physical</source>
-        <extracomment>Release format of a movie in the calendar</extracomment>
-        <translation>Physical</translation>
-    </message>
-    <message>
-        <source>The calendar is limited to admins on this server.</source>
-        <extracomment>Calendar message when the server admin keeps the calendar to admins</extracomment>
-        <translation>The calendar is limited to admins on this server.</translation>
-    </message>
-    <message>
-        <source>An admin needs to sign in to Seerr in Moonfin before the calendar can load.</source>
-        <extracomment>Calendar message when the server can&apos;t reach Sonarr and Radarr yet</extracomment>
-        <translation>An admin needs to sign in to Seerr in Moonfin before the calendar can load.</translation>
-    </message>
-    <message>
-        <source>No Sonarr or Radarr server is linked yet.</source>
-        <extracomment>Calendar message when the server has no Sonarr or Radarr</extracomment>
-        <translation>No Sonarr or Radarr server is linked yet.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load the calendar.</source>
-        <extracomment>Calendar message when loading fails</extracomment>
-        <translation>Couldn&apos;t load the calendar.</translation>
-    </message>
-    <message>
-        <source>Show Calendar Button</source>
-        <extracomment>Settings toggle that adds the Calendar button to the navigation bar</extracomment>
-        <translation>Show Calendar Button</translation>
-    </message>
-    <message>
-        <source>Show the calendar of upcoming episodes and movies in the navigation bar</source>
-        <extracomment>Description of the Show Calendar Button setting</extracomment>
-        <translation>Show the calendar of upcoming episodes and movies in the navigation bar</translation>
-    </message>
-    <message>
-        <source>See All card</source>
-        <extracomment>Upcoming Calendars setting that ends the upcoming rows with a card opening the calendar</extracomment>
-        <translation>See All card</translation>
-    </message>
-    <message>
-        <source>End the upcoming rows with a card that opens the calendar</source>
-        <extracomment>Description of the See All card setting</extracomment>
-        <translation>End the upcoming rows with a card that opens the calendar</translation>
-    </message>
-    <message>
-        <source>Radarr Calendar</source>
-        <extracomment>Subtitle under the Radarr upcoming home row</extracomment>
-        <translation>Radarr Calendar</translation>
-    </message>
-    <message>
-        <source>Sonarr Calendar</source>
-        <extracomment>Subtitle under the Sonarr upcoming home row</extracomment>
-        <translation>Sonarr Calendar</translation>
-    </message>
-    <message>
-        <source>Radarr and Sonarr Calendars</source>
-        <extracomment>Subtitle under the home row that merges the Radarr and Sonarr upcoming rows</extracomment>
-        <translation>Radarr and Sonarr Calendars</translation>
-    </message>
-    <message>
-        <source>Hide Movies Already on the Server</source>
-        <extracomment>Upcoming Calendars setting that leaves movies Radarr already downloaded out of the Radarr row</extracomment>
-        <translation>Hide Movies Already on the Server</translation>
-    </message>
-    <message>
-        <source>Leave out movies Radarr has already downloaded</source>
-        <extracomment>Description of the Hide Movies Already on the Server setting</extracomment>
-        <translation>Leave out movies Radarr has already downloaded</translation>
-    </message>
-    <message>
-        <source>Hide Episodes Already on the Server</source>
-        <extracomment>Upcoming Calendars setting that leaves episodes Sonarr already downloaded out of the Sonarr row</extracomment>
-        <translation>Hide Episodes Already on the Server</translation>
-    </message>
-    <message>
-        <source>Leave out episodes Sonarr has already downloaded</source>
-        <extracomment>Description of the Hide Episodes Already on the Server setting</extracomment>
-        <translation>Leave out episodes Sonarr has already downloaded</translation>
-    </message>
-    <message>
-        <source>Next air date at the end</source>
-        <extracomment>Playback setting that says when the next episode airs on the end of episode card</extracomment>
-        <translation>Next air date at the end</translation>
-    </message>
-    <message>
-        <source>When the next episode isn&apos;t in your library yet, the end of episode card says when it airs</source>
-        <extracomment>Description of the Next air date at the end setting</extracomment>
-        <translation>When the next episode isn&apos;t in your library yet, the end of episode card says when it airs</translation>
-    </message>
-    <message>
-        <source>Style, filters and actions for the calendar</source>
-        <extracomment>Description of the Calendar entry under Integrations in settings</extracomment>
-        <translation>Style, filters and actions for the calendar</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <extracomment>Calendar settings section header for how the calendar opens and lays out weeks</extracomment>
-        <translation>View</translation>
-    </message>
-    <message>
-        <source>What shows</source>
-        <extracomment>Calendar settings section header for which episodes and movies the calendar lists</extracomment>
-        <translation>What shows</translation>
-    </message>
-    <message>
-        <source>Looks</source>
-        <extracomment>Calendar settings section header for how entries look</extracomment>
-        <translation>Looks</translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <extracomment>Calendar settings section header for what buttons and OK do</extracomment>
-        <translation>Actions</translation>
-    </message>
-    <message>
-        <source>Calendar style</source>
-        <extracomment>Calendar setting that picks what the Calendar button opens</extracomment>
-        <translation>Calendar style</translation>
-    </message>
-    <message>
-        <source>What the Calendar button opens. The full month is one button away in both.</source>
-        <extracomment>Description of the Calendar style setting</extracomment>
-        <translation>What the Calendar button opens. The full month is one button away in both.</translation>
-    </message>
-    <message>
-        <source>Agenda</source>
-        <extracomment>Calendar style that lists episodes and movies day by day</extracomment>
-        <translation>Agenda</translation>
-    </message>
-    <message>
-        <source>Countdown</source>
-        <extracomment>Calendar style that counts down to the next episode or movie</extracomment>
-        <translation>Countdown</translation>
-    </message>
-    <message>
-        <source>Week starts on</source>
-        <extracomment>Calendar setting for the first day of the week in the month grid</extracomment>
-        <translation>Week starts on</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <extracomment>Week starts on choice that follows the device&apos;s language</extracomment>
-        <translation>Auto</translation>
-    </message>
-    <message>
-        <source>My shows keeps the series you favorited or started watching</source>
-        <extracomment>Description of the calendar Show setting</extracomment>
-        <translation>My shows keeps the series you favorited or started watching</translation>
-    </message>
-    <message>
-        <source>My shows</source>
-        <extracomment>Calendar Show choice that keeps the user&apos;s own series</extracomment>
-        <translation>My shows</translation>
-    </message>
-    <message>
-        <source>Include unmonitored</source>
-        <extracomment>Calendar setting that also lists titles Sonarr and Radarr won&apos;t download</extracomment>
-        <translation>Include unmonitored</translation>
-    </message>
-    <message>
-        <source>Also list episodes and movies Sonarr and Radarr aren&apos;t set to download</source>
-        <extracomment>Description of the Include unmonitored setting</extracomment>
-        <translation>Also list episodes and movies Sonarr and Radarr aren&apos;t set to download</translation>
-    </message>
-    <message>
-        <source>Season 0 episodes, like extras and holiday specials</source>
-        <extracomment>Description of the calendar Specials setting</extracomment>
-        <translation>Season 0 episodes, like extras and holiday specials</translation>
-    </message>
-    <message>
-        <source>Premiere and finale tags</source>
-        <extracomment>Calendar setting that tags premieres and finales</extracomment>
-        <translation>Premiere and finale tags</translation>
-    </message>
-    <message>
-        <source>Mark premieres, finales and new seasons</source>
-        <extracomment>Description of the Premiere and finale tags setting</extracomment>
-        <translation>Mark premieres, finales and new seasons</translation>
-    </message>
-    <message>
-        <source>Color by</source>
-        <extracomment>Calendar setting for what an entry&apos;s color means</extracomment>
-        <translation>Color by</translation>
-    </message>
-    <message>
-        <source>Type tells episodes from movies. Status shows what&apos;s in your library, coming up or missing.</source>
-        <extracomment>Description of the Color by setting</extracomment>
-        <translation>Type tells episodes from movies. Status shows what&apos;s in your library, coming up or missing.</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <extracomment>Color by choice that colors entries by library status</extracomment>
-        <translation>Status</translation>
-    </message>
-    <message>
-        <source>Card image</source>
-        <extracomment>Calendar setting for the artwork on the Countdown rows</extracomment>
-        <translation>Card image</translation>
-    </message>
-    <message>
-        <source>The artwork on the Countdown rows</source>
-        <extracomment>Description of the Card image setting</extracomment>
-        <translation>The artwork on the Countdown rows</translation>
-    </message>
-    <message>
-        <source>Spoiler safe</source>
-        <extracomment>Calendar setting that hides episode titles and stills</extracomment>
-        <translation>Spoiler safe</translation>
-    </message>
-    <message>
-        <source>Hide episode titles and stills for shows you&apos;re behind on</source>
-        <extracomment>Description of the Spoiler safe setting</extracomment>
-        <translation>Hide episode titles and stills for shows you&apos;re behind on</translation>
-    </message>
-    <message>
-        <source>Selecting an item</source>
-        <extracomment>Calendar setting for what OK does on an entry</extracomment>
-        <translation>Selecting an item</translation>
-    </message>
-    <message>
-        <source>What OK or a tap does on something that&apos;s already in your library</source>
-        <extracomment>Description of the Selecting an item setting</extracomment>
-        <translation>What OK or a tap does on something that&apos;s already in your library</translation>
-    </message>
-    <message>
-        <source>Open details</source>
-        <extracomment>Selecting an item choice that opens the details page</extracomment>
-        <translation>Open details</translation>
-    </message>
-    <message>
-        <source>Play when in library</source>
-        <extracomment>Selecting an item choice that plays a title the server has</extracomment>
-        <translation>Play when in library</translation>
-    </message>
-    <message>
-        <source>Request button</source>
-        <extracomment>Calendar setting that shows the Seerr request button</extracomment>
-        <translation>Request button</translation>
-    </message>
-    <message>
-        <source>Show the Seerr request button on missing movies and seasons</source>
-        <extracomment>Description of the Request button setting</extracomment>
-        <translation>Show the Seerr request button on missing movies and seasons</translation>
-    </message>
-    <message>
-        <source>Seerr, Calendar, Achievement Badges, and friends.</source>
-        <extracomment>Description of the Integrations settings category</extracomment>
-        <translation>Seerr, Calendar, Achievement Badges, and friends.</translation>
-    </message>
-    <message>
-        <source>Add Moonbase to your server</source>
-        <extracomment>Row on the last setup wizard step that opens the Moonbase server plugin dialog</extracomment>
-        <translation>Add Moonbase to your server</translation>
-    </message>
-    <message>
-        <source>A free server plugin that unlocks more of Moonfin</source>
-        <extracomment>Line under the Moonbase row on the last setup wizard step</extracomment>
-        <translation>A free server plugin that unlocks more of Moonfin</translation>
-    </message>
-    <message>
-        <source>Moonbase is free and runs on your server. With it, Moonfin gets:</source>
-        <extracomment>First line of the Moonbase dialog, followed by a list of features</extracomment>
-        <translation>Moonbase is free and runs on your server. With it, Moonfin gets:</translation>
-    </message>
-    <message>
-        <source>Only a server admin can install it. Send them this link.</source>
-        <extracomment>Moonbase dialog line for users who aren&apos;t a server admin, beside a QR code of the install steps</extracomment>
-        <translation>Only a server admin can install it. Send them this link.</translation>
-    </message>
-    <message>
-        <source>It takes a few steps on your server to install. They&apos;re all at this link.</source>
-        <extracomment>Moonbase dialog line for admins of servers the app can&apos;t install it on, beside a QR code of the install steps</extracomment>
-        <translation>It takes a few steps on your server to install. They&apos;re all at this link.</translation>
-    </message>
-    <message>
-        <source>Installing Moonbase...</source>
-        <extracomment>Shown in the Moonbase dialog while the plugin installs</extracomment>
-        <translation>Installing Moonbase...</translation>
-    </message>
-    <message>
-        <source>Moonbase is installed. It turns on when the server restarts, which stops anything playing right now.</source>
-        <extracomment>Shown in the Moonbase dialog after the plugin installed, above a Restart Server button</extracomment>
-        <translation>Moonbase is installed. It turns on when the server restarts, which stops anything playing right now.</translation>
-    </message>
-    <message>
-        <source>The server is restarting. Moonbase turns on once it&apos;s back.</source>
-        <extracomment>Shown while the server restarts after Moonbase was installed</extracomment>
-        <translation>The server is restarting. Moonbase turns on once it&apos;s back.</translation>
-    </message>
-    <message>
-        <source>Moonbase couldn&apos;t be installed. {0}</source>
-        <extracomment>Shown in the Moonbase dialog when installing or restarting failed. Keep {0}, it is the error</extracomment>
-        <translation>Moonbase couldn&apos;t be installed. {0}</translation>
-    </message>
-    <message>
-        <source>Settings synced across your devices</source>
-        <extracomment>Moonbase dialog feature</extracomment>
-        <translation>Settings synced across your devices</translation>
-    </message>
-    <message>
-        <source>Extra ratings and TMDB reviews</source>
-        <extracomment>Moonbase dialog feature</extracomment>
-        <translation>Extra ratings and TMDB reviews</translation>
-    </message>
-    <message>
-        <source>Custom rows from your favorite lists</source>
-        <extracomment>Moonbase dialog feature, rows built from Letterboxd, IMDb, TMDB and MDBList lists</extracomment>
-        <translation>Custom rows from your favorite lists</translation>
-    </message>
-    <message>
-        <source>Retro games with synced saves</source>
-        <extracomment>Moonbase dialog feature</extracomment>
-        <translation>Retro games with synced saves</translation>
-    </message>
-    <message>
-        <source>A calendar of what&apos;s coming up</source>
-        <extracomment>Moonbase dialog feature, upcoming episodes and movies</extracomment>
-        <translation>A calendar of what&apos;s coming up</translation>
-    </message>
-    <message>
-        <source>Your own order for each collection</source>
-        <extracomment>Moonbase dialog feature</extracomment>
-        <translation>Your own order for each collection</translation>
-    </message>
-    <message>
-        <source>Messages from your server admin</source>
-        <extracomment>Moonbase dialog feature</extracomment>
-        <translation>Messages from your server admin</translation>
-    </message>
-    <message>
-        <source>Install</source>
-        <extracomment>Moonbase dialog button that installs the plugin on the server</extracomment>
-        <translation>Install</translation>
-    </message>
-    <message>
-        <source>Installed</source>
-        <extracomment>Shown on the setup wizard&apos;s Moonbase row once the plugin is installed</extracomment>
-        <translation>Installed</translation>
-    </message>
-    <message>
-        <source>Restart Server</source>
-        <extracomment>Moonbase dialog button that restarts the media server</extracomment>
-        <translation>Restart Server</translation>
-    </message>
-    <message>
-        <source>Poster Labels</source>
-        <extracomment>Settings Menu - Title for the option that shows or hides the labels the server admin adds to posters</extracomment>
-        <translation>Poster Labels</translation>
-    </message>
-    <message>
-        <source>Show the labels on posters, such as 4K or HDR.</source>
-        <extracomment>Settings Menu - Description for the Poster Labels option</extracomment>
-        <translation>Show the labels on posters, such as 4K or HDR.</translation>
-    </message>
-    <message>
-        <source>Date Format</source>
-        <extracomment>Settings Menu - Title for the option that picks the order of the month and day in dates</extracomment>
-        <translation>Date Format</translation>
-    </message>
-    <message>
-        <source>Choose between month-day, day-month, or locale default for calendar and release dates</source>
-        <extracomment>Settings Menu - Description for the Date Format option</extracomment>
-        <translation>Choose between month-day, day-month, or locale default for calendar and release dates</translation>
-    </message>
-    <message>
-        <source>Locale Default</source>
-        <extracomment>Settings Menu - Date Format option that keeps the order the app always used</extracomment>
-        <translation>Locale Default</translation>
-    </message>
-    <message>
-        <source>Month / Day (Nov 10)</source>
-        <extracomment>Settings Menu - Date Format option that puts the month before the day</extracomment>
-        <translation>Month / Day (Nov 10)</translation>
-    </message>
-    <message>
-        <source>Day / Month (10 Nov)</source>
-        <extracomment>Settings Menu - Date Format option that puts the day before the month</extracomment>
-        <translation>Day / Month (10 Nov)</translation>
-    </message>
-    <message>
-        <source>{0} more presses</source>
-        <extracomment>After Hours - Toast while pressing Version in About, the presses left before the arcade opens</extracomment>
-        <translation>{0} more presses</translation>
-    </message>
-    <message>
-        <source>1 more press</source>
-        <extracomment>After Hours - Toast while pressing Version in About, one press left</extracomment>
-        <translation>1 more press</translation>
-    </message>
-    <message>
-        <source>After Hours unlocked</source>
-        <extracomment>After Hours - Toast when the seventh press of Version opens the arcade</extracomment>
-        <translation>After Hours unlocked</translation>
-    </message>
-    <message>
-        <source>Endless runner with a gravity flip</source>
-        <extracomment>After Hours - What kind of game Buffer Run is</extracomment>
-        <translation>Endless runner with a gravity flip</translation>
-    </message>
-    <message>
-        <source>Three-lane runner</source>
-        <extracomment>After Hours - What kind of game Fast Forward is</extracomment>
-        <translation>Three-lane runner</translation>
-    </message>
-    <message>
-        <source>Grid crawler</source>
-        <extracomment>After Hours - What kind of game Cable Crawl is</extracomment>
-        <translation>Grid crawler</translation>
-    </message>
-    <message>
-        <source>One-button stacker</source>
-        <extracomment>After Hours - What kind of game Case Stack is</extracomment>
-        <translation>One-button stacker</translation>
-    </message>
-    <message>
-        <source>Paddle breaker</source>
-        <extracomment>After Hours - What kind of game Pixel Purge is</extracomment>
-        <translation>Paddle breaker</translation>
-    </message>
-    <message>
-        <source>The runner from the loading screen finally gets somewhere to go.</source>
-        <extracomment>After Hours - Buffer Run's pitch in the arcade</extracomment>
-        <translation>The runner from the loading screen finally gets somewhere to go.</translation>
-    </message>
-    <message>
-        <source>A sprint down three lobby aisles.</source>
-        <extracomment>After Hours - Fast Forward's pitch in the arcade</extracomment>
-        <translation>A sprint down three lobby aisles.</translation>
-    </message>
-    <message>
-        <source>Steer an HDMI cable around the back of the TV cabinet and plug into signal.</source>
-        <extracomment>After Hours - Cable Crawl's pitch in the arcade</extracomment>
-        <translation>Steer an HDMI cable around the back of the TV cabinet and plug into signal.</translation>
-    </message>
-    <message>
-        <source>Build a shelf-high tower of Blu-ray cases, each one a title from your own library.</source>
-        <extracomment>After Hours - Case Stack's pitch in the arcade</extracomment>
-        <translation>Build a shelf-high tower of Blu-ray cases, each one a title from your own library.</translation>
-    </message>
-    <message>
-        <source>A bad encode left the picture full of blocky artifacts, and they creep down a little every second.</source>
-        <extracomment>After Hours - Pixel Purge's pitch in the arcade</extracomment>
-        <translation>A bad encode left the picture full of blocky artifacts, and they creep down a little every second.</translation>
-    </message>
-    <message>
-        <source>Leaderboards</source>
-        <extracomment>After Hours - The last card in the arcade and the screen with every game's top 3</extracomment>
-        <translation>Leaderboards</translation>
-    </message>
-    <message>
-        <source>Every game's top 3 at once.</source>
-        <extracomment>After Hours - What the Leaderboards card opens</extracomment>
-        <translation>Every game's top 3 at once.</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <extracomment>After Hours - What OK does on the Leaderboards card</extracomment>
-        <translation>Open</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <extracomment>After Hours - What Back returns to from the arcade, the About page of settings</extracomment>
-        <translation>About</translation>
-    </message>
-    <message>
-        <source>Top 3 · This server</source>
-        <extracomment>After Hours - Heading over the focused game's board when the scores come from the server</extracomment>
-        <translation>Top 3 · This server</translation>
-    </message>
-    <message>
-        <source>Top 3 · This device</source>
-        <extracomment>After Hours - Heading over the focused game's board when the scores are kept on the device</extracomment>
-        <translation>Top 3 · This device</translation>
-    </message>
-    <message>
-        <source>No scores yet</source>
-        <extracomment>After Hours - A board nobody has placed on yet</extracomment>
-        <translation>No scores yet</translation>
-    </message>
-    <message>
-        <source>YOU</source>
-        <extracomment>After Hours - Tag on the board rows that are the viewer's own</extracomment>
-        <translation>YOU</translation>
-    </message>
-    <message>
-        <source>Pause</source>
-        <extracomment>After Hours - Hint in the corner of a game, Back pauses it</extracomment>
-        <translation>Pause</translation>
-    </message>
-    <message>
-        <source>Paused</source>
-        <extracomment>After Hours - Title of the pause menu</extracomment>
-        <translation>Paused</translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <extracomment>After Hours - Pause menu button that leaves the game for the arcade</extracomment>
-        <translation>Quit</translation>
-    </message>
-    <message>
-        <source>Sound on</source>
-        <extracomment>After Hours - Pause menu switch while sound is on, pressing it turns sound off</extracomment>
-        <translation>Sound on</translation>
-    </message>
-    <message>
-        <source>Sound off</source>
-        <extracomment>After Hours - Pause menu switch while sound is off, pressing it turns sound on</extracomment>
-        <translation>Sound off</translation>
-    </message>
-    <message>
-        <source>Game over</source>
-        <extracomment>After Hours - Shown when a run ends</extracomment>
-        <translation>Game over</translation>
-    </message>
-    <message>
-        <source>Play again</source>
-        <extracomment>After Hours - Game over button that starts another run</extracomment>
-        <translation>Play again</translation>
-    </message>
-    <message>
-        <source>Back to the arcade</source>
-        <extracomment>After Hours - Game over button that returns to the arcade</extracomment>
-        <translation>Back to the arcade</translation>
-    </message>
-    <message>
-        <source>{0} · Top 3</source>
-        <extracomment>After Hours - Heading over a game's board on the game over screen, {0} is the game's name</extracomment>
-        <translation>{0} · Top 3</translation>
-    </message>
-    <message>
-        <source>New #{0} on the board</source>
-        <extracomment>After Hours - Game over line when the run placed, {0} is its place from 1 to 3</extracomment>
-        <translation>New #{0} on the board</translation>
-    </message>
-    <message>
-        <source>Scores from {0}</source>
-        <extracomment>After Hours - Where the boards came from, {0} is the server's name</extracomment>
-        <translation>Scores from {0}</translation>
-    </message>
-    <message>
-        <source>Scores on this device</source>
-        <extracomment>After Hours - Where the boards came from when the server plugin isn't there</extracomment>
-        <translation>Scores on this device</translation>
-    </message>
-    <message>
-        <source>PERFECT</source>
-        <extracomment>After Hours - Case Stack flash when a case lands dead on</extracomment>
-        <translation>PERFECT</translation>
-    </message>
-    <message>
-        <source>BOX SET</source>
-        <extracomment>After Hours - Case Stack flash on every third perfect drop in a row</extracomment>
-        <translation>BOX SET</translation>
-    </message>
-    <message>
-        <source>Director's Cut</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Director's Cut</translation>
-    </message>
-    <message>
-        <source>Special Edition</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Special Edition</translation>
-    </message>
-    <message>
-        <source>Widescreen</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Widescreen</translation>
-    </message>
-    <message>
-        <source>Bonus Features</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Bonus Features</translation>
-    </message>
-    <message>
-        <source>Theatrical Cut</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Theatrical Cut</translation>
-    </message>
-    <message>
-        <source>Remastered</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Remastered</translation>
-    </message>
-    <message>
-        <source>Collector's Edition</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Collector's Edition</translation>
-    </message>
-    <message>
-        <source>Extended Edition</source>
-        <extracomment>After Hours - A Case Stack case title used when the media bar has no titles</extracomment>
-        <translation>Extended Edition</translation>
-    </message>
-    <message>
-        <source>How to play</source>
-        <extracomment>After Hours - The card with a game's controls and everything in it, opened with Down in the arcade or from the pause menu</extracomment>
-        <translation>How to play</translation>
-    </message>
-    <message>
-        <source>Enemies</source>
-        <extracomment>After Hours - How to play heading over the things that come after you</extracomment>
-        <translation>Enemies</translation>
-    </message>
-    <message>
-        <source>Obstacles</source>
-        <extracomment>After Hours - How to play heading over the things in your way</extracomment>
-        <translation>Obstacles</translation>
-    </message>
-    <message>
-        <source>Powerups</source>
-        <extracomment>After Hours - How to play heading over the things that help you</extracomment>
-        <translation>Powerups</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <extracomment>After Hours - How to play button that starts the run</extracomment>
-        <translation>Start</translation>
-    </message>
-    <message>
-        <source>Back to the game</source>
-        <extracomment>After Hours - How to play button that returns to the paused run</extracomment>
-        <translation>Back to the game</translation>
-    </message>
-    <message>
-        <source>Down</source>
-        <extracomment>After Hours - The Down key on the remote, shown as a key in the arcade's hints</extracomment>
-        <translation>Down</translation>
-    </message>
-    <message>
-        <source>OK jumps, again mid-air to flip sides. Down slides. On the ceiling Up and Down swap.</source>
-        <extracomment>After Hours - How Buffer Run plays on a remote, on its How to play card. Keep under about 90 characters, it shows in two lines at most</extracomment>
-        <translation>OK jumps, again mid-air to flip sides. Down slides. On the ceiling Up and Down swap.</translation>
-    </message>
-    <message>
-        <source>Up and Down change lanes. OK jumps.</source>
-        <extracomment>After Hours - How Fast Forward plays on a remote, on its How to play card. Keep under about 90 characters, it shows in two lines at most</extracomment>
-        <translation>Up and Down change lanes. OK jumps.</translation>
-    </message>
-    <message>
-        <source>Arrows turn. The cable never stops.</source>
-        <extracomment>After Hours - How Cable Crawl plays on a remote, on its How to play card. Keep under about 90 characters, it shows in two lines at most</extracomment>
-        <translation>Arrows turn. The cable never stops.</translation>
-    </message>
-    <message>
-        <source>OK drops the case.</source>
-        <extracomment>After Hours - How Case Stack plays on a remote, on its How to play card. Keep under about 90 characters, it shows in two lines at most</extracomment>
-        <translation>OK drops the case.</translation>
-    </message>
-    <message>
-        <source>Left and Right slide the scrubber.</source>
-        <extracomment>After Hours - How Pixel Purge plays on a remote, on its How to play card. Keep under about 90 characters, it shows in two lines at most</extracomment>
-        <translation>Left and Right slide the scrubber.</translation>
-    </message>
-    <message>
-        <source>Lag Bat</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Lag Bat</translation>
-    </message>
-    <message>
-        <source>Swoops in at head height. Slide under it.</source>
-        <extracomment>After Hours - What Lag Bat does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Swoops in at head height. Slide under it.</translation>
-    </message>
-    <message>
-        <source>Static Gremlin</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Static Gremlin</translation>
-    </message>
-    <message>
-        <source>Hops along the floor or the ceiling toward you. Jump it.</source>
-        <extracomment>After Hours - What Static Gremlin does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Hops along the floor or the ceiling toward you. Jump it.</translation>
-    </message>
-    <message>
-        <source>Cable Coil</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Cable Coil</translation>
-    </message>
-    <message>
-        <source>Low on the floor or the ceiling. Jump it.</source>
-        <extracomment>After Hours - What Cable Coil does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Low on the floor or the ceiling. Jump it.</translation>
-    </message>
-    <message>
-        <source>Buffering Banner</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Buffering Banner</translation>
-    </message>
-    <message>
-        <source>Slide under the sign. Its pole is a wall on the other side.</source>
-        <extracomment>After Hours - What Buffering Banner does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Slide under the sign. Its pole is a wall on the other side.</translation>
-    </message>
-    <message>
-        <source>A shield that takes one hit.</source>
-        <extracomment>After Hours - What Direct Play does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>A shield that takes one hit.</translation>
-    </message>
-    <message>
-        <source>Three seconds of dash that smashes anything.</source>
-        <extracomment>After Hours - What Skip Intro does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Three seconds of dash that smashes anything.</translation>
-    </message>
-    <message>
-        <source>Popcorn</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Popcorn</translation>
-    </message>
-    <message>
-        <source>25 points a piece.</source>
-        <extracomment>After Hours - What Popcorn does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>25 points a piece.</translation>
-    </message>
-    <message>
-        <source>Loose Reel</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Loose Reel</translation>
-    </message>
-    <message>
-        <source>Rolls down your lane faster than you run. Jump it.</source>
-        <extracomment>After Hours - What Loose Reel does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Rolls down your lane faster than you run. Jump it.</translation>
-    </message>
-    <message>
-        <source>Usher</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Usher</translation>
-    </message>
-    <message>
-        <source>Walks toward you and changes lanes once.</source>
-        <extracomment>After Hours - What Usher does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Walks toward you and changes lanes once.</translation>
-    </message>
-    <message>
-        <source>Velvet Rope</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Velvet Rope</translation>
-    </message>
-    <message>
-        <source>Low. Jump it or change lanes.</source>
-        <extracomment>After Hours - What Velvet Rope does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Low. Jump it or change lanes.</translation>
-    </message>
-    <message>
-        <source>Popcorn Cart</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Popcorn Cart</translation>
-    </message>
-    <message>
-        <source>Too tall to jump. Change lanes.</source>
-        <extracomment>After Hours - What Popcorn Cart does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Too tall to jump. Change lanes.</translation>
-    </message>
-    <message>
-        <source>Front Row Pass</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Front Row Pass</translation>
-    </message>
-    <message>
-        <source>Magnet</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Magnet</translation>
-    </message>
-    <message>
-        <source>Pulls in tickets from every lane for eight seconds.</source>
-        <extracomment>After Hours - What Magnet does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Pulls in tickets from every lane for eight seconds.</translation>
-    </message>
-    <message>
-        <source>Ticket</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Ticket</translation>
-    </message>
-    <message>
-        <source>Interference Bug</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Interference Bug</translation>
-    </message>
-    <message>
-        <source>Wanders at random.</source>
-        <extracomment>After Hours - What Interference Bug does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Wanders at random.</translation>
-    </message>
-    <message>
-        <source>Tangle</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Tangle</translation>
-    </message>
-    <message>
-        <source>Slowly chases your plug.</source>
-        <extracomment>After Hours - What Tangle does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Slowly chases your plug.</translation>
-    </message>
-    <message>
-        <source>Static</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Static</translation>
-    </message>
-    <message>
-        <source>A dead cell. One appears every third signal.</source>
-        <extracomment>After Hours - What Static does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>A dead cell. One appears every third signal.</translation>
-    </message>
-    <message>
-        <source>Power Brick</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Power Brick</translation>
-    </message>
-    <message>
-        <source>A 2 by 2 block every fifth signal.</source>
-        <extracomment>After Hours - What Power Brick does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>A 2 by 2 block every fifth signal.</translation>
-    </message>
-    <message>
-        <source>Ghost</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Ghost</translation>
-    </message>
-    <message>
-        <source>Five seconds of passing through everything but the edge.</source>
-        <extracomment>After Hours - What Ghost does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Five seconds of passing through everything but the edge.</translation>
-    </message>
-    <message>
-        <source>Snip</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Snip</translation>
-    </message>
-    <message>
-        <source>Cuts the cable in half for bonus points.</source>
-        <extracomment>After Hours - What Snip does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Cuts the cable in half for bonus points.</translation>
-    </message>
-    <message>
-        <source>Signal</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Signal</translation>
-    </message>
-    <message>
-        <source>Points, and two more segments.</source>
-        <extracomment>After Hours - What Signal does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Points, and two more segments.</translation>
-    </message>
-    <message>
-        <source>Shelf Cat</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Shelf Cat</translation>
-    </message>
-    <message>
-        <source>Bats a case as it comes in, so that one slides faster.</source>
-        <extracomment>After Hours - What Shelf Cat does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Bats a case as it comes in, so that one slides faster.</translation>
-    </message>
-    <message>
-        <source>Blu-ray Case</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Blu-ray Case</translation>
-    </message>
-    <message>
-        <source>A title from your library. The overhang gets trimmed off.</source>
-        <extracomment>After Hours - What Blu-ray Case does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>A title from your library. The overhang gets trimmed off.</translation>
-    </message>
-    <message>
-        <source>Steelbook</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Steelbook</translation>
-    </message>
-    <message>
-        <source>Every tenth case. Slides much faster.</source>
-        <extracomment>After Hours - What Steelbook does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Every tenth case. Slides much faster.</translation>
-    </message>
-    <message>
-        <source>Perfect Drop</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Perfect Drop</translation>
-    </message>
-    <message>
-        <source>Land it dead on and the stack grows a little wider.</source>
-        <extracomment>After Hours - What Perfect Drop does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Land it dead on and the stack grows a little wider.</translation>
-    </message>
-    <message>
-        <source>Box Set</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Box Set</translation>
-    </message>
-    <message>
-        <source>Three perfect drops in a row grow it a lot wider.</source>
-        <extracomment>After Hours - What Box Set does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Three perfect drops in a row grow it a lot wider.</translation>
-    </message>
-    <message>
-        <source>Dead Pixel</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Dead Pixel</translation>
-    </message>
-    <message>
-        <source>Falls from cleared blocks. Catching it shrinks the scrubber.</source>
-        <extracomment>After Hours - What Dead Pixel does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Falls from cleared blocks. Catching it shrinks the scrubber.</translation>
-    </message>
-    <message>
-        <source>Macroblock</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Macroblock</translation>
-    </message>
-    <message>
-        <source>One hit clears it.</source>
-        <extracomment>After Hours - What Macroblock does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>One hit clears it.</translation>
-    </message>
-    <message>
-        <source>Keyframe</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Keyframe</translation>
-    </message>
-    <message>
-        <source>Takes three hits and drops a powerup.</source>
-        <extracomment>After Hours - What Keyframe does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>Takes three hits and drops a powerup.</translation>
-    </message>
-    <message>
-        <source>A scrubber twice as wide for eight seconds.</source>
-        <extracomment>After Hours - What HDR does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>A scrubber twice as wide for eight seconds.</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <extracomment>After Hours - The name of a thing in one of the games, on its How to play card. Keep it short, it shows on one line in a small column</extracomment>
-        <translation>Buffer</translation>
-    </message>
-    <message>
-        <source>A net under the scrubber that saves one miss.</source>
-        <extracomment>After Hours - What Buffer does, on its game's How to play card. Keep under about 60 characters, it shows in a small column</extracomment>
-        <translation>A net under the scrubber that saves one miss.</translation>
-    </message>
-    <message>
-        <source>Episode Director</source>
-        <extracomment>Crew member credited as an episode director</extracomment>
-        <translation>Episode Director</translation>
-    </message>
-    <message>
-        <source>{0} (Episode Director)</source>
-        <extracomment>Episode director with specific title or role</extracomment>
-        <translation>{0} (Episode Director)</translation>
-    </message>
-    <message>
-        <source>Episode Writer</source>
-        <extracomment>Crew member credited as an episode writer</extracomment>
-        <translation>Episode Writer</translation>
-    </message>
-    <message>
-        <source>{0} (Episode Writer)</source>
-        <extracomment>Episode writer with specific title or role</extracomment>
-        <translation>{0} (Episode Writer)</translation>
-    </message>
-    <message>
-        <source>Guest Star</source>
-        <extracomment>Actor credited as a guest star</extracomment>
-        <translation>Guest Star</translation>
-    </message>
-    <message>
-        <source>{0} (Guest Star)</source>
-        <extracomment>Actor character role with guest star tag</extracomment>
-        <translation>{0} (Guest Star)</translation>
-    </message>
-    <message>
-        <source>EPISODE DIRECTOR</source>
-        <extracomment>Heading for single episode director on Classic details screen</extracomment>
-        <translation>EPISODE DIRECTOR</translation>
-    </message>
-    <message>
-        <source>EPISODE DIRECTORS</source>
-        <extracomment>Heading for multiple episode directors on Classic details screen</extracomment>
-        <translation>EPISODE DIRECTORS</translation>
-    </message>
-    <message>
-        <source>EPISODE WRITER</source>
-        <extracomment>Heading for single episode writer on Classic details screen</extracomment>
-        <translation>EPISODE WRITER</translation>
-    </message>
-    <message>
-        <source>EPISODE WRITERS</source>
-        <extracomment>Heading for multiple episode writers on Classic details screen</extracomment>
-        <translation>EPISODE WRITERS</translation>
-    </message>
-    <message>
-        <source>In sync</source>
-        <extracomment>Watch Parties - a person&apos;s status in a watch party, next to a colored dot</extracomment>
-        <translation>In sync</translation>
-    </message>
-    <message>
-        <source>Catching up</source>
-        <extracomment>Watch Parties - a person&apos;s status in a watch party, next to a colored dot</extracomment>
-        <translation>Catching up</translation>
-    </message>
-    <message>
-        <source>Buffering</source>
-        <extracomment>Watch Parties - a person&apos;s status in a watch party, next to a colored dot</extracomment>
-        <translation>Buffering</translation>
-    </message>
-    <message>
-        <source>Not watching</source>
-        <extracomment>Watch Parties - a person&apos;s status in a watch party, next to a colored dot</extracomment>
-        <translation>Not watching</translation>
-    </message>
-    <message>
-        <source>Ready</source>
-        <extracomment>Watch Parties - a person&apos;s status in a watch party lobby</extracomment>
-        <translation>Ready</translation>
-    </message>
-    <message>
-        <source>Joining</source>
-        <extracomment>Watch Parties - a person&apos;s status in a watch party lobby</extracomment>
-        <translation>Joining</translation>
-    </message>
-    <message>
-        <source>In the lobby</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>In the lobby</translation>
-    </message>
-    <message>
-        <source>Starting</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Starting</translation>
-    </message>
-    <message>
-        <source>Playing</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Playing</translation>
-    </message>
-    <message>
-        <source>{0} watching</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} watching</translation>
-    </message>
-    <message>
-        <source>Everyone controls</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Everyone controls</translation>
-    </message>
-    <message>
-        <source>That PIN didn&apos;t work. Try again.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>That PIN didn&apos;t work. Try again.</translation>
-    </message>
-    <message>
-        <source>Too many tries. Wait a minute.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Too many tries. Wait a minute.</translation>
-    </message>
-    <message>
-        <source>This party is full.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>This party is full.</translation>
-    </message>
-    <message>
-        <source>No room has that code.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>No room has that code.</translation>
-    </message>
-    <message>
-        <source>You don&apos;t have access to what they&apos;re watching.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>You don&apos;t have access to what they&apos;re watching.</translation>
-    </message>
-    <message>
-        <source>Watch Parties are turned off on this server.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Watch Parties are turned off on this server.</translation>
-    </message>
-    <message>
-        <source>Only the host can do that.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Only the host can do that.</translation>
-    </message>
-    <message>
-        <source>That isn&apos;t allowed in this party.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>That isn&apos;t allowed in this party.</translation>
-    </message>
-    <message>
-        <source>Slow down a little.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Slow down a little.</translation>
-    </message>
-    <message>
-        <source>{0} paused</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} paused</translation>
-    </message>
-    <message>
-        <source>{0} resumed</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} resumed</translation>
-    </message>
-    <message>
-        <source>{0} skipped to {1}</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} skipped to {1}</translation>
-    </message>
-    <message>
-        <source>{0} joined</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} joined</translation>
-    </message>
-    <message>
-        <source>{0} left</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} left</translation>
-    </message>
-    <message>
-        <source>You&apos;re the host now</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>You&apos;re the host now</translation>
-    </message>
-    <message>
-        <source>{0} is the host now</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} is the host now</translation>
-    </message>
-    <message>
-        <source>{0} switched to {1}</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} switched to {1}</translation>
-    </message>
-    <message>
-        <source>Everyone can control playback now</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Everyone can control playback now</translation>
-    </message>
-    <message>
-        <source>Only the host can control playback now</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Only the host can control playback now</translation>
-    </message>
-    <message>
-        <source>{0} in the lobby</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} in the lobby</translation>
-    </message>
-    <message>
-        <source>{0} started a watch party</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} started a watch party</translation>
-    </message>
-    <message>
-        <source>It&apos;s first in Watch Parties on Home</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>It&apos;s first in Watch Parties on Home</translation>
-    </message>
-    <message>
-        <source>The watch party has ended.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>The watch party has ended.</translation>
-    </message>
-    <message>
-        <source>{0} ended the party</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} ended the party</translation>
-    </message>
-    <message>
-        <source>You were removed from the watch party.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>You were removed from the watch party.</translation>
-    </message>
-    <message>
-        <source>Reconnecting to the party...</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Reconnecting to the party...</translation>
-    </message>
-    <message>
-        <source>Back in the party</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Back in the party</translation>
-    </message>
-    <message>
-        <source>Room PIN</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Room PIN</translation>
-    </message>
-    <message>
-        <source>This party has a PIN</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>This party has a PIN</translation>
-    </message>
-    <message>
-        <source>Watch Parties need Moonbase on this server</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Watch Parties need Moonbase on this server</translation>
-    </message>
-    <message>
-        <source>Watch Parties</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Watch Parties</translation>
-    </message>
-    <message>
-        <source>{0} on this server</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} on this server</translation>
-    </message>
-    <message>
-        <source>Start a watch party</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Start a watch party</translation>
-    </message>
-    <message>
-        <source>Join with a code</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Join with a code</translation>
-    </message>
-    <message>
-        <source>Parties you can watch show up here. Got a code from someone? Pick Join with a code.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Parties you can watch show up here. Got a code from someone? Pick Join with a code.</translation>
-    </message>
-    <message>
-        <source>Ask whoever runs the server to install the Moonbase plugin.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Ask whoever runs the server to install the Moonbase plugin.</translation>
-    </message>
-    <message>
-        <source>Picking something to watch</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Picking something to watch</translation>
-    </message>
-    <message>
-        <source>Your watch party</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Your watch party</translation>
-    </message>
-    <message>
-        <source>Send the invite</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Send the invite</translation>
-    </message>
-    <message>
-        <source>Share this code with friends on this server. They pick Join with a code on their Watch Parties screen.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Share this code with friends on this server. They pick Join with a code on their Watch Parties screen.</translation>
-    </message>
-    <message>
-        <source>Or send this link: {0}</source>
-        <extracomment>Watch Parties - under the room code in the lobby. {0} is the invite link, keep it</extracomment>
-        <translation>Or send this link: {0}</translation>
-    </message>
-    <message>
-        <source>They&apos;ll need the room PIN too.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>They&apos;ll need the room PIN too.</translation>
-    </message>
-    <message>
-        <source>In the lobby · {0}</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>In the lobby · {0}</translation>
-    </message>
-    <message>
-        <source>Play waits for everyone&apos;s player, 10 seconds at most, then counts down 3, 2, 1.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Play waits for everyone&apos;s player, 10 seconds at most, then counts down 3, 2, 1.</translation>
-    </message>
-    <message>
-        <source>Search movies</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Search movies</translation>
-    </message>
-    <message>
-        <source>Nothing found yet.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Nothing found yet.</translation>
-    </message>
-    <message>
-        <source>Press OK to pick it for everyone</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Press OK to pick it for everyone</translation>
-    </message>
-    <message>
-        <source>Press OK to add it to the vote</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Press OK to add it to the vote</translation>
-    </message>
-    <message>
-        <source>Back to the lobby</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Back to the lobby</translation>
-    </message>
-    <message>
-        <source>Watch with the party</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Watch with the party</translation>
-    </message>
-    <message>
-        <source>Up next</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Up next</translation>
-    </message>
-    <message>
-        <source>Start for everyone</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Start for everyone</translation>
-    </message>
-    <message>
-        <source>Waiting for the host to start.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Waiting for the host to start.</translation>
-    </message>
-    <message>
-        <source>Waiting for the host to pick something.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Waiting for the host to pick something.</translation>
-    </message>
-    <message>
-        <source>Vote on what to watch</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Vote on what to watch</translation>
-    </message>
-    <message>
-        <source>Let everyone vote on movies</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Let everyone vote on movies</translation>
-    </message>
-    <message>
-        <source>No movies to vote on yet.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>No movies to vote on yet.</translation>
-    </message>
-    <message>
-        <source>Press OK to vote</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Press OK to vote</translation>
-    </message>
-    <message>
-        <source>Press OK to play it for everyone</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Press OK to play it for everyone</translation>
-    </message>
-    <message>
-        <source>{0} votes</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>{0} votes</translation>
-    </message>
-    <message>
-        <source>1 vote</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>1 vote</translation>
-    </message>
-    <message>
-        <source>You voted</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>You voted</translation>
-    </message>
-    <message>
-        <source>Search for a movie or an episode to pick what everyone watches.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Search for a movie or an episode to pick what everyone watches.</translation>
-    </message>
-    <message>
-        <source>Leave</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Leave</translation>
-    </message>
-    <message>
-        <source>End for everyone</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>End for everyone</translation>
-    </message>
-    <message>
-        <source>Room code or invite link</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Room code or invite link</translation>
-    </message>
-    <message>
-        <source>Starting together</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Starting together</translation>
-    </message>
-    <message>
-        <source>Waiting for {0}&apos;s player</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>Waiting for {0}&apos;s player</translation>
-    </message>
-    <message>
-        <source>Waiting for everyone&apos;s player</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Waiting for everyone&apos;s player</translation>
-    </message>
-    <message>
-        <source>Starting anyway in {0} s</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>Starting anyway in {0} s</translation>
-    </message>
-    <message>
-        <source>Haha</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Haha</translation>
-    </message>
-    <message>
-        <source>No way</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>No way</translation>
-    </message>
-    <message>
-        <source>Pause please</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Pause please</translation>
-    </message>
-    <message>
-        <source>Brb</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Brb</translation>
-    </message>
-    <message>
-        <source>Again!</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Again!</translation>
-    </message>
-    <message>
-        <source>Send to the party</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Send to the party</translation>
-    </message>
-    <message>
-        <source>Room code {0}</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>Room code {0}</translation>
-    </message>
-    <message>
-        <source>People · {0}</source>
-        <extracomment>Watch Parties - {0} and {1} are filled in by the app, keep them</extracomment>
-        <translation>People · {0}</translation>
-    </message>
-    <message>
-        <source>Room settings</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Room settings</translation>
-    </message>
-    <message>
-        <source>Everyone can control playback</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Everyone can control playback</translation>
-    </message>
-    <message>
-        <source>On</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>On</translation>
-    </message>
-    <message>
-        <source>4 to 8 digits</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>4 to 8 digits</translation>
-    </message>
-    <message>
-        <source>A room PIN is 4 to 8 digits.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>A room PIN is 4 to 8 digits.</translation>
-    </message>
-    <message>
-        <source>Host</source>
-        <extracomment>Watch Parties - a tag next to the person who runs the watch party</extracomment>
-        <translation>Host</translation>
-    </message>
-    <message>
-        <source>Make host</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Make host</translation>
-    </message>
-    <message>
-        <source>Chat and reactions are in the controls</source>
-        <extracomment>Watch Parties - shown over the video when a watch party starts</extracomment>
-        <translation>Chat and reactions are in the controls</translation>
-    </message>
-    <message>
-        <source>Chat and reactions</source>
-        <extracomment>Watch Parties - a button in the player controls during a watch party</extracomment>
-        <translation>Chat and reactions</translation>
-    </message>
-    <message>
-        <source>Only the host can control playback.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Only the host can control playback.</translation>
-    </message>
-    <message>
-        <source>Watch party</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Watch party</translation>
-    </message>
-    <message>
-        <source>Watch with friends on this server, everyone in step</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Watch with friends on this server, everyone in step</translation>
-    </message>
-    <message>
-        <source>Anyone on this server can invite you, and you can start your own. Chat, reactions and a vote on what to watch come with it.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Anyone on this server can invite you, and you can start your own. Chat, reactions and a vote on what to watch come with it.</translation>
-    </message>
-    <message>
-        <source>Nothing runs in the background until you&apos;re in a party.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Nothing runs in the background until you&apos;re in a party.</translation>
-    </message>
-    <message>
-        <source>Open Watch Parties</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Open Watch Parties</translation>
-    </message>
-    <message>
-        <source>Start one or join one in progress</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Start one or join one in progress</translation>
-    </message>
-    <message>
-        <source>Show chat over the video</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Show chat over the video</translation>
-    </message>
-    <message>
-        <source>New messages show for a few seconds</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>New messages show for a few seconds</translation>
-    </message>
-    <message>
-        <source>Party alerts</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Party alerts</translation>
-    </message>
-    <message>
-        <source>Show a banner when someone on this server starts one</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one</extracomment>
-        <translation>Show a banner when someone on this server starts one</translation>
-    </message>
-    <message>
-        <source>Stalled</source>
-        <extracomment>Seerr download bar - a download that isn't making progress, such as a torrent with no seeders</extracomment>
-        <translation>Stalled</translation>
-    </message>
-    <message>
-        <source>Download failed</source>
-        <extracomment>Seerr download bar - the download client reports the download as failed</extracomment>
-        <translation>Download failed</translation>
-    </message>
-    <message>
-        <source>Downloaded, waiting for import</source>
-        <extracomment>Seerr download bar - the download finished and Radarr or Sonarr hasn't imported it yet</extracomment>
-        <translation>Downloaded, waiting for import</translation>
-    </message>
-    <message>
-        <source>Downloaded</source>
-        <extracomment>Seerr download bar - short form of Downloaded, waiting for import, where the bar is narrow</extracomment>
-        <translation>Downloaded</translation>
-    </message>
-    <message>
-        <source>Queued</source>
-        <extracomment>Seerr download bar - the download is waiting its turn in the download client</extracomment>
-        <translation>Queued</translation>
-    </message>
-    <message>
-        <source>Downloading</source>
-        <extracomment>Seerr download bar - a download with no known size yet</extracomment>
-        <translation>Downloading</translation>
-    </message>
-    <message>
-        <source>%1m left</source>
-        <extracomment>Seerr download bar - time left on a download under an hour, %1 is minutes, keep it</extracomment>
-        <translation>%1m left</translation>
-    </message>
-    <message>
-        <source>%1h left</source>
-        <extracomment>Seerr download bar - time left on a download in whole hours, %1 is hours, keep it</extracomment>
-        <translation>%1h left</translation>
-    </message>
-    <message>
-        <source>%1h %2m left</source>
-        <extracomment>Seerr download bar - time left on a download, %1 is hours and %2 minutes, keep them</extracomment>
-        <translation>%1h %2m left</translation>
-    </message>
-    <message>
-        <source>Import blocked</source>
-        <extracomment>Seerr download bar - the download finished but Radarr or Sonarr refuses to import it, for example because the release contains an executable</extracomment>
-        <translation>Import blocked</translation>
-    </message>
-    <message>
-        <source>Not found yet</source>
-        <extracomment>Seerr - shown where the download bar would be, when a request was approved and Radarr has the released movie but hasn't found a release to download yet</extracomment>
-        <translation>Not found yet</translation>
-    </message>
-    <message>
-        <source>Get a different release</source>
-        <extracomment>Seerr - admin-only button on a title's detail screen, and the title and confirm button of its dialog. It removes a stuck download, blocks that release, and has Radarr or Sonarr search for another one</extracomment>
-        <translation>Get a different release</translation>
-    </message>
-    <message>
-        <source>^0 will remove ^1 from the download client, block it so it isn't grabbed again, and search for another release.</source>
-        <extracomment>Seerr - body of the Get a different release dialog. ^0 is Radarr or Sonarr and ^1 is the release name, keep them</extracomment>
-        <translation>^0 will remove ^1 from the download client, block it so it isn't grabbed again, and search for another release.</translation>
-    </message>
-    <message>
-        <source>Removed. ^0 is searching for another release.</source>
-        <extracomment>Seerr - confirmation after Get a different release removed the stuck download. ^0 is Radarr or Sonarr, keep it</extracomment>
-        <translation>Removed. ^0 is searching for another release.</translation>
-    </message>
-    <message>
-        <source>That download had already left the ^0 queue.</source>
-        <extracomment>Seerr - shown after Get a different release when the stuck download was already gone, so nothing was removed. ^0 is Radarr or Sonarr, keep it</extracomment>
-        <translation>That download had already left the ^0 queue.</translation>
-    </message>
-    <message>
-        <source>Couldn't remove the download</source>
-        <extracomment>Seerr - error when Get a different release could not remove the stuck download</extracomment>
-        <translation>Couldn't remove the download</translation>
-    </message>
-    <message>
-        <source>Party code</source>
-        <extracomment>Watch Parties - the hint in the keyboard for joining a party on Silo</extracomment>
-        <translation>Party code</translation>
-    </message>
-    <message>
-        <source>Start a party, or join one with the code someone sent you.</source>
-        <extracomment>Watch Parties - the help line on the Watch Parties screen on Silo</extracomment>
-        <translation>Start a party, or join one with the code someone sent you.</translation>
-    </message>
-    <message>
-        <source>Watch Parties aren&apos;t available on this server.</source>
-        <extracomment>Watch Parties - the heading when Silo has no Watch Parties</extracomment>
-        <translation>Watch Parties aren&apos;t available on this server.</translation>
-    </message>
-    <message>
-        <source>Watch Parties need Roku OS 16 or later.</source>
-        <extracomment>Watch Parties - the heading when this Roku is too old for Watch Parties</extracomment>
-        <translation>Watch Parties need Roku OS 16 or later.</translation>
-    </message>
-    <message>
-        <source>Update this Roku in Settings &gt; System &gt; System update.</source>
-        <extracomment>Watch Parties - the line under the heading when this Roku is too old for Watch Parties</extracomment>
-        <translation>Update this Roku in Settings &gt; System &gt; System update.</translation>
-    </message>
-    <message>
-        <source>Play waits for everyone&apos;s player, then everyone starts together.</source>
-        <extracomment>Watch Parties - the note under the people in the lobby on Silo, which has no countdown</extracomment>
-        <translation>Play waits for everyone&apos;s player, then everyone starts together.</translation>
-    </message>
-    <message>
-        <source>Start from the beginning</source>
-        <extracomment>Watch Parties - the host&apos;s button to start the party from the first second</extracomment>
-        <translation>Start from the beginning</translation>
-    </message>
-    <message>
-        <source>Resume at {0}</source>
-        <extracomment>Watch Parties - the host&apos;s button to start from where the party last stopped. {0} is the time, keep it</extracomment>
-        <translation>Resume at {0}</translation>
-    </message>
-    <message>
-        <source>Picks up where {0} stopped, the earliest anyone got to.</source>
-        <extracomment>Watch Parties - under the resume button, naming who stopped furthest. {0} is their name, keep it</extracomment>
-        <translation>Picks up where {0} stopped, the earliest anyone got to.</translation>
-    </message>
-    <message>
-        <source>Picks up where you stopped.</source>
-        <extracomment>Watch Parties - under the resume button when the viewer is the one who stopped furthest</extracomment>
-        <translation>Picks up where you stopped.</translation>
-    </message>
-    <message>
-        <source>Picks up where the earliest viewer stopped.</source>
-        <extracomment>Watch Parties - under the resume button when the one who stopped furthest has left the party</extracomment>
-        <translation>Picks up where the earliest viewer stopped.</translation>
-    </message>
-    <message>
-        <source>1 hasn&apos;t started it yet.</source>
-        <extracomment>Watch Parties - added to the resume note when one person hasn&apos;t started the item</extracomment>
-        <translation>1 hasn&apos;t started it yet.</translation>
-    </message>
-    <message>
-        <source>{0} haven&apos;t started it yet.</source>
-        <extracomment>Watch Parties - added to the resume note when several people haven&apos;t started the item. {0} is the number, keep it</extracomment>
-        <translation>{0} haven&apos;t started it yet.</translation>
-    </message>
-    <message>
-        <source>That party code didn&apos;t match a party.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one, when Silo doesn&apos;t know the code</extracomment>
-        <translation>That party code didn&apos;t match a party.</translation>
-    </message>
-    <message>
-        <source>That watch party has ended.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video during one, when Silo&apos;s party has closed</extracomment>
-        <translation>That watch party has ended.</translation>
-    </message>
-    <message>
-        <source>That watch party is full.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens when Silo&apos;s party has no room for another person</extracomment>
-        <translation>That watch party is full.</translation>
-    </message>
-    <message>
-        <source>This server&apos;s watch parties can&apos;t do that.</source>
-        <extracomment>Watch Parties - shown on the Watch Parties screens or over the video when Silo can&apos;t do what was asked</extracomment>
-        <translation>This server&apos;s watch parties can&apos;t do that.</translation>
-    </message>
-    <message>
-        <source>You joined this party on another device.</source>
-        <extracomment>Watch Parties - shown over the video when this party was joined from another device</extracomment>
-        <translation>You joined this party on another device.</translation>
-    </message>
-    <message>
-        <source>Guests can play and pause</source>
-        <translation>Guests can play and pause</translation>
-    </message>
-    <message>
-        <source>Watch with group</source>
-        <translation>Watch with group</translation>
-    </message>
-    <message>
-        <source>Picked for the Watch Party</source>
-        <translation>Picked for the Watch Party</translation>
-    </message>
-    <message>
-        <source>Added to the Watch Party vote</source>
-        <translation>Added to the Watch Party vote</translation>
-    </message>
-    <message>
-        <source>No episodes loaded</source>
-        <translation>No episodes loaded</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>Select</translation>
-    </message>
-    <message>
-        <source>Vote for what you want to watch. The host plays one.</source>
-        <translation>Vote for what you want to watch. The host plays one.</translation>
-    </message>
-    <message>
-        <source>Add movies for everyone to vote on, then play the one you want. TV episodes are still your pick.</source>
-        <translation>Add movies for everyone to vote on, then play the one you want. TV episodes are still your pick.</translation>
-    </message>
-    <message>
-        <source>Watch Parties Button</source>
-        <translation>Watch Parties Button</translation>
-    </message>
-    <message>
-        <source>Show the Watch Parties button on the navigation bar</source>
-        <translation>Show the Watch Parties button on the navigation bar</translation>
-    </message>
-    <message>
-        <source>Home Row Info Overlay</source>
-        <translation>Home Row Info Overlay</translation>
-    </message>
-    <message>
-        <source>Show title and metadata when browsing home rows</source>
-        <translation>Show title and metadata when browsing home rows</translation>
-    </message>
-    <message>
-        <source>Subtitles for everyone</source>
-        <extracomment>Watch Parties - the Silo host's subtitle choice for the whole party, in the lobby</extracomment>
-        <translation>Subtitles for everyone</translation>
-    </message>
-    <message>
-        <source>Each person&apos;s choice</source>
-        <extracomment>Watch Parties - the subtitle option that leaves subtitles to each member</extracomment>
-        <translation>Each person&apos;s choice</translation>
-    </message>
-    <message>
-        <source>Moonbase couldn&apos;t keep the subtitles for everyone.</source>
-        <extracomment>Watch Parties - shown when saving the Silo host's subtitle choice for the party failed</extracomment>
-        <translation>Moonbase couldn&apos;t keep the subtitles for everyone.</translation>
-    </message>
-    <message>
-        <source>Hide Watched</source>
-        <translation>Hide Watched</translation>
-    </message>
-    <message>
-        <source>Hide watched content from Recently Added and Recently Released home rows.</source>
-        <translation>Hide watched content from Recently Added and Recently Released home rows.</translation>
-    </message>
-    <message>
-        <source>Syncing playback to {0}</source>
-        <extracomment>Shown after Watch with group in a SyncPlay group. {0} is the group's name</extracomment>
-        <translation>Syncing playback to {0}</translation>
-    </message>
-    <message>
-        <source>SyncPlay Group</source>
-        <extracomment>Stands in for a SyncPlay group that has no name</extracomment>
-        <translation>SyncPlay Group</translation>
     </message>
 </context>
 </TS>

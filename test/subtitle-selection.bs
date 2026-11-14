@@ -78,7 +78,9 @@ sub testSubtitleSelection()
     }
     SetUpAudioOptions(streams)
     assertEqual(testSelectedSubtitleRow(), 3, "The details picker shows the server's track after the prefer settings, for the chosen version")
-    assertEqual(m.trackData.subtitles[1].StreamIndex, 2, "Each row carries the server's index for its stream")
+    assertEqual(m.trackData.subtitles[0].StreamIndex, SubtitleSelection.NOTSET, "Automatic remains distinct from subtitle Off")
+    assertEqual(m.trackData.subtitles[1].StreamIndex, SubtitleSelection.NONE, "Off remains an explicit server selection")
+    assertEqual(m.trackData.subtitles[2].StreamIndex, 2, "Each row carries the server's index for its stream")
 
     m.global.session.user.settings = noPrefs
     m.top.itemContent = { json: { MediaSources: [{ Id: "b" }] } }

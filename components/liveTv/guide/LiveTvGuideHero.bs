@@ -61,7 +61,7 @@ sub render()
     plateUrl = model.programImageUrl ?? ""
     usingArtwork = plateUrl <> ""
     if not usingArtwork then plateUrl = model.channelLogoUrl ?? ""
-    showPlate = plateUrl <> ""
+    showPlate = plateUrl <> "" and not m.top.previewActive
 
     m.plate.visible = showPlate
     if showPlate
@@ -90,6 +90,7 @@ sub render()
 
     textLeft = HERO_PAD
     if showPlate then textLeft = HERO_PLATE_WIDTH + HERO_PAD_WITH_PLATE
+    if m.top.previewActive then textLeft = 372 + HERO_PAD
     width = HERO_WIDTH - textLeft - HERO_PAD
 
     hasChannelPreview = isValidAndNotEmpty(model.channelLogoUrl) or isValid(model.programTitle)

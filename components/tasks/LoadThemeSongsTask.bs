@@ -9,7 +9,7 @@ sub loadThemeSongs()
     if not isValid(m.top.itemId) or m.top.itemId = "" then return
 
     ' Get theme songs for the item
-    response = api.items.GetThemeSongs(m.top.itemId, {})
+    response = api.items.GetThemeSongs(m.top.itemId, { InheritFromParent: true })
 
     if isValid(response) and isValid(response.Items) and response.Items.Count() > 0
         m.top.themeSongs = response

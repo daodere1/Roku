@@ -12,7 +12,8 @@ namespace userDataSync
         if turnOn
             answer = requestResponse(req, "POST", "")
         else
-            answer = requestResponse(req, "DELETE")
+            req.SetRequest("DELETE")
+            answer = requestResponse(req)
         end if
         return answer.status >= 200 and answer.status < 300
     end function

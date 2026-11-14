@@ -21,6 +21,5 @@ sub onContentChanged()
 end sub
 
 sub onFocusChanged()
-    m.focusRing.blendColor = coreFocusColor()
     m.focusRing.visible = m.top.itemHasFocus
 end sub

@@ -150,6 +150,8 @@ end sub
 ' comes through here too, so the open keyboard turns into it
 sub showKeyboard()
     m.style = settingOr(KB_STYLE_SETTING, "docked")
+    ' Channel entry is a number pad regardless of the user's alphabetic keyboard style.
+    if m.top.purpose = "channelNumber" then m.style = "classic"
     if m.style <> "native" and m.style <> "classic" and m.style <> "glass" then m.style = "docked"
     m.field.voiceEnabled = m.style <> "native"
 
@@ -187,6 +189,9 @@ sub showKeyboard()
 end sub
 
 function currentLayout() as object
+    if m.top.purpose = "channelNumber"
+        return [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["BACKSPACE", "0", "DONE"]]
+    end if
     if m.style = "docked" then return keyboardLayouts.Docked(layoutVariant(), m.numericPage, m.shifted)
     if m.numericPage then return keyboardLayouts.Numeric()
 
@@ -576,6 +581,12 @@ function currentKey() as object
 end function
 
 sub insertText(value as string)
+    if m.top.purpose = "channelNumber"
+        for i = 1 to Len(value)
+            digit = Mid(value, i, 1)
+            if digit < "0" or digit > "9" then return
+        end for
+    end if
     current = m.field.text
     at = m.field.cursorPosition
     m.field.text = Left(current, at) + value + Mid(current, at + 1)

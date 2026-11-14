@@ -165,9 +165,8 @@ namespace liveTvGuide
     ' Programs
     ' ---------------------------------------------------------------------------------------------
 
-    ' A date the server doesn't have reads as none, so a timer with no end stays on the schedule
     function ParseTime(value as dynamic) as integer
-        if not isServerDate(value) then return 0
+        if not isString(value) or value = "" then return 0
         parsed = CreateObject("roDateTime")
         parsed.FromISO8601String(value)
         return parsed.AsSeconds()

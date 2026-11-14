@@ -1,5 +1,6 @@
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/SeerrUtils.bs"
+import "pkg:/source/utils/speshSeerrTrailers.brs"
 
 ' A Seerr title dressed up in the shape the detail screens read.
 '
@@ -12,8 +13,7 @@ namespace seerrDetailItem
     const CAST_LIMIT = 20
 
     function Build(details as object, mediaType as string) as object
-        ' Seerr can answer a lookup with an error body, which has no id to build from
-        if not isValid(details) or not isValid(details.id) then return invalid
+        if not isValid(details) then return invalid
 
         isTv = isStringEqual(mediaType, "tv")
         urls = GetTmdbImageBaseUrls()
@@ -43,7 +43,7 @@ namespace seerrDetailItem
             },
             MediaSources: [],
             MediaStreams: [],
-            RemoteTrailers: [],
+            RemoteTrailers: speshSeerrTrailers(details),
             Studios: [],
             Chapters: []
         }

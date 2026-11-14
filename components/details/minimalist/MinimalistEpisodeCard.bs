@@ -1,4 +1,3 @@
-import "pkg:/components/posterLabels/posterLabelsDraw.bs"
 import "pkg:/source/utils/fontApply.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/themeApply.bs"
@@ -19,13 +18,8 @@ sub init()
     m.numberFill = m.top.findNode("numberFill")
     m.numberText = m.top.findNode("numberText")
     m.watchedBadge = m.top.findNode("watchedBadge")
-    m.watchBorder = m.top.findNode("watchBorder")
-    m.watchBg = m.top.findNode("watchBg")
-    m.watchIcon = m.top.findNode("watchIcon")
     m.cardTitle = m.top.findNode("cardTitle")
     m.isCurrent = false
-    m.numberHeight = MINIMALIST_NUMBER_HEIGHT
-    m.badgeInset = MINIMALIST_BADGE_INSET
 
     m.numberFill.height = MINIMALIST_NUMBER_HEIGHT
     m.numberText.height = MINIMALIST_NUMBER_HEIGHT
@@ -44,20 +38,6 @@ sub onCardSizeChanged()
     width = size[0]
     height = size[1]
 
-    ' A larger card counts along in a round badge, the way the other clients draw it
-    scale = m.top.textScale
-    if scale <> 1
-        m.cardTitle.font.size = Int(fontApply.ThemeTextSize(18) * scale)
-        m.titleHeight = Int(m.cardTitle.font.size * 1.25) * MINIMALIST_CARD_TITLE_LINES + 4
-        m.numberHeight = Int(MINIMALIST_NUMBER_HEIGHT * scale * 1.2)
-        m.badgeInset = Int(MINIMALIST_BADGE_INSET * scale)
-        m.numberText.font.size = Int(fontApply.ThemeTextSize(17) * scale)
-        m.numberFill.uri = "pkg:/images/icons/circle.webp"
-        m.numberFill.height = m.numberHeight
-        m.numberText.height = m.numberHeight
-        m.watchedBadge.scale = [scale, scale]
-    end if
-
     m.artMask.maskSize = [width, height]
     m.artBg.width = width
     m.artBg.height = height
@@ -70,11 +50,10 @@ sub onCardSizeChanged()
     m.cardTitle.height = m.titleHeight
     m.cardTitle.translation = [0, height + MINIMALIST_CARD_TITLE_GAP]
 
-    m.watchedBadge.translation = [width - MINIMALIST_WATCHED_SIZE * scale - m.badgeInset, m.badgeInset]
+    m.watchedBadge.translation = [width - MINIMALIST_WATCHED_SIZE - MINIMALIST_BADGE_INSET, MINIMALIST_BADGE_INSET]
 
     m.top.cardHeight = height + MINIMALIST_CARD_TITLE_GAP + m.titleHeight
     layoutNumber()
-    if isValid(m.posterLabels) and m.posterLabels.visible then m.posterLabels.frame = posterLabelSpots()
 end sub
 
 sub onCardDataChanged()
@@ -84,7 +63,6 @@ sub onCardDataChanged()
     m.artImage.uri = isValid(data.imageUrl) ? data.imageUrl : ""
     m.cardTitle.text = isValid(data.title) ? data.title : ""
     m.watchedBadge.visible = data.watched = true
-    if m.watchedBadge.visible then paintWatchedBadge()
 
     ' A card with no number of its own carries the sentinel the screen sends in place of invalid
     hasNumber = isValid(data.number) and data.number >= 0
@@ -94,43 +72,17 @@ sub onCardDataChanged()
 
     m.isCurrent = data.current = true
     showBorder()
-
-    if isValidAndNotEmpty(data.posterLabels) or isValid(m.posterLabels) then m.posterLabels = drawPosterLabels(m.posterLabels, m.artMask, data.posterLabels, posterLabelSpots(), POSTER_LABEL_EPISODE_SCALE)
 end sub
-
-' The badge, its rim and the check take the theme's colors, the way the cards on every other screen do
-sub paintWatchedBadge()
-    onBadgeColor = themeChrome.Token("onBadge", "#FFFFFF")
-    m.watchBorder.blendColor = onBadgeColor
-    m.watchBg.blendColor = themeChrome.Token("badgeWatched", chainLookupReturn(m.global.session, "user.settings.colorPlayedCheckmarkBackground", "#0066CC"))
-    m.watchIcon.blendColor = chainLookupReturn(m.global.session, "user.settings.colorPlayedCheckmarkIcon", onBadgeColor)
-end sub
-
-' Under the watched badge and over the episode number
-function posterLabelSpots() as object
-    size = m.top.cardSize
-    width = 0
-    height = 0
-    if isValid(size) and size.count() > 1
-        width = size[0]
-        height = size[1]
-    end if
-
-    topRight = posterLabelsBelow(m.watchedBadge, MINIMALIST_WATCHED_SIZE * m.top.textScale, POSTER_LABEL_EDGE)
-    return posterLabelFrame(width, height, POSTER_LABEL_EDGE, topRight, posterLabelsAbove(m.numberBadge, height, POSTER_LABEL_EDGE), POSTER_LABEL_EDGE)
-end function
 
 sub layoutNumber()
     if not m.numberBadge.visible then return
 
-    if m.top.textScale <> 1 then m.numberText.width = 0
     width = m.numberText.boundingRect().width + MINIMALIST_BADGE_PAD * 2
-    if m.top.textScale <> 1 and width < m.numberHeight then width = m.numberHeight
     m.numberText.width = width
     m.numberFill.width = width
 
     height = m.top.cardSize.count() > 1 ? m.top.cardSize[1] : 0
-    m.numberBadge.translation = [m.badgeInset, height - m.numberHeight - m.badgeInset]
+    m.numberBadge.translation = [MINIMALIST_BADGE_INSET, height - MINIMALIST_NUMBER_HEIGHT - MINIMALIST_BADGE_INSET]
 end sub
 
 sub onFocusedChanged()
@@ -140,5 +92,5 @@ end sub
 ' The episode the screen is showing keeps a blue border until focus takes it over
 sub showBorder()
     m.artFocus.visible = m.top.focused or m.isCurrent
-    m.artFocus.blendColor = m.top.focused ? coreFocusColor() : "#00A4DCB3"
+    m.artFocus.blendColor = m.top.focused ? "#FFFFFF" : "#00A4DCB3"
 end sub

@@ -6,7 +6,7 @@ body:
   - type: input
     id: app_version
     attributes:
-      label: Moonfin version
+      label: SpeshTV version
       description: The app version / release tag (e.g., 1.0.0)
       placeholder: 1.0.0
     validations:
@@ -34,7 +34,7 @@ body:
     id: server_type
     attributes:
       label: Server
-      description: The media server Moonfin is signed in to
+      description: The media server SpeshTV is signed in to
       options:
         - Jellyfin
         - Emby
@@ -95,7 +95,5 @@ body:
     id: logs
     attributes:
       label: Logs / extra context (optional)
-      description: |
-        If you had diagnostic logging on, a photo of the View Logs screen helps. The [Common Problems](https://github.com/Moonfin-Client/Roku/wiki/Common-Problems#still-stuck) wiki page has the steps.
     validations:
       required: false

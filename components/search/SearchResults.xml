@@ -5,6 +5,8 @@
     <!-- Clear of both navs at once, since either one may be showing: in from
         the side for the rail, and down for the bar across the top -->
     <SearchBox id="SearchBox" translation="[96, 120]" focusable="true" />
+    <Label id="seerrSearchError" translation="[96, 272]" width="1728" height="30"
+      color="#FFB4AB" font="font:SmallSystemFont" visible="false" />
     <DetailTabBar id="searchTabs" translation="[96, 220]" visible="false" />
     <Text id="SearchHelpText" text="" translation="[96, 224]" />
     <LayoutGroup layoutDirection="vert" id="searchResults" translation="[96, 306]" clippingRect="[0, 0, 1728, 1280]">
@@ -20,6 +22,7 @@
         focusBitmapUri="pkg:/images/hd_focus.9.png"
         numRows="2"
         showRowLabel="[true]"
+        showRowCounter="[true]"
         rowLabelOffset="[[0, 10]]"
         focusable="true" />
     </LayoutGroup>

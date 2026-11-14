@@ -1,5 +1,4 @@
 import "pkg:/components/anime/animeMarkerWatch.bs"
-import "pkg:/components/posterLabels/posterLabelsDraw.bs"
 import "pkg:/components/recordings/incompleteRecordingWatch.bs"
 import "pkg:/source/enums/ItemType.bs"
 import "pkg:/source/enums/PersonType.bs"
@@ -317,24 +316,8 @@ sub showContent()
     ' A season's episode list asks straight away, while a card waits for its artwork first
     watchAnimeMarker(m.top.itemContent, chainLookupReturn(m.top.itemContent, "json", invalid), not isAnimeEpisodeLine())
     watchIncompleteRecording(chainLookupReturn(m.top.itemContent, "json.Id", ""))
-    showPosterLabels()
     showPosterRing()
 end sub
-
-sub showPosterLabels()
-    entries = invalid
-    if isValid(m.top.itemContent) then entries = m.top.itemContent.LookupCI("posterLabels")
-    if not isValid(entries) and not isValid(m.posterLabels) then return
-    m.posterLabels = drawPosterLabels(m.posterLabels, m.posterImgRect, entries, posterLabelSpots(), POSTER_LABEL_EPISODE_SCALE)
-end sub
-
-' Under the heart and the Incomplete badge, under the tick or count, and over the anime pill
-function posterLabelSpots() as object
-    height = m.posterImgRect.height
-    topLeft = incompleteBadgeSpot(m.playedIndicator)[1]
-    if isValid(m.incompleteBadge) then topLeft = posterLabelsBelow(m.incompleteBadge, m.incompleteBadge.badgeHeight, topLeft)
-    return posterLabelFrame(m.posterImgRect.width, height, topLeft, posterLabelsBelowCheckmark(m.playedIndicator), posterLabelsAbove(m.animeCardPill, height, POSTER_LABEL_EDGE), POSTER_LABEL_EDGE)
-end function
 
 ' A wide episode card puts its pills on the line under the thumbnail. Everything else gets one
 ' pill over its artwork.
@@ -347,7 +330,6 @@ sub showAnimeMarker(marker as dynamic)
 
     cardMarker = episodeLine ? {} : marker
     m.animeCardPill = drawAnimeCardPill(m.animeCardPill, m.posterImgRect, cardMarker, m.posterImgRect.width, m.posterImgRect.height, false)
-    if isValid(m.posterLabels) and m.posterLabels.visible then m.posterLabels.frame = posterLabelSpots()
 
     if episodeLine
         drawAnimeEpisodeLine(marker)
@@ -383,7 +365,6 @@ sub showIncompleteRecording(entry as dynamic)
     end if
 
     m.incompleteBadge = drawIncompleteBadge(m.incompleteBadge, m.posterImgRect, cardEntry, incompleteBadgeSpot(m.playedIndicator))
-    if isValid(m.posterLabels) and m.posterLabels.visible then m.posterLabels.frame = posterLabelSpots()
     m.incompleteLineBadge = drawIncompleteBadge(m.incompleteLineBadge, m.scaleGroup, lineEntry, [0, 0], true)
     if episodeLine then layoutEpisodeLine()
 end sub
@@ -419,38 +400,30 @@ end sub
 sub updateSeerrDot(cont as object)
     if not isValid(m.seerrDot) then return
 
-    ' A season keeps its own dot and shows a banner only where it would have one. A Seerr title
-    ' carries its status in whichever style is picked.
-    style = seerrBadgeStyle()
-    status = seasonDotStatus(cont)
-    hasDot = drawSeerrDot(status)
-    m.seerrDot.visible = style = "badge" and hasDot
-    if not hasDot then status = seerrCardStatus(cont)
-    if hasDot and style <> "banner" then status = -1
-    m.seerrStatusMark = drawSeerrStatus(m.seerrStatusMark, m.posterImgRect, status, cont.imageWidth ?? 234)
+    m.seerrDot.visible = drawSeerrDot(cont)
     placeFavoriteBadge()
 end sub
 
-' A season's Seerr status, or 0 for anything else
-function seasonDotStatus(cont as object) as integer
-    if not isValid(cont) then return 0
-    isSeason = isStringEqual(chainLookupReturn(cont, "json.Type", ""), "Season") or isStringEqual(chainLookupReturn(cont, "type", ""), "Season")
-    if not isSeason then return 0
-    return chainLookupReturn(cont, "seerrStatus", 0)
-end function
+' Whether the dot is worth showing, setting its color when it is
+function drawSeerrDot(cont as object) as boolean
+    if not isSeerrAvailabilityBadgesEnabled() or not isValid(cont) then return false
 
-' Whether a season's status is worth a dot, setting its color when it is
-function drawSeerrDot(status as integer) as boolean
+    isSeason = isStringEqual(chainLookupReturn(cont, "json.Type", ""), "Season") or isStringEqual(chainLookupReturn(cont, "type", ""), "Season")
+    if not isSeason then return false
+
+    status = chainLookupReturn(cont, "seerrStatus", 0)
+    if status <= 1 then return false
+
     ' Status colors matching SeerrStatusChip, Smart-TV and Core
     ' 5: Available, 4: Partially Available -> Green
     ' 3: Processing -> Purple/Requested
     ' 2: Pending -> Yellow/Pending
     if status = 2
-        dotColor = themeChrome.Token("statusPending", "#EAB308")
+        dotColor = "#EAB308"
     else if status = 3
-        dotColor = themeChrome.Token("statusRequested", "#9333EA")
+        dotColor = "#8B8DFA"
     else if status = 4 or status = 5
-        dotColor = themeChrome.Token("statusAvailable", "#22C55E")
+        dotColor = "#22C55E"
     else
         return false
     end if
@@ -459,14 +432,9 @@ function drawSeerrDot(status as integer) as boolean
     return true
 end function
 
-' A season's Seerr dot owns the top left corner, so the heart sits below it rather than over it. A
-' banner owns the whole top edge and a title's dot the top right, so the marks there drop below them.
+' The Seerr dot owns the top left corner, so the heart sits below it rather than over it
 sub placeFavoriteBadge()
     if not isValid(m.playedIndicator) then return
-
-    inset = seerrStatusInset(m.seerrStatusMark)
-    m.playedIndicator.translation = [m.playedIndicator.translation[0], 10 + inset]
-    m.seerrMissingBadge.translation = [m.seerrMissingBadge.translation[0], 8 + inset]
 
     y = m.favoriteCorner[1]
     if isValid(m.seerrDot) and m.seerrDot.visible then y += SEERR_DOT_CLEARANCE
@@ -481,7 +449,7 @@ sub showPosterRing()
     if not isValid(m.rectFocusBorder) or not m.posterImgRect.visible then return
     focused = m.top.itemHasFocus and chainLookupReturn(m.top.itemContent, "ownFocusRing", false) = true
     m.rectFocusBorder.visible = focused or chainLookupReturn(m.top.itemContent, "currentEpisode", false) = true
-    m.rectFocusBorder.blendColor = focused ? coreFocusColor() : "#00A4DCB3"
+    m.rectFocusBorder.blendColor = focused ? "#FFFFFF" : "#00A4DCB3"
 end sub
 
 sub focusChanged()

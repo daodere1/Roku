@@ -1,6 +1,5 @@
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/MoonfinPlugin.bs"
-import "pkg:/source/utils/calendarEntries.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/SeerrUtils.bs"
 
@@ -25,9 +24,11 @@ namespace upcomingEpisode
         else if diffDays = 1
             dateText = tr("Tomorrow")
         else if diffDays > 1 and diffDays < 7
-            dateText = calendarEntries.WeekdayLong(target.weekday)
+            weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            dateText = tr(weekdays[target.weekday])
         else
-            dateText = calendarEntries.ShortDate(calendarEntries.DayNumber(target.year, target.month, target.day))
+            months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            dateText = `${tr(months[target.month - 1])} ${target.day.toStr()}`
         end if
 
         code = ""
@@ -36,6 +37,11 @@ namespace upcomingEpisode
         end if
 
         return `${tr("Next")}: ${dateText}${code}`
+    end function
+
+    function ResolveUpcomingEpisodeText(itemData as object) as string
+        if not isValid(itemData) then return ""
+        return upcomingEpisode.FormatUpcomingEpisode(upcomingEpisode.lookup(itemData))
     end function
 
     ' A season or an episode asks about its series. Each series is looked up once per
@@ -79,9 +85,8 @@ namespace upcomingEpisode
         if isStringEqual(itemData.Type, "Series") or not isValidAndNotEmpty(itemData.SeriesId) then return itemData.ProviderIds
 
         data = getJsonWithin(upcomingEpisode.serverRequest(itemData, "/Items", { ids: itemData.SeriesId, fields: "ProviderIds" }), upcomingEpisode.LOOKUP_TIMEOUT_MS)
-        ' chainLookup can't index a list, so the first item is taken by hand
-        items = chainLookupReturn(data, "Items", [])
-        if type(items) = "roArray" and items.Count() > 0 and isChainValid(items[0], "ProviderIds") then return items[0].ProviderIds
+        series = chainLookup(data, "Items.0")
+        if isChainValid(series, "ProviderIds") then return series.ProviderIds
         return itemData.ProviderIds
     end function
 

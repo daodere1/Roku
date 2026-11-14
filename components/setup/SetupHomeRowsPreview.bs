@@ -1,12 +1,8 @@
 import "pkg:/components/setup/setupPreviewDraw.bs"
 
-' Home rows in each style with the library's own art. Classic leads with the info area over
+' Home rows in the two styles with the library's own art. Classic leads with the info area over
 ' compact rows. Modern's whole point is the focused card, so its preview holds the first card in
-' that state with the text block it grows underneath. Carousel holds it too, with its panel below.
-
-' The real Home's left inset, which leaves the focused card's ring room inside the stage
-const ROW_LEFT = 111
-
+' that state with the text block it grows underneath.
 sub init()
     redraw()
 end sub
@@ -17,168 +13,53 @@ sub redraw()
     end while
 
     pal = setupPreviewDraw.Palette()
-    pal.cursor = formatSceneGraphColor(m.top.cursor, pal.cursor)
-    pal.background = formatSceneGraphColor(m.top.pageColor, pal.background)
     items = m.top.items
     setupPreviewDraw.Rect(m.top, 0, 0, 1920, 1080, pal.background)
-    home = m.top.home
-    if isValid(home) and isValid(home.rows)
-        drawBackdrop(home.backdropUrl ?? "")
-        drawHome(pal, home)
-        return
-    end if
-    drawBackdrop(setupPreviewDraw.ItemField(items, 0, "backdropUrl"))
-    if m.top.carousel
-        drawCarousel(pal, items)
-    else if m.top.modern
+    if m.top.modern
         drawModern(pal, items)
     else
         drawClassic(pal, items)
     end if
 end sub
 
-' Home's own rows from the settings preview, the focused one first where Home brings it to rest,
-' under Classic's info area for its first card
-sub drawHome(pal as object, home as object)
-    info = home.info
-    if not m.top.modern and m.top.infoArea and isValid(info)
-        title = setupPreviewDraw.TextLabel(m.top, info.title, ROW_LEFT, 120, 48, pal.onSurface, true)
-        title.width = 1703
-        title.height = 96
-        title.vertAlign = "bottom"
-        setupPreviewDraw.MetaLine(m.top, [info], 0, ROW_LEFT, 238, 24, playbackOverlay.WithAlpha(pal.onSurface, 230))
-        setupPreviewDraw.Paragraph(m.top, info.overview, ROW_LEFT, 280, 1300, 26, 2, playbackOverlay.WithAlpha(pal.onSurface, 179))
-    end if
-    for i = 0 to home.rows.Count() - 1
-        setupPreviewDraw.HomeRow(m.top, home.rows[i], ROW_LEFT, pal, home.ink, i = 0)
-    end for
-end sub
-
-' The first card's backdrop where Home's placeBackdrop puts it for the style, dimmed the way Home
-' dims it behind the rows
-sub drawBackdrop(uri as string)
-    style = m.top.backdrop
-    if uri = "" or not inArray(["fullScreen", "corner", "top"], style) then return
-    mask = m.top.createChild("MaskGroup")
-    art = mask.createChild("Poster")
-    art.width = 1920
-    art.height = 1080
-    art.loadDisplayMode = "scaleToFill"
-    if style = "corner"
-        mask.translation = [1920 - 1344, 0]
-        mask.maskUri = "pkg:/images/backdropCornerMask.png"
-        mask.maskSize = [1344, 810]
-        art.width = 1344
-        art.height = 810
-        art.loadDisplayMode = "scaleToZoom"
-    else if style = "top"
-        mask.maskUri = "pkg:/images/backdropTopMask.webp"
-        mask.maskSize = [1920, 1080]
-    end if
-    art.opacity = 0.3
-    blur = m.top.blur
-    if blur < 0 then blur = getHomeBackdropBlurAmount()
-    art.uri = withBlur(uri, blur)
-end sub
-
-' Home's own backdrops were asked for at the saved blur, which the one being tried replaces
-function withBlur(uri as string, blur as integer) as string
-    blurParam = CreateObject("roRegex", "([?&])blur=\d+", "i")
-    if blurParam.IsMatch(uri) then return blurParam.Replace(uri, "\1blur=" + blur.ToStr())
-    return `${uri}&blur=${blur}`
-end function
-
 sub drawClassic(pal as object, items as object)
-    ' Without the info area the rows move up to where Home puts them
-    rowTop = 290
-    if m.top.infoArea then drawClassicInfo(pal, items) else rowTop = 170
+    faded = playbackOverlay.WithAlpha(pal.onSurface, 179)
+    setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, 0, "title"), 96, 48, 52, pal.onSurface, true)
+    setupPreviewDraw.MetaLine(m.top, items, 0, 96, 124, 24, playbackOverlay.WithAlpha(pal.onSurface, 230))
+    setupPreviewDraw.Paragraph(m.top, setupPreviewDraw.ItemField(items, 0, "overview"), 96, 168, 1300, 26, 2, faded)
 
-    if m.top.focusCard then setupPreviewDraw.Round(m.top, ROW_LEFT - 6, rowTop + 52 - 6, 313 + 12, 176 + 12, 14, pal.cursor)
-    setupPreviewDraw.CardRow(m.top, items, tr("Continue Watching"), ROW_LEFT, rowTop, 313, 176, 6, pal, 0, "backdropUrl")
-    ' The first card rounds its corners on the ring rather than the page
-    if m.top.focusCard then setupPreviewDraw.Corners(m.top, ROW_LEFT, rowTop + 52, 313, 176, 8, pal.cursor)
+    setupPreviewDraw.CardRow(m.top, items, tr("Continue Watching"), 96, 290, 313, 176, 6, pal, 0, "backdropUrl")
     ' The first two thumbs carry the progress bars a half watched title shows
     for i = 0 to 1
-        trackX = ROW_LEFT + i * 337 + 12
-        setupPreviewDraw.Round(m.top, trackX, rowTop + 52 + 176 - 24, 289, 12, 6, "0x0000008A")
-        setupPreviewDraw.Round(m.top, trackX, rowTop + 52 + 176 - 24, 289 * (0.35 + i * 0.35), 12, 6, pal.accent)
+        trackX = 96 + i * 337 + 12
+        setupPreviewDraw.Round(m.top, trackX, 290 + 52 + 176 - 24, 289, 12, 6, "0x0000008A")
+        setupPreviewDraw.Round(m.top, trackX, 290 + 52 + 176 - 24, 289 * (0.35 + i * 0.35), 12, 6, pal.accent)
     end for
-    setupPreviewDraw.CardRow(m.top, items, tr("Recently Added"), ROW_LEFT, rowTop + 360, 160, 240, 10, pal, 3)
-end sub
-
-' The first card's title, details and overview above Classic rows
-sub drawClassicInfo(pal as object, items as object)
-    faded = playbackOverlay.WithAlpha(pal.onSurface, 179)
-    setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, 0, "title"), ROW_LEFT, 48, 52, pal.onSurface, true)
-    setupPreviewDraw.MetaLine(m.top, items, 0, ROW_LEFT, 124, 24, playbackOverlay.WithAlpha(pal.onSurface, 230))
-    ' The scores take the overview's first line, the way the real info area moves it down for them
-    scoresRow = setupPreviewDraw.RatingsLine(m.top, m.top.ratings, ROW_LEFT, 166, { singleLine: true, iconHeight: 28, valueSize: 24, nameSize: 18, labelFont: "font:SmallestSystemFont", labelColor: "#FFFFFF", ratingSpacing: 10, maxWidth: 1703 })
-    if isValid(scoresRow)
-        setupPreviewDraw.Paragraph(m.top, setupPreviewDraw.ItemField(items, 0, "overview"), ROW_LEFT, 218, 1300, 26, 1, faded)
-    else
-        setupPreviewDraw.Paragraph(m.top, setupPreviewDraw.ItemField(items, 0, "overview"), ROW_LEFT, 168, 1300, 26, 2, faded)
-    end if
+    setupPreviewDraw.CardRow(m.top, items, tr("Recently Added"), 96, 650, 160, 240, 10, pal, 3)
 end sub
 
 sub drawModern(pal as object, items as object)
     cardTop = 112
     cardHeight = 384
     focusWidth = 683
-    setupPreviewDraw.TextLabel(m.top, tr("Continue Watching"), ROW_LEFT, 60, 32, pal.onSurface, true)
+    setupPreviewDraw.TextLabel(m.top, tr("Continue Watching"), 96, 60, 32, pal.onSurface, true)
 
-    ' The focused card: wide art on a ring in the Cursor color, rounded on that ring
-    setupPreviewDraw.Round(m.top, ROW_LEFT - 6, cardTop - 6, focusWidth + 12, cardHeight + 12, 14, pal.cursor)
-    setupPreviewDraw.RoundArt(m.top, ROW_LEFT, cardTop, focusWidth, cardHeight, setupPreviewDraw.ItemField(items, 0, "backdropUrl"), pal.surfaceVariant, 8, pal.cursor)
+    ' The focused card: wide art on a ring in the text color, rounded on that ring
+    setupPreviewDraw.Round(m.top, 90, cardTop - 6, focusWidth + 12, cardHeight + 12, 14, pal.onSurface)
+    setupPreviewDraw.RoundArt(m.top, 96, cardTop, focusWidth, cardHeight, setupPreviewDraw.ItemField(items, 0, "backdropUrl"), pal.surfaceVariant, 8, pal.onSurface)
     textY = cardTop + cardHeight + 16
-    setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, 0, "title"), ROW_LEFT, textY, 26, pal.onSurface, true)
-    setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, 0, "year"), ROW_LEFT, textY + 36, 24, playbackOverlay.WithAlpha(pal.onSurface, 153), false)
-    overviewY = textY + 118
-    if isValid(m.top.ratings) and isValid(m.top.ratings.data)
-        ' The settings preview draws the plugin's scores the real card shows here, and the overview
-        ' moves up when there are none
-        overviewY = textY + 76
-        scoresRow = setupPreviewDraw.RatingsLine(m.top, m.top.ratings, ROW_LEFT, overviewY, { labelFont: "font:SmallestBoldSystemFont", ratingSpacing: 14, maxWidth: 1703 })
-        if isValid(scoresRow) then overviewY += scoresRow.boundingRect().height + 12
-    else
-        setupPreviewDraw.Score(m.top, items, 0, ROW_LEFT, textY + 76, 28, pal.onSurface)
-    end if
-    setupPreviewDraw.Paragraph(m.top, setupPreviewDraw.ItemField(items, 0, "overview"), ROW_LEFT, overviewY, 1600, 24, 3, playbackOverlay.WithAlpha(pal.onSurface, 179))
+    setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, 0, "title"), 96, textY, 26, pal.onSurface, true)
+    setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, 0, "year"), 96, textY + 36, 24, playbackOverlay.WithAlpha(pal.onSurface, 153), false)
+    setupPreviewDraw.Score(m.top, items, 0, 96, textY + 76, 28, pal.onSurface)
+    setupPreviewDraw.Paragraph(m.top, setupPreviewDraw.ItemField(items, 0, "overview"), 96, textY + 118, 1600, 24, 3, playbackOverlay.WithAlpha(pal.onSurface, 179))
 
     for i = 1 to 6
-        x = ROW_LEFT + focusWidth + 24 + (i - 1) * 280
+        x = 96 + focusWidth + 24 + (i - 1) * 280
         setupPreviewDraw.RoundArt(m.top, x, cardTop, 256, cardHeight, setupPreviewDraw.ItemField(items, i, "posterUrl"), pal.surfaceVariant, 8, pal.background)
         name = setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, i, "title"), x, textY, 26, pal.onSurface, true)
         name.width = 256
         setupPreviewDraw.TextLabel(m.top, setupPreviewDraw.ItemField(items, i, "year"), x, textY + 36, 24, playbackOverlay.WithAlpha(pal.onSurface, 153), false)
     end for
 
-    setupPreviewDraw.CardRow(m.top, items, tr("Recently Added"), ROW_LEFT, 790, 256, 384, 8, pal, 3)
-end sub
-
-' Carousel's point is the panel, so the cards go unlabeled and Home's own panel shows the first
-' card's details under them
-sub drawCarousel(pal as object, items as object)
-    cardTop = 176
-    cardHeight = 270
-    focusWidth = 480
-    setupPreviewDraw.TextLabel(m.top, tr("Continue Watching"), ROW_LEFT, 120, 32, pal.onSurface, true)
-    setupPreviewDraw.Round(m.top, ROW_LEFT - 6, cardTop - 6, focusWidth + 12, cardHeight + 12, 14, pal.cursor)
-    setupPreviewDraw.RoundArt(m.top, ROW_LEFT, cardTop, focusWidth, cardHeight, setupPreviewDraw.ItemField(items, 0, "backdropUrl"), pal.surfaceVariant, 8, pal.cursor)
-    for i = 1 to 6
-        x = ROW_LEFT + focusWidth + 20 + (i - 1) * 200
-        setupPreviewDraw.RoundArt(m.top, x, cardTop, 180, cardHeight, setupPreviewDraw.ItemField(items, i, "posterUrl"), pal.surfaceVariant, 8, pal.background)
-    end for
-
-    sample = setupPreviewDraw.Entry(items, 0)
-    community = invalid
-    if isValidAndNotEmpty(sample.communityRating) then community = sample.communityRating.toFloat()
-    card = CreateObject("roSGNode", "ContentNode")
-    card.addFields({ json: { Id: "setupPreview", Name: sample.title ?? "", Type: sample.type ?? "", ProductionYear: toString(sample.year).toInt(), OfficialRating: sample.officialRating ?? "", Genres: sample.genres ?? [], Overview: sample.overview ?? "", RunTimeTicks: sample.runTimeTicks, CommunityRating: community, CriticRating: sample.criticRating } })
-    panelTop = cardTop + cardHeight + 24
-    panel = m.top.createChild("CarouselPanel")
-    panel.translation = [ROW_LEFT, panelTop]
-    panel.flat = true
-    panel.preview = { backdrop: setupPreviewDraw.ItemField(items, 0, "backdropUrl"), ratings: m.top.ratings, hideOverview: m.top.hideOverview }
-    panel.item = card
-    setupPreviewDraw.Corners(m.top, ROW_LEFT, panelTop, 1703, 500, 18, pal.background)
+    setupPreviewDraw.CardRow(m.top, items, tr("Recently Added"), 96, 790, 256, 384, 8, pal, 3)
 end sub

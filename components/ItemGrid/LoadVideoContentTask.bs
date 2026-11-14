@@ -1,4 +1,5 @@
 import "pkg:/source/api/baserequest.bs"
+import "pkg:/source/utils/speshTrackSelection.brs"
 import "pkg:/source/api/Image.bs"
 import "pkg:/source/api/Items.bs"
 import "pkg:/source/api/userauth.bs"
@@ -13,8 +14,8 @@ import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/deviceCapabilities.bs"
 import "pkg:/source/utils/embyFeatures.bs"
 import "pkg:/source/utils/misc.bs"
+import "pkg:/source/utils/speshResume.brs"
 import "pkg:/source/utils/trackLabels.bs"
-import "pkg:/source/utils/trackMemory.bs"
 
 sub init()
     m.top.filter = "All"
@@ -39,25 +40,11 @@ function requestPlaybackInfo(id as string, mediaSourceId as string, audioTrackIn
     end if
     ' Live TV keeps the TS profile's audio list whatever Transcode Audio Codecs picks
     if m.loadIsLive = true then options.isLiveTV = true
-    if m.top.maxBitrate > 0 then options.maxStreamingBitrate = m.top.maxBitrate
+    if m.loadIsLive = true and m.top.convertLiveAac then options.convertLiveAac = true
 
     serverData = playbackServerData()
     if isValid(serverData) then return ItemPostPlaybackInfoForServer(serverData, id, mediaSourceId, audioTrackIndex, subtitleTrackIndex, startTimeTicks, options)
     return ItemPostPlaybackInfo(id, mediaSourceId, audioTrackIndex, subtitleTrackIndex, startTimeTicks, options)
-end function
-
-' The people the player's Cast & Crew shows, where an episode with none of its own shows its series'
-function castAndCrewFor(json as object, serverData as dynamic) as object
-    people = json.LookupCI("People") ?? []
-    seriesId = json.LookupCI("SeriesId")
-    if people.count() > 0 or not isStringEqual(json.LookupCI("Type"), "Episode") or not isValidAndNotEmpty(seriesId) then return people
-    if isValid(serverData)
-        series = ItemMetaDataForServer(serverData, seriesId)
-    else
-        series = ItemMetaData(seriesId)
-    end if
-    if not isValid(series) or not isValid(series.json) then return []
-    return series.json.LookupCI("People") ?? []
 end function
 
 function playbackResourceURL(path as string) as string
@@ -200,10 +187,8 @@ sub loadItems()
     ' Reset intro tracker in case task gets reused
     m.top.isIntro = false
 
-    siloTrace("load task started")
     ' Refused before an intro is lined up for it
     if blockedContent.IsBlocked(m.global.queueManager.callFunc("getCurrentItem"))
-        siloTrace("load: refused as blocked content")
         m.top.content = [{ blocked: true }]
         return
     end if
@@ -224,13 +209,6 @@ sub loadItems()
                     m.top.isIntro = true
                 end if
             end if
-        end if
-    end if
-
-    if m.top.selectedAudioStreamIndex = 0
-        currentItem = m.global.queueManager.callFunc("getCurrentItem")
-        if isChainValid(currentItem, "json")
-            m.top.selectedAudioStreamIndex = FindPreferredAudioStream(currentItem.json.MediaStreams, currentItem.json)
         end if
     end if
 
@@ -261,7 +239,7 @@ sub releaseAbandonedLiveStream(loaded as dynamic)
     if isValid(req) then postVoid(req)
 end sub
 
-function LoadItems_VideoPlayer(id as string, mediaSourceId = invalid as dynamic, audio_stream_idx = 1 as integer) as dynamic
+function LoadItems_VideoPlayer(id as string, mediaSourceId = invalid as dynamic, audio_stream_idx = -1 as integer) as dynamic
 
     video = {}
     video.id = id
@@ -276,14 +254,7 @@ function LoadItems_VideoPlayer(id as string, mediaSourceId = invalid as dynamic,
     return video
 end function
 
-' What playback does on a Silo server, in the debug console
-sub siloTrace(message as string)
-    serverUrl = m.top.serverUrl ?? ""
-    if isSiloServer(serverUrl) then silo.Trace(message)
-end sub
-
-sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_stream_idx = 1 as integer)
-    siloTrace("load " + toString(video.id) + ", source " + toString(mediaSourceId))
+sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_stream_idx = -1 as integer)
 
     serverData = playbackServerData()
     if isValid(serverData)
@@ -294,7 +265,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
 
     if not isValid(meta)
         video.errorMsg = "Error loading metadata"
-        siloTrace("load: the item's metadata didn't read")
         video.content = invalid
         return
     end if
@@ -341,8 +311,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
     end if
     video.trickplay = meta.json.Trickplay
     video.chapters = meta.json.Chapters
-    video.isFavorite = chainLookupReturn(meta.json, "UserData.IsFavorite", false) = true
-    video.people = castAndCrewFor(meta.json, serverData)
     video.content.title = meta.title
     video.showID = meta.showID
 
@@ -376,11 +344,11 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
     end if
 
     video.mediaSegments = {}
-    ' Plex doesn't say whether an item has markers, so they're always asked for
     if isValidAndNotEmpty(meta.json.MediaSources)
-        hasSegments = meta.json.MediaSources[0].HasSegments
-        if isPlexServer(m.top.serverUrl) or (isValid(hasSegments) and hasSegments)
-            video.mediaSegments = getMediaSegmentsForPlayback(video.id, serverData)
+        if isValid(meta.json.MediaSources[0].HasSegments)
+            if meta.json.MediaSources[0].HasSegments
+                video.mediaSegments = getMediaSegmentsForPlayback(video.id, serverData)
+            end if
         end if
     end if
 
@@ -451,10 +419,7 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
         end for
     end if
 
-    ' A watch party plays only the room's item, so nothing is lined up after it
-    party = m.global.watchParty
-    partyItem = isValid(party) and party.inRoom = true and type(party.room) = "roAssociativeArray" and toString(party.room.selected_content_id ?? "") = toString(video.id ?? "")
-    if isValid(video.showID) and not partyItem
+    if isValid(video.showID)
         if isAutoplayNextEpisodeEnabled()
             episodeQueueLimit = chainLookupReturn(m.global.session, "user.settings.episodeQueueLimit", "50")
             episodeQueueLimit = episodeQueueLimit.ToInt()
@@ -472,15 +437,15 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
 
     currentItem = m.global.queueManager.callFunc("getCurrentItem")
 
-    if isValid(currentItem) and isValid(currentItem.startingPoint)
-        playbackPosition = currentItem.startingPoint
-    else if isChainValid(currentItem, "json.UserData.PlaybackPositionTicks")
-        playbackPosition = currentItem.json.UserData.PlaybackPositionTicks
-    end if
+    playbackPosition = speshPlaybackTicks(currentItem)
+    trackReload = m.top.reloadPositionTicks >= 0
+    if trackReload then playbackPosition = m.top.reloadPositionTicks
+    m.top.reloadPositionTicks = -1&
+    if meta.live then playbackPosition = 0&
 
     ' PlayStart requires the time to be in seconds
     playStartSec = int(playbackPosition / 10000000)
-    if playStartSec > 0
+    if playStartSec > 0 and not trackReload
         resumeRewindSec = val(m.global.session.user.settings["playback.resumeRewind"] ?? "0")
         if resumeRewindSec > 0
             playStartSec = playStartSec - resumeRewindSec
@@ -494,7 +459,13 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
     onEmby = isEmbyServer(m.top.serverUrl)
     if onEmby and isStreamlessStaticSource(meta.json, mediaSourceId) then mediaSourceId = ""
 
-    siloTrace("load: metadata " + toString(meta.type) + ", asking PlaybackInfo with source " + toString(mediaSourceId))
+    if not meta.live and (audio_stream_idx < 0 or m.top.selectedSubtitleIndex = SubtitleSelection.NOTSET)
+        selection = getLanguageFailoverSelection(video.id, mediaSourceId, audio_stream_idx)
+        tracks = speshLanguageSelection(selection, video.id, mediaSourceId, audio_stream_idx, m.top.selectedSubtitleIndex)
+        audio_stream_idx = tracks.audio
+        m.top.selectedSubtitleIndex = tracks.subtitle
+    end if
+
     m.playbackInfo = getPlaybackInfo(video.id, mediaSourceId, audio_stream_idx, m.top.selectedSubtitleIndex, playbackPosition)
     if not isValid(m.playbackInfo) and canRetryWithoutMediaSourceId(meta.json, mediaSourceId)
         mediaSourceId = ""
@@ -515,7 +486,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
         end if
     end if
     if not isValid(m.playbackInfo)
-        siloTrace("load: PlaybackInfo gave nothing usable")
         video.errorMsg = "Error loading playback info"
         video.content = invalid
         return
@@ -540,9 +510,13 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
         end if
     end if
 
+    ' Use the server/plugin's negotiated choice for playback and progress reporting.
+    if isValidAndNotEmpty(m.playbackInfo.MediaSources)
+        audio_stream_idx = speshNegotiatedAudio(m.playbackInfo.MediaSources[0], audio_stream_idx)
+    end if
+
     requestedSubtitleIndex = m.top.selectedSubtitleIndex
     defaultSubtitleIndex = SubtitleSelection.NONE
-    rememberedSubtitle = false
     if requestedSubtitleIndex = SubtitleSelection.NOTSET and isValidAndNotEmpty(m.playbackInfo.MediaSources)
         defaultSubtitleIndex = m.playbackInfo.MediaSources[0].LookupCI("DefaultSubtitleStreamIndex") ?? SubtitleSelection.NONE
 
@@ -550,17 +524,12 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
         ' and any burn in carry the new one
         if meta.live = false
             streams = m.playbackInfo.MediaSources[0].MediaStreams
-            ' A track remembered for the title or its series comes before the subtitle settings
-            preferredSubtitleIndex = trackMemory.RememberedSubtitle(trackMemory.Load(), video.id, chainLookup(meta, "json.SeriesId"), trackMemory.OfType(streams, "Subtitle"))
-            rememberedSubtitle = preferredSubtitleIndex <> SubtitleSelection.NOTSET
-            if not rememberedSubtitle
-                audioLanguage = ""
-                for each stream in streams
-                    if isStringEqual(stream.LookupCI("Type") ?? "", "Audio") and stream.LookupCI("Index") = audio_stream_idx then audioLanguage = stream.LookupCI("Language") ?? ""
-                end for
-                modeSubtitleIndex = trackLabels.ModeSubtitle(streams, defaultSubtitleIndex, m.global.session.user.settings, audioLanguage)
-                preferredSubtitleIndex = trackLabels.PreferredSubtitle(streams, modeSubtitleIndex, m.global.session.user.settings)
-            end if
+            audioLanguage = ""
+            for each stream in streams
+                if isStringEqual(stream.LookupCI("Type") ?? "", "Audio") and stream.LookupCI("Index") = audio_stream_idx then audioLanguage = stream.LookupCI("Language") ?? ""
+            end for
+            modeSubtitleIndex = trackLabels.ModeSubtitle(streams, defaultSubtitleIndex, m.global.session.user.settings, audioLanguage)
+            preferredSubtitleIndex = trackLabels.PreferredSubtitle(streams, modeSubtitleIndex, m.global.session.user.settings)
             if preferredSubtitleIndex <> defaultSubtitleIndex
                 defaultSubtitleIndex = preferredSubtitleIndex
                 requestedSubtitleIndex = preferredSubtitleIndex
@@ -578,8 +547,8 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
 
     ' Use either the user's selected subtitles, or the default track
     if m.top.selectedSubtitleIndex = SubtitleSelection.NOTSET
-        ' Ignore the track if the user only wants text subtitles and it isn't one, unless they picked it
-        if defaultSubtitleIndex <> SubtitleSelection.NONE and not rememberedSubtitle and toBoolean(trackLabels.Setting(m.global.session.user.settings, "playback.subs.onlytext", false))
+        ' Ignore the track if the user only wants text subtitles and it isn't one
+        if defaultSubtitleIndex <> SubtitleSelection.NONE and toBoolean(trackLabels.Setting(m.global.session.user.settings, "playback.subs.onlytext", false))
             if not isSubtitleStreamText(defaultSubtitleIndex)
                 defaultSubtitleIndex = SubtitleSelection.NONE
             end if
@@ -603,8 +572,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
     end if
 
     video.container = getContainerType(meta)
-    applySiloPlan(video, m.playbackInfo.MediaSources[0])
-    siloTrace("load: stream format " + toString(video.content.StreamFormat) + ", play start " + toString(video.content.PlayStart))
 
     if not isValid(m.playbackInfo.MediaSources[0])
         m.playbackInfo = meta.json
@@ -648,7 +615,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
         video.isTranscoded = false
         if meta.live then video.content.StreamFormat = liveDirectStreamFormat(m.playbackInfo.MediaSources[0])
         addVideoContentURL(video, mediaSourceId, audio_stream_idx)
-        siloTrace("load: direct play " + silo.PathOf(toString(video.content.url)))
         setCertificateAuthority(video.content)
         if not playbackUsesServerAuth(video.content.url) then return
         if isValid(serverData)
@@ -678,9 +644,7 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
 
     ' Asking again with no subtitle profiles leaves the server nothing to do but draw the subtitle in
     video.subtitlesBurnedIn = false
-    ' Silo burns a subtitle in itself when its plan needs to
-    siloPlan = isValidAndNotEmpty(m.playbackInfo.MediaSources[0].LookupCI("SiloDelivery"))
-    if chainLookupReturn(m.global, "session.user.settings.`playback.subs.burnin`", true) and meta.live = false and not siloPlan and shouldBurnInSubtitle(video.SelectedSubtitle)
+    if chainLookupReturn(m.global, "session.user.settings.`playback.subs.burnin`", true) and meta.live = false and shouldBurnInSubtitle(video.SelectedSubtitle)
         m.playbackInfo = getPlaybackInfo(video.id, mediaSourceId, audio_stream_idx, requestedSubtitleIndex, playbackPosition, {
             emptySubtitleProfiles: true
         })
@@ -702,7 +666,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
     ' Get transcoding reason
     video.transcodeReasons = getTranscodeReasons(m.playbackInfo.MediaSources[0].TranscodingUrl)
     video.content.url = playbackResourceURL(m.playbackInfo.MediaSources[0].TranscodingUrl)
-    siloTrace("load: server stream " + silo.PathOf(toString(video.content.url)))
     video.isTranscoded = true
 
     setCertificateAuthority(video.content)
@@ -712,29 +675,6 @@ sub LoadItems_AddVideoContent(video as object, mediaSourceId as dynamic, audio_s
         video.content = authRequestForServer(video.content, serverData)
     else
         video.content = authRequest(video.content)
-    end if
-end sub
-
-' Silo's stream addresses name no file type, so the plan says what the player gets. A stream that
-' starts partway into the title counts its time from there
-sub applySiloPlan(video as object, source as dynamic)
-    if not isValidAndNotEmpty(chainLookupReturn(source, "SiloDelivery", "")) then return
-    container = LCase(source.LookupCI("Container") ?? "")
-    if container = "hls"
-        video.content.StreamFormat = "hls"
-    else if container = "mp4" or container = "m4v" or container = "mov"
-        video.content.StreamFormat = "mp4"
-    else if container = "mkv" or container = "matroska" or container = "webm"
-        video.content.StreamFormat = "mkv"
-    end if
-    ' The player shows and seeks the title's own timeline from these
-    video.timelineOffset = (source.LookupCI("SiloTimelineOffsetTicks") ?? 0) / 10000000#
-    video.mediaRuntime = (source.LookupCI("RunTimeTicks") ?? 0) / 10000000#
-    offsetSeconds = Int(video.timelineOffset)
-    if offsetSeconds > 0
-        startAt = video.content.PlayStart - offsetSeconds
-        if startAt < 0 then startAt = 0
-        video.content.PlayStart = startAt
     end if
 end sub
 
@@ -832,21 +772,13 @@ sub addVideoContentURL(video, mediaSourceId, audio_stream_idx)
         else
             video.content.url = m.playbackInfo.MediaSources[0].Path
         end if
-    else if isPlexServer(serverUrl)
-        ' A Plex file plays from its own part address
-        partPath = m.playbackInfo.MediaSources[0].Path
-        if useMultiServer
-            video.content.url = buildURLForServer(serverUrl, partPath)
-        else
-            video.content.url = buildURL(partPath)
-        end if
     else
         params = {
             "Static": "true",
             "Container": video.container,
-            "PlaySessionId": video.PlaySessionId,
-            "AudioStreamIndex": audio_stream_idx
+            "PlaySessionId": video.PlaySessionId
         }
+        if audio_stream_idx >= 0 then params.AudioStreamIndex = audio_stream_idx
 
         if mediaSourceId <> ""
             params.MediaSourceId = mediaSourceId
@@ -992,7 +924,7 @@ sub addSubtitlesToVideo(video, meta)
 
     ' A track the device reads from the stream itself is already in it
     for each subtitle in safesubs
-        if not subtitle.IsEmbeddedNative and not subtitle.NeedsReload then subtitleTracks.push(subtitle.track)
+        if not subtitle.IsEmbeddedNative then subtitleTracks.push(subtitle.track)
     end for
 
     video.content.SubtitleTracks = subtitleTracks
@@ -1195,11 +1127,9 @@ function sortSubtitles(MediaStreams, source = invalid as dynamic, videoId = "" a
             url = ""
             deliveryUrl = stream.DeliveryUrl
             embeddedNative = false
-            needsReload = stream.LookupCI("SiloReplan") = true
             codec = LCase(stream.LookupCI("Codec") ?? "")
-            if not isValid(deliveryUrl) and not needsReload and isStringEqual(stream.LookupCI("DeliveryMethod"), "Embed") and stream.IsExternal <> true
-                ' Plex can't take a track out of a file, so one it didn't burn in is read from the file
-                if (codec = "srt" or codec = "subrip") and chainLookupReturn(source, "SupportsTranscoding", true) <> false and not isPlexServer(m.top.serverUrl)
+            if not isValid(deliveryUrl) and isStringEqual(stream.LookupCI("DeliveryMethod"), "Embed") and stream.IsExternal <> true
+                if (codec = "srt" or codec = "subrip") and chainLookupReturn(source, "SupportsTranscoding", true) <> false
                     ' Left in the file, but the server can still pull the text out as its own file
                     deliveryUrl = `/Videos/${videoId}/${chainLookupReturn(source, "Id", videoId)}/Subtitles/${stream.index}/0/Stream.vtt`
                 else
@@ -1234,7 +1164,6 @@ function sortSubtitles(MediaStreams, source = invalid as dynamic, videoId = "" a
                 "IsEncoded": stream.DeliveryMethod = "Encode",
                 "IsHearingImpaired": hearingImpaired,
                 "IsEmbeddedNative": embeddedNative,
-                "NeedsReload": needsReload,
                 "Codec": codec,
                 "DeliveryMethod": stream.LookupCI("DeliveryMethod") ?? ""
             }
@@ -1255,7 +1184,7 @@ function sortSubtitles(MediaStreams, source = invalid as dynamic, videoId = "" a
     return { "all": allTracks, "text": textTracks }
 end function
 
-function FindPreferredAudioStream(streams as dynamic, itemJson = invalid as dynamic) as integer
+function FindPreferredAudioStream(streams as dynamic) as integer
     preferredAudioTrackIndex = m.global.queueManager.callFunc("getPreferredAudioTrackIndex")
     preferredLanguage = getPreferredLanguage("playback.audioPreferredLanguage")
     playDefault = chainLookupReturn(m.global.session, "user.settings.`playback.playDefaultAudioTrack`", false)
@@ -1267,19 +1196,11 @@ function FindPreferredAudioStream(streams as dynamic, itemJson = invalid as dyna
         if jsonResponse = invalid or jsonResponse.MediaStreams = invalid then return 1
 
         streams = jsonResponse.MediaStreams
-        itemJson = jsonResponse
     end if
 
     ' User selected something other than the first track?
     if preferredAudioTrackIndex >= 0
         return preferredAudioTrackIndex
-    end if
-
-    ' Then a track remembered for the title, or its series on an episode
-    remembered = trackMemory.RememberedAudio(trackMemory.Load(), m.top.itemId, chainLookup(itemJson, "SeriesId"), trackMemory.OfType(streams, "Audio"))
-    if remembered >= 0
-        position = trackMemory.Position(streams, "Audio", remembered)
-        if position >= 0 then return position
     end if
 
     ' No selection, but they have Default as their preference?
@@ -1331,4 +1252,21 @@ function FindPreferredAudioStream(streams as dynamic, itemJson = invalid as dyna
 
     ' User doesn't care, play the first track :-)
     return firstAudioTrack
+end function
+function getLanguageFailoverSelection(itemId as string, sourceId as string, audio as integer) as dynamic
+    serverData = playbackServerData()
+    target = m.top.serverUrl
+    if target = "" then target = get_url()
+    if isEmbyServer(target) then return invalid
+    params = { MediaSourceId: sourceId }
+    if audio >= 0 then params.AudioStreamIndex = audio
+    endpoint = "LanguageFailover/Selection/" + itemId
+    if isValid(serverData)
+        req = APIRequestForServer(serverData.serverUrl, serverData.userId, serverData.authToken, endpoint, params)
+    else
+        req = APIRequest(endpoint, params)
+    end if
+    if not isValid(req) then return invalid
+    ' One bounded request per load; absent/disabled bridge leaves normal negotiation intact.
+    return getJsonWithin(req, 2500)
 end function

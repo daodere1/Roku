@@ -33,6 +33,7 @@
     </Group>
   </children>
   <interface>
+    <field id="previewActive" type="boolean" onChange="render" />
     <!-- { title, programTitle, programSubtitle, channelLogoUrl, programImageUrl, timeLabel,
            genreLabel, officialRating, communityRating, badgeLabel, synopsis, isLive, mark } -->
     <field id="model" type="assocarray" onChange="render" />

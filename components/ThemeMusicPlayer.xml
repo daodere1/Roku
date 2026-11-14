@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component name="ThemeMusicPlayer" extends="Group">
     <interface>
+        <function name="stopMusic" />
         <field id="itemId" type="string" onChange="onItemIdChanged" />
     </interface>
     <children>

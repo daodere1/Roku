@@ -18,6 +18,7 @@
     </children>
 
     <interface>
+        <function name="focusResults" />
         <field id="itemId" type="string" />
         <field id="language" type="string" />
         <!-- Whoever opens it hands over the subtitle indexes it already has, so the one a download

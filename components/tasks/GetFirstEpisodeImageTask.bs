@@ -1,0 +1,23 @@
+import "pkg:/source/api/baserequest.bs"
+import "pkg:/source/api/Image.bs"
+import "pkg:/source/api/Items.bs"
+import "pkg:/source/utils/config.bs"
+import "pkg:/source/utils/deviceCapabilities.bs"
+
+sub init()
+    m.top.functionName = "getImageURI"
+end sub
+
+sub getImageURI()
+    response = api.shows.GetEpisodes(m.top.seriesID, {
+        seasonId: m.top.seasonID, UserId: m.global.session.user.id,
+        limit: 5, enableUserData: false, imageTypeLimit: 1, EnableImageTypes: "Primary"
+    })
+    if not isChainValid(response, "Items") then return
+    for each episode in response.Items
+        if isChainValid(episode, "ImageTags.Primary")
+            m.top.uri = ImageURL(episode.Id, "Primary", {tag: episode.ImageTags.Primary})
+            return
+        end if
+    end for
+end sub

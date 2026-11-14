@@ -20,7 +20,7 @@ sub UpdateStatus()
     config = GetSeerrConfig()
 
     if config.enabled
-        m.statusLabel.text = "Connected via Moonfin Plugin"
+        m.statusLabel.text = "Connected via server integration"
         m.warningLabel.visible = false
 
         m.discoverButton.visible = true

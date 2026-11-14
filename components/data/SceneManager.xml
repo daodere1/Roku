@@ -2,6 +2,9 @@
 <component name="SceneManager" extends="Group">
   <interface>
     <function name="pushScene" />
+    <function name="getTrailerPath" />
+    <function name="rememberTrailerPath" />
+    <function name="forgetTrailerPath" />
     <function name="popScene" />
     <function name="goHome" />
     <function name="settings" />

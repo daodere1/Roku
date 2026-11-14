@@ -4,8 +4,6 @@
         <field id="itemId" type="string" />
         <field id="itemType" type="string" value="" />
         <field id="isTVShow" type="boolean" value="false" />
-        <!-- Stops at a show's seasons and next up, for a screen that draws nothing else -->
-        <field id="seasonsOnly" type="boolean" value="false" />
         <field id="isEpisode" type="boolean" value="false" />
         <field id="showID" type="string" value="" />
         <field id="seasonID" type="string" value="" />
@@ -14,11 +12,8 @@
         <field id="personLimit" type="integer" value="100" />
         <!-- The classic and modern screens list the collection a film is in, Spotlight loads its own -->
         <field id="includeCollections" type="boolean" value="false" />
-        <!-- Only the screens that draw poster labels ask for them -->
-        <field id="withLabels" type="boolean" value="false" />
         <field id="providerIds" type="assocarray" />
         <field id="content" type="node" />
-        <field id="allPeople" type="array" />
         <!-- Multi-server support fields -->
         <field id="serverUrl" type="string" value="" />
         <field id="serverUserId" type="string" value="" />

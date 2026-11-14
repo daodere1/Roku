@@ -33,8 +33,6 @@ namespace moonfinPlugin
             tmdbThumbsSupported: result.tmdbThumbsSupported ?? false,
             tmdbReviewsSupported: result.tmdbReviewsSupported ?? false,
             tmdbDetailsSupported: result.tmdbDetailsSupported ?? false,
-            ' Whether the custom rows endpoint serves the JustWatch and TMDB discover charts
-            discoverChartsSupported: result.discoverChartsSupported ?? false,
             seerrEnabled: result.seerrEnabled ?? false,
             messagesSupported: result.messagesSupported ?? false,
             clientLogSupported: result.clientLogSupported ?? false,
@@ -42,14 +40,6 @@ namespace moonfinPlugin
             recommendationsSupported: result.recommendationsSupported ?? false,
             incompleteRecordingsSupported: result.incompleteRecordingsSupported ?? false,
             extendedCompleteShowingsSupported: result.extendedCompleteShowingsSupported ?? false,
-            smartSearchEnabled: result.smartSearchEnabled ?? false,
-            ' Whether this user can open the arr calendar, and the window of days the server serves
-            calendarAvailable: result.calendarAvailable ?? false,
-            calendarDaysBack: result.calendarDaysBack ?? 14,
-            calendarDaysAhead: result.calendarDaysAhead ?? 90,
-            socketRelay: result.socketRelay ?? false,
-            ' Whether Moonbase reads a title's Radarr/Sonarr queue, which says why a download is stuck
-            arrQueueAvailable: result.arrQueueAvailable ?? false,
             defaultSettings: result.defaultSettings ?? invalid
         }
         if toBoolean(info.seerrEnabled) = true then info.seerrDisplayName = displayName
@@ -318,32 +308,11 @@ namespace moonfinPlugin
             companies.push({
                 id: c.id,
                 name: c.name ?? "",
-                hasLogo: c.hasLogo = true,
-                logoUrl: c.logoUrl ?? ""
+                hasLogo: c.hasLogo = true
             })
         end for
 
         return companies
-    end function
-
-    ' Moonbase's studio and network logos as TMDB images by lowercased name, already white for a
-    ' dark logo. A studio item carries no TMDB id, so the Studios row matches it by name.
-    function GetStudioLogoUrls() as object
-        urls = {}
-        req = APIRequest("/Moonfin/Tmdb/StudioLogos")
-        if not isValid(req) then return urls
-
-        result = normalizeKeys(getJson(req))
-        if not isValid(result) or (result.success ?? true) = false then return urls
-        if not isValidAndNotEmpty(result.companies) then return urls
-
-        for each c in result.companies
-            c = normalizeKeys(c)
-            if isValid(c) and isValidAndNotEmpty(c.logoUrl) and isValidAndNotEmpty(c.name)
-                urls[LCase(c.name.Trim())] = c.logoUrl
-            end if
-        end for
-        return urls
     end function
 
     ' Builds a Poster uri for a cached TMDB studio logo. The endpoint wants the user's token,
@@ -409,8 +378,8 @@ namespace moonfinPlugin
         end if
 
         ' A Poster won't follow a redirect from http to https, so a plain http server asks the
-        ' plugin to send it to TMDB over http too. Moonbase for Plex is always plain http.
-        if LCase(Left(toString(get_url()), 7)) = "http://" or isPlexServer() then params["scheme"] = "http"
+        ' plugin to send it to TMDB over http too.
+        if LCase(Left(toString(get_url()), 7)) = "http://" then params["scheme"] = "http"
 
         url = buildURL("/Moonfin/Tmdb/Thumb", moonfinPlugin.WithUserToken(params))
         if not isValid(url) then return ""
@@ -433,9 +402,9 @@ namespace moonfinPlugin
         return defaultVal
     end function
 
-    function IsEnabled(globalSession = invalid as dynamic) as boolean
+    function IsEnabled() as boolean
         ' IsRatingsEnabled runs this on every focus change, so read the session only once
-        if not isValid(globalSession) then globalSession = m.global.session
+        globalSession = m.global.session
         if not moonfinPlugin.IsPluginInstalled(globalSession) then return false
         return moonfinPlugin.ParseBoolSetting(chainLookupReturn(globalSession, "user.settings.`plugin.enabled`", false), false)
     end function
@@ -465,56 +434,9 @@ namespace moonfinPlugin
         return pluginInfo.installed = true
     end function
 
-    ' The libraries Moonbase serves games from, keyed by lowercased id and name. The plugin can
-    ' name a library by its folder's id instead of the view id the app sees, so the name counts too.
-    function GameLibraries() as object
-        found = {}
-        if not moonfinPlugin.IsPluginInstalled() then return found
-        req = APIRequest("/Moonfin/Games/Libraries")
-        if not isValid(req) then return found
-        result = getJson(req)
-        if type(result) <> "roArray" then return found
-        for each library in result
-            if type(library) = "roAssociativeArray"
-                for each key in ["id", "name"]
-                    value = library.LookupCI(key)
-                    if isValidAndNotEmpty(value) then found[LCase(value.ToStr())] = true
-                end for
-            end if
-        end for
-        return found
-    end function
-
     function AreRecommendationsSupported() as boolean
         if not moonfinPlugin.IsEnabled() then return false
         return chainLookupReturn(m.global.session, "pluginInfo.recommendationsSupported", false) = true
-    end function
-
-    ' The admin can let the server answer searches written in plain words
-    function IsSmartSearchEnabled() as boolean
-        if not moonfinPlugin.IsEnabled() then return false
-        return chainLookupReturn(m.global.session, "pluginInfo.smartSearchEnabled", false) = true
-    end function
-
-    ' Off when no Sonarr or Radarr is linked, or the admin kept the calendar to admins
-    function IsCalendarAvailable() as boolean
-        if not moonfinPlugin.IsEnabled() then return false
-        return chainLookupReturn(m.global.session, "pluginInfo.calendarAvailable", false) = true
-    end function
-
-    ' The days before and after today the server's calendar covers
-    function CalendarWindow() as object
-        info = chainLookupReturn(m.global.session, "pluginInfo", {})
-        back = info.calendarDaysBack
-        ahead = info.calendarDaysAhead
-        if not isValid(back) or back < 0 then back = 14
-        if not isValid(ahead) or ahead < 0 then ahead = 90
-        return { back: Int(back), ahead: Int(ahead) }
-    end function
-
-    ' The server's best library and Seerr matches for a described title, or invalid when it has none to give
-    function SmartSearch(query as string) as dynamic
-        return getJsonWithin(APIRequest("/Moonfin/SmartSearch", { query: query, limit: 20 }), 15000)
     end function
 
     ' Home rows ("home") and the media bar ("mediaBar") keep ratings settings of their own, and

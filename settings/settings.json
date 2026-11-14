@@ -1,6 +1,6 @@
 [
   {
-    "title": "Moonfin Settings",
+    "title": "SpeshTV Settings",
     "requires": "notKidsMode",
     "description": "Navigation, home screen, media bar, and visual customization.",
     "glyph": "tune",
@@ -92,7 +92,7 @@
                 "id": "0x00695C"
               },
               {
-                "title": "Moonfin Cyan",
+                "title": "SpeshTV Cyan",
                 "id": "0x00A4DC"
               },
               {
@@ -186,8 +186,7 @@
             "settingName": "navbar.show_livetv",
             "glyph": "live_tv",
             "type": "bool",
-            "default": "true",
-            "requires": "liveTv"
+            "default": "true"
           },
           {
             "title": "Show Libraries in Toolbar",
@@ -220,17 +219,7 @@
             "settingName": "navbar.show_seerr",
             "logo": "seerr",
             "type": "bool",
-            "default": "false",
-            "requires": "setting:seerr.enabled"
-          },
-          {
-            "title": "Show Calendar Button",
-            "description": "Show the calendar of upcoming episodes and movies in the navigation bar",
-            "settingName": "navbar.show_calendar",
-            "glyph": "calendar_month_rounded",
-            "type": "bool",
-            "default": "true",
-            "requires": "calendar"
+            "default": "true"
           },
           {
             "title": "Show Messages Button",
@@ -248,15 +237,6 @@
             "type": "bool",
             "default": "false",
             "requires": "social"
-          },
-          {
-            "title": "Watch Parties Button",
-            "description": "Show the Watch Parties button on the navigation bar",
-            "settingName": "navbar.show_syncplay",
-            "glyph": "people_alt_rounded",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:watchParty.enabled"
           }
         ]
       },
@@ -276,7 +256,7 @@
             "settingName": "ui.home.rowsStyle",
             "glyph": "view_carousel",
             "type": "radio",
-            "default": "carousel",
+            "default": "v2",
             "options": [
               {
                 "title": "Modern",
@@ -285,10 +265,6 @@
               {
                 "title": "Classic",
                 "id": "v1"
-              },
-              {
-                "title": "Carousel",
-                "id": "carousel"
               }
             ]
           },
@@ -299,7 +275,7 @@
             "glyph": "photo_library_outlined",
             "requires": "setting:ui.home.rowsStyle!=v1",
             "type": "bool",
-            "default": "false"
+            "default": "true"
           },
           {
             "title": "Media Preview",
@@ -454,43 +430,6 @@
             "slider": true
           },
           {
-            "title": "Card Size",
-            "settingName": "ui.posterSize",
-            "glyph": "photo_size_select_large",
-            "type": "radio",
-            "default": "medium",
-            "options": [
-              {
-                "title": "Small",
-                "id": "small"
-              },
-              {
-                "title": "Medium",
-                "id": "medium"
-              },
-              {
-                "title": "Large",
-                "id": "large"
-              },
-              {
-                "title": "Extra Large",
-                "id": "extraLarge"
-              },
-              {
-                "title": "Grandparents",
-                "id": "grandparents"
-              }
-            ]
-          },
-          {
-            "title": "Image Type per Row",
-            "description": "Configure image type for each enabled home row",
-            "settingName": "ui.home.rowImageTypes",
-            "glyph": "image_outlined",
-            "requires": "setting:ui.home.rowsStyle=v1",
-            "type": ""
-          },
-          {
             "title": "Continue Watching and Next Up",
             "description": "How recently watched titles are shown",
             "type": "section"
@@ -542,15 +481,6 @@
             "glyph": "image_aspect_ratio",
             "type": "bool",
             "default": "false"
-          },
-          {
-            "title": "Home Row Info Overlay",
-            "description": "Show title and metadata when browsing home rows",
-            "settingName": "ui.home.rowInfoOverlay",
-            "glyph": "info_outline",
-            "requires": "setting:ui.home.rowsStyle=v1",
-            "type": "bool",
-            "default": "true"
           },
           {
             "title": "Hide Media Description",
@@ -673,54 +603,6 @@
                 "default": "false"
               },
               {
-                "title": "Audio Rows Sorting",
-                "description": "Sort Audio rows by date added, release date, alphabetically, and more.",
-                "settingName": "ui.home.audioRowsSortBy",
-                "glyph": "sort",
-                "type": "radio",
-                "default": "name",
-                "options": [
-                  {
-                    "title": "Name",
-                    "id": "name"
-                  },
-                  {
-                    "title": "Date Added",
-                    "id": "dateAdded"
-                  },
-                  {
-                    "title": "Release Date",
-                    "id": "premiereDate"
-                  },
-                  {
-                    "title": "Runtime",
-                    "id": "runtime"
-                  },
-                  {
-                    "title": "Random",
-                    "id": "random"
-                  }
-                ]
-              },
-              {
-                "title": "Sort Order",
-                "description": "Sort Audio rows in ascending or descending order.",
-                "settingName": "ui.home.audioRowsSortOrder",
-                "glyph": "swap_vert",
-                "type": "radio",
-                "default": "ascending",
-                "options": [
-                  {
-                    "title": "Ascending",
-                    "id": "ascending"
-                  },
-                  {
-                    "title": "Descending",
-                    "id": "descending"
-                  }
-                ]
-              },
-              {
                 "title": "Collections Row Sorting",
                 "description": "Sort Collections rows by date added, release date, alphabetically, and more.",
                 "settingName": "ui.home.collectionsRowSortBy",
@@ -743,24 +625,6 @@
                   {
                     "title": "Playlist Order",
                     "id": "playlistOrder"
-                  }
-                ]
-              },
-              {
-                "title": "Sort Order",
-                "description": "Sort Collections rows in ascending or descending order.",
-                "settingName": "ui.home.collectionsRowSortOrder",
-                "glyph": "swap_vert",
-                "type": "radio",
-                "default": "ascending",
-                "options": [
-                  {
-                    "title": "Ascending",
-                    "id": "ascending"
-                  },
-                  {
-                    "title": "Descending",
-                    "id": "descending"
                   }
                 ]
               },
@@ -822,14 +686,14 @@
               },
               {
                 "title": "Recommendation System",
-                "description": "Moonfin scores your own library, Jellyfin takes the picks from the server, TMDb uses Seerr, and Hybrid leads with the server then tops up locally",
+                "description": "SpeshTV scores your own library, Jellyfin takes the picks from the server, TMDb uses Seerr, and Hybrid leads with the server then tops up locally",
                 "settingName": "ui.home.recommendationSource",
                 "glyph": "auto_awesome",
                 "type": "radio",
                 "default": "local",
                 "options": [
                   {
-                    "title": "Moonfin Recommends",
+                    "title": "SpeshTV Recommends",
                     "id": "local"
                   },
                   {
@@ -886,14 +750,14 @@
               },
               {
                 "title": "Recommendation Source",
-                "description": "Moonfin scores your own library, Jellyfin takes the picks from the server, TMDb uses Seerr, and Hybrid leads with the server then tops up locally",
+                "description": "SpeshTV scores your own library, Jellyfin takes the picks from the server, TMDb uses Seerr, and Hybrid leads with the server then tops up locally",
                 "settingName": "ui.home.sinceYouWatchedSource",
                 "glyph": "source",
                 "type": "radio",
                 "default": "local",
                 "options": [
                   {
-                    "title": "Moonfin Recommends",
+                    "title": "SpeshTV Recommends",
                     "id": "local"
                   },
                   {
@@ -1001,7 +865,7 @@
           {
             "title": "Section 1",
             "visible": false,
-            "description": "Select what to show in section 1. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 1. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection0",
             "glyph": "list",
             "type": "radio",
@@ -1060,7 +924,7 @@
           {
             "title": "Section 2",
             "visible": false,
-            "description": "Select what to show in section 2. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 2. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection1",
             "glyph": "list",
             "type": "radio",
@@ -1119,7 +983,7 @@
           {
             "title": "Section 3",
             "visible": false,
-            "description": "Select what to show in section 3. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 3. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection2",
             "glyph": "list",
             "type": "radio",
@@ -1178,7 +1042,7 @@
           {
             "title": "Section 4",
             "visible": false,
-            "description": "Select what to show in section 4. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 4. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection3",
             "glyph": "list",
             "type": "radio",
@@ -1237,7 +1101,7 @@
           {
             "title": "Section 5",
             "visible": false,
-            "description": "Select what to show in section 5. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 5. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection4",
             "glyph": "list",
             "type": "radio",
@@ -1296,7 +1160,7 @@
           {
             "title": "Section 6",
             "visible": false,
-            "description": "Select what to show in section 6. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 6. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection5",
             "glyph": "list",
             "type": "radio",
@@ -1355,7 +1219,7 @@
           {
             "title": "Section 7",
             "visible": false,
-            "description": "Select what to show in section 7. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 7. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection6",
             "glyph": "list",
             "type": "radio",
@@ -1414,7 +1278,7 @@
           {
             "title": "Section 8",
             "visible": false,
-            "description": "Select what to show in section 8. Moonfin will need to be closed and reopened for change to take effect.",
+            "description": "Select what to show in section 8. SpeshTV will need to be closed and reopened for change to take effect.",
             "settingName": "homeScreenSection7",
             "glyph": "list",
             "type": "radio",
@@ -1491,7 +1355,7 @@
             "default": "moonfin",
             "options": [
               {
-                "title": "Moonfin",
+                "title": "SpeshTV",
                 "id": "moonfin"
               },
               {
@@ -1635,7 +1499,7 @@
                 "id": "0x00695C"
               },
               {
-                "title": "Moonfin Cyan",
+                "title": "SpeshTV Cyan",
                 "id": "0x00A4DC"
               },
               {
@@ -1741,65 +1605,19 @@
           },
           {
             "title": "Media Bar Source",
-            "description": "Choose which titles the Media Bar picks from its source libraries and collections: random ones, the newest, or series with new episodes.",
+            "description": "Choose whether Media Bar items come from libraries or collections/playlists.",
             "settingName": "ui.home.mediaBarSourceType",
             "glyph": "source",
             "type": "radio",
-            "default": "random",
+            "default": "library",
             "options": [
               {
-                "title": "Random",
-                "id": "random"
+                "title": "Libraries",
+                "id": "library"
               },
               {
-                "title": "Recently Added",
-                "id": "recentlyAdded"
-              },
-              {
-                "title": "Recently Released",
-                "id": "recentlyReleased"
-              },
-              {
-                "title": "New Seasons & Episodes",
-                "id": "newReleases"
-              }
-            ]
-          },
-          {
-            "title": "New Release Banner",
-            "description": "Flag series with a new season or new episodes that aired recently.",
-            "settingName": "ui.home.mediaBarNewReleaseBanner",
-            "glyph": "new_releases",
-            "type": "bool",
-            "default": "true"
-          },
-          {
-            "title": "New Release Window",
-            "description": "How long after an episode airs it still counts as new.",
-            "settingName": "ui.home.mediaBarNewReleaseDays",
-            "glyph": "calendar_today",
-            "type": "radio",
-            "default": "30",
-            "options": [
-              {
-                "title": "7 days",
-                "id": "7"
-              },
-              {
-                "title": "14 days",
-                "id": "14"
-              },
-              {
-                "title": "30 days",
-                "id": "30"
-              },
-              {
-                "title": "60 days",
-                "id": "60"
-              },
-              {
-                "title": "90 days",
-                "id": "90"
+                "title": "Collections & Playlists",
+                "id": "collection"
               }
             ]
           },
@@ -1808,14 +1626,16 @@
             "settingName": "ui.home.mediaBarLibraryIds",
             "glyph": "folder",
             "type": "string",
-            "default": "[]"
+            "default": "[]",
+            "requires": "setting:ui.home.mediaBarSourceType!=collection"
           },
           {
             "title": "Source Collections",
             "settingName": "ui.home.mediaBarCollectionIds",
             "glyph": "collections_bookmark",
             "type": "string",
-            "default": "[]"
+            "default": "[]",
+            "requires": "setting:ui.home.mediaBarSourceType=collection"
           },
           {
             "title": "External Lists",
@@ -1883,7 +1703,7 @@
             "settingName": "ui.home.mediaBarTrailerPreview",
             "glyph": "movie_outlined",
             "type": "bool",
-            "default": "false"
+            "default": "true"
           },
           {
             "title": "Mute Trailer Audio",
@@ -2062,7 +1882,7 @@
       },
       {
         "title": "Loading Animation",
-        "description": "Customize the loading animations used throughout Moonfin",
+        "description": "Customize the loading animations used throughout SpeshTV",
         "glyph": "motion_photos_on_outlined",
         "children": [
           {
@@ -2081,7 +1901,7 @@
                 "id": "none"
               },
               {
-                "title": "Moonfin Logo",
+                "title": "SpeshTV Logo",
                 "id": "moonfinLogo"
               },
               {
@@ -2097,7 +1917,7 @@
                 "id": "moonPhases"
               },
               {
-                "title": "Moonfin Phases",
+                "title": "SpeshTV Phases",
                 "id": "moonfinPhases"
               },
               {
@@ -2265,14 +2085,14 @@
     ]
   },
   {
-    "title": "Moonfin Plugin",
+    "title": "Server Integration",
     "requires": "notKidsMode",
     "description": "Plugin connectivity, settings sync, ratings, Seerr, and Achievement Badges.",
     "glyph": "extension",
     "children": [
       {
         "title": "Enable Plugin",
-        "description": "Connect to the Moonfin server plugin. Requires the Moonfin plugin to be installed on your Jellyfin server.",
+        "description": "Connect to the compatible server plugin. Requires the compatible server plugin to be installed on your Jellyfin server.",
         "settingName": "plugin.enabled",
         "glyph": "extension",
         "type": "bool",
@@ -2338,7 +2158,7 @@
           },
           {
             "title": "TMDB",
-            "description": "TMDB episode rating integration via the Moonfin server plugin.",
+            "description": "TMDB episode rating integration via the compatible server plugin.",
             "glyph": "stars",
             "children": [
               {
@@ -2392,262 +2212,18 @@
           },
           {
             "title": "Show Seerr Availability Badges",
-            "description": "Show the Seerr status on posters and seasons across the app",
+            "description": "Show season availability badges on media details pages",
             "settingName": "seerr.showAvailabilityBadges",
             "glyph": "check_circle_outline",
             "type": "bool",
             "default": "true"
           },
           {
-            "title": "Badge Style",
-            "description": "Badge puts Seerr's dot in a corner. Banner runs the status across the top of the poster.",
-            "settingName": "seerr.badgeStyle",
-            "glyph": "label",
-            "requires": "setting:seerr.showAvailabilityBadges",
-            "type": "radio",
-            "default": "badge",
-            "options": [
-              {
-                "title": "Badge",
-                "id": "badge"
-              },
-              {
-                "title": "Banner",
-                "id": "banner"
-              }
-            ]
-          },
-          {
             "title": "Account & Sign In",
-            "description": "Sign in to Seerr or manage your logged-in account. Seerr is accessed through the Moonfin server plugin, so there is nothing to configure here beyond signing in.",
+            "description": "Sign in to Seerr or manage your logged-in account. Seerr is accessed through the compatible server plugin, so there is nothing to configure here beyond signing in.",
             "settingName": "seerr.accountSettings",
             "glyph": "account_circle_outlined",
             "children": []
-          }
-        ]
-      },
-      {
-        "title": "Calendar",
-        "description": "Style, filters and actions for the calendar",
-        "glyph": "calendar_month",
-        "requires": "calendar",
-        "children": [
-          {
-            "title": "View",
-            "type": "section"
-          },
-          {
-            "title": "Calendar style",
-            "description": "What the Calendar button opens. The full month is one button away in both.",
-            "settingName": "calendar.style",
-            "glyph": "view_agenda_outlined",
-            "type": "radio",
-            "default": "agenda",
-            "options": [
-              {
-                "title": "Agenda",
-                "id": "agenda"
-              },
-              {
-                "title": "Countdown",
-                "id": "countdown"
-              }
-            ]
-          },
-          {
-            "title": "Week starts on",
-            "settingName": "calendar.weekStart",
-            "glyph": "date_range_outlined",
-            "type": "radio",
-            "default": "locale",
-            "options": [
-              {
-                "title": "Auto",
-                "id": "locale"
-              },
-              {
-                "title": "Sunday",
-                "id": "sunday"
-              },
-              {
-                "title": "Monday",
-                "id": "monday"
-              }
-            ]
-          },
-          {
-            "title": "What shows",
-            "type": "section"
-          },
-          {
-            "title": "Show",
-            "description": "My shows keeps the series you favorited or started watching",
-            "settingName": "calendar.scope",
-            "glyph": "filter_list",
-            "type": "radio",
-            "default": "everything",
-            "options": [
-              {
-                "title": "Everything",
-                "id": "everything"
-              },
-              {
-                "title": "My shows",
-                "id": "myShows"
-              }
-            ]
-          },
-          {
-            "title": "Episodes",
-            "settingName": "calendar.showEpisodes",
-            "glyph": "live_tv",
-            "type": "bool",
-            "default": "true"
-          },
-          {
-            "title": "Movies",
-            "settingName": "calendar.showMovies",
-            "glyph": "movie_outlined",
-            "type": "bool",
-            "default": "true"
-          },
-          {
-            "title": "Radarr Show Cinema Releases",
-            "description": "Show cinema releases in the Radarr calendar",
-            "settingName": "calendar.radarr.showCinema",
-            "glyph": "theater_comedy",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:calendar.showMovies"
-          },
-          {
-            "title": "Radarr Show Digital Releases",
-            "description": "Show digital/streaming releases in the Radarr calendar",
-            "settingName": "calendar.radarr.showDigital",
-            "glyph": "tv",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:calendar.showMovies"
-          },
-          {
-            "title": "Radarr Show Physical Releases",
-            "description": "Show physical media releases in the Radarr calendar",
-            "settingName": "calendar.radarr.showPhysical",
-            "glyph": "album",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:calendar.showMovies"
-          },
-          {
-            "title": "Libraries",
-            "settingName": "calendar.libraryIds",
-            "glyph": "video_library_outlined",
-            "type": "string",
-            "default": "[]"
-          },
-          {
-            "title": "Include unmonitored",
-            "description": "Also list episodes and movies Sonarr and Radarr aren't set to download",
-            "settingName": "calendar.includeUnmonitored",
-            "glyph": "visibility_outlined",
-            "type": "bool",
-            "default": "false"
-          },
-          {
-            "title": "Specials",
-            "description": "Season 0 episodes, like extras and holiday specials",
-            "settingName": "calendar.showSpecials",
-            "glyph": "star_outline",
-            "type": "bool",
-            "default": "false"
-          },
-          {
-            "title": "Looks",
-            "type": "section"
-          },
-          {
-            "title": "Premiere and finale tags",
-            "description": "Mark premieres, finales and new seasons",
-            "settingName": "calendar.showBadges",
-            "glyph": "new_releases_outlined",
-            "type": "bool",
-            "default": "true"
-          },
-          {
-            "title": "Color by",
-            "description": "Type tells episodes from movies. Status shows what's in your library, coming up or missing.",
-            "settingName": "calendar.colorBy",
-            "glyph": "palette_outlined",
-            "type": "radio",
-            "default": "type",
-            "options": [
-              {
-                "title": "Type",
-                "id": "type"
-              },
-              {
-                "title": "Status",
-                "id": "status"
-              }
-            ]
-          },
-          {
-            "title": "Card image",
-            "description": "The artwork on the Countdown rows",
-            "settingName": "calendar.imageType",
-            "glyph": "image_outlined",
-            "requires": "setting:calendar.style=countdown",
-            "type": "radio",
-            "default": "poster",
-            "options": [
-              {
-                "title": "Poster",
-                "id": "poster"
-              },
-              {
-                "title": "Thumbnail",
-                "id": "thumb"
-              }
-            ]
-          },
-          {
-            "title": "Spoiler safe",
-            "description": "Hide episode titles and stills for shows you're behind on",
-            "settingName": "calendar.spoilerSafe",
-            "glyph": "visibility_off_outlined",
-            "type": "bool",
-            "default": "false"
-          },
-          {
-            "title": "Actions",
-            "type": "section"
-          },
-          {
-            "title": "Selecting an item",
-            "description": "What OK or a tap does on something that's already in your library",
-            "settingName": "calendar.selectAction",
-            "glyph": "touch_app_outlined",
-            "type": "radio",
-            "default": "details",
-            "options": [
-              {
-                "title": "Open details",
-                "id": "details"
-              },
-              {
-                "title": "Play when in library",
-                "id": "play"
-              }
-            ]
-          },
-          {
-            "title": "Request button",
-            "description": "Show the Seerr request button on missing movies and seasons",
-            "settingName": "calendar.requestButton",
-            "glyph": "add_circle_outline",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:seerr.enabled"
           }
         ]
       },
@@ -2672,7 +2248,7 @@
         "children": [
           {
             "title": "IMDb Lists",
-            "description": "Sort the IMDb chart rows.",
+            "description": "Configure IMDb Top 250, Popular, and other charts.",
             "glyph": "movie_outlined",
             "children": [
               {
@@ -2731,6 +2307,58 @@
                     "id": "descending"
                   }
                 ]
+              },
+              {
+                "title": "IMDb Lists",
+                "type": "section"
+              },
+              {
+                "title": "IMDb Top 250 Movies",
+                "description": "Show IMDb Top 250 Movies on the Home Screen",
+                "settingName": "imdb.top250movies",
+                "glyph": "movie_outlined",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "IMDb Top 250 TV Shows",
+                "description": "Show IMDb Top 250 TV Shows on the Home Screen",
+                "settingName": "imdb.top250tvshows",
+                "glyph": "live_tv",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "IMDb Most Popular Movies",
+                "description": "Show IMDb Most Popular Movies on the Home Screen",
+                "settingName": "imdb.mostpopularmovies",
+                "glyph": "trending_up",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "IMDb Most Popular TV Shows",
+                "description": "Show IMDb Most Popular TV Shows on the Home Screen",
+                "settingName": "imdb.mostpopulartvshows",
+                "glyph": "live_tv",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "IMDb Lowest Rated Movies",
+                "description": "Show IMDb Lowest Rated Movies on the Home Screen",
+                "settingName": "imdb.lowestratedmovies",
+                "glyph": "trending_down",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "IMDb Top English Movies",
+                "description": "Show IMDb Top English Movies on the Home Screen",
+                "settingName": "imdb.topenglishmovies",
+                "glyph": "language",
+                "type": "bool",
+                "default": "false"
               }
             ]
           },
@@ -2739,6 +2367,14 @@
             "description": "Show a row of holiday movies from your library, with Seerr suggestions when available.",
             "glyph": "celebration_outlined",
             "children": [
+              {
+                "title": "Seasonal Row",
+                "description": "Show a row of holiday movies from your library, with Seerr suggestions when available.",
+                "settingName": "seasonal.row.enabled",
+                "glyph": "celebration_outlined",
+                "type": "bool",
+                "default": "false"
+              },
               {
                 "title": "Country",
                 "description": "Which country's holidays the row follows. Automatic uses the country this device is set to.",
@@ -2766,14 +2402,6 @@
                 ]
               },
               {
-                "title": "Show All Year",
-                "description": "Show a holiday row outside the holiday dates too, a different ticked holiday each day.",
-                "settingName": "seasonal.row.allYear",
-                "glyph": "event_repeat",
-                "type": "bool",
-                "default": "false"
-              },
-              {
                 "title": "Holidays",
                 "description": "Untick a holiday to hide its row",
                 "settingName": "seasonal.row.hiddenHolidays",
@@ -2785,7 +2413,7 @@
           },
           {
             "title": "TMDB Lists",
-            "description": "Sort the TMDB chart rows.",
+            "description": "Configure Popular, Top Rated, and Trending TMDB lists.",
             "glyph": "trending_up",
             "children": [
               {
@@ -2844,6 +2472,114 @@
                     "id": "descending"
                   }
                 ]
+              },
+              {
+                "title": "TMDB Lists",
+                "type": "section"
+              },
+              {
+                "title": "TMDB Popular Movies",
+                "description": "Show TMDB Popular Movies on the Home Screen",
+                "settingName": "tmdb.popularmovies",
+                "glyph": "movie_outlined",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Top Rated Movies",
+                "description": "Show TMDB Top Rated Movies on the Home Screen",
+                "settingName": "tmdb.topratedmovies",
+                "glyph": "star_border",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Now Playing Movies",
+                "description": "Show TMDB Now Playing Movies on the Home Screen",
+                "settingName": "tmdb.nowplayingmovies",
+                "glyph": "play_arrow_outlined",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Upcoming Movies",
+                "description": "Show TMDB Upcoming Movies on the Home Screen",
+                "settingName": "tmdb.upcomingmovies",
+                "glyph": "upcoming",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Popular TV",
+                "description": "Show TMDB Popular TV on the Home Screen",
+                "settingName": "tmdb.populartv",
+                "glyph": "live_tv",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Top Rated TV",
+                "description": "Show TMDB Top Rated TV on the Home Screen",
+                "settingName": "tmdb.topratedtv",
+                "glyph": "live_tv",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Airing Today TV",
+                "description": "Show TMDB Airing Today TV on the Home Screen",
+                "settingName": "tmdb.airingtodaytv",
+                "glyph": "calendar_today",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB On The Air TV",
+                "description": "Show TMDB On The Air TV on the Home Screen",
+                "settingName": "tmdb.ontheairtv",
+                "glyph": "live_tv",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Trending Movie Daily",
+                "description": "Show TMDB Trending Movie Daily on the Home Screen",
+                "settingName": "tmdb.trendingmoviedaily",
+                "glyph": "trending_up",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Trending Movie Weekly",
+                "description": "Show TMDB Trending Movie Weekly on the Home Screen",
+                "settingName": "tmdb.trendingmovieweekly",
+                "glyph": "trending_up",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Trending TV Daily",
+                "description": "Show TMDB Trending TV Daily on the Home Screen",
+                "settingName": "tmdb.trendingtvdaily",
+                "glyph": "trending_up",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Trending TV Weekly",
+                "description": "Show TMDB Trending TV Weekly on the Home Screen",
+                "settingName": "tmdb.trendingtvweekly",
+                "glyph": "trending_up",
+                "type": "bool",
+                "default": "false"
+              },
+              {
+                "title": "TMDB Trending All Weekly",
+                "description": "Show TMDB Trending All Weekly on the Home Screen",
+                "settingName": "tmdb.trendingallweekly",
+                "glyph": "trending_up",
+                "type": "bool",
+                "default": "false"
               }
             ]
           },
@@ -3021,9 +2757,17 @@
           },
           {
             "title": "Upcoming Calendars",
-            "description": "Choose what the Radarr and Sonarr rows show.",
+            "description": "Toggle Upcoming Calendars from Radarr/Sonarr.",
             "glyph": "calendar_month",
             "children": [
+              {
+                "title": "Enable Radarr Calendar",
+                "description": "Show upcoming movies from Radarr on the Home Screen",
+                "settingName": "calendar.radarr.enabled",
+                "glyph": "movie_outlined",
+                "type": "bool",
+                "default": "false"
+              },
               {
                 "title": "Radarr Show Cinema Releases",
                 "description": "Show cinema releases in the Radarr calendar",
@@ -3057,12 +2801,12 @@
                 "default": "true"
               },
               {
-                "title": "Hide Movies Already on the Server",
-                "description": "Leave out movies Radarr has already downloaded",
-                "settingName": "calendar.radarr.hideDownloaded",
-                "glyph": "cloud_download",
+                "title": "Enable Sonarr Calendar",
+                "description": "Show upcoming TV shows from Sonarr on the Home Screen",
+                "settingName": "calendar.sonarr.enabled",
+                "glyph": "live_tv",
                 "type": "bool",
-                "default": "true"
+                "default": "false"
               },
               {
                 "title": "Sonarr Show Episode Info",
@@ -3081,29 +2825,12 @@
                 "default": "true"
               },
               {
-                "title": "Hide Episodes Already on the Server",
-                "description": "Leave out episodes Sonarr has already downloaded",
-                "settingName": "calendar.sonarr.hideDownloaded",
-                "glyph": "cloud_download",
-                "type": "bool",
-                "default": "true"
-              },
-              {
                 "title": "Merge Radarr/Sonarr Calendars",
                 "description": "Merge Radarr and Sonarr calendars into a single row on the Home Screen",
                 "settingName": "calendar.merge",
                 "glyph": "merge_type",
                 "type": "bool",
                 "default": "false"
-              },
-              {
-                "title": "See All card",
-                "description": "End the upcoming rows with a card that opens the calendar",
-                "settingName": "calendar.rowSeeAll",
-                "glyph": "calendar_view_month",
-                "type": "bool",
-                "default": "true",
-                "requires": "calendar"
               }
             ]
           }
@@ -3342,6 +3069,14 @@
                 "default": "false"
               }
             ]
+          },
+          {
+            "title": "Custom Trickplay",
+            "description": "Display custom trickplay images even if this Roku says it's displaying its own. This may cause the two images to overlay on top of each other.",
+            "settingName": "playback.trickplay.forcecustom",
+            "glyph": "image",
+            "type": "bool",
+            "default": "false"
           },
           {
             "title": "Force Transcoding",
@@ -4221,7 +3956,7 @@
               },
               {
                 "id": "oci",
-                "title": "Occitan (post 1500); Provençal"
+                "title": "Occitan (post 1500); Proven\u00e7al"
               },
               {
                 "id": "oji",
@@ -4453,7 +4188,7 @@
               },
               {
                 "id": "vol",
-                "title": "Volapük"
+                "title": "Volap\u00fck"
               },
               {
                 "id": "wln",
@@ -5055,7 +4790,7 @@
               },
               {
                 "id": "oci",
-                "title": "Occitan (post 1500); Provençal"
+                "title": "Occitan (post 1500); Proven\u00e7al"
               },
               {
                 "id": "oji",
@@ -5287,7 +5022,7 @@
               },
               {
                 "id": "vol",
-                "title": "Volapük"
+                "title": "Volap\u00fck"
               },
               {
                 "id": "wln",
@@ -5876,7 +5611,7 @@
               },
               {
                 "id": "oci",
-                "title": "Occitan (post 1500); Provençal"
+                "title": "Occitan (post 1500); Proven\u00e7al"
               },
               {
                 "id": "oji",
@@ -6108,7 +5843,7 @@
               },
               {
                 "id": "vol",
-                "title": "Volapük"
+                "title": "Volap\u00fck"
               },
               {
                 "id": "wln",
@@ -6669,7 +6404,7 @@
               },
               {
                 "id": "oci",
-                "title": "Occitan (post 1500); Provençal"
+                "title": "Occitan (post 1500); Proven\u00e7al"
               },
               {
                 "id": "oji",
@@ -6901,776 +6636,7 @@
               },
               {
                 "id": "vol",
-                "title": "Volapük"
-              },
-              {
-                "id": "wln",
-                "title": "Walloon"
-              },
-              {
-                "id": "cym",
-                "title": "Welsh"
-              },
-              {
-                "id": "fry",
-                "title": "Western Frisian"
-              },
-              {
-                "id": "wol",
-                "title": "Wolof"
-              },
-              {
-                "id": "xho",
-                "title": "Xhosa"
-              },
-              {
-                "id": "yid",
-                "title": "Yiddish"
-              },
-              {
-                "id": "yor",
-                "title": "Yoruba"
-              },
-              {
-                "id": "zha",
-                "title": "Zhuang; Chuang"
-              },
-              {
-                "id": "zul",
-                "title": "Zulu"
-              }
-            ]
-          },
-          {
-            "title": "Secondary Subtitles",
-            "description": "Show a second subtitle track at the same time. The subtitle menu then asks for the primary or secondary track first",
-            "settingName": "playback.subs.secondary.enabled",
-            "glyph": "subtitles_outlined",
-            "type": "bool",
-            "default": "false"
-          },
-          {
-            "title": "Preferred Secondary Subtitle Language",
-            "settingName": "playback.subs.secondary.language",
-            "glyph": "language",
-            "type": "radio",
-            "default": "anyLanguage",
-            "options": [
-              {
-                "title": "None",
-                "id": "anyLanguage"
-              },
-              {
-                "id": "abk",
-                "title": "Abkhazian"
-              },
-              {
-                "id": "aar",
-                "title": "Afar"
-              },
-              {
-                "id": "afr",
-                "title": "Afrikaans"
-              },
-              {
-                "id": "aka",
-                "title": "Akan"
-              },
-              {
-                "id": "sqi",
-                "title": "Albanian"
-              },
-              {
-                "id": "amh",
-                "title": "Amharic"
-              },
-              {
-                "id": "ara",
-                "title": "Arabic"
-              },
-              {
-                "id": "arg",
-                "title": "Aragonese"
-              },
-              {
-                "id": "hye",
-                "title": "Armenian"
-              },
-              {
-                "id": "asm",
-                "title": "Assamese"
-              },
-              {
-                "id": "ava",
-                "title": "Avaric"
-              },
-              {
-                "id": "ave",
-                "title": "Avestan"
-              },
-              {
-                "id": "aym",
-                "title": "Aymara"
-              },
-              {
-                "id": "aze",
-                "title": "Azerbaijani"
-              },
-              {
-                "id": "bam",
-                "title": "Bambara"
-              },
-              {
-                "id": "bak",
-                "title": "Bashkir"
-              },
-              {
-                "id": "eus",
-                "title": "Basque"
-              },
-              {
-                "id": "bel",
-                "title": "Belarusian"
-              },
-              {
-                "id": "ben",
-                "title": "Bengali"
-              },
-              {
-                "id": "bih",
-                "title": "Bihari languages"
-              },
-              {
-                "id": "bis",
-                "title": "Bislama"
-              },
-              {
-                "id": "bos",
-                "title": "Bosnian"
-              },
-              {
-                "id": "bre",
-                "title": "Breton"
-              },
-              {
-                "id": "bul",
-                "title": "Bulgarian"
-              },
-              {
-                "id": "mya",
-                "title": "Burmese"
-              },
-              {
-                "id": "cat",
-                "title": "Catalan; Valencian"
-              },
-              {
-                "id": "khm",
-                "title": "Central Khmer"
-              },
-              {
-                "id": "cha",
-                "title": "Chamorro"
-              },
-              {
-                "id": "che",
-                "title": "Chechen"
-              },
-              {
-                "id": "nya",
-                "title": "Chichewa; Chewa; Nyanja"
-              },
-              {
-                "id": "zho",
-                "title": "Chinese"
-              },
-              {
-                "id": "chv",
-                "title": "Chuvash"
-              },
-              {
-                "id": "cor",
-                "title": "Cornish"
-              },
-              {
-                "id": "cos",
-                "title": "Corsican"
-              },
-              {
-                "id": "cre",
-                "title": "Cree"
-              },
-              {
-                "id": "hrv",
-                "title": "Croatian"
-              },
-              {
-                "id": "ces",
-                "title": "Czech"
-              },
-              {
-                "id": "dan",
-                "title": "Danish"
-              },
-              {
-                "id": "div",
-                "title": "Divehi; Dhivehi; Maldivian"
-              },
-              {
-                "id": "nld",
-                "title": "Dutch; Flemish"
-              },
-              {
-                "id": "dzo",
-                "title": "Dzongkha"
-              },
-              {
-                "id": "eng",
-                "title": "English"
-              },
-              {
-                "id": "epo",
-                "title": "Esperanto"
-              },
-              {
-                "id": "est",
-                "title": "Estonian"
-              },
-              {
-                "id": "ewe",
-                "title": "Ewe"
-              },
-              {
-                "id": "fao",
-                "title": "Faroese"
-              },
-              {
-                "id": "fij",
-                "title": "Fijian"
-              },
-              {
-                "id": "fin",
-                "title": "Finnish"
-              },
-              {
-                "id": "fra",
-                "title": "French"
-              },
-              {
-                "id": "frc",
-                "title": "French (Canada)"
-              },
-              {
-                "id": "ful",
-                "title": "Fulah"
-              },
-              {
-                "id": "gla",
-                "title": "Gaelic; Scottish Gaelic"
-              },
-              {
-                "id": "glg",
-                "title": "Galician"
-              },
-              {
-                "id": "lug",
-                "title": "Ganda"
-              },
-              {
-                "id": "kat",
-                "title": "Georgian"
-              },
-              {
-                "id": "deu",
-                "title": "German"
-              },
-              {
-                "id": "ell",
-                "title": "Greek"
-              },
-              {
-                "id": "grn",
-                "title": "Guarani"
-              },
-              {
-                "id": "guj",
-                "title": "Gujarati"
-              },
-              {
-                "id": "hat",
-                "title": "Haitian; Haitian Creole"
-              },
-              {
-                "id": "hau",
-                "title": "Hausa"
-              },
-              {
-                "id": "heb",
-                "title": "Hebrew"
-              },
-              {
-                "id": "her",
-                "title": "Herero"
-              },
-              {
-                "id": "hin",
-                "title": "Hindi"
-              },
-              {
-                "id": "hmo",
-                "title": "Hiri Motu"
-              },
-              {
-                "id": "hun",
-                "title": "Hungarian"
-              },
-              {
-                "id": "isl",
-                "title": "Icelandic"
-              },
-              {
-                "id": "ido",
-                "title": "Ido"
-              },
-              {
-                "id": "ibo",
-                "title": "Igbo"
-              },
-              {
-                "id": "ind",
-                "title": "Indonesian"
-              },
-              {
-                "id": "ina",
-                "title": "Interlingua (International Auxiliary Language Association)"
-              },
-              {
-                "id": "ile",
-                "title": "Interlingue; Occidental"
-              },
-              {
-                "id": "iku",
-                "title": "Inuktitut"
-              },
-              {
-                "id": "ipk",
-                "title": "Inupiaq"
-              },
-              {
-                "id": "gle",
-                "title": "Irish"
-              },
-              {
-                "id": "ita",
-                "title": "Italian"
-              },
-              {
-                "id": "jpn",
-                "title": "Japanese"
-              },
-              {
-                "id": "jav",
-                "title": "Javanese"
-              },
-              {
-                "id": "kal",
-                "title": "Kalaallisut; Greenlandic"
-              },
-              {
-                "id": "kan",
-                "title": "Kannada"
-              },
-              {
-                "id": "kau",
-                "title": "Kanuri"
-              },
-              {
-                "id": "kas",
-                "title": "Kashmiri"
-              },
-              {
-                "id": "kaz",
-                "title": "Kazakh"
-              },
-              {
-                "id": "kik",
-                "title": "Kikuyu; Gikuyu"
-              },
-              {
-                "id": "kin",
-                "title": "Kinyarwanda"
-              },
-              {
-                "id": "kir",
-                "title": "Kirghiz; Kyrgyz"
-              },
-              {
-                "id": "kom",
-                "title": "Komi"
-              },
-              {
-                "id": "kon",
-                "title": "Kongo"
-              },
-              {
-                "id": "kor",
-                "title": "Korean"
-              },
-              {
-                "id": "kua",
-                "title": "Kuanyama; Kwanyama"
-              },
-              {
-                "id": "kur",
-                "title": "Kurdish"
-              },
-              {
-                "id": "lao",
-                "title": "Lao"
-              },
-              {
-                "id": "lat",
-                "title": "Latin"
-              },
-              {
-                "id": "lav",
-                "title": "Latvian"
-              },
-              {
-                "id": "lim",
-                "title": "Limburgan; Limburger; Limburgish"
-              },
-              {
-                "id": "lin",
-                "title": "Lingala"
-              },
-              {
-                "id": "lit",
-                "title": "Lithuanian"
-              },
-              {
-                "id": "lub",
-                "title": "Luba-Katanga"
-              },
-              {
-                "id": "ltz",
-                "title": "Luxembourgish; Letzeburgesch"
-              },
-              {
-                "id": "mkd",
-                "title": "Macedonian"
-              },
-              {
-                "id": "mlg",
-                "title": "Malagasy"
-              },
-              {
-                "id": "msa",
-                "title": "Malay"
-              },
-              {
-                "id": "mal",
-                "title": "Malayalam"
-              },
-              {
-                "id": "mlt",
-                "title": "Maltese"
-              },
-              {
-                "id": "glv",
-                "title": "Manx"
-              },
-              {
-                "id": "mri",
-                "title": "Maori"
-              },
-              {
-                "id": "mar",
-                "title": "Marathi"
-              },
-              {
-                "id": "mah",
-                "title": "Marshallese"
-              },
-              {
-                "id": "mon",
-                "title": "Mongolian"
-              },
-              {
-                "id": "nau",
-                "title": "Nauru"
-              },
-              {
-                "id": "nav",
-                "title": "Navajo; Navaho"
-              },
-              {
-                "id": "nde",
-                "title": "Ndebele, North; North Ndebele"
-              },
-              {
-                "id": "nbl",
-                "title": "Ndebele, South; South Ndebele"
-              },
-              {
-                "id": "ndo",
-                "title": "Ndonga"
-              },
-              {
-                "id": "nep",
-                "title": "Nepali"
-              },
-              {
-                "id": "sme",
-                "title": "Northern Sami"
-              },
-              {
-                "id": "nor",
-                "title": "Norwegian"
-              },
-              {
-                "id": "nob",
-                "title": "Norwegian (Bokmal)"
-              },
-              {
-                "id": "nno",
-                "title": "Norwegian (Nynorsk)"
-              },
-              {
-                "id": "oci",
-                "title": "Occitan (post 1500); Provençal"
-              },
-              {
-                "id": "oji",
-                "title": "Ojibwa"
-              },
-              {
-                "id": "ori",
-                "title": "Oriya"
-              },
-              {
-                "id": "orm",
-                "title": "Oromo"
-              },
-              {
-                "id": "oss",
-                "title": "Ossetian; Ossetic"
-              },
-              {
-                "id": "pli",
-                "title": "Pali"
-              },
-              {
-                "id": "pan",
-                "title": "Panjabi; Punjabi"
-              },
-              {
-                "id": "fas",
-                "title": "Persian"
-              },
-              {
-                "id": "pol",
-                "title": "Polish"
-              },
-              {
-                "id": "por",
-                "title": "Portuguese"
-              },
-              {
-                "id": "pob",
-                "title": "Portuguese (Brazil)"
-              },
-              {
-                "id": "pop",
-                "title": "Portuguese (Portugal)"
-              },
-              {
-                "id": "pus",
-                "title": "Pushto; Pashto"
-              },
-              {
-                "id": "que",
-                "title": "Quechua"
-              },
-              {
-                "id": "ron",
-                "title": "Romanian; Moldavian; Moldovan"
-              },
-              {
-                "id": "roh",
-                "title": "Romansh"
-              },
-              {
-                "id": "run",
-                "title": "Rundi"
-              },
-              {
-                "id": "rus",
-                "title": "Russian"
-              },
-              {
-                "id": "smo",
-                "title": "Samoan"
-              },
-              {
-                "id": "sag",
-                "title": "Sango"
-              },
-              {
-                "id": "san",
-                "title": "Sanskrit"
-              },
-              {
-                "id": "srd",
-                "title": "Sardinian"
-              },
-              {
-                "id": "srp",
-                "title": "Serbian"
-              },
-              {
-                "id": "sna",
-                "title": "Shona"
-              },
-              {
-                "id": "iii",
-                "title": "Sichuan Yi; Nuosu"
-              },
-              {
-                "id": "snd",
-                "title": "Sindhi"
-              },
-              {
-                "id": "sin",
-                "title": "Sinhala; Sinhalese"
-              },
-              {
-                "id": "slk",
-                "title": "Slovak"
-              },
-              {
-                "id": "slv",
-                "title": "Slovenian"
-              },
-              {
-                "id": "som",
-                "title": "Somali"
-              },
-              {
-                "id": "sot",
-                "title": "Sotho, Southern"
-              },
-              {
-                "id": "spa",
-                "title": "Spanish; Castilian"
-              },
-              {
-                "id": "spa",
-                "title": "Spanish; Latin"
-              },
-              {
-                "id": "sun",
-                "title": "Sundanese"
-              },
-              {
-                "id": "swa",
-                "title": "Swahili"
-              },
-              {
-                "id": "ssw",
-                "title": "Swati"
-              },
-              {
-                "id": "swe",
-                "title": "Swedish"
-              },
-              {
-                "id": "tgl",
-                "title": "Tagalog"
-              },
-              {
-                "id": "tah",
-                "title": "Tahitian"
-              },
-              {
-                "id": "tgk",
-                "title": "Tajik"
-              },
-              {
-                "id": "tam",
-                "title": "Tamil"
-              },
-              {
-                "id": "tat",
-                "title": "Tatar"
-              },
-              {
-                "id": "tel",
-                "title": "Telugu"
-              },
-              {
-                "id": "tha",
-                "title": "Thai"
-              },
-              {
-                "id": "bod",
-                "title": "Tibetan"
-              },
-              {
-                "id": "tir",
-                "title": "Tigrinya"
-              },
-              {
-                "id": "ton",
-                "title": "Tonga (Tonga Islands)"
-              },
-              {
-                "id": "tso",
-                "title": "Tsonga"
-              },
-              {
-                "id": "tsn",
-                "title": "Tswana"
-              },
-              {
-                "id": "tur",
-                "title": "Turkish"
-              },
-              {
-                "id": "tuk",
-                "title": "Turkmen"
-              },
-              {
-                "id": "twi",
-                "title": "Twi"
-              },
-              {
-                "id": "uig",
-                "title": "Uighur; Uyghur"
-              },
-              {
-                "id": "ukr",
-                "title": "Ukrainian"
-              },
-              {
-                "id": "urd",
-                "title": "Urdu"
-              },
-              {
-                "id": "uzb",
-                "title": "Uzbek"
-              },
-              {
-                "id": "ven",
-                "title": "Venda"
-              },
-              {
-                "id": "vie",
-                "title": "Vietnamese"
-              },
-              {
-                "id": "vol",
-                "title": "Volapük"
+                "title": "Volap\u00fck"
               },
               {
                 "id": "wln",
@@ -9377,135 +8343,12 @@
             "default": "false"
           },
           {
-            "title": "Next air date at the end",
-            "description": "When the next episode isn't in your library yet, the end of episode card says when it airs",
-            "settingName": "playback.showNextAirDate",
-            "glyph": "event_available_outlined",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:playback.nextupbehavior!=disabled"
-          },
-          {
             "title": "Show Next Episode Details After Finish",
             "description": "If auto play next episode is disabled, display the next episode's detail screen after an episode finishes playing. If no next up episode is found, return to the just-played episode's page.",
             "settingName": "playback.showNextUpAfterFinish",
             "glyph": "info_outline",
             "type": "bool",
             "default": "false"
-          }
-        ]
-      },
-      {
-        "title": "Watch Parties",
-        "description": "Watch with friends on this server, everyone in step",
-        "glyph": "people_alt_rounded",
-        "children": [
-          {
-            "title": "Anyone on this server can invite you, and you can start your own. Chat, reactions and a vote on what to watch come with it.",
-            "description": "Nothing runs in the background until you're in a party.",
-            "type": "note"
-          },
-          {
-            "title": "Watch Parties",
-            "description": "Watch with friends on this server, everyone in step",
-            "settingName": "watchParty.enabled",
-            "glyph": "people_alt_rounded",
-            "type": "bool",
-            "default": "true"
-          },
-          {
-            "title": "Open Watch Parties",
-            "description": "Start one or join one in progress",
-            "settingName": "watchParty.open",
-            "glyph": "celebration_outlined",
-            "requires": "setting:watchParty.enabled"
-          },
-          {
-            "title": "Show chat over the video",
-            "description": "New messages show for a few seconds",
-            "settingName": "watchParty.chatOverlay",
-            "glyph": "chat_bubble_outline",
-            "type": "bool",
-            "default": "true",
-            "requires": "setting:watchParty.enabled"
-          },
-          {
-            "title": "Party alerts",
-            "description": "Show a banner when someone on this server starts one",
-            "settingName": "watchParty.alerts",
-            "glyph": "celebration_outlined",
-            "type": "bool",
-            "default": "false",
-            "requires": "setting:watchParty.enabled"
-          },
-          {
-            "title": "SyncPlay",
-            "type": "section",
-            "requires": "syncPlay"
-          },
-          {
-            "title": "Sync Correction",
-            "description": "Seek to catch up when playback drifts away from the group.",
-            "settingName": "syncplay.correction.enabled",
-            "type": "bool",
-            "default": "true",
-            "requires": "syncPlay"
-          },
-          {
-            "title": "Sync Correction Threshold",
-            "description": "How far playback can drift from the group before a catch up seek happens. Larger values seek less often.",
-            "settingName": "syncplay.correction.mindelayskip",
-            "type": "radio",
-            "default": "2000",
-            "requires": "syncPlay",
-            "options": [
-              {
-                "title": "1 second",
-                "id": "1000"
-              },
-              {
-                "title": "2 seconds",
-                "id": "2000"
-              },
-              {
-                "title": "3 seconds",
-                "id": "3000"
-              },
-              {
-                "title": "5 seconds",
-                "id": "5000"
-              }
-            ]
-          },
-          {
-            "title": "Playback Time Offset",
-            "description": "Shifts this device's playback relative to the group to make up for TV processing delay.",
-            "settingName": "syncplay.correction.extraoffset",
-            "type": "radio",
-            "default": "0",
-            "requires": "syncPlay",
-            "options": [
-              {
-                "title": "-1 second",
-                "id": "-1000"
-              },
-              {
-                "title": "-0.5 seconds",
-                "id": "-500"
-              },
-              {
-                "title": "None",
-                "id": "0"
-              },
-              {
-                "title": "+0.5 seconds",
-                "id": "500"
-              },
-              {
-                "title": "+1 second",
-                "id": "1000"
-              }
-            ]
           }
         ]
       },
@@ -9562,7 +8405,7 @@
                     "settingName": "colorBackground",
                     "glyph": "palette",
                     "type": "colorgrid",
-                    "default": "#000018"
+                    "default": "#121416"
                   },
                   {
                     "title": "Cursor",
@@ -9570,7 +8413,7 @@
                     "settingName": "colorCursor",
                     "glyph": "palette",
                     "type": "colorgrid",
-                    "default": "#CCCCCC"
+                    "default": "#56D9CC"
                   },
                   {
                     "title": "Primary Text",
@@ -9836,15 +8679,6 @@
             "default": "false"
           },
           {
-            "title": "Poster Labels",
-            "description": "Show the labels on posters, such as 4K or HDR.",
-            "settingName": "ui.posterLabels",
-            "glyph": "label",
-            "type": "bool",
-            "default": "true",
-            "requires": "plugin"
-          },
-          {
             "title": "Show What's New Popup",
             "description": "Show What's New popup when Jellyfin is updated to a new version.",
             "settingName": "load.allowwhatsnew",
@@ -9854,7 +8688,7 @@
           },
           {
             "title": "Keyboard Style",
-            "description": "Native uses your TV's own keyboard. Classic is the original Moonfin keyboard. Glass is a frosted panel with larger keys. Docked fills the bottom of the screen and shows what you type above the keys.",
+            "description": "Native uses your TV's own keyboard. Classic is the original SpeshTV keyboard. Glass is a frosted panel with larger keys. Docked fills the bottom of the screen and shows what you type above the keys.",
             "settingName": "ui.keyboard.style",
             "glyph": "keyboard_alt_outlined",
             "type": "radio",
@@ -9897,28 +8731,6 @@
             "glyph": "schedule",
             "type": "bool",
             "default": "false"
-          },
-          {
-            "title": "Date Format",
-            "description": "Choose between month-day, day-month, or locale default for calendar and release dates",
-            "settingName": "ui.dateFormat",
-            "glyph": "calendar_today_outlined",
-            "type": "radio",
-            "default": "system",
-            "options": [
-              {
-                "title": "Locale Default",
-                "id": "system"
-              },
-              {
-                "title": "Month / Day (Nov 10)",
-                "id": "monthDay"
-              },
-              {
-                "title": "Day / Month (10 Nov)",
-                "id": "dayMonth"
-              }
-            ]
           }
         ]
       },
@@ -9928,12 +8740,36 @@
         "glyph": "article_outlined",
         "children": [
           {
-            "title": "Details Screen Style",
-            "description": "How a movie or show looks when you open it.",
+            "title": "Optional Requests",
+            "description": "Allow optional cast, similar-title and special-feature requests on this Roku. Sections also controls their visibility.",
+            "children": [
+              {
+                "title": "Cast and Crew",
+                "settingName": "ui.itemdetail.sections.people",
+                "type": "bool",
+                "default": "true"
+              },
+              {
+                "title": "More Like This",
+                "settingName": "ui.itemdetail.sections.similar",
+                "type": "bool",
+                "default": "true"
+              },
+              {
+                "title": "Special Features",
+                "settingName": "ui.itemdetail.sections.specials",
+                "type": "bool",
+                "default": "true"
+              }
+            ]
+          },
+          {
+            "title": "Detail Screen Style",
+            "description": "Choose the detail layout: modern with tabs, Spotlight with artwork-first summary cards, Nouveau with every section as its own rail, Minimalist with artwork, one play button and the episodes, or classic.",
             "settingName": "ui.itemdetail.style",
             "glyph": "movie_outlined",
             "type": "radio",
-            "default": "frost",
+            "default": "modern",
             "options": [
               {
                 "title": "Modern",
@@ -9950,22 +8786,6 @@
               {
                 "title": "Minimalist",
                 "id": "minimalist"
-              },
-              {
-                "title": "Stage",
-                "id": "stage"
-              },
-              {
-                "title": "Premiere",
-                "id": "premiere"
-              },
-              {
-                "title": "Quick Look",
-                "id": "quickLook"
-              },
-              {
-                "title": "Frost",
-                "id": "frost"
               },
               {
                 "title": "Classic",
@@ -10137,14 +8957,6 @@
             "description": "Show libraries from all connected servers",
             "settingName": "ui.home.enableMultiServer",
             "glyph": "dns",
-            "type": "bool",
-            "default": "false"
-          },
-          {
-            "title": "Hide Watched",
-            "description": "Hide watched content from Recently Added and Recently Released home rows.",
-            "settingName": "ui.home.hideWatchedInRecentRows",
-            "glyph": "visibility_off",
             "type": "bool",
             "default": "false"
           },
@@ -10334,15 +9146,9 @@
       },
       {
         "title": "Change PIN",
-        "description": "Set a new PIN code",
+        "description": "Default PIN: 0000",
         "settingName": "pin.setCode",
-        "glyph": "edit"
-      },
-      {
-        "title": "Remove PIN",
-        "description": "Remove PIN code protection",
-        "settingName": "pin.remove",
-        "glyph": "delete"
+        "glyph": "pin"
       },
       {
         "title": "Kids Mode",

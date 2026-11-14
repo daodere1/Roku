@@ -1,10 +1,10 @@
-# Contributing to Moonfin for Roku
+# Contributing to SpeshTV for Roku
 
-Thanks for wanting to help. Moonfin for Roku is a BrighterScript and SceneGraph app, forked from the official Jellyfin Roku client and grown into the Roku version of Moonfin. This page covers how to get a change from your machine onto a Roku and into a release. The deeper reference material is on the [wiki](https://github.com/Moonfin-Client/Roku/wiki), and [Development](https://github.com/Moonfin-Client/Roku/wiki/Development) in particular is worth reading before your first change.
+Thanks for wanting to help. SpeshTV for Roku is a BrighterScript and SceneGraph app, forked from the official Jellyfin Roku client and grown into the Roku version of Moonfin. This page covers how to get a change from your machine onto a Roku and into a release. The deeper reference material is on the [wiki](https://github.com/Moonfin-Client/Roku/wiki), and [Development](https://github.com/Moonfin-Client/Roku/wiki/Development) in particular is worth reading before your first change.
 
 ## Before you start
 
-- Search the [issues](https://github.com/Moonfin-Client/Roku/issues) and [discussions](https://github.com/Moonfin-Client/Roku/discussions) first.
+- Search the [issues](https://github.com/daodere1/Roku/issues) and [discussions](https://github.com/daodere1/Roku/discussions) first.
 - Open an issue before building anything significant, so the approach can be talked through before the work happens. Bug fixes and small improvements can go straight to a pull request.
 - Quick questions are welcome on [Discord](https://discord.gg/moonfin).
 - Features that would help every Jellyfin user are worth proposing upstream to [jellyfin-roku](https://github.com/jellyfin/jellyfin-roku) first.

@@ -30,15 +30,7 @@
                 <Text id="title" font="font:LargeBoldSystemFont" width="1000" wrap="true"
                     maxLines="2" color="#FFFFFF" visible="false" />
 
-                <!-- A person's round headshot in a ring, with their name and born line beside it -->
-                <Group id="personAvatar" visible="false">
-                    <Poster id="personAvatarRing" uri="pkg:/images/icons/circle.webp" width="126" height="126" />
-                    <MaskGroup maskUri="pkg:/images/icons/circle.webp" maskSize="[120, 120]" translation="[3, 3]">
-                        <Poster id="personAvatarImage" width="120" height="120" loadDisplayMode="scaleToZoom" />
-                    </MaskGroup>
-                </Group>
-
-                <!-- Person birth year and place under their name -->
+                <!-- Person birth year and place under the avatar -->
                 <Text id="personBorn" font="font:SmallSystemFont" color="#FFFFFFB3" visible="false" />
 
                 <Group id="versionBadge" visible="false">
@@ -111,6 +103,7 @@
                     itemSpacing="[60, 60]"
                     rowLabelOffset="[[9, 24]]"
                     showRowLabel="true"
+                    showRowCounter="true"
                     visible="false"
                     drawFocusFeedback="true"
                     itemComponentName="ExtrasItem"
@@ -160,7 +153,7 @@
         <field id="trailerAvailable" type="bool" value="false" />
         <field id="additionalParts" type="assocarray" />
         <field id="selectedPart" type="assocarray" onChange="onSelectedPartChanged" />
-        <field id="selectedAudioStreamIndex" type="integer" />
+        <field id="selectedAudioStreamIndex" type="integer" value="-1" />
         <field id="selectedVideoStreamId" type="string" onChange="onSelectedVideoStreamIdChanged" />
         <field id="quickPlayNode" type="node" alwaysNotify="true" />
         <field id="refreshMovieDetailsData" type="bool" alwaysNotify="true" />

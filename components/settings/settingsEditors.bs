@@ -56,7 +56,8 @@ sub onKeepAsCompleteLiveTvChecked(event as object)
 end sub
 
 sub showEditor(kind as string, title as string, leftOut as object, fetched as object)
-    m.editor = { kind: kind, rows: editorRowsFor(kind, invalid), resetKey: "", openGroups: {}, leftOut: leftOut, fetched: fetched, found: [] }
+    ' General is the one disabled group that starts open, since it's short
+    m.editor = { kind: kind, rows: editorRowsFor(kind, invalid), resetKey: "", openGroups: { general: true }, leftOut: leftOut, fetched: fetched, found: [] }
     addFoundRows()
     m.editor.openedKey = editorKey(m.editor.rows)
     LoadMenu({ title: title, editor: kind, clean: true, titleAction: "restore", children: [] })
@@ -79,7 +80,7 @@ function editorRowsFor(kind as string, resetTo as dynamic) as object
         for each row in buttonLayout.Ordered(homeRowLayout.Offered(), stored)
             ' A reset keeps no picks, so they come back as items to turn on
             if not isValid(resetTo) or not (isValid(homeRowLayout.SourceFromId(row.id)) or homeRowLayout.IsSliderRow(row.id))
-                rows.push({ id: row.id, label: homeRowGroups.EditorLabel(tr(row.label)), subtitle: pickedRowSource(row.id), enabled: homeRowLayout.IsEnabled(row.id, placed, off, picked) })
+                rows.push({ id: row.id, label: tr(row.label), subtitle: pickedRowSource(row.id), enabled: homeRowLayout.IsEnabled(row.id, placed, off, picked) })
             end if
         end for
         return rows
@@ -108,14 +109,9 @@ end function
 function pickedRowSource(rowId as string) as string
     if homeRowLayout.IsSliderRow(rowId) then return tr("Seerr Discovery Rows")
     fromId = homeRowLayout.SourceFromId(rowId)
-    if not isValid(fromId)
-        source = homeRowGroups.SourceLabel(rowId)
-        if source = "" then return ""
-        return tr(source)
-    end if
+    if not isValid(fromId) then return ""
     if fromId.source = "genres" then return tr("Genres row")
     if fromId.source = "playlists" then return tr("Playlists row")
-    if fromId.source = "server" then return tr("Silo home row")
     serverName = m.serverNames[serverNameKey(fromId.server)]
     if isValid(serverName) then return substitute(tr("Collections row from {0}"), serverName)
     return tr("Collections row")
@@ -203,7 +199,7 @@ function editorView() as object
 end function
 
 function editorGroupLabel(kind as string) as string
-    labels = { general: "General", collections: "Collections", favorites: "Favorites", genres: "Genres and Studios", playlists: "Playlists", seerr: "Seerr", imdb: "IMDb", tmdb: "TMDB", streaming: "Streaming Services", mdblist: "MDBList", justwatch: "JustWatch" }
+    labels = { general: "General", collections: "Collections", favorites: "Favorites", genres: "Genres and Studios", playlists: "Playlists", seerr: "Seerr", external: "External Lists" }
     return tr(labels[kind])
 end function
 
@@ -312,7 +308,6 @@ sub editorToggle()
     rows[index].enabled = not rows[index].enabled
     m.editor.rows = rows
     refreshEditorRows([item])
-    updatePreview()
 end sub
 
 ' A row switched on joins the end of the enabled rows, and one switched off goes back among the
@@ -366,8 +361,6 @@ sub toggleHomeRow(item as integer)
 
     showSection(m.userLocation.peek())
     focusEditorEntry(focusId)
-    ' The row taking the switched one's place can hold the same index, which leaves focus where it was
-    updatePreview()
 end sub
 
 function editorEntryId(entry as object) as string
@@ -397,7 +390,6 @@ sub loadRowsEditor()
     checkLiveTv()
     fetchSliders()
     for each listEntry in homeRowLayout.Sources()
-        if listEntry.key = "server" and not isSiloServer() then continue for
         if homeRowLayout.RowToggleOn(listEntry.key)
             fetchList(listEntry.key, invalid)
             if listEntry.key = "collections"
@@ -550,7 +542,6 @@ sub editorReset()
     addFoundRows()
     m.editor.resetKey = editorKey(m.editor.rows)
     showSection(m.userLocation.peek())
-    updatePreview()
 end sub
 
 ' Rows that changed lay themselves out again, and the rows under them move if one grew
@@ -620,34 +611,12 @@ sub commitOpenEditor()
         saveButtonLayout(target, [], [])
         return
     end if
-    arranged = editorArrangement(editor.rows)
-    merged = buttonLayout.WithUnknownIds(target.catalogue, arranged.order, arranged.hidden, get_user_setting(target.orderKey), get_user_setting(target.hiddenKey))
-    saveButtonLayout(target, merged.order, merged.hidden)
-end sub
-
-function editorArrangement(rows as object) as object
     order = []
     hidden = []
-    for each row in rows
+    for each row in editor.rows
         order.push(row.id)
         if not row.enabled then hidden.push(row.id)
     end for
-    return { order: order, hidden: hidden }
-end function
-
-' The open editor's arrangement as the settings it saves to, which the preview draws before the
-' save. Rating sources have no arrangement there.
-function editorPreviewValues(editor as dynamic) as object
-    if not isValid(editor) or editor.kind = "ratingSources" then return {}
-    arranged = editorArrangement(editor.rows)
-    values = {}
-    if editor.kind = "rows"
-        values[homeRowLayout.ORDER_SETTING] = FormatJson(arranged.order)
-        values[homeRowLayout.HIDDEN_SETTING] = FormatJson(arranged.hidden)
-        return values
-    end if
-    target = editorTarget(editor.kind)
-    values[target.orderKey] = FormatJson(arranged.order)
-    values[target.hiddenKey] = FormatJson(arranged.hidden)
-    return values
-end function
+    merged = buttonLayout.WithUnknownIds(target.catalogue, order, hidden, get_user_setting(target.orderKey), get_user_setting(target.hiddenKey))
+    saveButtonLayout(target, merged.order, merged.hidden)
+end sub

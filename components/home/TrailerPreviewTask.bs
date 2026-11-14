@@ -1,5 +1,4 @@
 import "pkg:/source/api/baserequest.bs"
-import "pkg:/source/api/trailerSearch.bs"
 import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/serverCompatibility.bs"
@@ -18,7 +17,12 @@ end sub
 sub resolve()
     request = m.top.request
     if not isValid(request) then return
+    if request.cleanupOnly = true
+        if validTrailerTempPath(request.tempFile ?? "") then CreateObject("roFileSystem").Delete(request.tempFile)
+        return
+    end if
     index = request.index ?? 0
+    m.resolverError = "No playable trailer returned"
 
     ' A caller that already knows the YouTube id skips the search for anything else
     if isValidAndNotEmpty(request.videoId)
@@ -38,6 +42,11 @@ sub resolve()
         end if
     end if
 
+    if request.cacheLocally = true and m.top.cancelRequested = true
+        CreateObject("roFileSystem").Delete(request.tempFile)
+        return
+    end if
+    if answer.url = "" then answer.error = m.resolverError
     m.top.answer = answer
 end sub
 
@@ -119,12 +128,7 @@ function localTrailerUrl(item as object, server as object) as dynamic
     for each trailer in trailers
         trailerId = toString(chainLookupReturn(trailer, "Id", ""))
         if trailerId <> ""
-            ' A Plex file plays from its own part address
-            if isPlexServer(server.url)
-                url = buildURLForServer(server.url, toString(trailer.MediaSources?[0]?.DirectStreamUrl ?? ""), {}, server.userId, server.token)
-            else
-                url = buildURLForServer(server.url, "Videos/" + trailerId + "/stream", { Static: "true", ApiKey: server.token })
-            end if
+            url = buildURLForServer(server.url, "Videos/" + trailerId + "/stream", { Static: "true", ApiKey: server.token })
             return { url: url, format: streamFormatFor(trailer) }
         end if
     end for
@@ -146,29 +150,148 @@ function remoteTrailers(item as object, server as object) as object
     if itemId = "" or server.url = "" then return []
     detail = requestResponse(serverRequest(server, serverItemMetadataPath(itemId, server.userId, isEmbyServer(server.url)), { UserId: server.userId }), "GET", "", REQUEST_TIMEOUT_MS).data
     trailers = chainLookupReturn(detail, "RemoteTrailers", invalid)
-    if type(trailers) = "roArray" and trailers.count() > 0 then return trailers
-    if isPlexServer(server.url) then return trailerSearch.Find(detail)
+    if type(trailers) = "roArray" then return trailers
     return []
 end function
 
 ' The skip segments are asked for alongside the stream rather than after it
 sub resolveYoutube(videoId as string, request as object, answer as object)
+    if request.serverHelper = true
+        if resolveServerTrailer(videoId, answer) then return
+        if m.top.cancelRequested = true then return
+    end if
     deadline = CreateObject("roTimespan")
-    sponsor = startGet(youtubeTrailer.SponsorRequestUrl(videoId))
+    sponsor = invalid
+    if request.cacheLocally <> true then sponsor = startGet(youtubeTrailer.SponsorRequestUrl(videoId))
 
-    stream = playerStream(videoId, request.language ?? "", deadline)
+    stream = request.cachedStream
+    if not isValid(stream) then stream = playerStream(videoId, request.language ?? "", deadline, request.preferCompatible ?? false)
     if not isValid(stream) then return
+    answer.sourceStream = stream
+
+    if request.cacheLocally = true
+        answer.url = downloadTrailer(stream, request.tempFile ?? "")
+        answer.format = "mp4"
+        answer.httpHeaders = []
+        return
+    end if
 
     answer.url = stream.url
     answer.format = stream.format
     answer.audioLanguage = stream.audioLanguage
+    answer.httpHeaders = stream.httpHeaders
     ' Still waiting once the stream is found, the skip segments get what is left of the lookup
-    answer.segments = youtubeTrailer.SponsorSegments(parsedBody(finishGet(sponsor, RESOLVE_TIMEOUT_MS - deadline.TotalMilliseconds())), videoId)
+    answer.segments = youtubeTrailer.SponsorSegments(parsedBody(finishGet(sponsor, RESOLVE_TIMEOUT_MS - deadline.TotalMilliseconds())))
     answer.startTime = youtubeTrailer.StartTime(answer.segments)
     if request.captions = true and isValidAndNotEmpty(stream.captionsUrl)
         answer.cues = youtubeTrailer.VttCues(finishGet(startGet(stream.captionsUrl), timeLeft(deadline)))
     end if
 end sub
+
+' Only an explicitly requested, size-bounded muxed trailer is stored temporarily.
+function resolveServerTrailer(videoId as string, answer as object) as boolean
+    response = requestResponse(APIRequest("/UserIptvProxy/Trailers/" + videoId + "/Prepare"), "POST", "", 30000, m.top)
+    token = toString(chainLookupReturn(response.data, "Token", chainLookupReturn(response.data, "token", "")))
+    if response.status <> 200 or not CreateObject("roRegex", "^[A-Fa-f0-9]{48}$", "").IsMatch(token)
+        print "[Trailer] server helper unavailable, HTTP="; response.status; " using client fallback"
+        return false
+    end if
+    answer.url = buildURLForServer(toString(get_url()), "/UserIptvProxy/Trailers/" + token + "/stream.mp4", { ApiKey: toString(getAuthTokenFromRegistry()) })
+    answer.format = "mp4"
+    answer.httpHeaders = []
+    answer.serverHelper = true
+    answer.height = chainLookupReturn(response.data, "Height", chainLookupReturn(response.data, "height", 0))
+    print "[Trailer] server helper source height="; answer.height
+    return true
+end function
+
+function downloadTrailer(stream as object, path as string) as string
+    size = stream.contentLength ?? 0
+    if stream.format <> "mp4"
+        m.resolverError = "No compatible MP4 trailer available"
+        return ""
+    end if
+    if size <= 0 then size = probeTrailerSize(stream)
+    if size <= 0 then return ""
+    if size > 33554432
+        m.resolverError = "Trailer exceeds 32 MB limit (" + size.ToStr() + " bytes)"
+        return ""
+    end if
+    if not validTrailerTempPath(path) then return ""
+    fs = CreateObject("roFileSystem")
+    fs.Delete(path)
+    req = externalRequest(stream.url)
+    for each header in stream.httpHeaders
+        separator = Instr(1, header, ":")
+        if separator > 0 then req.AddHeader(Left(header, separator - 1), Mid(header, separator + 1).Trim())
+    end for
+    req.AddHeader("Range", "bytes=0-" + (size - 1).ToStr())
+    port = CreateObject("roMessagePort")
+    req.SetMessagePort(port)
+    timer = CreateObject("roTimespan")
+    started = req.AsyncGetToFile(path)
+    m.resolverError = "Trailer download timed out"
+    while started and timer.TotalMilliseconds() < 25000 and m.top.cancelRequested <> true
+        event = wait(100, port)
+        downloaded = trailerFileSize(fs.Stat(path))
+        if downloaded > 33554432 then exit while
+        if type(event) = "roUrlEvent"
+            status = event.GetResponseCode()
+            if (status = 200 or status = 206) and downloaded = size and m.top.cancelRequested <> true then return path
+            m.resolverError = "Trailer download HTTP " + status.ToStr()
+            if status = 200 or status = 206 then m.resolverError = "Trailer download incomplete"
+            exit while
+        end if
+    end while
+    req.AsyncCancel()
+    fs.Delete(path)
+    return ""
+end function
+
+function probeTrailerSize(stream as object) as integer
+    req = externalRequest(stream.url)
+    for each header in stream.httpHeaders
+        separator = Instr(1, header, ":")
+        if separator > 0 then req.AddHeader(Left(header, separator - 1), Mid(header, separator + 1).Trim())
+    end for
+    port = CreateObject("roMessagePort")
+    req.SetMessagePort(port)
+    m.resolverError = "Trailer size not supplied by media server"
+    started = req.AsyncHead()
+    timer = CreateObject("roTimespan")
+    while started and timer.TotalMilliseconds() < 5000 and m.top.cancelRequested <> true
+        event = wait(100, port)
+        if type(event) = "roUrlEvent"
+            code = event.GetResponseCode()
+            if code < 200 or code >= 300
+                m.resolverError = "Trailer size check HTTP " + code.ToStr()
+                return 0
+            end if
+            return trailerHeaderSize(event.GetResponseHeaders())
+        end if
+    end while
+    req.AsyncCancel()
+    m.resolverError = "Trailer size check timed out"
+    return 0
+end function
+
+function trailerHeaderSize(headers as dynamic) as integer
+    if type(headers) <> "roAssociativeArray" then return 0
+    raw = toString(headers.LookupCI("content-length") ?? "").Trim()
+    if Len(raw) > 9 or not CreateObject("roRegex", "^[0-9]+$", "").IsMatch(raw) then return 0
+    return raw.ToInt()
+end function
+
+function validTrailerTempPath(path as string) as boolean
+    return CreateObject("roRegex", "^tmp:/speshtv-trailer-[0-9-]+\.mp4$", "").IsMatch(path)
+end function
+
+function trailerFileSize(stat as dynamic) as integer
+    if type(stat) <> "roAssociativeArray" then return -1
+    size = stat.LookupCI("size")
+    if type(size) <> "Integer" and type(size) <> "roInt" then return -1
+    return size
+end function
 
 function timeLeft(deadline as object) as integer
     remaining = RESOLVE_TIMEOUT_MS - deadline.TotalMilliseconds()
@@ -188,16 +311,20 @@ end function
 
 ' An app that only offers a small muxed file doesnt end the search, which goes on until one
 ' offers 720p or better and keeps the best so far to fall back on
-function playerStream(videoId as string, language as string, deadline as object) as dynamic
+function playerStream(videoId as string, language as string, deadline as object, preferCompatible = false as boolean) as dynamic
     best = invalid
-    for each client in youtubeTrailer.Clients()
+    clients = youtubeTrailer.Clients()
+    if preferCompatible then clients = [clients[1], clients[0]]
+    for each client in clients
         if timeLeft(deadline) <= 0 then exit for
         response = playerResponse(videoId, client, deadline)
 
-        stream = youtubeTrailer.PlayerStream(response, true)
+        stream = youtubeTrailer.PlayerStream(response, true, preferCompatible)
         if isValid(stream)
+            stream.httpHeaders = ["User-Agent: " + client.userAgent, "Referer: https://www.youtube.com/"]
             stream.captionsUrl = youtubeTrailer.CaptionTrackUrl(response, language)
             stream.audioLanguage = youtubeTrailer.OriginalAudioLanguage(response)
+            if preferCompatible and stream.format = "mp4" then return stream
             if stream.quality >= youtubeTrailer.HIGH_QUALITY_FLOOR then return stream
             if not isValid(best) or stream.quality > best.quality then best = stream
         end if
@@ -226,7 +353,15 @@ end function
 function postPlayer(videoId as string, client as object, visitorData as string, deadline as object) as dynamic
     req = externalRequest(youtubeTrailer.PlayerRequestUrl(client), client.userAgent)
     req.AddHeader("Content-Type", "application/json")
-    return requestResponse(req, "POST", youtubeTrailer.PlayerRequestBody(videoId, client, visitorData), timeLeft(deadline)).data
+    response = requestResponse(req, "POST", youtubeTrailer.PlayerRequestBody(videoId, client, visitorData), timeLeft(deadline))
+    if response.status < 200 or response.status >= 300
+        m.resolverError = "YouTube lookup HTTP " + response.status.ToStr()
+    else
+        status = chainLookupReturn(response.data, "playabilityStatus.status", "UNKNOWN")
+        m.resolverError = "YouTube lookup: " + status
+        if status = "OK" then m.resolverError = "YouTube returned no playable stream"
+    end if
+    return response.data
 end function
 
 ' A GET that runs while the next request goes ahead, collected with finishGet

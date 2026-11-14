@@ -269,20 +269,14 @@ end sub
 
 sub activate()
     if m.focusIndex = FOCUS_DECREASE
-        stepOffset(-OFFSET_STEP_MS)
+        m.top.offset = m.top.offset - OFFSET_STEP_MS
     else if m.focusIndex = FOCUS_INCREASE
-        stepOffset(OFFSET_STEP_MS)
+        m.top.offset = m.top.offset + OFFSET_STEP_MS
     else if m.focusIndex = FOCUS_RESET
         m.top.offset = 0
     else
         m.top.closed = true
     end if
-end sub
-
-sub stepOffset(delta as integer)
-    offset = m.top.offset + delta
-    if m.top.limit > 0 and Abs(offset) > m.top.limit then return
-    m.top.offset = offset
 end sub
 
 ' Focus stays inside the panel, and Back is the way out

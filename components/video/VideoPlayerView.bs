@@ -1,5 +1,5 @@
 import "pkg:/components/anime/animeMarkerWatch.bs"
-import "pkg:/components/video/watchPartyPlayer.bs"
+import "pkg:/source/utils/speshTrackSelection.brs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/Image.bs"
 import "pkg:/source/enums/ColorPalette.bs"
@@ -16,41 +16,31 @@ import "pkg:/source/enums/TaskControl.bs"
 import "pkg:/source/enums/TimerControl.bs"
 import "pkg:/source/enums/VideoControl.bs"
 import "pkg:/source/utils/blockedContent.bs"
-import "pkg:/source/utils/calendarEntries.bs"
 import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/embyFeatures.bs"
 import "pkg:/source/utils/episodeBrowser.bs"
-import "pkg:/source/utils/heldSeek.bs"
 import "pkg:/source/utils/liveRecovery.bs"
 import "pkg:/source/utils/liveTvGuide.bs"
 import "pkg:/source/utils/liveTvLastChannel.bs"
-import "pkg:/source/utils/liveWindow.bs"
 import "pkg:/source/utils/misc.bs"
-import "pkg:/source/utils/multiserver.bs"
-import "pkg:/source/utils/osdControls.bs"
+import "pkg:/source/utils/speshLivePlayback.brs"
 import "pkg:/source/utils/playbackOverlay.bs"
 import "pkg:/source/utils/recordAiring.bs"
 import "pkg:/source/utils/seasonalEffects.bs"
-import "pkg:/source/utils/secondarySubtitle.bs"
-import "pkg:/source/utils/trackMemory.bs"
 
 const REPLAY_RETRIES = 3
 
 ' The other clients pin these overlays 24 in from the right and 120 up from the
 ' bottom, scaled by 1.45 onto our 1920x1080
 const OVERLAY_EDGE = 35
-' The controls' seek bar, which the scrub preview stays over
-const SEEK_BAR_LEFT = 24
-const SEEK_BAR_WIDTH = 1872
-const SEEK_PREVIEW_HEIGHT = 335
 const OVERLAY_BOTTOM = 174
 const NEXT_UP_TICK_MS = 100
 const NEXT_UP_PLAY = 0
 const NEXT_UP_DISMISS = 1
-' The skip prompt's 82 tall capsule sits 6 above the controls' bottom block, which keeps its place
-' while the controls are away, so the prompt never moves
-const SKIP_PROMPT_TOP = 780
+' The skip prompt sits just clear of the controls' bottom block, which keeps its place while the
+' controls are away, so the prompt never moves
+const SKIP_PROMPT_TOP = 668
 ' A segment shorter than this isn't offered, and one shorter than the second isn't skipped by itself
 const SKIP_MIN_PROMPT_TICKS = 30000000
 const SKIP_MIN_AUTO_TICKS = 10000000
@@ -64,15 +54,12 @@ const SKIP_BACK_HOLD_MS = 500
 const CINEMA_SKIP_SECONDS = 10
 
 sub init()
-    m.timelineOffset = 0
-    m.mediaRuntime = 0
     m.top.observeField("availableAudioTracks", "applyChosenAudioTrack")
 
     ' Carries on through the rest of the queue, the way it does in the other clients
     m.subtitleOffset = m.global.queueManager.callFunc("getSubtitleOffset")
 
     m.liveChannel = invalid
-    m.liveWindow = invalid
     m.lineup = []
     m.carouselPrograms = {}
     m.carousel = invalid
@@ -158,22 +145,12 @@ sub init()
     m.pendingSeek = invalid
     m.pendingPreview = invalid
     m.previewSheet = -1
-    m.previewScale = CreateObject("roDeviceInfo").GetUIResolution().width / 1920
     m.seekPreview = m.top.findNode("seekPreview")
     m.seekPreviewFrame = m.top.findNode("seekPreviewFrame")
-    m.seekPreviewLayers = [m.top.findNode("seekPreviewFill"), m.top.findNode("seekPreviewBorder")]
-    m.seekPreviewLayers[1].blendColor = playbackOverlay.Palette().accent
+    m.seekPreviewTime = m.top.findNode("seekPreviewTime")
+    playbackOverlay.SetFont(m.seekPreviewTime, 20, true)
     m.seekSettleTimer = m.top.findNode("seekSettleTimer")
     m.seekSettleTimer.observeField("fire", "onSeekSettled")
-    m.secondaryTask = invalid
-    m.offsetTarget = "primary"
-    m.secondaryItemId = ""
-    m.secondaryCaptionGroup = m.top.findNode("secondaryCaptionGroup")
-    m.heldSeek = invalid
-    m.heldSeekStart = m.top.findNode("heldSeekStart")
-    m.heldSeekStart.observeField("fire", "onHeldSeekStart")
-    m.heldSeekRepeat = m.top.findNode("heldSeekRepeat")
-    m.heldSeekRepeat.observeField("fire", "stepHeldSeek")
 
     ' The loading animation stands in for the bars the device would draw, and for the app's
     ' spinner that was up while this screen opened
@@ -193,14 +170,15 @@ sub init()
     stopLoadingSpinner()
     updateLoadingLayer()
 
+    m.canUseFastReplace = false
+    m.positionTranslation = m.top.trickPlayBar.getChild(3)
     m.positionText = m.top.trickPlayBar.getChild(8)
+    m.top.trickplaybar.observeField("visible", "onTrickPlayBarVisibleChange")
+    m.positionText.observeField("text", "onTrickPlayBarTextChange")
 
     m.chapterOverlay = invalid
-    m.castOverlay = invalid
-    m.controlMenu = invalid
     m.playbackInfoDialog = invalid
     m.osd = m.top.findNode("osd")
-    m.osdSeekbar = m.osd.findNode("seekbarGroup")
     m.pauseOverlay = m.top.findNode("pauseOverlay")
     m.osd.observeField("action", "onOSDAction")
     m.clock = m.osd.findNode("clock")
@@ -216,6 +194,9 @@ sub init()
     m.top.observeField("selectedSubtitle", "onSubtitleChange")
     m.top.observeField("audioIndex", "onAudioIndexChange")
 
+    ' Get sibling data and pass to OSD
+    setSiblingData()
+
     ' Custom Caption Function
     m.top.observeField("allowCaptions", "onAllowCaptionsChange")
 
@@ -229,8 +210,24 @@ sub init()
     m.playbackRetries = 0 ' Track retry attempts for buffering failures
     m.lastBufferError = 0 ' Timestamp of last buffering error
     m.playbackSpeed = 1.0
-    ' The bitrate cap picked from the controls, kept for the rest of this player, zero for none
-    m.maxBitrate = 0
+    m.speedDialogActive = false
+
+    m.videoEndingTime = m.top.findNode("videoEndingTime")
+
+    ' Scrubbing
+    m.scrubActive = false
+    m.scrubDirection = 0
+    m.scrubSpeedIndex = 3
+    m.scrubSpeeds = [-168, -50, -10, 10, 50, 168]
+    m.scrubPosition = 0
+    m.scrubPositionStart = 0
+
+    m.scrubTimer = m.top.findNode("scrubTimer")
+    m.scrubTimer.observeField("fire", "onScrubTimer")
+
+    m.scrubTime = m.top.findNode("scrubTimeDisplay")
+    m.progressBar = m.top.findNode("scrubProgressBar")
+    m.scrubSpeed = m.top.findNode("scrubSpeedDisplay")
 
     m.subtitleOffsetOverlay = m.top.findNode("subtitleOffsetOverlay")
     m.subtitleOffsetOverlay.observeField("offset", "onSubtitleOffsetChanged")
@@ -293,19 +290,12 @@ sub init()
     m.recordToastText = m.top.findNode("recordToastText")
     liveTvGuide.SetFont(m.recordToastText, 20, false)
 
-    m.nextAirDate = invalid
-    m.airDateShowing = false
-
     m.checkedForNextEpisode = false
     m.getNextEpisodeTask = createObject("roSGNode", "GetNextEpisodeTask")
     m.getNextEpisodeTask.observeField("nextEpisodeData", "onNextEpisodeDataLoaded")
 
     m.top.trickPlayBar.filledBarBlendColor = ColorPalette.TRIADBLUE
     m.top.enableTrickPlay = false
-
-    wpAttach()
-    ' The group only takes the player when it's playing the group's item
-    m.global.syncPlayManager.callFunc("registerVideoView", m.top)
 end sub
 
 ' Direct play hands the Roku the whole file, and it can start on a different track than the one
@@ -367,84 +357,267 @@ function rokuAudioTrack(stream as object, tracks as dynamic, streams as dynamic)
     return ""
 end function
 
-' Previous and Next step through chapters first, then through the queue.
-' Previous restarts the item when it is more than three seconds in or nothing comes before it, and
-' Next with nothing after it runs to the end.
-sub handleItemSkipAction(action as string)
-    position = mediaPosition()
-    if isValid(m.pendingSeek) then position = m.pendingSeek
-    starts = m.osd.chapterStarts ?? []
-    queuePos = m.global.queueManager.callFunc("getPosition") ?? 0
+' setSiblingData: Set the icon and title text for the previous and next items
+'
+sub setSiblingData()
+    previousItemTitleText = m.global.queueManager.callFunc("getPreviousItemTitleAndIcon")
+    if isValidAndNotEmpty(previousItemTitleText)
+        m.osd.previousItemIcon = previousItemTitleText[0]
+        m.osd.previousItemTitleText = previousItemTitleText[1]
+    else
+        m.osd.previousItemIcon = string.EMPTY
+        m.osd.previousItemTitleText = string.EMPTY
+    end if
 
+    nextItemTitleText = m.global.queueManager.callFunc("getNextItemTitleAndIcon")
+    if isValidAndNotEmpty(nextItemTitleText)
+        m.osd.nextItemIcon = nextItemTitleText[0]
+        m.osd.nextItemTitleText = nextItemTitleText[1]
+    else
+        m.osd.nextItemIcon = string.EMPTY
+        m.osd.nextItemTitleText = string.EMPTY
+    end if
+end sub
+
+' handleChapterSkipAction: Handles user command to skip chapters in playing video
+'
+sub handleChapterSkipAction(action as string)
+    if not isValidAndNotEmpty(m.chapters) then return
+
+    currentChapter = getCurrentChapterIndex()
+
+    if action = "chapternext"
+        gotoChapter = currentChapter + 1
+        ' If there is no next chapter, exit
+        if gotoChapter > m.chapters.count() - 1 then return
+
+        newPosition = m.chapters[gotoChapter].StartPositionTicks / 10000000#
+        holdSkipPrompts(newPosition)
+        m.top.seek = newPosition
+        setVideoEndingTime(newPosition)
+        m.positionText.text = secondsToHuman(newPosition, true)
+        return
+    end if
+
+    if action = "chapterback"
+        gotoChapter = currentChapter - 1
+        ' If there is no previous chapter, restart current chapter
+        if gotoChapter < 0 then gotoChapter = 0
+
+        newPosition = m.chapters[gotoChapter].StartPositionTicks / 10000000#
+        holdSkipPrompts(newPosition)
+        m.top.seek = newPosition
+        setVideoEndingTime(newPosition)
+        m.positionText.text = secondsToHuman(newPosition, true)
+        return
+    end if
+end sub
+
+' handleItemSkipAction: Handles user command to skip items
+'
+' @param {string} action - skip action to take
+sub handleItemSkipAction(action as string)
     if action = "itemnext"
-        chapterMs = osdControls.NextChapterStart(starts, position * 1000)
-        if chapterMs >= 0
-            seekFromControls(chapterMs / 1000)
-        else if queuePos < m.global.queueManager.callFunc("getCount") - 1
-            playQueueItem("moveForward")
-        else if mediaDuration() > 0
-            seekFromControls(mediaDuration() - 1)
+        ' If there is something next in the queue, play it
+        if m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1
+            if m.playReported then ReportPlayback("stop", true)
+            m.playReported = false
+            m.playbackTimer.control = TimerControl.STOP
+            m.top.unobserveField("state")
+            m.top.control = VideoControl.STOP
+            m.global.sceneManager.callFunc("clearPreviousScene")
+            m.global.queueManager.callFunc("moveForward")
+            m.global.queueManager.callFunc("playQueue")
+        end if
+
+        return
+    end if
+
+    if action = "itemback"
+        currentPos = isValid(m.top.position) ? m.top.position : 0
+        queuePos = isChainValid(m.global, "queueManager") ? m.global.queueManager.callFunc("getPosition") : 0
+        if not isValid(queuePos) then queuePos = 0
+
+        if currentPos > 3 or queuePos <= 0
+            holdSkipPrompts(0)
+            m.top.seek = 0
+            setVideoEndingTime(0)
+            m.positionText.text = secondsToHuman(0, true)
+        else
+            if m.playReported then ReportPlayback("stop", true)
+            m.playReported = false
+            m.playbackTimer.control = TimerControl.STOP
+            m.top.unobserveField("state")
+            m.top.control = VideoControl.STOP
+            m.global.sceneManager.callFunc("clearPreviousScene")
+            m.global.queueManager.callFunc("moveBack")
+            m.global.queueManager.callFunc("playQueue")
+        end if
+
+        return
+    end if
+end sub
+
+' handleRewindAction: Handles user command to start rewinding scrub
+'
+sub handleRewindAction()
+    if m.scrubActive
+        if m.scrubDirection = -1
+            if m.scrubSpeedIndex > 0
+                m.scrubSpeedIndex = m.scrubSpeedIndex - 1
+            end if
+        else
+            m.scrubDirection = -1
+            m.scrubSpeedIndex = 2
         end if
         return
     end if
 
-    chapterMs = osdControls.PreviousChapterStart(starts, position * 1000)
-    if chapterMs >= 0
-        seekFromControls(chapterMs / 1000)
-    else if position > 3 or queuePos <= 0
-        seekFromControls(0)
-    else
-        playQueueItem("moveBack")
-    end if
+    startScrubbing(-1)
 end sub
 
-' Next Up, a skipped pre-roll and an outro skip that runs off the end all mean the next item, not
-' the next chapter
-sub playNextInQueue()
-    if m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1 then playQueueItem("moveForward")
-end sub
-
-sub playQueueItem(move as string)
-    ' The group switches items together, and the change comes back as a queue update
-    if syncPlayIntercepts()
-        if move = "moveForward" then m.global.syncPlayManager.callFunc("requestNext") else m.global.syncPlayManager.callFunc("requestPrevious")
+' handleFastForwardAction: Handles user command to start fast forward scrub
+'
+sub handleFastForwardAction()
+    if m.scrubActive
+        if m.scrubDirection = 1
+            if m.scrubSpeedIndex < m.scrubSpeeds.count() - 1
+                m.scrubSpeedIndex = m.scrubSpeedIndex + 1
+            end if
+        else
+            m.scrubDirection = 1
+            m.scrubSpeedIndex = 3
+        end if
         return
     end if
-    m.top.unobserveField("state")
-    m.top.control = VideoControl.STOP
-    m.global.sceneManager.callFunc("clearPreviousScene")
-    m.global.queueManager.callFunc(move)
-    m.global.queueManager.callFunc("playQueue")
+
+    startScrubbing(1)
 end sub
 
-' The SyncPlay group moved on to another item, so this player makes way the way Next does
-sub leaveForGroupItem()
-    m.top.unobserveField("state")
-    m.top.control = VideoControl.STOP
-    m.global.sceneManager.callFunc("clearPreviousScene")
-end sub
-
-' A seek a button or a chapter asks for, with the prompts, the ends at time and the bar following it
-sub seekFromControls(target as float)
+' startScrubbing: starts scrub mode, setting direction, speed, and UI state while pausing playback
+' and initializing scrub tracking
+'
+sub startScrubbing(direction as integer)
+    if m.scrubActive then return
     dropScrub()
-    if syncPlaySeek(target) then return
-    seekMedia(target)
-    setVideoEndingTime(target)
-    m.positionText.text = secondsToHuman(target, true)
+
+    m.scrubActive = true
+    m.scrubDirection = direction
+    m.scrubSpeedIndex = direction = 1 ? 3 : 2
+    m.scrubPositionStart = m.top.position
+    m.scrubPosition = m.top.position
+
+    m.top.control = VideoControl.PAUSE
+    holdSkipPrompts()
+
+    m.pauseOverlay.visible = true
+    m.scrubInfo = m.top.findNode("scrubInfo")
+    m.scrubInfo.visible = true
+
+    m.scrubTimer.control = "start"
+end sub
+
+' stopScrubbing: stops scrub mode, applies the final seek position, restores playback state,
+' and hides scrub UI elements
+'
+sub stopScrubbing()
+    m.scrubTimer.control = "stop"
+    m.scrubActive = false
+    m.scrubDirection = 0
+
+    m.top.seek = m.scrubPosition
+
+    m.scrubInfo = m.top.findNode("scrubInfo")
+    if isValid(m.scrubInfo)
+        m.scrubInfo.visible = false
+    end if
+
+    trickplayImage = m.top.findNode("trickplayImage")
+    if isValid(trickplayImage) then trickplayImage.visible = false
+
+    m.top.control = VideoControl.RESUME
+    m.pauseOverlay.visible = false
+    holdSkipPrompts(m.scrubPosition)
+end sub
+
+' onScrubTimer: updates scrub position, UI, and speed indicator on each timer tick while scrubbing playback
+'
+sub onScrubTimer()
+    if not m.scrubActive then return
+
+    speed = m.scrubSpeeds[m.scrubSpeedIndex]
+    m.scrubPosition = m.scrubPosition + speed * m.scrubTimer.duration
+
+    if m.scrubPosition < 0 then m.scrubPosition = 0
+    if m.scrubPosition > m.top.duration then m.scrubPosition = m.top.duration
+
+
+    if isValid(m.scrubTime)
+        m.scrubTime.text = secondsToHuman(m.scrubPosition, true) + " / " + secondsToHuman(m.top.duration, true)
+    end if
+
+    if isValid(m.progressBar) and m.top.duration > 0
+        scrubPct = m.scrubPosition / m.top.duration
+        m.progressBar.width = 1714 * scrubPct
+    end if
+
+    if m.scrubSpeedIndex = 3 or m.scrubSpeedIndex = 2
+        m.scrubSpeed.text = tr("3x")
+    else if m.scrubSpeedIndex = 4 or m.scrubSpeedIndex = 1
+        m.scrubSpeed.text = tr("15x")
+    else if m.scrubSpeedIndex = 5 or m.scrubSpeedIndex = 0
+        m.scrubSpeed.text = tr("50x")
+    end if
+
+    m.positionText.text = secondsToHuman(m.scrubPosition, true)
+    setVideoEndingTime(m.scrubPosition)
+
+    ' Show the trickplay frame at the scrub position
+    prefetchSheets(m.scrubPosition * 1000, speed > 0)
+    displayTrickplayImage(m.scrubPosition)
 end sub
 
 ' handleHideAction: Handles action to hide OSD menu
 '
 ' @param {boolean} resume - controls whether or not to resume video playback when sub is called
 '
+sub restorePreviewInput()
+    scene = m.top.getScene()
+    if isValid(scene.dialog)
+        scene.dialog.setFocus(true)
+        return
+    end if
+    keyboard = scene.findNode("tvKeyboard")
+    if isValid(keyboard) and keyboard.visible
+        keyboard.setFocus(true)
+        return
+    end if
+    parent = m.top.getParent()
+    for i = 0 to parent.getChildCount() - 1
+        child = parent.getChild(i)
+        if child.subtype() = "LiveTvGuideDialog"
+            child.setFocus(true)
+            return
+        end if
+    end for
+    parent.findNode("guideFocus").setFocus(true)
+end sub
+
 sub handleHideAction(resume as boolean)
     settleHeldScrub()
     m.osd.visible = false
     m.osd.hasFocus = false
     m.osd.setFocus(false)
-    m.top.setFocus(true)
-    m.pauseOverlay.visible = false
-    if resume and not (m.top.state = "paused" and syncPlayTogglePause())
+    if not m.top.speshPreview and not subtitleDownloadOwnsInput() then m.top.setFocus(true)
+    if m.top.speshPreview
+        m.top.setFocus(false)
+        restorePreviewInput()
+    end if
+    ' Hide dark overlay when OSD is hidden (only if playing)
+    if isStringEqual(m.top.state, MediaPlaybackState.PLAYING)
+        m.pauseOverlay.visible = false
+    end if
+    if resume
         m.top.control = VideoControl.RESUME
     end if
     applySkipPrompt()
@@ -453,22 +626,11 @@ end sub
 sub handleChapterListAction()
     if not isValidAndNotEmpty(m.chapters) or isValid(m.chapterOverlay) then return
 
-    serverBase = invalid
-    authToken = ""
-    if isValid(m.itemServerData)
-        serverBase = m.itemServerData.serverUrl
-        authToken = m.itemServerData.authToken
-    end if
-
     chapters = []
     for i = 0 to m.chapters.count() - 1
         name = m.chapters[i].LookupCI("Name")
         if not isValidAndNotEmpty(name) then name = tr("Chapter") + " " + (i + 1).toStr()
-        chapters.push({
-            name: name,
-            startSeconds: (m.chapters[i].LookupCI("StartPositionTicks") ?? 0) / 10000000#,
-            thumbUrl: chapterImageURL(m.top.id, i, m.chapters[i].LookupCI("ImageTag"), serverBase, authToken)
-        })
+        chapters.push({ name: name, startSeconds: (m.chapters[i].LookupCI("StartPositionTicks") ?? 0) / 10000000# })
     end for
 
     handleHideAction(false)
@@ -477,7 +639,7 @@ sub handleChapterListAction()
     m.chapterOverlay.observeField("dismissed", "closeChapterList")
     m.top.appendChild(m.chapterOverlay)
     m.chapterOverlay.chapters = chapters
-    m.chapterOverlay.currentIndex = currentChapterIndexAt(mediaPosition())
+    m.chapterOverlay.currentIndex = currentChapterIndexAt(m.top.position)
     m.chapterOverlay.callFunc("open")
     m.chapterOverlay.setFocus(true)
 end sub
@@ -496,10 +658,10 @@ sub onChapterPicked()
     dropScrub()
     seekTime = m.chapterOverlay.selected
     closeChapterList()
-    duration = mediaDuration()
+    duration = m.top.duration
     if duration > 1 and seekTime > duration - 1 then seekTime = duration - 1
-    if syncPlaySeek(seekTime) then return
-    seekMedia(seekTime)
+    holdSkipPrompts(seekTime)
+    m.top.seek = seekTime
     m.positionText.text = secondsToHuman(seekTime, true)
 end sub
 
@@ -512,6 +674,7 @@ sub closeChapterList()
     m.top.setFocus(true)
     m.top.removeChild(m.chapterOverlay)
     m.chapterOverlay = invalid
+    prepareOSD()
     showOSD("chapterList")
 end sub
 
@@ -576,6 +739,7 @@ end sub
 sub closeEpisodeBrowser()
     if not isValid(m.episodeOverlay) then return
     dropEpisodeBrowser()
+    prepareOSD()
     showOSD("showEpisodes")
 end sub
 
@@ -594,36 +758,42 @@ sub dropEpisodeBrowser()
     m.episodeOverlay = invalid
 end sub
 
-' Play and pause from the controls leave them up, and they hide on their own once playback runs
+' getCurrentChapterIndex: Finds current chapter index
+'
+' @return {integer} indicating index of current chapter within chapter data or 0 if chapter lookup fails
+'
+function getCurrentChapterIndex() as integer
+    if not isValidAndNotEmpty(m.chapters) then return 0
+
+    ' Give a 15 second buffer to compensate for user expectation and roku video position inaccuracy
+    ' Web client uses 10 seconds, but this wasn't enough for Roku in testing
+    currentPosition = m.top.position + 15
+    currentChapter = 0
+
+    for i = m.chapters.count() - 1 to 0 step -1
+        if currentPosition >= (m.chapters[i].StartPositionTicks / 10000000#)
+            currentChapter = i
+            exit for
+        end if
+    end for
+
+    return currentChapter
+end function
+
+' handleVideoPlayPauseAction: Handles action to either play or pause the video content
+'
 sub handleVideoPlayPauseAction()
     if resumeHeldScrub() then return
-    if syncPlayTogglePause() then return
 
+    ' If video is paused, resume it
     if m.top.state = "paused"
-        m.top.control = VideoControl.RESUME
+        handleHideAction(true)
         return
     end if
 
+    ' Pause video
     m.top.control = VideoControl.PAUSE
 end sub
-
-' In a SyncPlay group transport goes to the server, unless the manager is applying a group command
-function syncPlayIntercepts() as boolean
-    return m.global.syncPlayManager.callFunc("shouldIntercept", m.top)
-end function
-
-function syncPlaySeek(target as float) as boolean
-    if not syncPlayIntercepts() then return false
-    m.global.syncPlayManager.callFunc("requestSeek", target)
-    return true
-end function
-
-' The pause or play comes back as a group command
-function syncPlayTogglePause() as boolean
-    if not syncPlayIntercepts() then return false
-    if m.top.state = "paused" then m.global.syncPlayManager.callFunc("requestUnpause") else m.global.syncPlayManager.callFunc("requestPause")
-    return true
-end function
 
 sub handleShowSubtitleMenuAction()
     if not isValidAndNotEmpty(m.top.fullSubtitleData) then return
@@ -639,156 +809,74 @@ sub handleShowAudioMenuAction()
     m.top.selectAudioPressed = true
 end sub
 
-' Speed and Bitrate open in the same panel as the track pickers, and the controls come back on the
-' button that opened them
-sub openControlMenu(buttonId as string, title as string, labels as object, selected as integer, handler as string)
-    handleHideAction(false)
-    m.controlMenu = CreateObject("roSGNode", "ListPromptDialog")
-    m.controlMenu.observeField("optionSelected", handler)
-    m.top.appendChild(m.controlMenu)
-    m.controlMenu.dialogTitle = title
-    m.controlMenu.options = labels
-    m.controlMenu.selectedOption = selected
-    m.controlMenu.openOnSelected = true
-    m.controlMenu.returnFocus = m.top
-    m.controlMenu.callFunc("showDialog")
-    m.controlMenuButton = buttonId
-end sub
-
-' The row picked, or -1 for Back, once the panel is gone and the controls are back on its button
-function closeControlMenu(event as object) as integer
-    index = event.getData()
-    m.controlMenu.unobserveField("optionSelected")
-    m.top.setFocus(true)
-    m.top.removeChild(m.controlMenu)
-    m.controlMenu = invalid
-    showOSD(m.controlMenuButton)
-    return index
-end function
-
 sub handleShowSpeedMenuAction()
-    labels = []
-    selected = -1
-    for each speed in osdControls.Speeds()
-        if speed = m.playbackSpeed then selected = labels.count()
-        labels.push(osdControls.SpeedLabel(speed))
-    end for
-    openControlMenu("showSpeedMenu", tr("Playback speed"), labels, selected, "onSpeedPicked")
-end sub
+    if m.speedDialogActive then return
 
-sub onSpeedPicked(event as object)
-    index = closeControlMenu(event)
-    if index >= 0 then applyPlaybackSpeed(osdControls.Speeds()[index])
+    speedOptions = [
+        { value: "0.5", label: "0.5x" },
+        { value: "0.75", label: "0.75x" },
+        { value: "1.0", label: "1.0x" },
+        { value: "1.25", label: "1.25x" },
+        { value: "1.5", label: "1.5x" },
+        { value: "2.0", label: "2.0x" }
+    ]
+
+    speedData = { data: [] }
+    for each speedOption in speedOptions
+        optionData = {
+            Name: speedOption.value,
+            description: speedOption.label
+        }
+
+        if Val(speedOption.value) = m.playbackSpeed
+            optionData.selected = true
+        end if
+
+        speedData.data.push(optionData)
+    end for
+
+    handleHideAction(false)
+    m.global.sceneManager.callFunc("radioDialog", tr("Playback Speed"), speedData)
+    m.global.sceneManager.observeFieldScoped("returnData", "onSpeedDialogResult")
+    m.speedDialogActive = true
 end sub
 
 sub applyPlaybackSpeed(speed as float)
-    if not m.top.hasField("playbackSpeed")
-        m.global.sceneManager.callFunc("userMessage", tr("Playback speed is not supported on this Roku model"))
+    if m.top.hasField("playbackRate")
+        m.top.playbackRate = speed
+        m.playbackSpeed = speed
         return
     end if
 
-    m.top.playbackSpeed = speed
-    m.playbackSpeed = speed
-    m.osd.playbackSpeed = speed
-    ' The firmware only picks up a new speed when playback resumes
-    if isStringEqual(m.top.state, MediaPlaybackState.PLAYING)
-        m.top.control = VideoControl.PAUSE
-        m.top.control = VideoControl.RESUME
+    if m.top.hasField("rate")
+        m.top.rate = speed
+        m.playbackSpeed = speed
+        return
     end if
+
+    if m.top.hasField("playbackSpeed")
+        m.top.playbackSpeed = speed
+        m.playbackSpeed = speed
+        return
+    end if
+
+    m.global.sceneManager.callFunc("userMessage", tr("Playback speed is not supported on this Roku model"))
 end sub
 
-sub handleShowQualityMenuAction()
-    labels = []
-    selected = -1
-    for each bps in osdControls.Bitrates()
-        if bps = m.maxBitrate then selected = labels.count()
-        labels.push(osdControls.BitrateLabel(bps))
-    end for
-    openControlMenu("showQualityMenu", tr("Bitrate"), labels, selected, "onBitratePicked")
-end sub
+sub onSpeedDialogResult()
+    if not m.speedDialogActive then return
 
-' A new cap asks the server for the stream again from where it is, the way a track change that
-' needs the server does
-sub onBitratePicked(event as object)
-    index = closeControlMenu(event)
-    if index < 0 then return
-    bps = osdControls.Bitrates()[index]
-    if bps = m.maxBitrate then return
-    m.maxBitrate = bps
-    m.osd.bitrateCapped = bps > 0
-    m.global.queueManager.callFunc("setTopStartingPoint", int(mediaPosition()) * 10000000&)
-    stopForReload()
-    m.LoadMetaDataTask.maxBitrate = bps
-    m.LoadMetaDataTask.selectedAudioStreamIndex = m.top.audioIndex
-    m.LoadMetaDataTask.itemId = m.top.id
-    runLoad()
-end sub
+    m.global.sceneManager.unobserveFieldScoped("returnData")
+    m.speedDialogActive = false
 
-sub handleToggleFavoriteAction()
-    favorite = not m.osd.isFavorite
-    m.favoriteTask = CreateObject("roSGNode", "FavoriteItemsTask")
-    m.favoriteTask.itemId = m.top.id
-    m.favoriteTask.favTask = favorite ? "favorite" : "unfavorite"
-    if isValid(m.itemServerData) then m.favoriteTask.serverData = m.itemServerData
-    m.favoriteTask.control = "RUN"
-    m.osd.isFavorite = favorite
-end sub
+    returnData = m.global.sceneManager.returnData
+    if returnData = invalid then return
+    if returnData.Name = invalid then return
 
-' The people in the same row of cards the chapters use, with round photos and each one's role
-sub handleCastAndCrewAction()
-    if not isValidAndNotEmpty(m.people) then return
-    entries = []
-    for each person in m.people
-        role = person.Role ?? ""
-        if role = "" then role = person.Type ?? ""
-        entries.push({ name: person.Name ?? "", caption: role, thumbUrl: personPhotoURL(person) })
-    end for
+    selectedSpeed = returnData.Name.ToFloat()
+    if selectedSpeed <= 0 then return
 
-    handleHideAction(false)
-    m.castOverlay = CreateObject("roSGNode", "ChapterListOverlay")
-    m.castOverlay.observeField("selectedIndex", "onCastPicked")
-    m.castOverlay.observeField("dismissed", "closeCastAndCrew")
-    m.top.appendChild(m.castOverlay)
-    m.castOverlay.heading = tr("Cast & Crew")
-    m.castOverlay.round = true
-    m.castOverlay.currentIndex = -1
-    m.castOverlay.chapters = entries
-    m.castOverlay.callFunc("open")
-    m.castOverlay.setFocus(true)
-end sub
-
-function personPhotoURL(person as object) as string
-    tag = person.PrimaryImageTag
-    if not isValidAndNotEmpty(tag) or not isValidAndNotEmpty(person.Id) then return ""
-    params = { "maxHeight": 280, "maxWidth": 280, "tag": tag }
-    if isValid(m.itemServerData) and isEmbyServer(m.itemServerData.serverUrl) then params.api_key = m.itemServerData.authToken
-    return getImageURL(person.Id, "Primary", params, m.itemServerData)
-end function
-
-' Picking someone pauses here and opens their page over the player, which Back returns from
-sub onCastPicked(event as object)
-    person = m.people[event.getData()]
-    dropCastAndCrew()
-    if not isValid(person) then return
-    if m.top.state = "paused" or not syncPlayTogglePause() then m.top.control = VideoControl.PAUSE
-    json = { Id: person.Id, Name: person.Name, Type: "Person" }
-    if isValid(m.itemServerData) then json.Append({ _serverUrl: m.itemServerData.serverUrl, _userId: m.itemServerData.userId, _authToken: m.itemServerData.authToken })
-    m.global.jumpTo = { selectionType: "person", id: person.Id, json: json }
-end sub
-
-sub closeCastAndCrew()
-    dropCastAndCrew()
-    showOSD("showCastAndCrew")
-end sub
-
-sub dropCastAndCrew()
-    if not isValid(m.castOverlay) then return
-    m.castOverlay.unobserveField("selectedIndex")
-    m.castOverlay.unobserveField("dismissed")
-    m.castOverlay.setFocus(false)
-    m.top.setFocus(true)
-    m.top.removeChild(m.castOverlay)
-    m.castOverlay = invalid
+    applyPlaybackSpeed(selectedSpeed)
 end sub
 
 ' handleShowVideoInfoPopupAction: Handles action to show video info popup
@@ -818,6 +906,7 @@ sub closePlaybackInfo()
     m.top.setFocus(true)
     m.top.removeChild(m.playbackInfoDialog)
     m.playbackInfoDialog = invalid
+    prepareOSD()
     showOSD("showVideoInfoPopup")
 end sub
 
@@ -836,18 +925,11 @@ sub onOSDAction()
         return
     end if
 
-    if action = "backkey"
-        if handleCinemaSkipKey(KeyCode.BACK) or handleSkipPromptKey(KeyCode.BACK) then return
+    if action = "backkey" or action = "fastforwardkey"
+        key = KeyCode.BACK
+        if action = "fastforwardkey" then key = KeyCode.FASTFORWRD
+        if handleCinemaSkipKey(key) or handleSkipPromptKey(key) then return
         handleHideAction(false)
-        return
-    end if
-
-    ' The remote's seek keys skip by the set lengths and put the controls on the bar,
-    ' after Fast Forward has had the chance to skip a pre-roll or a segment
-    if action = "rewindkey" or action = "fastforwardkey"
-        if action = "fastforwardkey" and (handleCinemaSkipKey(KeyCode.FASTFORWRD) or handleSkipPromptKey(KeyCode.FASTFORWRD)) then return
-        skipFromControls(action = "fastforwardkey")
-        m.osd.callFunc("focusOnSeekbar")
         return
     end if
 
@@ -857,7 +939,7 @@ sub onOSDAction()
     end if
 
     if action.Left(6) = "scrub,"
-        beginHeldSeek(action.Mid(6).ToInt(), true)
+        scrubBy(action.Mid(6).ToInt())
         return
     end if
 
@@ -871,28 +953,18 @@ sub onOSDAction()
         return
     end if
 
-    if action = "jumptolive"
-        jumpToLive()
+    if action = "rewind"
+        handleRewindAction()
         return
     end if
 
-    if action = "rewind" or action = "fastforward"
-        skipFromControls(action = "fastforward")
+    if action = "fastforward"
+        handleFastForwardAction()
         return
     end if
 
-    if action = "togglefavorite"
-        handleToggleFavoriteAction()
-        return
-    end if
-
-    if action = "showqualitymenu"
-        handleShowQualityMenuAction()
-        return
-    end if
-
-    if action = "showcastandcrew"
-        handleCastAndCrewAction()
+    if action = "chapterback" or action = "chapternext"
+        handleChapterSkipAction(action)
         return
     end if
 
@@ -936,15 +1008,14 @@ sub onOSDAction()
         return
     end if
 
-    if action = "showsyncmenu" or action = "showsecondarysyncmenu"
-        handleShowsyncmenuAction(action = "showsecondarysyncmenu")
+    if action = "showsyncmenu"
+        handleShowsyncmenuAction()
         return
     end if
 
-    if action = "showsubtitleappearance" or action = "showsecondaryappearance"
+    if action = "showsubtitleappearance"
         handleHideAction(false)
         m.subtitleAppearance.isHdr = m.isHdrOutput
-        m.subtitleAppearance.secondary = action = "showsecondaryappearance"
         m.subtitleAppearance.callFunc("open")
         m.subtitleAppearance.visible = true
         m.subtitleAppearance.setFocus(true)
@@ -953,22 +1024,6 @@ sub onOSDAction()
 
     if action = "showchannels"
         openCarousel()
-        return
-    end if
-
-    if action = "showwatchparty"
-        wpOpenPanel()
-        return
-    end if
-
-    if action = "showsyncplaymenu"
-        handleHideAction(false)
-        m.global.syncPlayManager.callFunc("showGroupsDialog")
-        return
-    end if
-
-    if action = "showwatchpartychat"
-        wpOpenQuickBar()
         return
     end if
 
@@ -983,28 +1038,12 @@ sub onOSDAction()
     end if
 end sub
 
-' A seek button skips by its length, and a live stream only inside its window
-sub skipFromControls(forward as boolean)
-    direction = -1
-    if forward then direction = 1
-    skipBy(direction * osdControls.SkipSeconds(m.global.session.user.settings, direction))
-end sub
-
-sub handleShowsyncmenuAction(secondary = false as boolean)
+sub handleShowsyncmenuAction()
     handleHideAction(false)
 
-    ' The panel moves whichever track opened it
-    m.offsetTarget = secondary ? "secondary" : "primary"
+    m.subtitleOffsetOverlay.offset = m.subtitleOffset
     cues = []
-    if secondary
-        m.subtitleOffsetOverlay.limit = SECONDARY_DELAY_LIMIT_MS
-        m.subtitleOffsetOverlay.offset = m.top.secondarySubtitleDelay
-        if isValid(m.secondaryTask) then cues = m.secondaryTask.callFunc("getCues")
-    else
-        m.subtitleOffsetOverlay.limit = 0
-        m.subtitleOffsetOverlay.offset = m.subtitleOffset
-        if isValid(m.captionTask) and LCase(m.top.globalCaptionMode) = "on" then cues = m.captionTask.callFunc("getCues")
-    end if
+    if isValid(m.captionTask) and LCase(m.top.globalCaptionMode) = "on" then cues = m.captionTask.callFunc("getCues")
     m.subtitleOffsetOverlay.cues = cues
     m.subtitleOffsetOverlay.currentTime = m.top.position
     m.subtitleOffsetOverlay.visible = true
@@ -1018,18 +1057,12 @@ sub hidesyncmenuAction()
 end sub
 
 sub onSubtitleOffsetChanged()
-    if m.offsetTarget = "secondary"
-        m.top.secondarySubtitleDelay = m.subtitleOffsetOverlay.offset
-        return
-    end if
     m.subtitleOffset = m.subtitleOffsetOverlay.offset
     m.global.queueManager.callFunc("setSubtitleOffset", m.subtitleOffset)
 end sub
 
 sub onSubtitleAppearanceChanged()
     if isValid(m.captionTask) then m.captionTask.styleRevision = m.captionTask.styleRevision + 1
-    applySecondaryStyle()
-    placeCaptions()
 end sub
 
 sub onSubtitleAppearanceClosed()
@@ -1066,10 +1099,9 @@ sub onAllowCaptionsChange()
 end sub
 
 ' Custom subtitles draw what comes from the server. A track the device reads from the stream itself
-' can only be drawn by the device, so custom subtitles step aside for it. A second track has the
-' player draw the first one too, since only then can it stack the two.
+' can only be drawn by the device, so custom subtitles step aside for it.
 sub loadCaption()
-    custom = m.global.session.user.settings["playback.subs.custom"] = true or m.top.secondarySubtitleIndex >= 0
+    custom = m.global.session.user.settings["playback.subs.custom"] = true
     ' The device wraps the name of a track it was handed, so the address sits somewhere inside it
     fromServer = Instr(1, LCase(m.top.subtitleTrack), "http") > 0
     m.top.suppressCaptions = custom and (fromServer or m.top.subtitleTrack = "")
@@ -1086,7 +1118,7 @@ sub toggleCaption()
     m.captionTask.playerState = m.top.state + m.top.globalCaptionMode
     if LCase(m.top.globalCaptionMode) = "on"
         m.captionTask.playerState = m.top.state + m.top.globalCaptionMode + "w"
-        m.captionGroup.visible = true
+        m.captionGroup.visible = not m.top.speshPreview
     else
         m.captionGroup.visible = false
     end if
@@ -1146,148 +1178,6 @@ end sub
 sub updateCaption()
     m.captionGroup.removeChildrenIndex(m.captionGroup.getChildCount(), 0)
     m.captionGroup.appendChildren(m.captionTask.currentCaption)
-    placeCaptions()
-end sub
-
-' ------------------------------------------------------------------------------------------------
-' The second subtitle track
-' ------------------------------------------------------------------------------------------------
-
-function isLiveContent() as boolean
-    return isValid(m.top.content) and m.top.content.live = true
-end function
-
-function secondarySubtitlesEnabled() as boolean
-    return m.global.session.user.settings["playback.subs.secondary.enabled"] = true
-end function
-
-' Every subtitle track as the pickers see it
-function subtitleJsonList() as object
-    list = []
-    for each item in m.top.fullSubtitleData ?? []
-        list.push(trackLabels.SubtitleJson(item))
-    end for
-    return list
-end function
-
-function secondarySubtitleCandidates() as object
-    settings = m.global.session.user.settings
-    return secondarySubtitle.Candidates(subtitleJsonList(), m.top.selectedSubtitle, settings["playback.subs.secondary.language"], settings)
-end function
-
-' The Subtitles button asks which track first only while the setting is on and there's something
-' for the second one. A track that's already showing keeps the step so it can still be turned off.
-function offersSecondarySubtitles() as boolean
-    if not isValid(m.captionTask) or isLiveContent() then return false
-    if m.top.secondarySubtitleIndex >= 0 then return true
-    return secondarySubtitlesEnabled() and secondarySubtitleCandidates().count() > 0
-end function
-
-' A pick is remembered for the title, off included
-sub selectSecondarySubtitle(index as integer)
-    list = subtitleJsonList()
-    stream = invalid
-    for each json in list
-        if json.Index = index then stream = json
-    end for
-    if index >= 0 and secondarySubtitle.IsEligible(stream)
-        loadSecondary(stream)
-    else
-        clearSecondary()
-        index = -1
-    end if
-    trackMemory.RememberSecondary(m.top.videoId, secondarySubtitle.Selection(list, index))
-end sub
-
-' A new title starts with no second track and no delay, and a fresh load of the same one keeps both
-sub prepareSecondaryForItem(itemId as string)
-    if m.secondaryItemId = itemId then return
-    m.secondaryItemId = itemId
-    clearSecondary()
-    m.top.secondarySubtitleDelay = 0
-end sub
-
-' Puts back the track remembered for this title, unless it's now the first track
-sub restoreSecondarySubtitle()
-    if not secondarySubtitlesEnabled() or not isValid(m.captionTask) or isLiveContent() then return
-    list = subtitleJsonList()
-    restored = secondarySubtitle.RestoreIndex(trackMemory.RememberedSecondary(trackMemory.Load(), m.top.videoId), list)
-    stream = invalid
-    if isValid(restored) and restored >= 0 and restored <> m.top.selectedSubtitle
-        for each json in list
-            if json.Index = restored then stream = json
-        end for
-    end if
-    if isValid(stream) then loadSecondary(stream) else clearSecondary()
-end sub
-
-' Picking the second track's file as the first takes it over
-sub releaseSecondaryIfPrimary(primary as integer)
-    if primary >= 0 and primary = m.top.secondarySubtitleIndex then selectSecondarySubtitle(-1)
-end sub
-
-' Nothing waits on the download. The server may still be pulling the track out of the file, and the
-' lines fill in once it answers.
-sub loadSecondary(stream as object)
-    if not isValid(m.secondaryTask)
-        m.secondaryTask = createObject("roSGNode", "captionTask")
-        m.secondaryTask.observeField("currentCaption", "updateSecondaryCaption")
-        m.secondaryTask.observeField("fetching", "placeCaptions")
-    end if
-    m.secondaryTask.isHdr = m.isHdrOutput
-    applySecondaryStyle()
-    m.secondaryTask.playerState = m.top.state + "on"
-    m.secondaryTask.url = chainLookupReturn(stream, "Track.TrackName", "")
-    m.top.secondarySubtitleIndex = stream.Index
-    if isValid(m.captionTask) then loadCaption()
-end sub
-
-sub clearSecondary()
-    if isValid(m.secondaryTask) then m.secondaryTask.url = ""
-    m.secondaryCaptionGroup.removeChildrenIndex(m.secondaryCaptionGroup.getChildCount(), 0)
-    wasShowing = m.top.secondarySubtitleIndex >= 0
-    m.top.secondarySubtitleIndex = -1
-    if wasShowing and isValid(m.captionTask) then loadCaption()
-    placeCaptions()
-end sub
-
-' The second track follows the first track's style, with its own size and color when they're set
-sub applySecondaryStyle()
-    if not isValid(m.secondaryTask) then return
-    settings = m.global.session.user.settings
-    m.secondaryTask.sizeOverride = Int(Val(toString(settings["playback.subs.secondary.size"] ?? "0")))
-    m.secondaryTask.colorOverride = toString(settings["playback.subs.secondary.color"] ?? "")
-    m.secondaryTask.styleRevision = m.secondaryTask.styleRevision + 1
-end sub
-
-sub updateSecondaryCaption()
-    m.secondaryCaptionGroup.removeChildrenIndex(m.secondaryCaptionGroup.getChildCount(), 0)
-    m.secondaryCaptionGroup.appendChildren(m.secondaryTask.currentCaption)
-    placeCaptions()
-end sub
-
-' The second track stacks right above the first, so the two never overlap however many lines
-' either has. While it's loaded its vertical offset moves the pair, never past the bottom edge.
-sub placeCaptions()
-    if not isValid(m.captionGroup) or not isValid(m.captionTask) then return
-    bottomPercent = m.captionTask.bottomPercent
-    shift = 0
-    if m.top.secondarySubtitleIndex >= 0 and isValid(m.secondaryTask) and not m.secondaryTask.fetching
-        offset = Int(Val(toString(m.global.session.user.settings["playback.subs.secondary.offset"] ?? SECONDARY_DEFAULT_OFFSET).Trim()))
-        shiftPercent = secondarySubtitle.ShiftPercent(offset)
-        if bottomPercent + shiftPercent < 0 then shiftPercent = -bottomPercent
-        shift = Int(1080 * shiftPercent / 100)
-    end if
-    m.captionGroup.translation = [0, -shift]
-
-    if not isValid(m.secondaryCaptionGroup) or m.secondaryCaptionGroup.getChildCount() = 0 then return
-    target = 1080 * (1 - bottomPercent / 100) - shift
-    if m.captionGroup.visible
-        primary = m.captionGroup.boundingRect()
-        if primary.height > 0 then target = primary.y - 8
-    end if
-    own = m.secondaryCaptionGroup.localBoundingRect()
-    m.secondaryCaptionGroup.translation = [0, target - own.y - own.height]
 end sub
 
 ' Event handler for when selectedSubtitle changes
@@ -1302,14 +1192,20 @@ sub onSubtitleChange()
     ' If previous subtitle was encoded, then we need to a video stop/start to change subtitle content
     if m.top.previousSubtitleWasEncoded then switchWithoutRefresh = false
 
-    if switchWithoutRefresh then return
+    if switchWithoutRefresh
+        if m.playReported then ReportPlayback()
+        return
+    end if
     reloadWithSubtitle(m.top.SelectedSubtitle)
 end sub
 
 ' Loads the item again from where it is, with this subtitle picked. A subtitle downloaded during
 ' playback isnt in the stream the player opened, so this is also how one gets shown.
 sub reloadWithSubtitle(index as integer)
-    m.global.queueManager.callFunc("setTopStartingPoint", int(mediaPosition()) * 10000000&)
+    resumeTicks = int(m.top.position) * 10000000&
+    m.LoadMetaDataTask.reloadPositionTicks = resumeTicks
+    current = m.global.queueManager.callFunc("getCurrentItem")
+    if isValid(current) then current.startingPoint = resumeTicks
 
     stopForReload()
 
@@ -1320,8 +1216,7 @@ end sub
 
 ' Event handler for when audioIndex changes
 sub onAudioIndexChange()
-    ' Skip initial audio index setting
-    if m.top.position = 0 then return
+    if not isValid(m.top.content) then return
 
     ' Direct play already holds every track, so it switches without loading the stream again. A
     ' track the device cant play from the file goes back to the server, which can transcode it.
@@ -1332,7 +1227,7 @@ sub onAudioIndexChange()
     end if
 
     ' Save the current video position
-    m.global.queueManager.callFunc("setTopStartingPoint", int(mediaPosition()) * 10000000&)
+    m.global.queueManager.callFunc("setTopStartingPoint", int(m.top.position) * 10000000&)
 
     stopForReload()
 
@@ -1346,7 +1241,11 @@ sub onPlaybackErrorDialogClosed(msg)
     sourceNode.unobserveField("buttonSelected")
     sourceNode.unobserveField("wasClosed")
 
-    m.global.sceneManager.callFunc("popScene")
+    if m.top.speshManaged
+        m.top.backPressed = true
+    else
+        m.global.sceneManager.callFunc("popScene")
+    end if
 end sub
 
 sub onPlaybackErrorButtonSelected(msg)
@@ -1377,10 +1276,9 @@ end sub
 ' off the detail screen does. A stream the server has already torn down cant be
 ' brought back by restarting the same URL, which is why replaying by hand works
 ' when the in place retry does not.
-sub retryPlaybackFromServer(startSeconds = -1 as float)
-    if startSeconds < 0 then startSeconds = mediaPosition()
-    if startSeconds > 0
-        m.global.queueManager.callFunc("setTopStartingPoint", Int(startSeconds * 1000) * 10000&)
+sub retryPlaybackFromServer()
+    if m.top.position > 0
+        m.global.queueManager.callFunc("setTopStartingPoint", int(m.top.position) * 10000000&)
     end if
 
     m.top.control = VideoControl.STOP
@@ -1411,6 +1309,7 @@ sub replaceLoadTask()
         itemId: previous.itemId,
         itemType: previous.itemType,
         selectedSubtitleIndex: previous.selectedSubtitleIndex,
+        reloadPositionTicks: previous.reloadPositionTicks,
         selectedAudioStreamIndex: previous.selectedAudioStreamIndex,
         playbackMethod: previous.playbackMethod,
         transcodeCodec: previous.transcodeCodec,
@@ -1484,22 +1383,15 @@ function retryAction(played as boolean, retries as integer, nextStep as string, 
     return "server"
 end function
 
-' Whether this item streams from a Silo server, which may be another signed in server than the
-' current one
-function playsFromSilo() as boolean
-    if isValid(m.itemServerData) then return isSiloServer(m.itemServerData.serverUrl)
-    return isSiloServer()
-end function
-
 ' Asks the server for playback again, a step further from the file when one is given
 '
 ' @param {string} nextStep - the playback method to ask for, empty for the same stream again
 ' @param {string} what - what went wrong, for the log
 sub retryFromServer(nextStep as string, what as string)
     if nextStep = PlaybackMethod.FORCETRANSCODEALLOWREMUX
-        diagnostics.Playback(`${what}, asking the server for a remux, retry ${m.playbackRetries}`, diagnostics.LEVEL_WARN)
+        diagnostics.Playback(`${what} before playback started, asking the server for a remux, retry ${m.playbackRetries}`, diagnostics.LEVEL_WARN)
     else if nextStep = PlaybackMethod.FORCETRANSCODEDISABLEREMUX
-        diagnostics.Playback(`${what}, asking the server to transcode the ${m.videoCodec} video, retry ${m.playbackRetries}`, diagnostics.LEVEL_WARN)
+        diagnostics.Playback(`${what} before playback started, asking the server to transcode the ${m.videoCodec} video, retry ${m.playbackRetries}`, diagnostics.LEVEL_WARN)
     else
         diagnostics.Playback(`${what}, asking the server for playback again, retry ${m.playbackRetries}`, diagnostics.LEVEL_WARN)
     end if
@@ -1528,6 +1420,7 @@ function streamSummary(video as object) as string
 end function
 
 sub onVideoContentLoaded(event as object)
+    if m.speshStopped = true then return
     ' Only the load the player still waits on may hand it a stream
     if not m.loadInFlight or not event.getRoSGNode().isSameNode(m.LoadMetaDataTask) then return
     m.loadInFlight = false
@@ -1549,7 +1442,7 @@ sub onVideoContentLoaded(event as object)
     if isValid(videoContent) and chainLookupReturn(videoContent[0], "blocked", false) = true
         releaseLiveSessions()
         m.global.queueManager.callFunc("clear")
-        m.global.sceneManager.callFunc("popScene")
+        if m.top.speshManaged then m.top.backPressed = true else m.global.sceneManager.callFunc("popScene")
         return
     end if
 
@@ -1577,15 +1470,12 @@ sub onVideoContentLoaded(event as object)
 
     m.isTranscoded = videoContent[0].isTranscoded
     m.top.isTranscoded = m.isTranscoded = true
-    m.timelineOffset = videoContent[0].timelineOffset ?? 0
-    m.mediaRuntime = videoContent[0].mediaRuntime ?? 0
     m.videoCodec = videoContent[0].videoCodec ?? ""
     m.streamSummary = streamSummary(videoContent[0])
     diagnostics.Playback(`Playing ${m.streamSummary}`)
     ' A transcode leaves the picture SDR whatever the file is
     m.isHdrOutput = videoContent[0].isHdr = true and not m.isTranscoded
     if isValid(m.captionTask) then m.captionTask.isHdr = m.isHdrOutput
-    if isValid(m.secondaryTask) then m.secondaryTask.isHdr = m.isHdrOutput
     subtitlesBurnedIn = chainLookupReturn(videoContent[0], "subtitlesBurnedIn", false)
     if subtitlesBurnedIn
         videoContent[0].content.SubtitleTracks = []
@@ -1599,9 +1489,11 @@ sub onVideoContentLoaded(event as object)
     m.top.fullSubtitleData = videoContent[0].fullSubtitleData
     m.osd.hasSubtitles = isValidAndNotEmpty(m.top.fullSubtitleData)
     m.top.fullAudioData = videoContent[0].fullAudioData
+    m.top.unobserveField("audioIndex")
     ' The track the server checked for this stream, which the player may always go back to
     m.loadedAudioIndex = videoContent[0].audioIndex
     m.top.audioIndex = videoContent[0].audioIndex
+    m.top.observeField("audioIndex", "onAudioIndexChange")
     m.top.transcodeParams = videoContent[0].transcodeparams
     m.chapters = videoContent[0].chapters
     m.osd.hasChapters = isValidAndNotEmpty(m.chapters)
@@ -1614,14 +1506,12 @@ sub onVideoContentLoaded(event as object)
     m.trickplay = videoContent[0].trickplay
     m.top.showID = videoContent[0].showID
     m.playingSeason = videoContent[0].seasonNumber
-    m.playingEpisode = videoContent[0].episodeNumber
     m.playingSeriesName = videoContent[0].seriesName
     m.mediaSegments = videoContent[0].mediaSegments
 
     ' A new item gets its own prompts, so an earlier dismissal doesn't carry over
     m.nextUpDismissed = false
     hideNextItem()
-    loadNextAirDate()
     ' A pre-roll gets the Skip button when Cinema Mode asks for it and the feature is queued behind it
     m.cinemaSkipOn = m.LoadMetaDataTask.isIntro = true and toBoolean(m.global.session.user.settings["playback.cinemamode.skip"] ?? false) and m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1
     resetSkipPrompts()
@@ -1634,11 +1524,6 @@ sub onVideoContentLoaded(event as object)
     m.top.isLiveChannel = isValid(m.liveChannel)
     ' Only an episode of a series has a season to browse
     m.osd.hasEpisodes = isValidAndNotEmpty(m.top.showID) and not isValid(m.liveChannel) and m.LoadMetaDataTask.isIntro <> true
-    m.people = videoContent[0].people ?? []
-    m.osd.hasPeople = m.people.count() > 0 and not isValid(m.liveChannel)
-    ' A pre-roll isn't something to keep, so it has no heart
-    m.osd.canFavorite = m.LoadMetaDataTask.isIntro <> true and not isValid(m.liveChannel)
-    m.osd.isFavorite = videoContent[0].isFavorite = true
     if isValid(m.liveChannel)
         ' A details screen under the guide reloads as whatever played last, and a channel isnt
         ' something it can show
@@ -1655,7 +1540,6 @@ sub onVideoContentLoaded(event as object)
     startEmbyPreview(isLiveStream)
 
     ' A new item starts its scrub state and sheets over
-    endHeldSeek()
     m.scrubHold = { active: false, wasPlaying: false, target: invalid }
     hideSeekPreview()
     if m.sheetsFor <> m.top.id
@@ -1670,6 +1554,13 @@ sub onVideoContentLoaded(event as object)
         trickplayData = m.trickplay.LookupCI(m.top.mediaSourceId) ?? m.trickplay.LookupCI(m.top.id)
         if isValidAndNotEmpty(trickplayData)
             m.trickplayDataFinal = trickplayData.lookupCI(trickplayWidthFor(trickplayData))
+
+            if isValidAndNotEmpty(m.trickplayDataFinal)
+                ' Convert interval to seconds
+                m.iconInterval = m.trickplayDataFinal.Interval / 1000
+
+                m.canUseFastReplace = (m.trickplayDataFinal.TileHeight * m.trickplayDataFinal.Height) * (m.trickplayDataFinal.TileWidth * m.trickplayDataFinal.Width) < 2000000
+            end if
         end if
     end if
 
@@ -1690,6 +1581,8 @@ sub onVideoContentLoaded(event as object)
             m.osd.itemTitleText = string.EMPTY
         end if
     end if
+
+    setSiblingData()
 
     ' Allow custom captions for non intro videos unless the subtitles are burned into the picture
     if not m.LoadMetaDataTask.isIntro
@@ -1742,15 +1635,20 @@ sub onVideoContentLoaded(event as object)
     end if
 
     m.top.observeField("selectedSubtitle", "onSubtitleChange")
-    prepareSecondaryForItem(m.top.videoId)
-    restoreSecondarySubtitle()
 
-    m.top.setFocus(true)
+    applyChosenAudioTrack()
+
+    if m.top.speshPreview
+        m.top.setFocus(false)
+        restorePreviewInput()
+    else
+        m.top.setFocus(true)
+    end if
 
     ' Hold the play command rather than starting and pausing, which would trip the
     ' pause overlay and the unpause rewind
     startDelay = getVideoStartDelaySeconds()
-    if startDelay > 0 and not wpActive()
+    if startDelay > 0
         m.startDelayTimer.duration = startDelay
         m.startDelayTimer.control = "start"
         return
@@ -1772,6 +1670,81 @@ end function
 
 sub onStartDelayElapsed()
     m.top.control = VideoControl.PLAY
+end sub
+
+sub displayTrickplayImage(trickPosition as integer)
+    if m.global.session.user.settings["playback.trickplay.enabled"] = false then return
+    if displayEmbyPreview(trickPosition) then return
+    if not isValid(m.trickplayDataFinal) then return
+
+    ' Index of trickplay image that matches seek timestamp - out of all trickplay images
+    iconIndex = fix(trickPosition / m.iconInterval)
+
+    ' Index of tileset that trickplay image is located in
+    tileIndex = Fix(iconIndex / (m.trickplayDataFinal.TileHeight * m.trickplayDataFinal.TileWidth))
+
+    ' Index of trickplay image within tileset
+    tileIconIndex = iconIndex - (tileIndex * (m.trickplayDataFinal.TileHeight * m.trickplayDataFinal.TileWidth))
+
+    ' Index of row trickplay image is on within tileset
+    iconRow = fix(tileIconIndex / m.trickplayDataFinal.TileHeight)
+
+    ' Index of column trickplay image is on within tileset
+    iconColumn = tileIconIndex mod m.trickplayDataFinal.TileWidth
+
+    ' Translation values for trickplay images
+    offsetHoriz = 100
+    offsetVert = 900 - m.trickplayDataFinal.Height
+
+    if m.scrubActive
+        if m.top.duration > 0
+            scrubPct = m.scrubPosition / m.top.duration
+            offsetHoriz = 103 + 1714 * scrubPct - m.trickplayDataFinal.Width / 2
+        else
+            offsetHoriz = 103
+        end if
+    else if isValid(m.positionTranslation)
+        ' If we can get translation data for the trickplaybar's thumb icon, use it so the trickplay images can move left/right with seeking
+        if m.positionTranslation.translation[0] = 0 then return
+        offsetHoriz = m.positionTranslation.translation[0] - 50
+    end if
+
+    maxOffsetHoriz = 1920 - m.trickplayDataFinal.Width
+    if offsetHoriz > maxOffsetHoriz then offsetHoriz = maxOffsetHoriz
+
+    if offsetHoriz < 0 then offsetHoriz = 0
+
+    trickplayImage = m.top.findNode("trickplayImage")
+
+    ' Trickplayimage node doesn't exist, create it
+    if not isValid(trickplayImage)
+        newTrickplayImage = createObject("roSGNode", "Poster")
+        newTrickplayImage.uri = `tmp:/${m.top.id}-${tileIndex}.jpg`
+        newTrickplayImage.id = `trickplayImage`
+        newTrickplayImage.loadDisplayMode = "noScale"
+        newTrickplayImage.height = m.trickplayDataFinal.Height * m.trickplayDataFinal.TileHeight
+        newTrickplayImage.width = m.trickplayDataFinal.Width * m.trickplayDataFinal.TileWidth
+        newTrickplayImage.translation = `[${offsetHoriz - (iconColumn * m.trickplayDataFinal.Width)},  ${offsetVert - (iconRow * m.trickplayDataFinal.Height)}]`
+        newTrickplayImage.clippingRect = `[${iconColumn * m.trickplayDataFinal.Width}, ${iconRow * m.trickplayDataFinal.Height}, ${m.trickplayDataFinal.Width}, ${m.trickplayDataFinal.Height}]`
+        m.top.appendChild(newTrickplayImage)
+        return
+    end if
+
+    ' If we've changed tiles, remove existing trickplayImage node
+    ' Otherwise loading the next image will fail. 'cause Roku.
+    if trickplayImage.uri <> `tmp:/${m.top.id}-${tileIndex}.jpg`
+        if not m.canUseFastReplace
+            m.top.removeChild(trickplayImage)
+            return
+        end if
+
+        trickplayImage.uri = `tmp:/${m.top.id}-${tileIndex}.jpg`
+    end if
+
+    ' Move clippingRect to next trickplay image within tileset - offsetting translation by an equal amount so it doesn't move
+    trickplayImage.translation = `[${offsetHoriz - (iconColumn * m.trickplayDataFinal.Width)},  ${offsetVert - (iconRow * m.trickplayDataFinal.Height)}]`
+    trickplayImage.clippingRect = `[${iconColumn * m.trickplayDataFinal.Width}, ${iconRow * m.trickplayDataFinal.Height}, ${m.trickplayDataFinal.Width}, ${m.trickplayDataFinal.Height}]`
+    trickplayImage.visible = true
 end sub
 
 ' Event handler for when video content field changes
@@ -1817,8 +1790,7 @@ sub onNextEpisodeDataLoaded()
     if not isValid(queuePos) then queuePos = 0
     if not isValid(queueCount) then queueCount = 0
 
-    ' A party plays only the room's item, so its end doesn't run on into the next episode
-    if queuePos = 0 and queueCount <= 1 and not wpActive()
+    if queuePos = 0 and queueCount <= 1
         startIndex = targetIndex - 5
         if startIndex < 0 then startIndex = 0
 
@@ -1839,12 +1811,9 @@ sub onNextEpisodeDataLoaded()
             windowQueue.push(ep)
         end for
 
-        ' Replacing the queue drops the episode Show Next Up After Finish picked, which still applies
-        showAtFinish = m.global.queueManager.callFunc("getEpisodeToShowAtFinish")
         m.global.queueManager.callFunc("set", windowQueue)
-        m.global.queueManager.callFunc("markSeasonWindow")
-        if isValidAndNotEmpty(showAtFinish) then m.global.queueManager.callFunc("setEpisodeToShowAtFinish", showAtFinish)
         m.global.queueManager.callFunc("setPosition", targetIndex - startIndex)
+        setSiblingData()
     end if
 end sub
 
@@ -1856,94 +1825,26 @@ sub onNextUpResized()
     m.nextUp.translation = [1920 - OVERLAY_EDGE - m.nextUp.overlayWidth, 1080 - OVERLAY_BOTTOM - m.nextUp.overlayHeight]
 end sub
 
+' One setting drives the ring and the timer on both overlays
 sub applyOverlayCountdownPreference()
     mode = m.global.session.user.settings["playback.mediasegments.countdown"] ?? "both"
-    parts = playbackOverlay.CountdownLook(mode)
-    m.skipSegmentButton.setFields(parts)
-    m.nextUp.setFields(parts)
+
+    showRing = isStringEqual(mode, "progressbar") or isStringEqual(mode, "both")
+    showTimer = isStringEqual(mode, "timer") or isStringEqual(mode, "both")
+
+    m.skipSegmentButton.showRing = showRing
+    m.skipSegmentButton.showTimer = showTimer
+    m.nextUp.showRing = showRing
+    m.nextUp.showTimer = showTimer
 end sub
 
 sub hideNextItem()
     m.nextUp.visible = false
     m.nextUpTimer.control = TimerControl.STOP
-    m.airDateShowing = false
-    m.top.holdAtEnd = false
 end sub
-
-' Looks up when the series' next episode airs, for an episode the queue has nothing after
-sub loadNextAirDate()
-    m.nextAirDate = invalid
-    if isValid(m.airDateTask)
-        m.airDateTask.unobserveField("info")
-        m.airDateTask = invalid
-    end if
-    if not isValidAndNotEmpty(m.top.showID) or isValid(m.liveChannel) or m.LoadMetaDataTask.isIntro = true then return
-    if not get_user_setting_bool("playback.showNextAirDate", true) or isStringEqual(nextUpBehaviour(), "disabled") then return
-    if m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1 then return
-
-    m.airDateTask = CreateObject("roSGNode", "FetchUpcomingEpisodeTask")
-    m.airDateTask.observeField("info", "onNextAirDateLoaded")
-    item = { "Id": m.top.id, "Type": "Episode", "SeriesId": m.top.showID }
-    if isValid(m.itemServerData) then item.Append({ "_serverUrl": m.itemServerData.serverUrl, "_userId": m.itemServerData.userId, "_authToken": m.itemServerData.authToken })
-    m.airDateTask.itemData = item
-    m.airDateTask.control = TaskControl.RUN
-end sub
-
-' Kept only for the episode right after this one that hasn't aired yet. A next season already in
-' the library is queued once the finale ends, so anything further along means more to watch first.
-sub onNextAirDateLoaded()
-    info = m.airDateTask.info
-    m.airDateTask.unobserveField("info")
-    m.airDateTask = invalid
-    if not isValidAndNotEmpty(info) or not isValidAndNotEmpty(info.airDate) then return
-
-    season = m.playingSeason
-    episode = m.playingEpisode
-    if not isValid(season) or not isValid(episode) or not isValid(info.seasonNumber) or not isValid(info.episodeNumber) then return
-    follows = (info.seasonNumber = season and info.episodeNumber = episode + 1) or (info.seasonNumber = season + 1 and info.episodeNumber = 1)
-    if not follows then return
-
-    day = calendarEntries.LocalDayOf(info.airDate)
-    today = calendarEntries.TodayNumber()
-    if day < today then return
-
-    m.nextAirDate = {
-        label: `S${info.seasonNumber.ToStr()}:E${info.episodeNumber.ToStr()}`,
-        title: m.playingSeriesName ?? "",
-        airs: calendarEntries.ReleaseIn(day, today)
-    }
-end sub
-
-' The end of episode card for a series whose next episode isn't out yet: when it airs, and only a
-' close button
-function displayNextAirDate() as boolean
-    if m.nextUp.visible then return true
-    if not isValid(m.nextAirDate) or m.nextUpDismissed or isStringEqual(nextUpBehaviour(), "disabled") then return false
-    if m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1 then return false
-
-    m.nextUp.isMinimal = isStringEqual(nextUpBehaviour(), "minimal")
-    m.nextUp.thumbUri = string.EMPTY
-    m.nextUp.seriesTitle = m.nextAirDate.title
-    m.nextUp.episodeTitle = string.EMPTY
-    m.nextUp.episodeLabel = m.nextAirDate.label
-    m.nextUp.animeMarker = {}
-    m.nextUp.airsText = m.nextAirDate.airs
-    m.nextUp.focusedButton = NEXT_UP_DISMISS
-    m.nextUpElapsedMs = 0
-    m.nextUp.progress = 1.0
-    m.nextUp.secondsRemaining = Int(nextUpTimeoutMs() / 1000)
-    m.nextUp.visible = true
-    m.airDateShowing = true
-    ' Holds the player at the end so the card isn't closed with it
-    m.top.holdAtEnd = true
-    if nextUpTimeoutMs() > 0 then m.nextUpTimer.control = TimerControl.START
-    return true
-end function
 
 ' Returns whether the card is up, so the caller can fall back to a skip button
 function displayNextItem() as boolean
-    ' A party plays what the host picks, so nobody moves on alone
-    if wpActive() then return false
     if m.nextUp.visible then return true
     if m.nextUpDismissed then return false
     if isStringEqual(nextUpBehaviour(), "disabled") then return false
@@ -1973,7 +1874,6 @@ function displayNextItem() as boolean
     end if
     m.nextUp.thumbUri = thumbUri
 
-    m.nextUp.airsText = string.EMPTY
     m.nextUp.seriesTitle = nextItem.lookupCI("SeriesName") ?? string.EMPTY
     m.nextUp.episodeTitle = nextItem.lookupCI("name") ?? string.EMPTY
     m.nextUp.episodeLabel = episodeLabelFor(nextItem)
@@ -2035,10 +1935,6 @@ sub onNextUpTick()
 
     if remaining > 0 then return
 
-    if m.airDateShowing
-        cancelNextItem()
-        return
-    end if
     hideNextItem()
     if isAutoplayNextEpisodeEnabled()
         playNextUpItem()
@@ -2050,7 +1946,7 @@ end sub
 sub playNextUpItem()
     hideNextItem()
     clearSkipPrompt()
-    playNextInQueue()
+    handleItemSkipAction("itemnext")
 end sub
 
 ' Dismissing keeps the card down for the rest of the episode
@@ -2087,7 +1983,7 @@ end function
 sub checkSegmentSkipButton()
     if not isValidAndNotEmpty(m.mediaSegments) then return
 
-    ticks = mediaPosition() * 10000000#
+    ticks = m.top.position * 10000000#
     ' Back at or before a segment's start is a rewind into it on purpose, so it can skip itself again
     kept = []
     for each start in m.autoSkipped
@@ -2242,7 +2138,7 @@ sub applySkipPrompt()
 end sub
 
 function playerModalOpen() as boolean
-    if isValid(m.chapterOverlay) or isValid(m.episodeOverlay) or isValid(m.playbackInfoDialog) or isValid(m.carousel) or isValid(m.recordDialog) or isValid(m.recordAiring) or isValid(m.controlMenu) or isValid(m.castOverlay) then return true
+    if isValid(m.chapterOverlay) or isValid(m.episodeOverlay) or isValid(m.playbackInfoDialog) or isValid(m.carousel) or isValid(m.recordDialog) or isValid(m.recordAiring) then return true
     for each modal in m.playerModals
         if isValid(modal) and modal.visible then return true
     end for
@@ -2253,6 +2149,7 @@ sub pressSkipPrompt()
     endTicks = m.skipPrompt.end
     clearSkipPrompt()
     if skipSegmentTo(endTicks) then return
+    prepareOSD()
     showOSD("seekbar")
 end sub
 
@@ -2299,6 +2196,7 @@ end function
 
 sub showControlsOnSkip()
     if not stateAllowsOSD() then return
+    prepareOSD()
     showOSD()
     if m.skipSegmentButton.visible then m.skipSegmentButton.setFocus(true)
 end sub
@@ -2341,7 +2239,7 @@ end sub
 sub skipPreroll()
     m.cinemaWanted = false
     applySkipPrompt()
-    playNextInQueue()
+    handleItemSkipAction("itemnext")
 end sub
 
 function handleCinemaSkipKey(key as string) as boolean
@@ -2382,21 +2280,17 @@ end function
 ' When Video Player state changes
 sub onPositionChanged()
     ' Pass video position data into OSD
-    position = mediaPosition()
-    duration = mediaDuration()
-    if duration = 0
+    if m.top.duration = 0
         m.osd.progressPercentage = 0
     else
-        m.osd.progressPercentage = position / duration
+        m.osd.progressPercentage = m.top.position / m.top.duration
     end if
-    if isValid(m.liveChannel) then updateLiveWindow()
 
     ' Ensure position text is accurate
-    m.positionText.text = secondsToHuman(position, true)
+    m.positionText.text = secondsToHuman(m.top.position, true)
 
-    m.osd.positionTime = position
-    m.osd.remainingPositionTime = duration - position
-    ' Subtitles run on the player's clock: Silo moves a sidecar's cues to where its stream starts
+    m.osd.positionTime = m.top.position
+    m.osd.remainingPositionTime = m.top.duration - m.top.position
     if m.subtitleOffsetOverlay.visible then m.subtitleOffsetOverlay.currentTime = m.top.position
 
     ' A positive offset holds the subtitles back, so the task is asked for an earlier moment
@@ -2404,7 +2298,6 @@ sub onPositionChanged()
         newPos = Int(m.top.position * 1000) - m.subtitleOffset
         m.captionTask.currentPos = newPos
     end if
-    if isValid(m.secondaryTask) then m.secondaryTask.currentPos = Int(m.top.position * 1000) - m.top.secondarySubtitleDelay
 
     noteSkipPromptLanding()
 
@@ -2424,43 +2317,35 @@ end sub
 ' The card comes up as the item runs out
 sub checkNextUp()
     if m.nextUp.visible or isValid(m.episodeOverlay) then return
-    if mediaDuration() <= 0 then return
+    if m.top.duration <= 0 then return
     if m.osd.visible then return
     if m.top.trickPlayBar.visible then return
     ' Raising the card over a skip prompt would leave the prompt unpressable, so it waits for it
-    waitsForPrompt = isValid(m.skipPrompt) and not m.skipPromptLapsed
+    if isValid(m.skipPrompt) and not m.skipPromptLapsed then return
 
-    remaining = mediaDuration() - mediaPosition()
+    remaining = m.top.duration - m.top.position
     threshold = isStringEqual(nextUpBehaviour(), "extended") ? 1 : 0.5
 
     if remaining > threshold then return
 
-    ' The air date card leaves nothing to skip to, so it takes over from a prompt in the last second
-    if waitsForPrompt
-        if displayNextAirDate() then clearSkipPrompt()
-        return
-    end if
-    if displayNextItem() or displayNextAirDate() then clearSkipPrompt()
+    if displayNextItem() then clearSkipPrompt()
 end sub
 
 '
 ' When Video Player state changes
 sub onState()
+    if m.speshStopped = true then return
     ' Kept as it arrived, since handling an error can stop the player before the recovery hears of it
     state = m.top.state
 
     if isValid(m.captionTask)
         m.captionTask.playerState = m.top.state + m.top.globalCaptionMode
     end if
-    ' The second track was turned on in the player, so the device's caption mode doesn't hide it
-    if isValid(m.secondaryTask) then m.secondaryTask.playerState = m.top.state + "on"
 
     if isStringEqual(m.top.state, MediaPlaybackState.PLAYING) or isStringEqual(m.top.state, MediaPlaybackState.ERROR)
         m.streamLoading = false
     end if
     updateLoadingLayer()
-
-    m.global.syncPlayManager.callFunc("onVideoState", m.top, m.top.state)
 
     ' Pass video state into OSD
     m.osd.playbackState = m.top.state
@@ -2469,13 +2354,15 @@ sub onState()
     if isStringEqual(m.top.state, MediaPlaybackState.PAUSED)
         m.wasPaused = true
         ' Keep OSD visible when paused
-        if not isValid(m.chapterOverlay) and not isValid(m.episodeOverlay) and not isValid(m.castOverlay)
-            if not m.osd.visible and not wpHolding()
+        if not m.scrubActive and not isValid(m.chapterOverlay) and not isValid(m.episodeOverlay)
+            if not m.osd.visible
                 showOSD()
             end if
         end if
         ' Disable auto-hide timer when paused
         m.osd.inactiveTimeout = 0
+        ' Show dark overlay when paused
+        m.pauseOverlay.visible = not m.top.speshPreview
     else if isStringEqual(m.top.state, MediaPlaybackState.PLAYING)
         ' The Roku can still be settling on its own default when the track list arrives, so the
         ' chosen track is checked again once playback starts
@@ -2483,12 +2370,13 @@ sub onState()
 
         ' Enable auto-hide timer when playing (5 seconds)
         m.osd.inactiveTimeout = 5
+        ' Hide dark overlay when playing
+        m.pauseOverlay.visible = false
 
         if m.wasPaused ?? false
             m.wasPaused = false
             unpauseRewindSec = val(m.global.session.user.settings["playback.unpauseRewind"] ?? "0")
-            ' A party's resume lands where the room is, so it isn't rewound
-            if unpauseRewindSec > 0 and m.top.position > unpauseRewindSec and not wpActive() and not m.global.syncPlayManager.syncPlayActive
+            if unpauseRewindSec > 0 and m.top.position > unpauseRewindSec
                 newPos = m.top.position - unpauseRewindSec
                 if newPos < 0 then newPos = 0
                 m.top.seek = newPos
@@ -2551,14 +2439,9 @@ sub onState()
                 m.playbackRetries = 0
             end if
 
-            ' A segment larger than the player's whole buffer fails the same way however often it's
-            ' asked for, so the server is asked to convert the video, as for a stream that never played
-            outgrown = Instr(1, LCase(m.top.errorStr ?? ""), "larger than the entire buffer") > 0
             nextStep = string.EMPTY
-            if not played or outgrown then nextStep = nextTranscodeStep()
-            action = retryAction(played and not outgrown, m.playbackRetries, nextStep, REPLAY_RETRIES)
-            ' Stopping a Silo stream ends its session, so the same address can't be started again
-            if action = "restart" and playsFromSilo() then action = "server"
+            if not played then nextStep = nextTranscodeStep()
+            action = retryAction(played, m.playbackRetries, nextStep, REPLAY_RETRIES)
             if action <> "fail"
                 m.playbackRetries = m.playbackRetries + 1
                 m.lastBufferError = currentTime
@@ -2610,6 +2493,7 @@ sub onState()
         ' The stop from a channel switch always lands before the next channel plays, so one that
         ' never came cant swallow a later stop
         m.suppressStopReport = false
+        if isValid(m.liveChannel) then m.top.speshPlayingChannelId = m.liveChannel.id
         ' The channel that came back decides it, since a load the switch replaced could still be the one playing
         if isValid(m.channelSwitch) and isValid(m.liveChannel) and isStringEqual(m.liveChannel.id, m.channelSwitch.target.Id) then finishChannelSwitch(true)
     else if isStringEqual(m.top.state, MediaPlaybackState.PAUSED)
@@ -2640,6 +2524,19 @@ sub onState()
     feedLiveRecovery(state)
 end sub
 
+sub onTrickPlayBarVisibleChange()
+    trickplayImage = m.top.findNode("trickplayImage")
+    if isValid(trickplayImage)
+        trickplayImage.visible = m.top.trickPlayBar.visible
+    end if
+
+    if not m.top.content.live
+        if isValid(m.videoEndingTime)
+            m.videoEndingTime.visible = m.top.trickPlayBar.visible
+        end if
+    end if
+end sub
+
 sub setVideoEndingTime(videoSeekPosition = 0 as integer)
     m.clock = m.osd.findNode("clock")
     if not isValid(m.clock) then return
@@ -2652,47 +2549,13 @@ sub setVideoEndingTime(videoSeekPosition = 0 as integer)
 
     videoEndingTime = m.clock.callFunc("getFormattedTime", (currentTime + remainingTime), false)
 
+    m.videoEndingTime.text = videoEndingTime
     m.osd.videoEndingTime = videoEndingTime
-end sub
-
-' Where the title is, in its own seconds. A Silo stream can start partway into the title, and the
-' player counts from where it starts
-function mediaPosition() as float
-    return (m.top.position ?? 0) + m.timelineOffset
-end function
-
-' How long the title is. A Silo remux only reaches as far as the server has made it, so its
-' runtime comes from the file rather than the player
-function mediaDuration() as float
-    if m.mediaRuntime > 0 then return m.mediaRuntime
-    return m.top.duration
-end function
-
-' Whether the stream that plays holds this point of the title, so the player can seek to it
-function streamHolds(target as float) as boolean
-    if m.timelineOffset = 0 and m.mediaRuntime <= 0 then return true
-    local = target - m.timelineOffset
-    return local >= 0 and local <= m.top.duration - 1
-end function
-
-' Seeks to a point of the title. One outside the stream that plays loads the item again from
-' there, as Silo makes a stream from any point
-sub seekMedia(target as float)
-    if streamHolds(target)
-        holdSkipPrompts(target - m.timelineOffset)
-        m.top.seek = target - m.timelineOffset
-        return
-    end if
-    holdSkipPrompts()
-    m.global.queueManager.callFunc("setTopStartingPoint", int(target) * 10000000&)
-    stopForReload()
-    m.LoadMetaDataTask.itemId = m.top.id
-    runLoad()
 end sub
 
 function getRemainingTime(videoSeekPosition = 0 as integer)
     if not isChainValid(m.positionText, "text")
-        return mediaDuration() - mediaPosition()
+        return m.top.duration - m.top.position
     end if
 
     seekTime = 0#
@@ -2717,14 +2580,57 @@ function getRemainingTime(videoSeekPosition = 0 as integer)
         seekTime = videoSeekPosition
     end if
 
-    seekTime = seekTime = 0 ? mediaPosition() : seekTime
+    seekTime = seekTime = 0 ? m.top.position : seekTime
 
-    return mediaDuration() - seekTime
+    return m.top.duration - seekTime
 end function
+
+sub onTrickPlayBarTextChange()
+    if not m.top.trickPlayBar.visible then return
+
+    m.nextupbuttonseconds = (m.global.session.user.settings["playback.nextupbuttonseconds"] ?? "30").ToInt()
+    m.nextUpDismissed = false
+
+    setVideoEndingTime(0)
+
+    ' If Roku has pulled thumbnailtiles from the video stream, use them instead
+    if not m.global.session.user.settings["playback.trickplay.forcecustom"]
+        if isValidAndNotEmpty(m.top.thumbnailTiles)
+            return
+        end if
+    end if
+
+    if not isValid(m.positionText)
+        displayTrickplayImage(m.top.position)
+        return
+    end if
+
+    seekTime = 0
+    seekPosition = m.positionText.text.split(":")
+
+    if seekPosition.count() = 3
+        ' hours -> seconds
+        seekTime += seekPosition[0].toint() * 3600
+        ' minutes -> seconds
+        seekTime += seekPosition[1].toint() * 60
+    end if
+
+    ' minutes -> seconds
+    if seekPosition.count() = 2
+        seekTime += seekPosition[0].toint() * 60
+    end if
+
+    ' add seconds
+    seekTime += seekPosition[seekPosition.count() - 1].toint()
+
+    seekTime = seekTime = 0 ? m.top.position : seekTime
+
+    displayTrickplayImage(seekTime)
+end sub
 
 '
 ' Report playback to server
-sub ReportPlayback(state = "update" as string)
+sub ReportPlayback(state = "update" as string, ownTask = false as boolean)
 
     if m.top.position = invalid then return
 
@@ -2737,7 +2643,7 @@ sub ReportPlayback(state = "update" as string)
 
     ' A stop that lets a live stream go gets a task of its own, since a progress report on the
     ' shared one can take its place and leave the server holding the tuner
-    sendPlaystate(state, params, state = "stop" and isValidAndNotEmpty(params.LiveStreamId))
+    sendPlaystate(state, params, ownTask or (state = "stop" and isValidAndNotEmpty(params.LiveStreamId)))
 end sub
 
 function playbackReportParams() as object
@@ -2753,6 +2659,7 @@ function playbackReportParams() as object
         params.serverData = m.itemServerData
         params.UserId = m.itemServerData.userId
     end if
+    params.append(speshPlaybackTrackFields(m.top.audioIndex, m.top.SelectedSubtitle, m.top.mediaSourceId))
     if isValid(m.top.content) and isValid(m.top.content.live) and m.top.content.live
         params.append({
             "MediaSourceId": m.top.transcodeParams.MediaSourceId,
@@ -2838,8 +2745,6 @@ sub bufferCheck()
             nextStep = string.EMPTY
             if not played then nextStep = nextTranscodeStep()
             action = retryAction(played, m.playbackRetries, nextStep, REPLAY_RETRIES)
-            ' Stopping a Silo stream ends its session, so the same address can't be started again
-            if action = "restart" and playsFromSilo() then action = "server"
             if action <> "fail"
                 m.playbackRetries = m.playbackRetries + 1
                 m.lastBufferError = currentTime
@@ -2944,32 +2849,33 @@ end function
 function skipSegmentTo(endTicks as dynamic) as boolean
     seekPosition = endTicks / 10000000#
 
-    if seekPosition > (mediaDuration() - 2)
+    if seekPosition > (m.top.duration - 2)
         if m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1
-            playNextInQueue()
+            handleItemSkipAction("itemnext")
             return true
         else
-            seekPosition = mediaDuration() - 1
+            seekPosition = m.top.duration - 1
         end if
     end if
 
-    if syncPlaySeek(seekPosition) then return false
-    seekMedia(seekPosition)
+    m.top.seek = seekPosition
     return false
 end function
 
-sub showControlsOn(buttonId as string)
-    showOSD(buttonId)
+sub prepareOSD()
+    setSiblingData()
 end sub
 
 sub showOSD(focusTarget = "seekbar" as string)
+    if m.top.speshPreview then return
+    if subtitleDownloadOwnsInput() then return
     m.osd.focusTarget = focusTarget
     m.osd.visible = true
     m.osd.hasFocus = true
     m.osd.setFocus(true)
     m.pauseOverlay.visible = true
     ' The controls coming up is the cue that a scrub may follow, so the sheets ahead start loading
-    if not m.scrubHold.active then prefetchSheets(mediaPosition() * 1000, true)
+    if not m.scrubHold.active then prefetchSheets(m.top.position * 1000, true)
     applySkipPrompt()
 end sub
 
@@ -2996,6 +2902,10 @@ end sub
 ' with a preview to look at keeps buffering quiet while the preview shows and a moment after.
 ' While a live recovery attempt runs, the label says which one and the picture stays as it is.
 sub updateLoadingLayer()
+    if m.top.speshPreview
+        m.loadingLayer.active = false
+        return
+    end if
     behindPreview = trickplayPreviewOn() and (m.seekPreview.visible or (m.seekNoted and m.seekClock.TotalMilliseconds() < m.seekGraceTimer.duration * 1000))
     buffering = isStringEqual(m.top.state, MediaPlaybackState.BUFFERING) and not behindPreview
     reconnecting = m.liveReconnecting <> string.EMPTY
@@ -3024,69 +2934,8 @@ function seekStepSeconds() as integer
     return seconds
 end function
 
-' A hold moves the way its first press did, on the seek bar or with the controls hidden, growing
-' from that press's own step. Every press starts over, so separate presses move the set step.
-sub beginHeldSeek(direction as integer, onSeekBar as boolean)
-    baseSeconds = seekStepSeconds()
-    if not onSeekBar then baseSeconds = osdControls.SkipSeconds(m.global.session.user.settings, direction)
-    m.heldSeek = { direction: direction, onSeekBar: onSeekBar, base: baseSeconds, count: 0, since: CreateObject("roTimespan") }
-    m.heldSeekRepeat.control = "stop"
-    m.heldSeekStart.control = "start"
-    stepHeldSeek()
-end sub
-
-sub onHeldSeekStart()
-    m.heldSeekRepeat.control = "start"
-    stepHeldSeek()
-end sub
-
-sub stepHeldSeek()
-    hold = m.heldSeek
-    if not isValid(hold) then return
-    ' A key whose release never arrived stops stepping on its own
-    if hold.since.TotalMilliseconds() > HELD_SEEK_LIMIT_MS
-        endHeldSeek()
-        return
-    end if
-    hold.count++
-    seconds = hold.direction * heldSeek.SecondsFor(hold.base, hold.count)
-    if hold.onSeekBar then scrubBy(seconds) else skipBy(seconds)
-end sub
-
-sub endHeldSeek()
-    m.heldSeek = invalid
-    m.heldSeekStart.control = "stop"
-    m.heldSeekRepeat.control = "stop"
-end sub
-
-' How far the next step goes, which the preview fetches its sheets by
-function nextSeekStepSeconds() as integer
-    if isValid(m.heldSeek) and m.heldSeek.onSeekBar then return heldSeek.SecondsFor(m.heldSeek.base, m.heldSeek.count + 1)
-    return seekStepSeconds()
-end function
-
-' With the controls hidden Left and Right skip, and steps that come while a seek lands build on
-' where the last one aimed
-sub skipBy(delta as integer)
-    bounds = seekBounds()
-    if not isValid(bounds) then return
-    target = clampSeconds((m.pendingSeek ?? mediaPosition()) + delta, bounds)
-    m.pendingSeek = target
-    if syncPlayIntercepts()
-        holdSkipPrompts(target)
-    else if streamHolds(target)
-        ' A point the stream lacks reloads the item, so it waits for the presses to settle
-        seekMedia(target)
-    end if
-    m.seekSettleTimer.control = "start"
-    setVideoEndingTime(target)
-    m.positionText.text = secondsToHuman(target, true)
-end sub
-
 function trickplayPreviewOn() as boolean
-    if m.global.session.user.settings["playback.trickplay.enabled"] = false then return false
-    if isValid(m.trickplayDataFinal) then return true
-    return isValid(m.embyPreview) and isValidAndNotEmpty(m.embyPreview.frames)
+    return m.global.session.user.settings["playback.trickplay.enabled"] <> false and isValid(m.trickplayDataFinal)
 end function
 
 ' The widest sheet that is no wider than 320, or the narrowest there is
@@ -3102,15 +2951,16 @@ function trickplayWidthFor(widths as object) as string
     return best.toStr()
 end function
 
-' Each press moves by its step. With pause while scrubbing on and a preview to scrub by, the
+' Each press moves by the seek step. With pause while scrubbing on and a preview to scrub by, the
 ' first press pauses and later ones only move the target. Otherwise every press seeks.
-sub scrubBy(delta as integer)
-    bounds = seekBounds()
-    if not isValid(bounds) then return
+sub scrubBy(direction as integer)
+    duration = m.top.duration
+    if duration <= 0 then return
+    limit = duration - 1
+    delta = direction * seekStepSeconds()
 
     pauseSetting = m.global.session.user.settings["playback.trickplay.pauseWhileScrubbing"]
-    ' The pause it makes would be this set's alone, so a SyncPlay group scrubs without it
-    if not m.scrubHold.active and pauseSetting <> false and trickplayPreviewOn() and not syncPlayIntercepts()
+    if not m.scrubHold.active and pauseSetting <> false and trickplayPreviewOn()
         wasPlaying = isStringEqual(m.top.state, MediaPlaybackState.PLAYING)
         m.scrubHold = { active: true, wasPlaying: wasPlaying, target: invalid }
         if wasPlaying then m.top.control = VideoControl.PAUSE
@@ -3118,71 +2968,30 @@ sub scrubBy(delta as integer)
     m.seekSettleTimer.control = "stop"
 
     if m.scrubHold.active
-        target = clampSeconds((m.scrubHold.target ?? mediaPosition()) + delta, bounds)
+        target = clampSeconds((m.scrubHold.target ?? m.top.position) + delta, limit)
         m.scrubHold.target = target
         holdSkipPrompts()
     else
         ' A seek is still landing while the presses come, so each builds on where the last one aimed
-        target = clampSeconds((m.pendingSeek ?? mediaPosition()) + delta, bounds)
+        target = clampSeconds((m.pendingSeek ?? m.top.position) + delta, limit)
         m.pendingSeek = target
-        if syncPlayIntercepts()
-            holdSkipPrompts(target)
-        else if streamHolds(target)
-            ' A point the stream lacks reloads the item, so it waits for the presses to settle
-            seekMedia(target)
-        end if
+        holdSkipPrompts(target)
+        m.top.seek = target
         m.seekSettleTimer.control = "start"
     end if
 
     m.osd.scrubPosition = target
     showSeekPreview(target)
-    prefetchSheets(target * 1000, delta > 0)
+    prefetchSheets(target * 1000, direction > 0)
 end sub
 
-function clampSeconds(value as float, bounds as object) as float
-    if value < bounds[0] then return bounds[0]
-    if value > bounds[1] then return bounds[1]
+function clampSeconds(value as float, limit as float) as float
+    if value < 0 then return 0
+    if value > limit then return limit
     return value
 end function
 
-' Where a seek can land: a second short of the end, or for a live stream inside its rewind window.
-' A live stream without one has nowhere to go.
-function seekBounds() as dynamic
-    if isValid(m.liveChannel)
-        if isValid(m.liveWindow) then return [m.liveWindow.start, m.liveWindow.edge]
-        return invalid
-    end if
-    ' A Silo remux reaches only as far as the server has made it, so the title's runtime bounds it
-    duration = mediaDuration()
-    if duration <= 0 then return invalid
-    return [0, duration - 1]
-end function
-
-' The window grows as the stream does, and the controls show it once there's a minute to rewind
-sub updateLiveWindow()
-    m.liveWindow = liveWindow.WindowFor(m.top.duration)
-    m.osd.liveWindow = m.liveWindow
-    m.osd.liveRewind = isValid(m.liveWindow)
-    if isValid(m.liveWindow) then m.osd.progressPercentage = liveWindow.Progress(m.liveWindow, m.top.position)
-end sub
-
-' A seek this far on lands at the live point, which Roku keeps short of the playlist's end
-sub jumpToLive()
-    if not isValid(m.liveWindow) then return
-    m.scrubHold = { active: false, wasPlaying: false, target: invalid }
-    m.pendingSeek = invalid
-    hideSeekPreview()
-    m.top.seek = 999999
-    if isStringEqual(m.top.state, MediaPlaybackState.PAUSED)
-        m.wasPaused = false
-        m.top.control = VideoControl.RESUME
-    end if
-end sub
-
 sub onSeekSettled()
-    if isValid(m.pendingSeek)
-        if not syncPlaySeek(m.pendingSeek) and not streamHolds(m.pendingSeek) then seekMedia(m.pendingSeek)
-    end if
     m.pendingSeek = invalid
     hideSeekPreview()
 end sub
@@ -3192,7 +3001,10 @@ function resumeHeldScrub() as boolean
     if not m.scrubHold.active then return false
     target = m.scrubHold.target
     m.scrubHold = { active: false, wasPlaying: false, target: invalid }
-    if isValid(target) then seekMedia(target)
+    if isValid(target)
+        holdSkipPrompts(target)
+        m.top.seek = target
+    end if
     hideSeekPreview()
     ' The scrub made this pause, so the unpause rewind has nothing to undo
     m.wasPaused = false
@@ -3203,7 +3015,8 @@ end function
 ' Seeks to where the scrub was aiming but stays paused, so play picks up from there
 sub settleHeldScrub()
     if not m.scrubHold.active or not isValid(m.scrubHold.target) then return
-    seekMedia(m.scrubHold.target)
+    holdSkipPrompts(m.scrubHold.target)
+    m.top.seek = m.scrubHold.target
     m.scrubHold.target = invalid
     hideSeekPreview()
 end sub
@@ -3218,124 +3031,60 @@ sub dropScrub()
     if wasPlaying then m.top.control = VideoControl.RESUME
 end sub
 
-' The frame nearest the target. Until a sheet arrives the frame already showing stays.
+' The frame nearest the target in a box centered over the bar. Until a sheet arrives the frame
+' already showing stays.
 sub showSeekPreview(target as float)
     if not trickplayPreviewOn() then return
     info = m.trickplayDataFinal
-    if not isValid(info)
-        if not showEmbyFrame(target) then return
-    else
-        thumb = Int(target * 1000 / info.Interval)
-        if thumb < 0 or thumb >= info.ThumbnailCount
-            m.seekPreview.visible = false
-            return
-        end if
-        perSheet = info.TileWidth * info.TileHeight
-        sheet = Int(thumb / perSheet)
-        inSheet = thumb mod perSheet
+    thumb = Int(target * 1000 / info.Interval)
+    if thumb < 0 or thumb >= info.ThumbnailCount
+        m.seekPreview.visible = false
+        return
+    end if
+    perSheet = info.TileWidth * info.TileHeight
+    sheet = Int(thumb / perSheet)
+    inSheet = thumb mod perSheet
 
-        if m.sheetState[sheet.toStr()] = "loaded"
-            m.pendingPreview = invalid
-            m.previewCrop = [- (inSheet mod info.TileWidth) * info.Width, -Int(inSheet / info.TileWidth) * info.Height]
-            if m.previewSheet <> sheet
-                showPreviewSheet(sheet, m.previewScale)
-            else
-                m.seekPreviewFrame.getChild(0).translation = m.previewCrop
-            end if
-        else
-            m.pendingPreview = target
+    m.seekPreviewTime.text = secondsToHuman(Int(target), false)
+    if m.sheetState[sheet.toStr()] = "loaded"
+        m.pendingPreview = invalid
+        if m.previewSheet <> sheet
+            ' A new sheet goes in a new poster, since changing a large poster's uri can fail to load
+            m.seekPreviewFrame.removeChildrenIndex(m.seekPreviewFrame.getChildCount(), 0)
+            poster = m.seekPreviewFrame.createChild("Poster")
+            poster.loadDisplayMode = "noScale"
+            poster.width = info.Width * info.TileWidth
+            poster.height = info.Height * info.TileHeight
+            poster.uri = `tmp:/${m.top.id}-${sheet}.jpg`
+            m.previewSheet = sheet
         end if
+        m.seekPreviewFrame.getChild(0).translation = [- (inSheet mod info.TileWidth) * info.Width, -Int(inSheet / info.TileWidth) * info.Height]
+    else
+        m.pendingPreview = target
     end if
 
-    layoutSeekPreview(target)
     if m.seekPreview.visible then return
+    layoutSeekPreview()
     m.seekPreview.visible = true
     m.top.findNode("seekPreviewEntrance").control = "start"
 end sub
 
-' A new sheet goes in a new poster, since changing a large poster's uri can fail to load. It's
-' decoded at the screen's scale, two thirds on a 720p Roku, where a whole sheet at full size (3000 by
-' 1344, say) fails to load.
-sub showPreviewSheet(sheet as integer, scale as float)
+' 160 above the bar, with 8 of padding inside a 2 border, and the time under the frame
+sub layoutSeekPreview()
     info = m.trickplayDataFinal
-    m.seekPreviewFrame.removeChildrenIndex(m.seekPreviewFrame.getChildCount(), 0)
-    poster = m.seekPreviewFrame.createChild("Poster")
-    sheetWidth = info.Width * info.TileWidth
-    sheetHeight = info.Height * info.TileHeight
-    poster.loadDisplayMode = "scaleToFill"
-    poster.loadWidth = Int(sheetWidth * scale + 0.5)
-    poster.loadHeight = Int(sheetHeight * scale + 0.5)
-    poster.width = sheetWidth
-    poster.height = sheetHeight
-    poster.translation = m.previewCrop
-    poster.observeField("loadStatus", "onPreviewSheetStatus")
-    poster.uri = `tmp:/${m.top.id}-${sheet}.jpg`
-    m.previewSheet = sheet
-    m.previewSheetScale = scale
-end sub
-
-' A Roku that still can't decode the sheet gets it once more at half the size, since how big a
-' sheet it takes depends on the model and the sheet's size on the server
-sub onPreviewSheetStatus(event as object)
-    poster = event.getRoSGNode()
-    if poster.loadStatus <> "failed" or m.previewSheetScale < m.previewScale then return
-    ' A reload can drop the trickplay data or the sheet while this poster is still up
-    if not isValid(m.trickplayDataFinal) or m.previewSheet < 0 then return
-    if poster.isSameNode(m.seekPreviewFrame.getChild(0)) then showPreviewSheet(m.previewSheet, m.previewSheetScale / 2)
-end sub
-
-' Emby sends single frames rather than sheets, each one its own image. False when there are none.
-function showEmbyFrame(target as float) as boolean
-    frames = m.embyPreview.frames
-    frame = embyFeatures.FrameIndex(frames, target * 10000000&)
-    if frame < 0
-        m.seekPreview.visible = false
-        return false
-    end if
-    if m.previewSheet <> -2
-        m.seekPreviewFrame.removeChildrenIndex(m.seekPreviewFrame.getChildCount(), 0)
-        poster = m.seekPreviewFrame.createChild("Poster")
-        poster.loadDisplayMode = "scaleToFit"
-        poster.width = 320
-        poster.height = m.embyPreview.height
-        m.previewSheet = -2
-    end if
-    poster = m.seekPreviewFrame.getChild(0)
-    if poster.uri <> frames[frame].url then poster.uri = frames[frame].url
-    return true
-end function
-
-' One tile, as tall as a share of the room over the bar, centered on
-' the thumb and kept over the track, with no time on it since the labels by the bar follow the scrub
-sub layoutSeekPreview(target as float)
-    frameWidth = 320
-    frameHeight = 180
-    if isValid(m.embyPreview) then frameHeight = m.embyPreview.height
-    if isValid(m.trickplayDataFinal)
-        frameWidth = m.trickplayDataFinal.Width
-        frameHeight = m.trickplayDataFinal.Height
-    end if
-    if frameHeight <= 0 then return
-    m.seekPreviewFrame.clippingRect = [0, 0, frameWidth, frameHeight]
-    height = SEEK_PREVIEW_HEIGHT
-    width = height * frameWidth / frameHeight
-    m.seekPreviewFrame.scale = [width / frameWidth, height / frameHeight]
-    for each layer in m.seekPreviewLayers
-        layer.width = width
-        layer.height = height
+    m.seekPreviewFrame.clippingRect = [0, 0, info.Width, info.Height]
+    timeHeight = m.seekPreviewTime.boundingRect().height
+    m.seekPreviewTime.width = info.Width
+    m.seekPreviewTime.translation = [10, 10 + info.Height + 8]
+    width = info.Width + 20
+    height = 10 + info.Height + 8 + timeHeight + 10
+    for each id in ["seekPreviewFill", "seekPreviewBorder"]
+        m.top.findNode(id).width = width
+        m.top.findNode(id).height = height
     end for
-
-    fraction = 0
-    if isValid(m.liveWindow)
-        fraction = liveWindow.Progress(m.liveWindow, target)
-    else if mediaDuration() > 0
-        fraction = target / mediaDuration()
-    end if
-    barTop = m.osdSeekbar.translation[1]
-    left = SEEK_BAR_LEFT + SEEK_BAR_WIDTH * fraction - width / 2
-    if left > SEEK_BAR_LEFT + SEEK_BAR_WIDTH - width then left = SEEK_BAR_LEFT + SEEK_BAR_WIDTH - width
-    if left < SEEK_BAR_LEFT then left = SEEK_BAR_LEFT
-    m.seekPreview.translation = [left, barTop - 2 - height]
+    left = 960 - width / 2
+    top = 828 - 160 - height
+    m.top.findNode("seekPreviewSlide").keyValue = [[left, top + 10], [left, top]]
 end sub
 
 sub hideSeekPreview()
@@ -3346,13 +3095,13 @@ end sub
 
 ' The sheet at the position, the next six steps the way things are moving, and two steps back
 sub prefetchSheets(positionMs as float, forward as boolean)
-    if not isValid(m.trickplayDataFinal) or not trickplayPreviewOn() then return
+    if not trickplayPreviewOn() then return
     info = m.trickplayDataFinal
     perSheet = info.TileWidth * info.TileHeight
-    stepMs = nextSeekStepSeconds() * 1000
+    stepMs = seekStepSeconds() * 1000
     direction = forward ? 1 : -1
     lastMs = (info.ThumbnailCount - 1) * info.Interval
-    endMs = (mediaDuration() - 1) * 1000
+    endMs = (m.top.duration - 1) * 1000
     if endMs < lastMs then lastMs = endMs
 
     targets = [positionMs]
@@ -3380,9 +3129,6 @@ sub runSheetTask()
     if m.sheetQueue.count() = 0 or task.state = "run" then return
     task.videoID = m.top.id
     task.trickplayWidth = m.trickplayDataFinal.Width
-    task.sheetUrls = m.trickplayDataFinal.LookupCI("SiloSheets") ?? []
-    task.plexPartId = m.trickplayDataFinal.LookupCI("PlexPartId") ?? ""
-    task.interval = m.trickplayDataFinal.Interval
     task.method = "ADD"
     task.sheets = m.sheetQueue
     m.sheetQueue = []
@@ -3455,6 +3201,7 @@ sub releaseLiveTask(task as object)
 end sub
 
 sub onLiveChannelTuned()
+    m.top.speshNowNext = { channelId: m.liveChannel.id, programs: [] }
     m.osd.liveChannel = { number: m.liveChannel.number, name: m.liveChannel.name }
     m.osd.liveProgram = {}
     m.osd.hasAudioChoice = isValid(m.top.fullAudioData) and m.top.fullAudioData.count() > 1
@@ -3480,6 +3227,7 @@ sub onLiveProgramLoaded(event as object)
     response = event.getData()
     if not response.ok or not isValid(m.liveChannel) or response.tag <> m.liveChannel.id then return
     programs = response.programs
+    m.top.speshNowNext = { channelId: m.liveChannel.id, programs: programs }
     if programs.count() = 0 then return
     programs.SortBy("startSec")
     program = liveTvGuide.ProgramAiringAt(programs, liveTvGuide.NowSeconds())
@@ -3719,6 +3467,7 @@ end sub
 
 ' The controls come back on the Record button, the way they do after any of the player's panels
 sub restoreRecordControls()
+    prepareOSD()
     showOSD("showRecord")
 end sub
 
@@ -3879,7 +3628,8 @@ sub closeCarousel(revealControls = false as boolean)
         return
     end if
     if revealControls or m.carouselPriorOsd
-        showOSD("videoPlayPause")
+        prepareOSD()
+        showOSD("transport")
     end if
 end sub
 
@@ -3937,6 +3687,7 @@ sub tuneChannel(channel as object)
     m.top.id = channel.Id
     m.LoadMetaDataTask.itemType = "video"
     ' A new channel starts on its ordinary route, whatever the last one stepped down to
+    m.LoadMetaDataTask.convertLiveAac = false
     m.LoadMetaDataTask.playbackMethod = string.EMPTY
     m.LoadMetaDataTask.transcodeCodec = string.EMPTY
     loadChannel("tune")
@@ -3959,6 +3710,7 @@ sub finishChannelSwitch(succeeded as boolean)
     end if
     if not isValid(pending.previous) then return
     if succeeded
+        m.top.speshPreviousChannelId = pending.previous.Id
         closeCarousel()
         return
     end if
@@ -3971,6 +3723,59 @@ sub finishChannelSwitch(succeeded as boolean)
 end sub
 
 ' A switch that hasnt started playing by then counts as failed
+function speshTune(channel as object) as boolean
+    if m.speshStopped = true or isValid(m.channelSwitch) or not isValid(m.liveChannel) then return false
+    if channel.Id = m.liveChannel.id then return true
+    startChannelSwitch(channel, currentChannelEntry())
+    return true
+end function
+
+sub onSpeshPreviewChanged()
+    if not isValid(m.osd) then return
+    if m.top.speshPreview
+        closeCarousel()
+        m.osd.visible = false
+        m.osd.hasFocus = false
+        m.osd.setFocus(false)
+        m.pauseOverlay.visible = false
+        m.top.findNode("captionGroup").visible = false
+        m.top.setFocus(false)
+        m.top.getParent().findNode("guideFocus").setFocus(true)
+    else
+        if isValid(m.captionTask) then toggleCaption()
+    end if
+    updateLoadingLayer()
+end sub
+
+sub speshStop()
+    m.speshStopped = true
+    abandonLiveRecovery("the viewer stopped the preview")
+    hideLiveFailedCard()
+    abandonLoad()
+    m.LoadMetaDataTask.unobserveField("content")
+    for each id in ["playbackTimer", "bufferCheckTimer", "scrubTimer", "nextUpTimer", "startDelayTimer", "liveProgramTimer", "recordStateTimer", "prewarmTimer", "switchTimer", "seekGraceTimer", "seekSettleTimer"]
+        m.top.findNode(id).control = TimerControl.STOP
+    end for
+    for each task in m.liveTasks
+        task.unobserveField("response")
+        task.control = TaskControl.STOP
+    end for
+    if isValid(m.captionTask)
+        m.captionTask.unobserveField("currentCaption")
+        m.captionTask.unobserveField("useThis")
+        m.captionTask.control = TaskControl.STOP
+    end if
+    if isValid(m.liveChannel)
+        releaseLiveSessions()
+    else if m.playReported
+        ReportPlayback("stop", true)
+    end if
+    m.suppressStopReport = true
+    m.playReported = false
+    m.top.control = VideoControl.STOP
+    m.top.content = invalid
+end sub
+
 sub onSwitchTimeout()
     finishChannelSwitch(false)
 end sub
@@ -4043,6 +3848,16 @@ end sub
 ' A channel past its tune is the recovery's to bring back. Before its first frame it steps down
 ' the routes once each instead, the way any stream does, and gives up when none is left.
 sub onLiveChannelError()
+    failure = LCase(toString(m.top.errorMsg) + " " + toString(m.top.errorStr) + " " + FormatJson(m.top.errorInfo ?? {}))
+    if Instr(1, failure, "unsupported aac") > 0 and not m.LoadMetaDataTask.convertLiveAac
+        diagnostics.Playback("Live AAC decoder rejected the source; requesting audio conversion", diagnostics.LEVEL_WARN)
+        m.LoadMetaDataTask.convertLiveAac = true
+        m.LoadMetaDataTask.playbackMethod = PlaybackMethod.FORCELIVETVREMUX
+        m.LoadMetaDataTask.transcodeCodec = string.EMPTY
+        stopForReload()
+        loadChannel("tune")
+        return
+    end if
     if liveRecovery.Engaged(m.liveRecovery)
         liveRecovery.Recover(m.liveRecovery, "source-error", liveNow())
         runLiveRecovery()
@@ -4225,6 +4040,7 @@ end sub
 
 sub showLiveFailedCard()
     if not m.liveLost or isValid(m.carousel) then return
+    if m.top.speshPreview or m.speshStopped = true then return
     handleHideAction(false)
     m.pauseOverlay.visible = false
     m.liveFailedCard.channelName = m.liveChannel.name
@@ -4240,7 +4056,7 @@ sub hideLiveFailedCard()
     if not m.liveFailedCard.visible then return
     m.liveFailedCard.visible = false
     m.liveFailedCard.setFocus(false)
-    m.top.setFocus(true)
+    if not m.top.speshPreview and m.speshStopped <> true then m.top.setFocus(true)
 end sub
 
 ' Retry opens the channel afresh, with the whole budget and on its ordinary route
@@ -4314,6 +4130,10 @@ end function
 sub openGuide()
     abandonLiveRecovery("the viewer opened the guide")
     hideLiveFailedCard()
+    if m.top.speshManaged
+        m.top.speshReturnToGuide = true
+        return
+    end if
     closeCarousel()
     releaseLiveSessions()
     abandonLoad()
@@ -4330,9 +4150,15 @@ sub openGuide()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    ' Releases bubble up from the controls too, so this catches a hold however it started
-    if not press and (key = KeyCode.LEFT or key = KeyCode.RIGHT) then endHeldSeek()
-
+    ' A late OSD callback must not let the preview consume guide navigation.
+    if m.top.speshPreview then return false
+    if subtitleDownloadOwnsInput() then return true
+    if press and key = KeyCode.BACK and m.top.speshManaged
+        if not m.osd.visible and not isValid(m.carousel) and not m.subtitleOffsetOverlay.visible and not m.subtitleAppearance.visible
+            m.top.speshReturnToGuide = true
+            return true
+        end if
+    end if
     ' While a failed channel's card is up the remote belongs to Retry, apart from Up for the channel
     ' changer and Back to leave
     if m.liveLost and not isValid(m.carousel) and key <> KeyCode.BACK
@@ -4356,21 +4182,16 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
 
-    ' A menu from the controls keeps the remote, so the keys it leaves don't seek under it
-    if isValid(m.controlMenu) or isValid(m.recordDialog) then return true
-
-    ' Play and pause work under the chapter list and the cast without bringing the controls up behind them
-    for each overlay in [m.chapterOverlay, m.castOverlay]
-        if isValid(overlay)
-            if press and key = KeyCode.PLAY and not syncPlayTogglePause()
-                if m.top.state = "paused" then m.top.control = VideoControl.RESUME else m.top.control = VideoControl.PAUSE
-            end if
-            overlay.setFocus(true)
-            return true
+    ' Play and pause work under the chapter list without bringing the controls up behind it
+    if isValid(m.chapterOverlay)
+        if press and key = KeyCode.PLAY
+            if m.top.state = "paused" then m.top.control = VideoControl.RESUME else m.top.control = VideoControl.PAUSE
         end if
-    end for
+        m.chapterOverlay.setFocus(true)
+        return true
+    end if
     if isValid(m.episodeOverlay)
-        if press and key = KeyCode.PLAY and not syncPlayTogglePause()
+        if press and key = KeyCode.PLAY
             if m.top.state = "paused" then m.top.control = VideoControl.RESUME else m.top.control = VideoControl.PAUSE
         end if
         m.episodeOverlay.setFocus(true)
@@ -4383,8 +4204,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         if not press then return false
 
         if key = KeyCode.LEFT
-            ' The air date card has only its close button
-            if not m.airDateShowing then m.nextUp.focusedButton = NEXT_UP_PLAY
+            m.nextUp.focusedButton = NEXT_UP_PLAY
             return true
         end if
 
@@ -4406,57 +4226,108 @@ function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     if handleCinemaSkipKey(key) or handleSkipPromptKey(key) then return true
 
-    ' The remote's seek keys skip by the set lengths and bring the controls up on the bar. A live
-    ' stream only skips inside its window.
-    if key = KeyCode.REWIND or key = KeyCode.FASTFORWRD or key = KeyCode.REPLAY
-        if not stateAllowsOSD() then return true
-        skipFromControls(key = KeyCode.FASTFORWRD)
-        showOSD()
-        return true
-    end if
-
-    ' Left and Right skip at once and bring the controls up on the bar, holding on as long as the
-    ' key does. A live stream scrubs on its bar from the window's start to the live point.
-    if key = KeyCode.LEFT or key = KeyCode.RIGHT
-        if not stateAllowsOSD() then return true
-
-        direction = -1
-        if key = KeyCode.RIGHT then direction = 1
-        if isValid(m.liveChannel)
-            showOSD()
-            if isValid(m.liveWindow) then beginHeldSeek(direction, true)
+    if m.scrubActive
+        if key = KeyCode.OK or key = KeyCode.PLAY
+            stopScrubbing()
             return true
         end if
 
-        beginHeldSeek(direction, false)
-        showOSD()
-        return true
+        if key = KeyCode.LEFT or key = KeyCode.RIGHT
+            stopScrubbing()
+            return true
+        end if
+
+        if key = KeyCode.REWIND
+            if m.scrubDirection = 1
+                stopScrubbing()
+            else
+                handleRewindAction()
+            end if
+            return true
+        end if
+
+        if key = KeyCode.FASTFORWRD
+            if m.scrubDirection = -1
+                stopScrubbing()
+            else
+                handleFastForwardAction()
+            end if
+            return true
+        end if
     end if
 
-    ' Up during live playback opens the channel carousel, even while the stream buffers
-    if key = KeyCode.UP and isValid(m.liveChannel)
-        openCarousel()
-        return true
+    ' Handle rewind/fast forward/replay remote buttons
+    if key = KeyCode.REWIND or key = KeyCode.FASTFORWRD or key = KeyCode.REPLAY
+        if not m.top.trickPlayBar.visible
+            if not stateAllowsOSD() then return true
+
+            if key = KeyCode.FASTFORWRD
+                handleFastForwardAction()
+            else
+                handleRewindAction()
+            end if
+
+            return true
+        end if
+    end if
+
+    if key = KeyCode.LEFT or key = KeyCode.RIGHT
+        if not m.osd.visible and not m.top.trickPlayBar.visible
+            if not stateAllowsOSD() then return true
+
+            skipFwd = val(m.global.session.user.settings["playback.skipForwardLength"] ?? "10")
+            skipBack = val(m.global.session.user.settings["playback.skipBackLength"] ?? "10")
+            if skipFwd <= 0 then skipFwd = 10
+            if skipBack <= 0 then skipBack = 10
+
+            if key = KeyCode.RIGHT
+                newPosition = m.top.position + skipFwd
+                if newPosition > m.top.duration then newPosition = m.top.duration
+            else
+                newPosition = m.top.position - skipBack
+                if newPosition < 0 then newPosition = 0
+            end if
+
+            holdSkipPrompts(newPosition)
+            m.top.seek = newPosition
+            setVideoEndingTime(newPosition)
+            m.positionText.text = secondsToHuman(newPosition, true)
+            return true
+        end if
     end if
 
     ' A pre-roll gets the controls too, so the remote can reach its Skip button from the seek bar
-    if key = KeyCode.UP or key = KeyCode.DOWN
+    if key = KeyCode.DOWN and not m.top.trickPlayBar.visible
         if not stateAllowsOSD() then return true
+
+        prepareOSD()
+        showOSD("seekbar")
+        return true
+
+    else if key = KeyCode.UP and not m.top.trickPlayBar.visible
+        ' Up during live playback opens the channel carousel, even while the stream buffers
+        if isValid(m.liveChannel)
+            openCarousel()
+            return true
+        end if
+
+        if not stateAllowsOSD() then return true
+
+        prepareOSD()
+        showOSD("transport")
+        return true
+
+    else if key = KeyCode.OK and not m.top.trickPlayBar.visible
+        if not stateAllowsOSD() then return true
+
+        prepareOSD()
         showOSD()
         return true
     end if
 
-    if key = KeyCode.OK
-        if not stateAllowsOSD() then return true
-        handleVideoPlayPauseAction()
-        showOSD()
-        return true
-    end if
-
-    if key = KeyCode.PLAY
+    if key = KeyCode.PLAY and not m.top.trickPlayBar.visible
         if resumeHeldScrub() then return true
         if not stateAllowsOSD() then return true
-        if syncPlayTogglePause() then return true
 
         if m.top.state = "paused"
             m.top.control = VideoControl.RESUME
@@ -4464,11 +4335,21 @@ function onKeyEvent(key as string, press as boolean) as boolean
         end if
 
         m.top.control = VideoControl.PAUSE
+        prepareOSD()
         showOSD()
         return true
     end if
 
     if key = KeyCode.BACK
+        if m.top.speshManaged
+            m.top.speshReturnToGuide = true
+            return true
+        end if
+        if m.scrubActive
+            stopScrubbing()
+            return true
+        end if
+
         if m.nextUp.visible
             cancelNextItem()
             return true
@@ -4493,14 +4374,20 @@ function onKeyEvent(key as string, press as boolean) as boolean
         releaseLiveSessions()
         if isValid(m.liveRecovery) then abandonLoad()
 
-        wpDetach(true)
-        m.global.syncPlayManager.callFunc("unregisterVideoView", m.top, "closed")
         m.global.queueManager.callFunc("bypassNextPreferredAudioTrackIndexReset")
         m.global.queueManager.callFunc("clear")
         m.top.control = VideoControl.STOP
     end if
 
     return false
+end function
+
+function subtitleDownloadOwnsInput() as boolean
+    dialog = m.top.findNode("subtitleDownloadDialog")
+    if not isValid(dialog) then return false
+    if not dialog.visible then return false
+    dialog.callFunc("focusResults")
+    return true
 end function
 
 sub resetEmbyPreview()
@@ -4510,6 +4397,8 @@ sub resetEmbyPreview()
         m.embyPreviewTask = invalid
     end if
     m.embyPreview = invalid
+    poster = m.top.findNode("trickplayImage")
+    if isValid(poster) then m.top.removeChild(poster)
 end sub
 
 sub startEmbyPreview(isLive as boolean)
@@ -4531,3 +4420,31 @@ end sub
 sub onEmbyPreviewReady(event as object)
     m.embyPreview = event.getData()
 end sub
+
+function displayEmbyPreview(position as integer) as boolean
+    if not isValid(m.embyPreview) then return false
+    frames = m.embyPreview.frames
+    if not isValidAndNotEmpty(frames) then return false
+    frame = embyFeatures.FrameIndex(frames, position * 10000000&)
+    poster = m.top.findNode("trickplayImage")
+    if frame < 0
+        if isValid(poster) then poster.visible = false
+        return true
+    end if
+    if not isValid(poster)
+        poster = CreateObject("roSGNode", "Poster")
+        poster.id = "trickplayImage"
+        poster.width = 320
+        poster.height = m.embyPreview.height
+        poster.loadDisplayMode = "scaleToFit"
+        m.top.appendChild(poster)
+    end if
+    x = 100
+    if m.top.duration > 0 then x = 103 + 1714 * position / m.top.duration - 160
+    if x < 0 then x = 0
+    if x > 1600 then x = 1600
+    poster.translation = [x, 900 - m.embyPreview.height]
+    if poster.uri <> frames[frame].url then poster.uri = frames[frame].url
+    poster.visible = true
+    return true
+end function

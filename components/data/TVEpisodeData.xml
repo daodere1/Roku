@@ -12,7 +12,7 @@
     <field id="startingPoint" type="longinteger" value="0" />
     <field id="json" type="assocarray" onChange="setFields" />
     <field id="selectedVideoStreamId" type="string" />
-    <field id="selectedAudioStreamIndex" type="integer" />
+    <field id="selectedAudioStreamIndex" type="integer" value="-1" />
     <field id="favorite" type="boolean" />
   </interface>
 </component>

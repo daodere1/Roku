@@ -1,4 +1,6 @@
 import "pkg:/source/enums/KeyCode.bs"
+import "pkg:/source/utils/pinLockout.bs"
+import "pkg:/source/utils/signInPin.bs"
 import "pkg:/source/utils/themeApply.bs"
 
 const PIN_CARD_WIDTH = 640
@@ -9,8 +11,6 @@ const PIN_ERROR_GAP = 12
 const PIN_BUTTON_GAP = 22
 const PIN_BUTTON_WIDTH = 220
 const PIN_BUTTON_HEIGHT = 64
-const PIN_BUTTON_SPACING = 16
-const PIN_REMEMBER_GAP = 18
 
 sub init()
     m.top.optionsAvailable = false
@@ -24,8 +24,6 @@ sub init()
     m.keypad = m.top.findNode("keypad")
     m.error = m.top.findNode("error")
     m.unlock = m.top.findNode("unlock")
-    m.forgot = m.top.findNode("forgot")
-    m.remember = m.top.findNode("remember")
 
     m.title.font.size = 48
     m.title.text = tr("Enter PIN")
@@ -47,31 +45,12 @@ sub init()
     m.unlock.height = PIN_BUTTON_HEIGHT
     m.unlock.observeField("buttonSelected", "onPinSubmit")
 
-    m.forgot.text = tr("Forgot PIN?")
-    m.forgot.width = PIN_BUTTON_WIDTH
-    m.forgot.height = PIN_BUTTON_HEIGHT
-    m.forgot.observeField("buttonSelected", "onForgotPin")
-
-    m.remember.text = tr("Remember PIN on this device")
-    m.remember.width = PIN_CARD_WIDTH - PIN_CARD_PAD * 2
-    m.remember.height = PIN_BUTTON_HEIGHT
-    m.remember.observeField("buttonSelected", "onRememberSelected")
-    onRememberChanged()
-
     themeApply.ApplyToItem(m.top)
     layoutCard()
 end sub
 
 ' The keypad only knows its size once it is drawn, so the card is laid out again now
 sub OnScreenShown(_isReturning = false as boolean)
-    if m.top.siloProfileName <> ""
-        m.title.text = m.top.siloProfileName
-        m.subtitle.text = tr("Enter this profile's PIN.")
-        m.keypad.textEditBox.maxTextLength = 8
-        m.keypad.textEditBox.hintText = ""
-        m.forgot.visible = false
-        m.remember.visible = true
-    end if
     layoutCard()
     m.keypad.setFocus(true)
 end sub
@@ -99,16 +78,8 @@ sub layoutCard()
         y += m.error.boundingRect().height
     end if
 
-    if m.remember.visible
-        y += PIN_REMEMBER_GAP
-        m.remember.translation = [PIN_CARD_PAD, y]
-        y += PIN_BUTTON_HEIGHT
-    end if
-
     y += PIN_BUTTON_GAP
-    buttonsLeft = (PIN_CARD_WIDTH - PIN_BUTTON_WIDTH * 2 - PIN_BUTTON_SPACING) / 2
-    m.unlock.translation = [buttonsLeft, y]
-    m.forgot.translation = [buttonsLeft + PIN_BUTTON_WIDTH + PIN_BUTTON_SPACING, y]
+    m.unlock.translation = [(PIN_CARD_WIDTH - PIN_BUTTON_WIDTH) / 2, y]
     y += PIN_BUTTON_HEIGHT + PIN_CARD_PAD
 
     for each layer in [m.cardFill, m.cardBorder]
@@ -133,75 +104,39 @@ sub onPinTyped()
     layoutCard()
 end sub
 
-sub onErrorChanged()
-    showPinError(m.top.errorText)
-end sub
-
 sub onPinSubmit()
-    if m.top.verifying then return
-    entered = m.keypad.text
-    m.keypad.text = ""
-    m.top.submitted = entered
-end sub
-
-sub onRememberChanged()
-    if m.remember = invalid then return
-    if m.top.rememberPin
-        m.remember.iconUri = "pkg:/images/tracks/checked.webp"
-    else
-        m.remember.iconUri = "pkg:/images/tracks/unchecked.webp"
+    ' Asked before the guess is looked at, so waiting is the only way through and reopening the
+    ' gate hands back no fresh guesses
+    waiting = pinLockout.Remaining(pinLockout.SignInKeys())
+    if waiting > 0
+        showPinError(pinLockout.TooManyAttempts(waiting))
+        return
     end if
-end sub
 
-sub onRememberSelected()
-    if m.top.verifying then return
-    m.top.rememberPin = not m.top.rememberPin
-end sub
+    entered = m.keypad.text
+    if signInPin.Matches(entered)
+        ' A correct PIN clears the count. There is no way to reset a forgotten one on a
+        ' television, so a lockout that outlived the right PIN would be a trap.
+        signInPin.Unlocked(entered)
+        m.keypad.text = ""
+        m.top.unlocked = true
+        if m.top.dismissOnUnlock then m.global.sceneManager.callFunc("popScene")
+        return
+    end if
 
-sub onForgotPin()
-    if m.top.verifying then return
-    m.top.forgotPin = true
+    wait = pinLockout.RegisterFailure(pinLockout.SignInKeys())
+    showPinError(wait > 0 ? pinLockout.TooManyAttempts(wait) : tr("Incorrect PIN"))
 end sub
 
 sub onKeypadEscape()
-    if m.keypad.escape <> "down" then return
-    if m.remember.visible
-        m.remember.setFocus(true)
-    else
-        m.unlock.setFocus(true)
-    end if
+    if m.keypad.escape = "down" then m.unlock.setFocus(true)
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
 
-    if key = KeyCode.UP and (m.unlock.hasFocus() or m.forgot.hasFocus())
-        if m.remember.visible
-            m.remember.setFocus(true)
-        else
-            m.keypad.setFocus(true)
-        end if
-        return true
-    end if
-    if key = KeyCode.UP and m.remember.hasFocus()
+    if key = KeyCode.UP and m.unlock.hasFocus()
         m.keypad.setFocus(true)
-        return true
-    end if
-    if key = KeyCode.DOWN and m.remember.hasFocus()
-        m.unlock.setFocus(true)
-        return true
-    end if
-    if key = KeyCode.RIGHT and m.unlock.hasFocus() and m.forgot.visible
-        m.forgot.setFocus(true)
-        return true
-    end if
-    if key = KeyCode.LEFT and m.forgot.hasFocus()
-        m.unlock.setFocus(true)
-        return true
-    end if
-
-    if key = KeyCode.BACK and m.top.siloProfileName <> ""
-        m.top.cancelled = true
         return true
     end if
 

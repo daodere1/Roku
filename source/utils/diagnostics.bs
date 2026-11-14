@@ -88,7 +88,7 @@ namespace diagnostics
 
         ' Scrubbed on the way in, so the console, the viewer and a sent report all read the same
         message = logRedaction.Redact(message)
-        if loud then print "[Moonfin " + category + "] " + level + ": " + message
+        if loud then print "[SpeshTV " + category + "] " + level + ": " + message
         if not recording then return
 
         m.global.diagLog.callFunc("append", {
@@ -150,7 +150,7 @@ namespace diagnostics
     end function
 
     function BuildReport() as string
-        lines = ["Moonfin for Roku diagnostic report", `Generated: ${diagnostics.Stamp()}`]
+        lines = ["SpeshTV for Roku diagnostic report", `Generated: ${diagnostics.Stamp()}`]
         lines.Append(diagnostics.HeaderLines())
 
         if isValid(m.global) and isValid(m.global.session) and isValid(m.global.session.server)
@@ -182,7 +182,6 @@ namespace diagnostics
 
     ' Called once the user's settings exist, so the switch can be read
     sub SendCrashTailIfAny()
-        if isPlexServer() then return
         if isEmbyServer() and not chainLookupReturn(m.global, "session.pluginInfo.clientLogSupported", false) then return
         if not isValid(m.global) or not isValid(m.global.diagLog) then return
 
@@ -193,7 +192,7 @@ namespace diagnostics
         if exitedCleanly or not isValidAndNotEmpty(tail) then return
         if not get_user_setting_bool("diagnostics.crashReports", false) then return
 
-        report = ["Moonfin for Roku crash report", `The previous session ended without shutting down. Generated: ${diagnostics.Stamp()}`]
+        report = ["SpeshTV for Roku crash report", `The previous session ended without shutting down. Generated: ${diagnostics.Stamp()}`]
         report.Append(diagnostics.HeaderLines())
         report.push(string(60, "="))
         report.push(tail)

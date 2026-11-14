@@ -1,36 +1,24 @@
 import "pkg:/source/enums/KeyCode.bs"
 import "pkg:/source/utils/config.bs"
+import "pkg:/source/utils/loginStyle.bs"
 import "pkg:/source/utils/misc.bs"
-import "pkg:/source/utils/settingsGlyphs.bs"
-
-const USER_SELECT_RIGHT = 1823
-const USER_SELECT_TOP_TEXT_Y = 79
-const USER_SELECT_BUTTONS_Y = 945
-const USER_SELECT_BUTTON_GAP = 20
 
 sub init()
     m.top.optionsAvailable = false
 
-    m.carousel = m.top.findNode("carousel")
-    m.carousel.observeField("activated", "onActivated")
+    m.userRow = m.top.findNode("userRow")
+    m.userRow.observeField("itemFocused", "onUserFocusChanged")
+
     m.addUser = m.top.findNode("addUser")
+    loginStyle.ApplyButton(m.addUser)
+
     m.changeServer = m.top.findNode("changeServer")
-    m.buttonFocus = m.top.findNode("buttonFocus")
-    m.addUser.text = tr("Add User")
-    m.changeServer.text = tr("Select Server")
-    buttonsLeft = (1920 - m.addUser.drawnWidth - USER_SELECT_BUTTON_GAP - m.changeServer.drawnWidth) / 2
-    m.addUser.translation = [buttonsLeft, USER_SELECT_BUTTONS_Y]
-    m.changeServer.translation = [buttonsLeft + m.addUser.drawnWidth + USER_SELECT_BUTTON_GAP, USER_SELECT_BUTTONS_Y]
+    loginStyle.ApplyButton(m.changeServer)
+    m.changeServer.observeField("buttonSelected", "onChangeServerSelected")
 
-    whoWatching = m.top.findNode("whoWatching")
-    whoWatching.font.size = 33
-    whoWatching.text = tr("Who's watching?")
-
-    m.button = ""
     initServerName()
 end sub
 
-' The server's name at the top right, after its icon
 sub initServerName()
     serverName = m.global.session.server.name
     if not isValidAndNotEmpty(serverName)
@@ -45,64 +33,74 @@ sub initServerName()
         if slashPos >= 0 and slashPos < endPos then endPos = slashPos
         serverName = serverName.left(endPos)
     end if
+    m.top.findNode("serverName").text = serverName
+end sub
 
-    label = m.top.findNode("serverName")
-    label.font.size = 25
-    label.text = serverName
-    labelLeft = USER_SELECT_RIGHT - label.boundingRect().width
-    label.translation = [labelLeft, USER_SELECT_TOP_TEXT_Y]
-
-    icon = m.top.findNode("serverIcon")
-    icon.font.uri = settingsGlyphs.FONT_URI
-    icon.font.size = 30
-    icon.text = settingsGlyphs.Char("dns")
-    icon.translation = [labelLeft - 13 - icon.boundingRect().width, USER_SELECT_TOP_TEXT_Y]
+sub onChangeServerSelected()
+    if m.changeServer.buttonSelected
+        m.top.changeServer = true
+    end if
 end sub
 
 sub itemContentChanged()
     stopLoadingSpinner()
-    profiles = []
-    for each user in m.top.itemContent ?? []
-        profiles.push(profileFor(user))
-    end for
-    m.carousel.items = profiles
-    if profiles.count() = 0
-        focusButton("addUser")
+    m.userRow.itemContent = m.top.itemContent
+    if m.top.itemContent.count() = 0
+        m.userRow.setFocus(false)
+        m.addUser.setFocus(true)
+        m.addUser.focus = true
+    end if
+    redraw()
+end sub
+
+const ITEM_WIDTH = 220
+const ITEM_SPACING = 32
+const CLIP_WIDTH = 1120
+
+sub redraw()
+    userCount = m.top.itemContent.Count()
+    if userCount = 0 then return
+
+    rowWidth = (userCount * ITEM_WIDTH) + ((userCount - 1) * ITEM_SPACING)
+
+    if rowWidth <= CLIP_WIDTH
+        centerOffset = (CLIP_WIDTH - rowWidth) / 2
+        m.userRow.translation = [centerOffset, 0]
     else
-        focusButton("")
+        scrollUserRow()
     end if
 end sub
 
-' A token on the Roku signs in without asking, so only someone without one is told what they'll need
-function profileFor(user as object) as object
-    lines = []
-    badge = ""
-    ' A Silo profile keeps its household's token but still asks for its PIN
-    if user.needsPin
-        lines.push({ text: tr("PIN required"), lock: true })
-        badge = "pin"
-    else if isValidAndNotEmpty(registry_read("token", user.id))
-        lines.push({ text: tr("Signed in on this device") })
-    else if user.hasPassword
-        lines.push({ text: tr("Password required") })
-    end if
-    return { id: user.id, name: user.name, imageURL: user.imageURL, badge: badge, lines: lines }
-end function
-
-sub onActivated()
-    m.top.userSelected = m.top.itemContent[m.carousel.activated].name
+sub onUserFocusChanged()
+    scrollUserRow()
 end sub
 
-' Add User or Select Server, or "" to give the remote back to the carousel
-sub focusButton(button as string)
-    m.button = button
-    m.addUser.highlighted = button = "addUser"
-    m.changeServer.highlighted = button = "changeServer"
-    if button = ""
-        m.carousel.setFocus(true)
-    else
-        m.buttonFocus.setFocus(true)
+sub scrollUserRow()
+    userCount = m.top.itemContent.Count()
+    if userCount = 0 then return
+
+    rowWidth = (userCount * ITEM_WIDTH) + ((userCount - 1) * ITEM_SPACING)
+    if rowWidth <= CLIP_WIDTH then return
+
+    focusedIndex = m.userRow.itemFocused
+    if focusedIndex < 0 then focusedIndex = 0
+
+    focusedItemLeft = focusedIndex * (ITEM_WIDTH + ITEM_SPACING)
+    focusedItemRight = focusedItemLeft + ITEM_WIDTH
+
+    currentOffset = -m.userRow.translation[0]
+
+    if focusedItemRight > currentOffset + CLIP_WIDTH
+        currentOffset = focusedItemRight - CLIP_WIDTH
+    else if focusedItemLeft < currentOffset
+        currentOffset = focusedItemLeft
     end if
+
+    maxOffset = rowWidth - CLIP_WIDTH
+    if currentOffset < 0 then currentOffset = 0
+    if currentOffset > maxOffset then currentOffset = maxOffset
+
+    m.userRow.translation = [-currentOffset, 0]
 end sub
 
 sub OnScreenShown(_isReturning = false as boolean)
@@ -121,24 +119,51 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
 
-    ' The carousel hands over the keys it doesn't use
-    if m.button = ""
-        if key = KeyCode.DOWN then focusButton("addUser")
+    if key = KeyCode.RIGHT and m.addUser.hasFocus()
+        m.addUser.focus = false
+        m.changeServer.setFocus(true)
+        m.changeServer.focus = true
         return true
     end if
 
-    if key = KeyCode.LEFT
-        focusButton("addUser")
-    else if key = KeyCode.RIGHT
-        focusButton("changeServer")
-    else if key = KeyCode.UP
-        if (m.top.itemContent ?? []).count() > 0 then focusButton("")
-    else if key = KeyCode.OK
-        if m.button = "addUser"
-            m.top.addUserSelected = true
-        else
-            m.top.changeServer = true
-        end if
+    if key = KeyCode.LEFT and m.changeServer.hasFocus()
+        m.changeServer.focus = false
+        m.addUser.setFocus(true)
+        m.addUser.focus = true
+        return true
     end if
-    return true
+
+    if key = KeyCode.UP
+        if m.addUser.hasFocus()
+            if m.top.itemContent.count() > 0
+                m.userRow.setFocus(true)
+                m.addUser.focus = false
+                return true
+            end if
+            return false
+        end if
+
+        if m.changeServer.hasFocus()
+            if m.top.itemContent.count() > 0
+                m.userRow.setFocus(true)
+                m.changeServer.focus = false
+                return true
+            end if
+            return false
+        end if
+
+        return false
+    end if
+
+    if key = KeyCode.DOWN
+        if m.userRow.isInFocusChain()
+            m.addUser.setFocus(true)
+            m.addUser.focus = true
+            return true
+        end if
+
+        return false
+    end if
+
+    return false
 end function

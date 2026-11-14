@@ -1,23 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Who's watching: the server's accounts in a carousel, then Add User and Select Server -->
 <component name="UserSelect" extends="JFScreen">
   <children>
-    <Poster id="background" uri="pkg:/images/bg_login_gradient.webp" width="1920" height="1080" />
-    <!-- Takes the remote off the carousel while a button has it, since the screen can't take it back from its own children -->
-    <Group id="buttonFocus" focusable="true" />
-    <Poster id="logo" uri="pkg:/images/logo.webp" width="296" height="67" translation="[97, 63]" />
-    <Label id="serverIcon" color="#FFFFFFA6" />
-    <Label id="serverName" font="font:SmallSystemFont" color="#FFFFFFA6" />
-    <Label id="whoWatching" translation="[97, 240]" width="1726" horizAlign="center" font="font:MediumSystemFont" color="#FFFFFFB3" />
-    <ProfileCarousel id="carousel" translation="[0, 330]" />
-    <LoginButton id="addUser" height="72" radius="36" padding="33" fontSize="25" iconGlyph="person" />
-    <LoginButton id="changeServer" height="72" radius="36" padding="33" fontSize="25" iconGlyph="home" />
+    <Poster
+      id="background"
+      uri="pkg:/images/bg_login_gradient.png"
+      width="1920"
+      height="1080"
+      translation="[0, 0]" />
+
+    <Rectangle translation="[710, 70]" width="500" height="113" color="0x00000000">
+      <Poster
+        id="logo"
+        uri="pkg:/images/logo.png"
+        width="500"
+        height="113" />
+    </Rectangle>
+
+    <Poster
+      id="userSelectionGroup"
+      translation="[360, 215]"
+      width="1200"
+      height="580"
+      uri="pkg:/images/surface.9.png">
+
+      <Label id="serverName"
+        horizAlign="center"
+        width="1200"
+        height="35"
+        font="font:TinySystemFont"
+        color="0x9CA3AFFF"
+        translation="[0, 60]" />
+
+      <Label id="whoWatching"
+        text="Who's watching?"
+        horizAlign="center"
+        width="1200"
+        height="35"
+        font="font:MediumBoldSystemFont"
+        color="0xFFFFFFFF"
+        translation="[0, 100]" />
+
+      <Group id="userRowContainer" translation="[40, 190]" clippingRect="[0, 0, 1120, 260]">
+        <UserRow id="userRow" translation="[0, 0]" />
+      </Group>
+
+      <StandardButton
+        id="addUser"
+        text="Add User"
+        height="84"
+        width="548"
+        translation="[40, 440]"
+        fontSize="30"
+        outline="true"
+        outlineUri="pkg:/images/playback/outline41.9.png"
+        iconUri="pkg:/images/baseline_person_white_48dp.webp" />
+
+      <StandardButton
+        id="changeServer"
+        text="Select Server"
+        height="84"
+        width="548"
+        translation="[612, 440]"
+        fontSize="30"
+        outline="true"
+        outlineUri="pkg:/images/playback/outline41.9.png"
+        iconUri="pkg:/images/icons/home.webp" />
+    </Poster>
   </children>
   <interface>
     <field id="changeServer" type="boolean" alwaysNotify="true" />
-    <field id="addUserSelected" type="boolean" alwaysNotify="true" />
-    <!-- The picked account's name -->
-    <field id="userSelected" type="string" alwaysNotify="true" />
     <field id="itemContent" type="array" onChange="itemContentChanged" />
   </interface>
 </component>

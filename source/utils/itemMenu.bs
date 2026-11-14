@@ -42,7 +42,7 @@ namespace itemMenu
         if isString(itemId) and LCase(Left(itemId, 6)) = "seerr-" then return true
 
         itemType = LCase(itemMenu.TypeOf(item))
-        return itemType = "seerrbrowse" or itemType = "seerrshortcut" or itemType = "calendarseeall"
+        return itemType = "seerrbrowse" or itemType = "seerrshortcut"
     end function
 
     ' A flag read off server json, where a missing one reads as off
@@ -247,13 +247,6 @@ namespace itemMenu
 
         hidden[id] = stamp
         return FormatJson(hidden)
-    end function
-
-    ' Emby and Plex take an item off resume and keep its progress. Jellyfin can only clear the play
-    ' state, and the audiobook Continue row ignores the server's flag, so audio is always cleared.
-    function KeepsProgressOnHide(json as object, serverHides as boolean) as boolean
-        if not serverHides then return false
-        return json.Type <> "Audio" and json.Type <> "AudioBook" and json.MediaType <> "Audio"
     end function
 
     ' A request the server turned down names its status, and anything else says what went wrong

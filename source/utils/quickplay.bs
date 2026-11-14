@@ -1,14 +1,15 @@
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/detailCompatibility.bs"
+import "pkg:/source/utils/speshResume.brs"
 import "pkg:/source/utils/misc.bs"
 ' All of the Quick Play logic seperated by media type
 namespace quickplay
 
     ' Copy a real server resume point onto the queue item.
     sub applyResumeStartingPoint(item as dynamic)
-        if not isValid(item) or not isValid(item.UserData) then return
-        positionTicks = item.UserData.PlaybackPositionTicks
-        if not isValid(positionTicks) or positionTicks <= 0 then return
+        if not isValid(item) then return
+        positionTicks = speshResumeTicks(item)
+        if positionTicks <= 0 then return
         item.startingPoint = positionTicks
     end sub
 
@@ -44,8 +45,8 @@ namespace quickplay
             selectPlaybackSource(itemNode, itemNode.selectedVideoStreamId)
         end if
 
-        audio_stream_idx = 0
-        if isValid(itemNode.selectedAudioStreamIndex) and itemNode.selectedAudioStreamIndex > 0
+        audio_stream_idx = -1
+        if isValid(itemNode.selectedAudioStreamIndex) and itemNode.selectedAudioStreamIndex >= 0
             audio_stream_idx = itemNode.selectedAudioStreamIndex
         end if
         itemNode.selectedAudioStreamIndex = audio_stream_idx
@@ -213,25 +214,30 @@ namespace quickplay
         quickplayFromResume = chainLookupReturn(itemNode, "quickplayFromResume", false)
 
         if quickplayFromResume
-            data = api.useritems.GetResumeItems({
-                "parentId": itemNode.id,
+            data = getJsonWithin(APIRequest("/shows/" + itemNode.id + "/episodes", {
                 "userid": m.global.session.user.id,
                 "SortBy": "DatePlayed",
                 "recursive": true,
                 "SortOrder": "Descending",
                 "Filters": "IsResumable",
-                "limit": 1,
+                "IsMissing": false,
+                "Fields": "UserData",
+                "EnableUserData": true,
+                "limit": 2000,
                 "EnableTotalRecordCount": false
-            })
-
+            }), 8000)
             if isValid(data) and isValidAndNotEmpty(data.Items)
-                quickplay.applyResumeStartingPoint(data.Items[0])
-                m.global.queueManager.callFunc("push", data.Items[0])
-                return
+                for each episode in data.Items
+                    if speshResumeTicks(episode) > 0
+                        quickplay.applyResumeStartingPoint(episode)
+                        m.global.queueManager.callFunc("push", episode)
+                        return
+                    end if
+                end for
             end if
         end if
 
-        data = api.shows.GetNextUp({
+        data = getJsonWithin(APIRequest("/shows/nextup", {
             "seriesId": itemNode.id,
             "recursive": true,
             "SortBy": "DatePlayed",
@@ -239,8 +245,16 @@ namespace quickplay
             "ImageTypeLimit": 1,
             "UserId": m.global.session.user.id,
             "DisableFirstEpisode": false,
+            "EnableResumable": true,
+            "Limit": 1,
+            "Fields": "UserData",
+            "EnableUserData": true,
             "EnableTotalRecordCount": false
-        })
+        }), 8000)
+        if not isValid(data)
+            stopLoadingSpinner()
+            return
+        end if
 
         if isValid(data) and isValidAndNotEmpty(data.Items)
             ' If the Resume lookup raced the latest progress update, keep any
@@ -266,6 +280,11 @@ namespace quickplay
                 m.global.queueManager.callFunc("push", data.Items[0])
                 return
             end if
+        end if
+
+        if quickplayFromResume
+            stopLoadingSpinner()
+            return
         end if
 
         data = api.shows.GetEpisodes(itemNode.id, {

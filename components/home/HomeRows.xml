@@ -8,13 +8,12 @@
     <!-- [row, column] a left or right press is moving to, set before the row starts to scroll -->
     <field id="moveTarget" type="array" alwaysNotify="true" />
     <function name="updateHomeRows" />
-    <function name="loadMoreNearRowEnd" />
+    <function name="refreshProgressRows" />
+    <function name="setHomeVisible" />
     <function name="reloadHomeRows" />
     <function name="loadLibraries" />
     <function name="reloadLibraries" />
     <function name="isFeaturedMediaEnabled" />
     <function name="playsOnSelect" />
-    <function name="showWatchParties" />
-    <function name="showWatchPartiesFromStart" />
   </interface>
 </component>

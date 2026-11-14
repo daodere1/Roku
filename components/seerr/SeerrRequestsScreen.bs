@@ -9,21 +9,12 @@ const PAGE_SIZE = 20
 const HYDRATION_BATCH = 6
 ' How close to the end of the list a load of the next page starts
 const LOAD_MORE_MARGIN = 5
-' The tile's caption width and font, and its height before a split puts the requester's name on a
-' line of its own. The split is decided here for the whole grid so every caption matches.
-const REQUESTER_WIDTH = 160
-const REQUESTER_FONT = 22
-const TILE_HEIGHT = 386
-const REQUESTER_LINE = 26
-' How many titles' Radarr/Sonarr queues are read at once
-const ARR_QUEUE_BATCH = 4
 
 sub init()
     m.titleLabel = m.top.findNode("titleLabel")
     m.tabBar = m.top.findNode("tabBar")
     m.filterBar = m.top.findNode("filterBar")
     m.requestGrid = m.top.findNode("requestGrid")
-    m.gridFocus = m.top.findNode("gridFocus")
     m.issueList = m.top.findNode("issueList")
     m.stateLabel = m.top.findNode("stateLabel")
     m.retryButton = m.top.findNode("retryButton")
@@ -35,6 +26,8 @@ sub init()
     m.tabBar.observeField("escape", "onTabEscape")
     m.filterBar.observeField("selectedIndex", "onFilterSelected")
     m.filterBar.observeField("escape", "onFilterEscape")
+    m.requestGrid.observeField("itemSelected", "onRequestSelected")
+    m.requestGrid.observeField("itemFocused", "onListItemFocused")
     m.issueList.observeField("itemSelected", "onIssueSelected")
     m.issueList.observeField("itemFocused", "onListItemFocused")
     m.retryButton.observeField("buttonSelected", "onRetryPressed")
@@ -43,8 +36,6 @@ sub init()
     m.requestFilter = "all"
     m.issueFilter = "open"
     m.items = []
-    m.gridIndex = 0
-    m.gridStop = 0
     m.counts = { pending: 0, open: 0 }
     m.loading = false
     m.loadingMore = false
@@ -62,12 +53,6 @@ sub init()
     m.hydrationExpected = 0
     m.loadGeneration = 0
     m.listTask.addField("generation", "integer", false)
-    ' Each title's queue, kept across reloads, as "movie:603" or "tv:1399"
-    m.arrQueues = {}
-    m.arrPending = []
-    m.arrTasks = {}
-    m.arrPaths = {}
-    m.arrStamp = 0
 end sub
 
 sub OnScreenShown(_isReturning = false as boolean)
@@ -194,15 +179,8 @@ sub focusList()
     list = activeList()
     if list.content = invalid or list.content.getChildCount() = 0 then return
 
-    if m.tab = "issues"
-        list.setFocus(true)
-        m.top.lastFocus = list
-        return
-    end if
-    m.gridFocus.setFocus(true)
-    m.top.lastFocus = m.gridFocus
-    m.gridStop = 0
-    lightTile(true)
+    list.setFocus(true)
+    m.top.lastFocus = list
 end sub
 
 function activeList() as object
@@ -214,11 +192,6 @@ end function
 sub reload()
     m.loadGeneration++
     m.items = []
-    ' Titles still waiting on a queue read belong to the old tab or filter. Reads already out land
-    ' in the cache, which the new list can use.
-    m.arrPending = []
-    m.gridIndex = 0
-    m.gridStop = 0
     m.hasMore = true
     m.loadingMore = false
     activeList().content = invalid
@@ -360,115 +333,14 @@ sub finishPage()
     m.loading = false
     m.loadingMore = false
     renderItems()
-    loadArrQueues(m.hydrated)
 end sub
-
-' ===== The Radarr/Sonarr queues =====
-
-' Which title's queue a request reads, or empty when it has none to read: only an approved HD
-' request whose title is on its way, since Moonbase reads only the default HD arr
-function arrQueueKey(entry as object) as string
-    if entry.is4k = true or entry.status <> SEERR_REQUEST_APPROVED then return ""
-    media = entry.media
-    mediaStatus = chainLookupReturn(media, "status", 0)
-    if mediaStatus <> SEERR_MEDIA_PROCESSING and mediaStatus <> SEERR_MEDIA_PARTIAL then return ""
-    tmdbId = chainLookupReturn(media, "tmdbId", invalid)
-    if not isValid(tmdbId) then return ""
-    mediaType = chainLookupReturn(media, "mediaType", "")
-    if not isStringEqual(mediaType, "movie") and not isStringEqual(mediaType, "tv") then return ""
-    return `${LCase(mediaType)}:${SeerrIdText(tmdbId)}`
-end function
-
-' Reads the queue once per title, however many requests share it, a few at a time. A title Moonbase
-' can't read drops out, which puts its tiles back on what Seerr reports.
-sub loadArrQueues(entries as object)
-    ' An issue carries a title too, but no download of its own
-    if m.tab = "issues" then return
-    if not SeerrArrQueueAvailable()
-        ' Moonbase stopped offering them, so the tiles go back on what Seerr reports
-        if m.arrQueues.Count() > 0
-            m.arrQueues = {}
-            renderItems()
-        end if
-        return
-    end if
-
-    for each entry in entries
-        key = arrQueueKey(entry)
-        if key <> "" and not m.arrTasks.DoesExist(key) and not inArray(m.arrPending, key)
-            path = SeerrArrQueuePath(entry.media.mediaType, entry.media.tmdbId, chainLookupReturn(entry, "media.tvdbId", invalid))
-            if path <> ""
-                m.arrPending.push(key)
-                m.arrPaths[key] = path
-            end if
-        end if
-    end for
-
-    while m.arrTasks.Count() < ARR_QUEUE_BATCH and m.arrPending.count() > 0
-        startArrQueue(m.arrPending.Shift())
-    end while
-end sub
-
-sub startArrQueue(key as string)
-    task = CreateObject("roSGNode", "SeerrAPITask")
-    task.addField("key", "string", false)
-    task.key = key
-    ' The query rides on the endpoint, since an assocarray crossing a node field loses its key case
-    task.request = { method: "GET", endpoint: m.arrPaths[key], usePluginRoot: true }
-    task.observeField("response", "onArrQueue")
-    ' Held onto, otherwise the node goes out of scope while the call is still in flight
-    m.arrTasks[key] = task
-    task.control = TaskControl.RUN
-end sub
-
-sub onArrQueue(event as object)
-    task = event.getRoSGNode()
-    key = task.key
-    m.arrTasks.Delete(key)
-
-    response = event.getData()
-    if isValid(response) and response.success = true and response.statusCode = 200 and type(response.data) = "roAssociativeArray"
-        m.arrQueues[key] = response.data
-    else
-        m.arrQueues.Delete(key)
-    end if
-    applyArrQueue(key)
-
-    if m.tab <> "issues" and m.arrPending.count() > 0 then startArrQueue(m.arrPending.Shift())
-end sub
-
-' The tiles of that title take the new answer in place, so focus and scroll stay where they are
-sub applyArrQueue(key as string)
-    if m.tab = "issues" then return
-    content = m.requestGrid.content
-    if not isValid(content) then return
-
-    m.arrStamp++
-    for i = 0 to content.getChildCount() - 1
-        row = content.getChild(i)
-        if isValid(row) and arrQueueKey(row.request) = key
-            row.arrQueue = arrQueueFor(row.request)
-            row.arrStamp = m.arrStamp
-        end if
-    end for
-end sub
-
-' The title's queue narrowed to what the request asked for, or an empty one, since an assocarray
-' field won't take invalid
-function arrQueueFor(entry as object) as object
-    key = arrQueueKey(entry)
-    if key = "" or not m.arrQueues.DoesExist(key) then return {}
-    return SeerrArrQueueForSeasons(m.arrQueues[key], entry.seasons)
-end function
 
 sub renderItems()
     if m.items.count() = 0
-        if m.gridFocus.hasFocus() then m.filterBar.setFocus(true)
         showState(m.tab = "issues" ? tr("No issues found") : tr("No requests found"), false)
         return
     end if
 
-    split = m.tab <> "issues" and requesterSplits()
     content = CreateObject("roSGNode", "ContentNode")
     for each entry in m.items
         if m.tab = "issues"
@@ -476,9 +348,6 @@ sub renderItems()
             row.issue = entry
         else
             row = content.CreateChild("SeerrRequestData")
-            row.actions = requestActions(entry)
-            row.splitRequester = split
-            row.arrQueue = arrQueueFor(entry)
             row.request = entry
         end if
     end for
@@ -487,43 +356,11 @@ sub renderItems()
     hideState()
     m.requestGrid.visible = m.tab <> "issues"
     m.issueList.visible = m.tab = "issues"
-    m.requestGrid.itemSize = [176, TILE_HEIGHT + (split ? REQUESTER_LINE : 0)]
-    ' Two taller rows run past the foot of the screen, so the focused row is held at the top
-    m.requestGrid.vertFocusAnimationStyle = split ? "fixedFocus" : "floatingFocus"
     list.content = content
-
-    if m.tab = "issues" then return
-    if m.gridIndex >= m.items.count() then m.gridIndex = m.items.count() - 1
-    m.requestGrid.jumpToItem = m.gridIndex
-    if m.gridFocus.hasFocus() then lightTile(true)
 end sub
-
-function requesterSplits() as boolean
-    measure = CreateObject("roSGNode", "Label")
-    measure.font = "font:SmallestSystemFont"
-    measure.font.size = REQUESTER_FONT
-    for each entry in m.items
-        measure.text = Substitute(tr("Requested by ^0"), SeerrRequesterName(entry))
-        if measure.boundingRect().width > REQUESTER_WIDTH then return true
-    end for
-    return false
-end function
-
-' A moderator answers a pending request or sends a failed one again, and anyone else can take
-' back their own pending one
-function requestActions(entry as object) as object
-    status = chainLookupReturn(entry, "status", 0)
-    if status = SEERR_REQUEST_PENDING and m.canManageRequests then return ["approve", "decline"]
-    if status = SEERR_REQUEST_PENDING and m.seerrUserId > 0 and chainLookupReturn(entry, "requestedBy.id", -1) = m.seerrUserId then return ["cancel"]
-    if status = SEERR_REQUEST_FAILED and m.canManageRequests then return ["retry"]
-    return []
-end function
 
 sub onListItemFocused(event as object)
-    loadMoreNear(event.getData())
-end sub
-
-sub loadMoreNear(index as integer)
+    index = event.getData()
     if index < 0 then return
     if not m.hasMore or m.loading or m.loadingMore then return
     if index < m.items.count() - LOAD_MORE_MARGIN then return
@@ -556,78 +393,79 @@ end sub
 
 ' ===== Acting on a row =====
 
-' ===== The request grid =====
+sub onRequestSelected(event as object)
+    index = event.getData()
+    if index < 0 or index >= m.items.count() then return
 
-' The grid never takes focus, so the screen moves it and the tiles draw it
-sub lightTile(on as boolean)
-    content = m.requestGrid.content
-    if not isValid(content) then return
-    node = content.getChild(m.gridIndex)
-    if not isValid(node) then return
-    node.stop = m.gridStop
-    node.lit = on
-end sub
+    m.activeItem = m.items[index]
+    m.activeIndex = index
 
-sub moveTile(index as integer)
-    lightTile(false)
-    m.gridIndex = index
-    m.gridStop = 0
-    lightTile(true)
-    m.requestGrid.animateToItem = index
-    loadMoreNear(index)
-end sub
-
-sub setStop(position as integer)
-    m.gridStop = position
-    lightTile(true)
-end sub
-
-' Left and Right walk the tile and its buttons, then on to the next request in the row. At the
-' start of a row Left stays put.
-function onGridKey(key as string) as boolean
-    count = m.requestGrid.content.getChildCount()
-    columns = m.requestGrid.numColumns
-    index = m.gridIndex
-    actions = m.requestGrid.content.getChild(index).actions ?? []
-
-    if key = KeyCode.RIGHT
-        if m.gridStop < actions.count()
-            setStop(m.gridStop + 1)
-        else if index mod columns < columns - 1 and index + 1 < count
-            moveTile(index + 1)
-        end if
-    else if key = KeyCode.LEFT
-        if m.gridStop > 0
-            setStop(m.gridStop - 1)
-        else if index mod columns > 0
-            moveTile(index - 1)
-        end if
-    else if key = KeyCode.UP
-        if index < columns
-            lightTile(false)
-            m.filterBar.setFocus(true)
-        else
-            moveTile(index - columns)
-        end if
-    else if key = KeyCode.DOWN
-        if index + columns < count
-            moveTile(index + columns)
-        else if Int(index / columns) < Int((count - 1) / columns)
-            moveTile(count - 1)
-        end if
-    else if key = KeyCode.OK
-        m.activeItem = m.items[index]
-        m.activeIndex = index
-        if m.gridStop = 0
-            openActiveMedia()
-        else
-            runRequestAction(actions[m.gridStop - 1])
-        end if
-    else
-        return false
+    ' Nothing can be done to a title that has arrived, and a viewer who can't moderate has
+    ' nothing to do with any of them, so both go straight to the title itself
+    if not m.canManageRequests or SeerrRequestStatusInfo(m.activeItem).color = "available"
+        openActiveMedia()
+        return
     end if
-    return true
-end function
+
+    options = []
+    m.actions = []
+
+    status = chainLookupReturn(m.activeItem, "status", 0)
+    if status = SEERR_REQUEST_PENDING
+        options.push(tr("Approve"))
+        m.actions.push("approve")
+        options.push(tr("Decline"))
+        m.actions.push("decline")
+    else if status = SEERR_REQUEST_FAILED
+        options.push(tr("Retry"))
+        m.actions.push("retry")
+    end if
+
+    ' With nothing to offer beyond the title, the panel would only be in the way
+    if options.count() = 0
+        openActiveMedia()
+        return
+    end if
+
+    options.push(tr("Open"))
+    m.actions.push("open")
+
+    showOptions(SeerrMediaTitle(m.activeItem.media), options, "onRequestActionChosen")
+end sub
+
+sub showOptions(title as string, options as object, callback as string)
+    m.optionDialog = CreateObject("roSGNode", "ListPromptDialog")
+    m.optionDialog.dialogTitle = title
+    m.optionDialog.options = options
+    m.optionDialog.returnFocus = activeList()
+    m.optionDialog.observeField("optionSelected", callback)
+
+    m.top.getScene().appendChild(m.optionDialog)
+    m.optionDialog.callFunc("showDialog")
+end sub
+
+sub closeOptions()
+    if not isValid(m.optionDialog) then return
+
+    m.optionDialog.unobserveField("optionSelected")
+    m.top.getScene().removeChild(m.optionDialog)
+    m.optionDialog = invalid
+end sub
+
+sub onRequestActionChosen(event as object)
+    index = event.getData()
+    closeOptions()
+
+    if index < 0 or index >= m.actions.count() then return
+
+    action = m.actions[index]
+    if action = "open"
+        openActiveMedia()
+        return
+    end if
+
+    runRequestAction(action)
+end sub
 
 sub openActiveMedia()
     media = m.activeItem.media
@@ -640,18 +478,17 @@ sub openActiveMedia()
     })
 end sub
 
-' Answered straight from the button, with no confirm first
 sub runRequestAction(action as string)
     requestId = chainLookupReturn(m.activeItem, "id", invalid)
     if not isValid(requestId) then return
 
     m.pendingAction = action
     endpoint = `/api/v1/request/${requestId.toStr()}`
-    request = { method: "DELETE", endpoint: endpoint }
-    if action <> "cancel" then request = { method: "POST", endpoint: `${endpoint}/${action}` }
+
+    endpoint += `/${action}`
 
     startLoadingSpinner()
-    m.actionTask.request = request
+    m.actionTask.request = { method: "POST", endpoint: endpoint }
     m.actionTask.unobserveField("response")
     m.actionTask.observeField("response", "onRequestActionDone")
     m.actionTask.control = TaskControl.RUN
@@ -659,50 +496,18 @@ end sub
 
 sub onRequestActionDone(event as object)
     response = event.getData()
-
-    if not isValid(response) or not response.success
-        stopLoadingSpinner()
-        return
-    end if
-
-    m.gridStop = 0
-    action = m.pendingAction
-    if action = "retry"
-        ' The request is read again for the state the retry left it in, on a task of its own since
-        ' this one is still finishing
-        m.retryTask = CreateObject("roSGNode", "SeerrAPITask")
-        m.retryTask.request = { method: "GET", endpoint: `/api/v1/request/${m.activeItem.id.toStr()}` }
-        m.retryTask.observeField("response", "onRetriedRequest")
-        m.retryTask.control = TaskControl.RUN
-        return
-    end if
-
     stopLoadingSpinner()
-    if action = "cancel"
-        dropActiveItem()
-        return
-    end if
-    patchActiveStatus(action = "decline" ? SEERR_REQUEST_DECLINED : SEERR_REQUEST_APPROVED)
-    adjustCount("pending", -1)
-end sub
 
-' The fresh copy keeps the title and art already filled in for this one
-sub onRetriedRequest(event as object)
-    stopLoadingSpinner()
-    response = event.getData()
-    fresh = chainLookupReturn(response, "data", invalid)
-    if not isValid(response) or not response.success or type(fresh) <> "roAssociativeArray"
+    if not isValid(response) or not response.success then return
+
+    if m.pendingAction = "decline"
+        patchActiveStatus(SEERR_REQUEST_DECLINED)
+    else
         patchActiveStatus(SEERR_REQUEST_APPROVED)
-        return
     end if
-    if m.activeIndex < 0 or m.activeIndex >= m.items.count() then return
 
-    entry = m.items[m.activeIndex]
-    for each key in fresh
-        if key <> "media" then entry[key] = fresh[key]
-    end for
-    m.items[m.activeIndex] = entry
-    renderItems()
+    ' A retry was already off the pending pile, the other two have just left it
+    if m.pendingAction <> "retry" then adjustCount("pending", -1)
 end sub
 
 sub patchActiveStatus(status as integer)
@@ -712,6 +517,7 @@ sub patchActiveStatus(status as integer)
     entry.status = status
     m.items[m.activeIndex] = entry
     renderItems()
+    activeList().jumpToItem = m.activeIndex
 end sub
 
 sub dropActiveItem()
@@ -823,8 +629,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.global.sceneManager.callFunc("popScene")
         return true
     end if
-
-    if m.gridFocus.hasFocus() then return onGridKey(key)
 
     if key = KeyCode.UP and activeList().hasFocus()
         m.filterBar.setFocus(true)

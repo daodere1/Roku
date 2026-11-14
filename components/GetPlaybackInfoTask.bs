@@ -13,7 +13,6 @@ end sub
 
 ' The request names what the player has, since a playback error empties the queue while the player
 ' retries and Emby's source ids differ from its item ids
-' On Silo, IsPlayback false reads the session that's playing; true would replan it, restarting its stream
 function ItemPostPlaybackInfo(id as string)
     body = {
         "DeviceProfile": getDeviceProfile()
@@ -32,14 +31,14 @@ function ItemPostPlaybackInfo(id as string)
         ' Use the specified server instead of global session
         params = {
             "UserId": serverUserId,
-            "IsPlayback": not isSiloServer(serverUrl),
+            "IsPlayback": true,
             "AutoOpenLiveStream": true,
             "MaxStreamingBitrate": "140000000",
             "MaxStaticBitrate": "140000000",
-            "SubtitleStreamIndex": m.top.subtitleIndex,
-            "MediaSourceId": mediaSourceId,
-            "AudioStreamIndex": m.top.audioIndex
+            "MediaSourceId": mediaSourceId
         }
+        if m.top.audioIndex >= 0 then params.AudioStreamIndex = m.top.audioIndex
+        if m.top.subtitleIndex >= -1 then params.SubtitleStreamIndex = m.top.subtitleIndex
 
         req = APIRequestForServer(serverUrl, serverUserId, serverAuthToken, Substitute("Items/{0}/PlaybackInfo", id), params)
         if not isValid(req) then return invalid
@@ -50,14 +49,14 @@ function ItemPostPlaybackInfo(id as string)
         ' Use the global session (original behavior)
         params = {
             "UserId": m.global.session.user.id,
-            "IsPlayback": not isSiloServer(),
+            "IsPlayback": true,
             "AutoOpenLiveStream": true,
             "MaxStreamingBitrate": "140000000",
             "MaxStaticBitrate": "140000000",
-            "SubtitleStreamIndex": m.top.subtitleIndex,
-            "MediaSourceId": mediaSourceId,
-            "AudioStreamIndex": m.top.audioIndex
+            "MediaSourceId": mediaSourceId
         }
+        if m.top.audioIndex >= 0 then params.AudioStreamIndex = m.top.audioIndex
+        if m.top.subtitleIndex >= -1 then params.SubtitleStreamIndex = m.top.subtitleIndex
 
         req = APIRequest(Substitute("Items/{0}/PlaybackInfo", id), params)
         req.SetRequest("POST")

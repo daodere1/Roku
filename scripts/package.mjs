@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 
 const stagingDir = 'build/staging';
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
-const outFile = `out/Moonfin_Roku_v${version}.zip`;
+const outFile = `out/SpeshTV-Roku-${version}.zip`;
 
 // Comment lines go blank rather than away, so line numbers in a crash log still match the staged code
 function trimScript(text) {
@@ -16,38 +16,27 @@ function trimScript(text) {
     }).join('\n');
 }
 
-// Translator notes are only read on Weblate. A message left untranslated, or translated to its own
-// source, can go too, since tr hands back the source when nothing matches.
-function trimTranslations(text) {
-    return text
+// Translator notes are only read on Weblate. An English message that matches its source can go
+// too, since tr hands back the source when nothing matches.
+function trimTranslations(text, english) {
+    text = text
         .replace(/^[ \t]*<extracomment>.*<\/extracomment>\n/gm, '')
-        .split('\n').map((line) => line.trimStart()).join('\n')
-        .replace(/<message>\n<source>(.*)<\/source>\n<translation(?: type="unfinished")?>(?:\1)?<\/translation>\n<\/message>\n/g, '');
+        .split('\n').map((line) => line.trimStart()).join('\n');
+    if (!english) return text;
+    return text.replace(/<message>\n<source>(.*)<\/source>\n<translation>\1<\/translation>\n<\/message>\n/g, '');
 }
-
-// Inline script keeps its lines, since a crash log counts them
-function trimMarkup(text) {
-    if (text.includes('<![CDATA[')) return text;
-    return text.replace(/<!--[^]*?-->/g, '').split('\n').map((line) => line.trim()).filter((line) => line !== '').join('\n');
-}
-
-// GetCurrentLocale only ever returns these, so any other locale folder can never load on a Roku
-const deviceLocales = new Set(['en_US', 'en_GB', 'en_CA', 'en_AU', 'fr_CA', 'es_ES', 'es_MX', 'de_DE', 'it_IT', 'pt_BR']);
 
 const zip = new JSZip();
 const entries = await readdir(stagingDir, { recursive: true, withFileTypes: true });
 const files = entries.filter((entry) => entry.isFile())
     .map((entry) => path.relative(stagingDir, path.join(entry.parentPath, entry.name)).split(path.sep).join('/'))
-    .filter((file) => !file.startsWith('locale/') || deviceLocales.has(file.split('/')[1]))
     .sort();
 
 for (const file of files) {
     let data = await readFile(path.join(stagingDir, file));
     if (file.endsWith('.brs')) data = trimScript(data.toString('utf8'));
-    else if (file.endsWith('.ts')) data = trimTranslations(data.toString('utf8'));
-    else if (file.endsWith('.xml')) data = trimMarkup(data.toString('utf8'));
-    else if (file.endsWith('.json')) data = JSON.stringify(JSON.parse(data.toString('utf8')));
-    zip.file(file, data, { createFolders: false });
+    else if (file.endsWith('.ts')) data = trimTranslations(data.toString('utf8'), file === 'locale/en_US/translations.ts');
+    zip.file(file, data);
 }
 
 await mkdir(path.dirname(outFile), { recursive: true });

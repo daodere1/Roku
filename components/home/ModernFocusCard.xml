@@ -77,8 +77,6 @@
     <field id="shiftAmount" type="integer" value="284" />
     <!-- Whether the card is up, which a host reads before it moves the card along a row -->
     <field id="cardShown" type="boolean" value="false" />
-    <!-- A Carousel row's panel shows the details, so the card leaves out its own -->
-    <field id="showInfo" type="boolean" alias="mfInfo.visible" />
     <!-- { item, uris, logoTile }: the focused content node, its wide images best first, and
          whether the art is a logo to sit whole on a dark ground -->
     <function name="showCard" />
@@ -89,10 +87,6 @@
     <function name="setRatings" />
     <!-- { content, row, col }: slides the cells after the focused one aside -->
     <function name="reflow" />
-    <!-- Seerr Discover's smaller card: { width, height, maskUri, shift, infoTop, titleSize,
-         metaSize, metaColor, metaTop, ratingsTop, overviewTop, overviewSize, overviewColor,
-         overviewWidth, overviewLineSpacing }. Home keeps the sizes above. -->
-    <function name="applyLayout" />
     <!-- { video }: puts the host's Video under the art, sized to the card -->
     <function name="mountPreview" />
     <!-- Fades the art off the playing video and shows the corners -->

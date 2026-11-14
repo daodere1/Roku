@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -25,14 +25,14 @@ jobs:
       - name: Test server compatibility
         run: npm test
 
-      - name: Build the Moonfin channel
+      - name: Build the SpeshTV channel
         run: npm run build
 
       - name: Save build output as artifact
         uses: actions/upload-artifact@v6
         with:
-          name: Moonfin-Roku-dev-${{ github.sha }}
-          path: ${{ github.workspace }}/build/staging
+          name: SpeshTV-Roku-dev-${{ github.sha }}
+          path: ${{ github.workspace }}/out/*.zip
 
   # What the PR Comment workflow reads. Without always() a failed build skips this,
   # no artifact is uploaded, and the comment has nothing to read, so the run that
@@ -40,7 +40,7 @@ jobs:
   save-pr-results:
     if: always() && github.event_name == 'pull_request'
     needs: [test]
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
     steps:
       - name: Write outcomes.json
         run: |

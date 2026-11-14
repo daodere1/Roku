@@ -79,17 +79,14 @@ sub loadGenreItems()
 
                 ' Stage 2: Queue random representative items query to get grouped counts and backdrop art
                 req = startGenreItemsRequest(userSession, genre, port, groupCollections)
-                reqInfo = {
-                    userSession: userSession,
-                    genreLower: genreLower,
-                    genreName: genreName,
-                    genreId: genreId,
-                    initialCount: initialCount
-                }
-                if isValid(req) and req.DoesExist("answered")
-                    if isValid(req.answered) then processGenreItemsResponse(req.answered, reqInfo, genreMap)
-                else if isValid(req)
-                    activeGenreRequests[req.id] = reqInfo
+                if isValid(req)
+                    activeGenreRequests[req.id] = {
+                        userSession: userSession,
+                        genreLower: genreLower,
+                        genreName: genreName,
+                        genreId: genreId,
+                        initialCount: initialCount
+                    }
                     requestObjects[req.id] = req.request
                 end if
             end for
@@ -100,7 +97,7 @@ sub loadGenreItems()
     startTime = CreateObject("roDateTime").AsSeconds()
 
     while activeGenreRequests.Count() > 0
-        msg = siloWait(1000, port)
+        msg = wait(1000, port)
 
         currentTime = CreateObject("roDateTime").AsSeconds()
         if currentTime - startTime > 15
@@ -110,7 +107,7 @@ sub loadGenreItems()
 
         if msg = invalid then continue while
 
-        if isUrlEvent(msg)
+        if type(msg) = "roUrlEvent"
             requestId = msg.GetSourceIdentity().ToStr()
             reqInfo = activeGenreRequests[requestId]
 
@@ -139,11 +136,6 @@ sub loadGenreItems()
         genreMap.Delete(key)
     end for
 
-    ' With more than one server every genre is a merged one, read from all of them when it's opened
-    unified = allSessions.Count() > 1
-    for each key in genreMap
-        genreMap[key].unified = unified
-    end for
     m.top.genreResults = genreMap
 end sub
 
@@ -170,9 +162,12 @@ function fetchServerGenres(userSession as object) as object
     request.InitClientCertificates()
     request.EnableEncodings(true)
 
-    data = getJson(request)
-    if isChainValid(data, "Items")
-        return data.Items
+    responseBody = request.GetToString()
+    if isValidAndNotEmpty(responseBody)
+        data = ParseJson(responseBody)
+        if isValid(data) and isChainValid(data, "Items")
+            return data.Items
+        end if
     end if
 
     return []
@@ -230,11 +225,7 @@ function startGenreItemsRequest(userSession as object, genre as object, port as 
     request.SetMessagePort(port)
     request.EnableEncodings(true)
 
-    ' A Plex server only answers through its bridge, which answers right away
-    if plexUrls.Owns(url) then return { answered: getJson(request) }
-
-    ' siloStartGet answers a Silo request itself and starts any other
-    if siloStartGet(request)
+    if request.AsyncGetToString()
         return {
             id: request.GetIdentity().ToStr(),
             request: request

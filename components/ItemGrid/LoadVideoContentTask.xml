@@ -3,8 +3,9 @@
 <component name="LoadVideoContentTask" extends="Task">
   <interface>
     <field id="itemId" type="string" />
-    <field id="selectedAudioStreamIndex" type="integer" value="0" />
+    <field id="selectedAudioStreamIndex" type="integer" value="-1" />
     <field id="selectedSubtitleIndex" type="integer" value="-2" />
+    <field id="reloadPositionTicks" type="longinteger" value="-1" />
     <field id="isIntro" type="boolean" />
     <!-- Set by the player when it stops waiting on this load, which then lets go of the live
          stream it opened instead of handing it over -->
@@ -28,8 +29,7 @@
          server builds. A full transcode also names the codec to move off. -->
     <field id="playbackMethod" type="string" value="" />
     <field id="transcodeCodec" type="string" value="" />
-    <!-- The bitrate cap picked from the player's controls, in bits per second, zero for none -->
-    <field id="maxBitrate" type="integer" value="0" />
+    <field id="convertLiveAac" type="boolean" value="false" />
     <!-- Multi-server support fields -->
     <field id="serverUrl" type="string" value="" />
     <field id="serverUserId" type="string" value="" />

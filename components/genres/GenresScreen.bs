@@ -174,8 +174,7 @@ sub onGenreCardSelected()
         genreName: genreName,
         libraryId: "",
         parentFolder: "",
-        itemType: groupCollections ? "Movie,Series,BoxSet" : "Movie,Series",
-        allServers: genreData.unified = true
+        itemType: groupCollections ? "Movie,Series,BoxSet" : "Movie,Series"
     }
     group.parentItem = genreBrowseItem
     group.observeField("selectedItem", "onVisualLibraryItemSelected")

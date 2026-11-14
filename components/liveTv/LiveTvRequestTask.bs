@@ -73,7 +73,8 @@ function loadChannels() as object
     req = APIRequest("/LiveTv/Channels", {
         UserId: sessionUserId(),
         EnableFavoriteSorting: true,
-        Fields: "ImageTags,UserData",
+        Fields: "ImageTags,UserData,Tags",
+        ImageTypeLimit: 1,
         EnableTotalRecordCount: false
     })
     answer = requestResponse(req)
@@ -108,10 +109,10 @@ function loadPrograms(request as object) as object
         body.ChannelIds = ids
         req = APIRequest("/LiveTv/Programs")
         if isValid(req) then req.AddHeader("Content-Type", "application/json")
-        answer = requestResponse(req, "POST", FormatJson(body))
+        answer = requestResponse(req, "POST", FormatJson(body), 10000)
     else
         params.ChannelIds = joined
-        answer = requestResponse(APIRequest("/LiveTv/Programs", params))
+        answer = requestResponse(APIRequest("/LiveTv/Programs", params), "GET", "", 10000)
     end if
 
     items = chainLookupReturn(answer, "data.Items", invalid)
@@ -145,7 +146,8 @@ function setFavorite(itemId as string, favorite as boolean) as object
     if not isValid(req) then return { ok: false }
 
     if favorite then return { ok: statusOk(requestResponse(req, "POST", "").status) }
-    return { ok: statusOk(requestResponse(req, "DELETE").status) }
+    req.SetRequest("DELETE")
+    return { ok: statusOk(requestResponse(req).status) }
 end function
 
 ' Both timer kinds are built from the server's own defaults for the program rather than by hand.
@@ -223,7 +225,8 @@ end function
 function deleteRequest(path as string) as object
     req = APIRequest(path)
     if not isValid(req) then return { ok: false }
-    return { ok: statusOk(requestResponse(req, "DELETE").status) }
+    req.SetRequest("DELETE")
+    return { ok: statusOk(requestResponse(req).status) }
 end function
 
 function statusOk(status as integer) as boolean

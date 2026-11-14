@@ -1,0 +1,243 @@
+import "pkg:/source/utils/speshHomeLoading.brs"
+
+sub initHomeLoading()
+    m.homePending = []
+    m.homeRunning = []
+    m.homeVisible = true
+    m.homeAssembling = false
+    m.homeRefreshPending = false
+    m.homeFullRefreshPending = false
+    m.homeFullRefreshClock = CreateObject("roTimespan")
+    m.homeFullRefreshClock.Mark()
+    m.homePumpTimer = CreateObject("roSGNode", "Timer")
+    m.homePumpTimer.duration = 0.05
+    m.homePumpTimer.observeField("fire", "pumpHomeJobs")
+    m.top.observeFieldScoped("rowItemFocused", "onHomeLoadingFocus")
+    m.homeProgressTimer = CreateObject("roSGNode", "Timer")
+    m.homeProgressTimer.duration = 30
+    m.homeProgressTimer.repeat = true
+    m.homeProgressTimer.observeField("fire", "onHomeProgressRefresh")
+    m.homeProgressTimer.control = "start"
+    m.homeFullRefreshTimer = CreateObject("roSGNode", "Timer")
+    m.homeFullRefreshTimer.duration = 300
+    m.homeFullRefreshTimer.repeat = true
+    m.homeFullRefreshTimer.observeField("fire", "onHomeFullRefresh")
+    m.homeFullRefreshTimer.control = "start"
+end sub
+
+sub onHomeFullRefresh()
+    if not m.homeVisible then return
+    if m.homeAssembling or m.homeRunning.Count() > 0 or m.homePending.Count() > 0
+        m.homeFullRefreshPending = true
+        return
+    end if
+    m.homeFullRefreshPending = false
+    m.homeFullRefreshClock.Mark()
+    updateHomeRows()
+end sub
+
+sub onHomeProgressRefresh()
+    if m.homeVisible and not m.homeAssembling and not homeProgressBusy() then refreshProgressRows()
+end sub
+
+sub resetHomeLoading()
+    m.homePumpTimer.control = "stop"
+    for each job in m.homePending
+        job.task.unobserveField("earlyContent")
+        job.task.unobserveField("content")
+        job.task.unobserveField("isComplete")
+    end for
+    for each job in m.homeRunning
+        job.task.unobserveField("earlyContent")
+        job.task.unobserveFieldScoped("state")
+        job.task.unobserveField("content")
+        job.task.unobserveField("isComplete")
+        job.task.control = "stop"
+    end for
+    m.homePending = []
+    m.homeRunning = []
+    m.homeRefreshPending = false
+    m.homeFullRefreshPending = false
+    m.contentTasks = {}
+    m.multiServerTasks = {}
+end sub
+
+sub setHomeVisible(visible as boolean)
+    m.homeVisible = visible
+    if visible then m.homePumpTimer.control = "start" else m.homePumpTimer.control = "stop"
+    if visible then m.homeProgressTimer.control = "start" else m.homeProgressTimer.control = "stop"
+    if visible then m.homeFullRefreshTimer.control = "start" else m.homeFullRefreshTimer.control = "stop"
+    if visible and m.homeFullRefreshClock.TotalMilliseconds() >= 300000 then onHomeFullRefresh()
+end sub
+
+sub onHomeLoadingFocus()
+    if m.homeVisible then m.homePumpTimer.control = "start"
+end sub
+
+sub onHomeJobStateChanged()
+    ' Let existing content callbacks finish before reusing a task or row.
+    m.homePumpTimer.control = "start"
+end sub
+
+function homeLoadingTitle(section as string, task as object) as string
+    if task.hasField("metadata") and isValid(task.metadata)
+        if isValidAndNotEmpty(task.metadata.sectionName) then return task.metadata.sectionName
+        if isValidAndNotEmpty(task.metadata.title) and section = "latestmedia" then return tr("Recently Added in") + " " + task.metadata.title
+        if isValidAndNotEmpty(task.metadata.title) and section = "recentlyreleased" then return tr("Recently Released in") + " " + task.metadata.title
+    end if
+    if task.hasField("itemsToLoad") and task.itemsToLoad = "mergedContinueWatching" then return mergedRowTitle()
+    titles = {resume: tr("Continue Watching"), nextup: tr("Next Up"), resumeaudio: tr("Continue Listening"),
+        livetv: tr("On Now"), favorites: tr("Favorites"), mylist: tr("My List"),
+        latestmedia: tr("Recently Added"), recentlyreleased: tr("Recently Released"), rewatch: tr("Rewatch")}
+    if isValid(titles[section]) then return titles[section]
+    config = internalRowConfig(internalRowTaskKey(section))
+    if isValid(config) then return config.title
+    seed = homeRowLayout.SeedRowIndex(section)
+    if seed > 0 then return tr("Since you watched") + " " + seed.ToStr()
+    title = customDynamicRowTitle(section)
+    if isValidAndNotEmpty(title) then return title
+    return section
+end function
+
+sub homeStartTask(task as object)
+    for each job in m.homePending
+        if job.task.isSameNode(task) then return
+    end for
+    for each job in m.homeRunning
+        if job.task.isSameNode(task) then return
+    end for
+    section = m.homeSchedulingSection ?? "latestmedia"
+    if task.hasField("itemsToLoad") and task.itemsToLoad = "mergedContinueWatching" then section = "resume"
+    if section = "" then section = "latestmedia"
+    priority = (section = "resume" or section = "nextup" or section = "resumeaudio") ? 0 : 1
+    title = homeLoadingTitle(section, task)
+    row = invalid
+    if sectionExists(title) then row = m.top.content.getChild(getSectionIndex(title))
+    if not isValid(row)
+        row = CreateObject("roSGNode", "HomeRow")
+        row.id = section
+        row.title = title
+        row.cursorSize = getPosterSize(false)
+        row.imageWidth = row.cursorSize[0]
+        row.usePoster = true
+        m.top.content.appendChild(row)
+    end if
+    if row.id = "" then row.id = section
+    if row.getChildCount() = 0
+        card = CreateObject("roSGNode", "HomeData")
+        card.addFields({speshPlaceholder: true})
+        card.id = ""
+        card.title = tr("Loading...")
+        card.name = card.title
+        card.usePoster = true
+        card.imageWidth = row.imageWidth
+        row.appendChild(card)
+    end if
+    m.homePending.Push({task: task, priority: priority, row: row, rowIndex: -1})
+    if not m.homeAssembling
+        sortHomeRows()
+        setRowItemSize()
+        m.homePumpTimer.control = "start"
+    end if
+end sub
+
+sub pumpHomeJobs()
+    if m.homeAssembling then return
+    kept = []
+    for each job in m.homeRunning
+        state = LCase(job.task.state)
+        if state = "done" or state = "stop"
+            job.task.unobserveFieldScoped("state")
+            if isHomePlaceholderRow(job.row)
+                m.top.content.removeChild(job.row)
+                setRowItemSize()
+            end if
+        else
+            job.ready = job.task.hasField("earlyContent") and isValidAndNotEmpty(job.task.earlyContent)
+            kept.Push(job)
+        end if
+    end for
+    m.homeRunning = kept
+    if not m.homeVisible then return
+    if m.homeFullRefreshPending = true and m.homeRunning.Count() = 0 and m.homePending.Count() = 0
+        onHomeFullRefresh()
+        return
+    end if
+    if m.homeRefreshPending and not homeProgressBusy()
+        m.homeRefreshPending = false
+        refreshProgressRows()
+    end if
+    children = m.top.content.getChildren(-1, 0)
+    for each job in m.homePending
+        job.rowIndex = -1
+        for i = 0 to children.Count() - 1
+            if children[i].isSameNode(job.row) then job.rowIndex = i
+        end for
+    end for
+    focus = m.top.rowItemFocused
+    focusedRow = 0
+    if isValid(focus) and focus.Count() > 0 then focusedRow = focus[0]
+    while true
+        index = speshHomeJobIndex(m.homePending, m.homeRunning, focusedRow, 2)
+        if index < 0 then exit while
+        job = m.homePending[index]
+        m.homePending.Delete(index)
+        m.homeRunning.Push(job)
+        job.task.observeFieldScoped("state", "onHomeJobStateChanged")
+        job.task.control = "RUN"
+    end while
+end sub
+
+function isHomePlaceholderRow(row as object) as boolean
+    if not isValid(row) or row.getChildCount() <> 1 then return false
+    card = row.getChild(0)
+    return card.hasField("speshPlaceholder") and card.speshPlaceholder = true
+end function
+
+function homeProgressBusy() as boolean
+    for each job in m.homePending
+        if job.priority = 0 then return true
+    end for
+    for each job in m.homeRunning
+        if job.priority = 0 then return true
+    end for
+    return false
+end function
+
+sub refreshProgressRows()
+    scope = homeLoadingScope()
+    if isValid(m.homeLoadingScope) and m.homeLoadingScope <> scope
+        resetHomeLoading()
+        m.top.content = CreateObject("roSGNode", "ContentNode")
+        loadLibraries()
+        return
+    end if
+    if homeProgressBusy()
+        m.homeRefreshPending = true
+        return
+    end if
+    m.homeAssembling = true
+    m.mergedRowLoading = false
+    for each section in localRowOrder()
+        section = normalizeSectionId(section)
+        if section = "resume" or section = "nextup" or section = "resumeaudio"
+            m.homeSchedulingSection = section
+            addHomeSection(section)
+        end if
+    end for
+    m.homeSchedulingSection = ""
+    m.homeAssembling = false
+    m.homePumpTimer.control = "start"
+end sub
+
+function homeLoadingScope() as string
+    return chainLookupReturn(m.global.session, "server.url", "") + "|" + chainLookupReturn(m.global.session, "user.id", "")
+end function
+
+function homeRowSignature(row as object) as string
+    parts = [row.title, FormatJson(row.cursorSize), row.usePoster.ToStr()]
+    for each item in row.getChildren(-1, 0)
+        parts.Push(speshHomeItemSignature(item.getFields()))
+    end for
+    return parts.Join(Chr(10))
+end function

@@ -11,10 +11,8 @@ import "pkg:/source/enums/KeyCode.bs"
 import "pkg:/source/enums/TaskControl.bs"
 import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/deviceCapabilities.bs"
-import "pkg:/source/utils/homeCards.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/mediaBadges.bs"
-import "pkg:/source/utils/multiserver.bs"
 import "pkg:/source/utils/musicLibraryStyle.bs"
 import "pkg:/source/utils/ratingsRow.bs"
 import "pkg:/source/utils/themeApply.bs"
@@ -42,8 +40,6 @@ sub init()
     m.homeRows = m.top.findNode("homeRows")
 
     m.modernHomeRows = isModernHomeRows()
-    ' Classic rows can leave out the focused item's title and details above them, as Core does
-    m.homeRowInfoOverlay = showsHomeRowInfoOverlay()
 
     ' The overlay card is the focus indicator in modern rows, so the row list
     ' does not draw its own portrait focus border underneath it.
@@ -69,19 +65,6 @@ sub init()
 
     ' Modern rows focused card overlay
     m.modernFocusCard = m.top.findNode("modernFocusCard")
-    layOutModernFocusCard()
-
-    m.carouselHomeRows = isCarouselHomeRows()
-    if m.carouselHomeRows
-        m.carouselPanels = m.top.findNode("carouselPanels")
-        m.carouselPanelsFadeIn = m.top.findNode("carouselPanelsFadeIn")
-        ' Each row's panel stays on the card last focused in it, by row
-        m.carouselPicks = {}
-        m.focusedCarouselPanel = invalid
-        m.homeRows.observeField("translation", "layOutCarouselPanels")
-        m.homeRows.observeField("visible", "layOutCarouselPanels")
-        m.homeRows.observeField("rowHeights", "layOutCarouselPanels")
-    end if
 
     ' Set up before the media bar below, since laying that out can hide the card and stop a preview
     previewInit()
@@ -91,8 +74,6 @@ sub init()
     m.backdropMask = m.top.findNode("backdropMask")
     m.backdropTint = m.top.findNode("backdropTint")
     m.seasonalEffects = m.top.findNode("seasonalEffects")
-    ' Settings opens over this screen without hiding it
-    if isValid(m.global.sceneManager) then m.global.sceneManager.observeFieldScoped("settingsOpen", "onSettingsOpen")
 
     ' Observe backdrop load status to know when new backdrop is ready
     m.backdrop.observeField("loadStatus", "onBackdropLoadStatusChange")
@@ -361,7 +342,6 @@ end sub
 ' Check if Featured Media should be shown when content loads
 sub onHomeRowsContentLoaded()
     if not isValid(m.mediaBar) or not isValid(m.homeRows) then return
-    applyWatchParties()
 
     ' Check if Media Bar is enabled via toggle (no longer checking homesection0)
     mediaBarCheck = m.homeRows.callFunc("isFeaturedMediaEnabled")
@@ -522,10 +502,6 @@ sub onHomeRowsKeyPressed(event as object)
         if m.modernHomeRows
             hideModernFocusCard()
         end if
-        if m.carouselHomeRows
-            m.carouselPanelsFadeIn.control = "stop"
-            m.carouselPanels.opacity = 0
-        end if
     end if
 end sub
 
@@ -538,9 +514,8 @@ sub onHomeRowsMoveTarget(event as object)
     if not isValid(target) or target.count() < 2 then return
 
     row = m.homeRows.content.getChild(target[0])
-    if not isValid(row) or row.modernCards <> true then return
+    if not isValid(row) or not useModernCardsForRow(row.id) then return
     applyModernReflow(target[0], target[1])
-    pickCarouselItem(row, target[1])
 
     item = row.getChild(target[1])
     if not isValid(item) or not m.modernFocusCard.cardShown then return
@@ -633,30 +608,12 @@ end sub
 
 sub refresh()
     m.homeRows.focusBitmapBlendColor = chainLookupReturn(m.global.session, "user.settings.colorCursor", ColorPalette.WHITE)
-    layOutModernFocusCard()
     m.homeRows.callFunc("updateHomeRows")
 end sub
 
 ' For a change that decides which rows exist at all, rather than what is in them
 sub reload()
-    m.homeRows.focusBitmapBlendColor = chainLookupReturn(m.global.session, "user.settings.colorCursor", ColorPalette.WHITE)
-    ' Row Type only changes at the next launch, so the info area switch is applied to the rows Home has
-    if not m.modernHomeRows and m.homeRowInfoOverlay <> get_user_setting_bool("ui.home.rowInfoOverlay", true)
-        m.homeRowInfoOverlay = not m.homeRowInfoOverlay
-        if isValid(m.mediaBar) and not m.mediaBar.visible then applyMediaBarLayout(false)
-    end if
-    layOutModernFocusCard()
     m.homeRows.callFunc("reloadHomeRows")
-end sub
-
-' Core's 16:9 card at the poster height, with the cells after it moving aside by the difference
-sub layOutModernFocusCard()
-    if not m.modernHomeRows then return
-    sizeName = homeCards.CardSizeName()
-    card = homeCards.CardBox(sizeName, 16 / 9, true)
-    m.modernCardBox = card
-    poster = homeCards.CardBox(sizeName, 2 / 3)
-    m.modernFocusCard.callFunc("applyLayout", { width: card[0], height: card[1], maskUri: "pkg:/images/posterWideMask.webp", shift: card[0] - poster[0], infoTop: card[1] + 14 })
 end sub
 
 sub loadLibraries()
@@ -671,9 +628,6 @@ const AYA_ROWS_TOP = 884
 
 ' The banner card runs from 130 to 554, and the rows follow it
 const BANNER_ROWS_TOP = 574
-
-' A Carousel row's panel starts under its 56 tall title, its cards and a 24 gap
-const CAROUSEL_PANEL_TOP = 80
 
 ' With Peek Home Rows on, the rows sit low enough that only the first row's label and the
 ' top half of its cards show under the bar. The bar lays itself out above this line.
@@ -801,10 +755,10 @@ sub applyMediaBarLayout(mediaBarVisible as boolean)
         ' Media bar off, or focus on homeRows
         m.mediaBar.visible = false
         m.homeRows.visible = true
-        ' Without the info area on top, as in Modern, the rows sit higher
-        m.homeRows.translation = m.homeRowInfoOverlay ? [111, 450] : [111, 170]
+        ' Modern has no top overlay, so the rows sit higher
+        m.homeRows.translation = m.modernHomeRows ? [111, 170] : [111, 450]
 
-        if isValid(m.detailsSection) then m.detailsSection.visible = m.homeRowInfoOverlay
+        if isValid(m.detailsSection) then m.detailsSection.visible = not m.modernHomeRows
         if isValid(m.backdropTint) then m.backdropTint.opacity = 1.0
         if isValid(m.backdrop) then m.backdrop.opacity = 0.3
         m.backdropTargetOpacity = 0.3
@@ -854,10 +808,7 @@ end sub
 
 ' JFScreen hook called when the screen is displayed by the screen manager
 sub OnScreenShown(_isReturning = false as boolean)
-    ' The Watch Parties row polls the room list only while Home shows
-    m.global.watchParty.observeFieldScoped("rooms", "applyWatchParties")
-    m.global.watchParty.callFunc("watchRooms", true)
-    applyWatchParties()
+    m.homeRows.callFunc("setHomeVisible", true)
     m.homeRows.rowLabelColor = chainLookupReturn(m.global.session, "user.settings.colorHomeRowHeaders", ColorPalette.WHITE)
 
     scene = m.top.getScene()
@@ -979,16 +930,12 @@ sub OnScreenShown(_isReturning = false as boolean)
         m.mediaBar.observeField("itemSelected", "onMediaBarItemSelected")
     end if
 
-    ' Settings closed over another screen after a row setting changed. A first run builds the rows anyway.
-    needsRowReload = chainLookupReturn(m.global, "homeNeedsReload", false)
-    if needsRowReload then m.global.homeNeedsReload = false
-
     if not m.isFirstRun
         needsPlaybackRefresh = chainLookupReturn(m.global, "homeNeedsRefresh", false)
 
-        if needsRowReload
-            reload()
-        else if not _isReturning or needsPlaybackRefresh
+        if _isReturning
+            m.homeRows.callFunc("refreshProgressRows")
+        else
             refresh()
         end if
 
@@ -1012,28 +959,13 @@ sub OnScreenShown(_isReturning = false as boolean)
     m.seasonalEffects.callFunc("play")
 end sub
 
-' Settings covers the whole screen and draws its own effect while one is being picked, so this one
-' stops under it and starts again once Settings closes over this screen
-sub onSettingsOpen()
-    onPreviewSettingsOpen()
-    manager = m.global.sceneManager
-    if manager.settingsOpen = true
-        m.seasonalEffects.callFunc("halt")
-        return
-    end if
-    active = manager.callFunc("getActiveScene")
-    if isValid(active) and active.isSameNode(m.top) then m.seasonalEffects.callFunc("play")
-end sub
-
 ' JFScreen hook called when the screen is hidden by the screen manager
 sub OnScreenHidden()
+    m.homeRows.callFunc("setHomeVisible", false)
     ' Don't try to save focus here - SceneManager already did it before calling this
     ' The SceneManager.pushScene() saves currentGroup.lastFocus before removing focus
     ' If we try to check hasFocus() here, it will always be false because
     ' pushScene() calls currentGroup.setFocus(false) before calling OnScreenHidden()
-
-    m.global.watchParty.unobserveFieldScoped("rooms")
-    m.global.watchParty.callFunc("watchRooms", false)
 
     scene = m.top.getScene()
     activeNav = getActiveNav(scene)
@@ -1046,12 +978,6 @@ sub OnScreenHidden()
     stopPreview()
     if isValid(m.mediaBar) then m.mediaBar.callFunc("setTrailerCovered", true)
     m.seasonalEffects.callFunc("halt")
-end sub
-
-sub applyWatchParties()
-    rooms = m.global.watchParty.rooms
-    if type(rooms) <> "roArray" then rooms = []
-    m.homeRows.callFunc("showWatchParties", rooms)
 end sub
 
 ' The rows are read again for anything the card menu changed, since it can move a card between
@@ -1138,6 +1064,14 @@ function onKeyEvent(key as string, press as boolean) as boolean
     end if
 
     if isStringEqual(key, KeyCode.LEFT)
+        ' Only the row's left edge should hand navigation to the sidebar.
+        if m.homeRows.isInFocusChain()
+            focused = m.homeRows.rowItemFocused
+            if isValid(focused) and focused.count() >= 2 and focused[1] > 0
+                m.homeRows.jumpToRowItem = [focused[0], focused[1] - 1]
+                return true
+            end if
+        end if
         scene = m.top.getScene()
         sidebar = scene.findNode("sidebar")
         if isValid(sidebar) and sidebar.visible
@@ -1233,7 +1167,6 @@ end function
 
 sub onItemFocusChanged()
     m.seasonalEffects.callFunc("hold")
-    m.homeRows.callFunc("showWatchPartiesFromStart")
     if not isValid(m.homeRows.content) then return
 
     ' The focus position is gone while the rows are being rebuilt, and the row it
@@ -1247,15 +1180,14 @@ sub onItemFocusChanged()
 
     focusedItem = focusedRow.getChild(focused[1])
     if not isValid(focusedItem) then return
-
-    ' A Recently Added row nearing its end asks for more
-    m.homeRows.callFunc("loadMoreNearRowEnd")
+    focusSignature = focusedItem.id + "|" + FormatJson(focusedItem.json)
+    sameDetails = m.homeFocusSignature = focusSignature and m.currentFocusedItemId = focusedItem.id
+    m.homeFocusSignature = focusSignature
 
     if m.modernHomeRows
         ' focusBitmapUri is set on the whole row list, so it has to follow the focus
-        if focusedRow.modernCards = true
+        if useModernCardsForRow(focusedRow.id)
             if m.homeRows.focusBitmapUri <> "" then m.homeRows.focusBitmapUri = ""
-            m.modernFocusCard.showInfo = focusedRow.carousel <> true
             applyModernReflow(focused[0], focused[1])
             showModernFocusCard(focusedItem)
             previewOnFocus(focusedItem)
@@ -1264,12 +1196,8 @@ sub onItemFocusChanged()
             hideModernFocusCard()
         end if
     end if
-    m.focusedCarousel = focusedRow.carousel = true
-    if m.carouselHomeRows
-        pickCarouselItem(focusedRow, focused[1])
-        if m.carouselPanels.opacity < 1 and m.carouselPanelsFadeIn.state <> "running" then m.carouselPanelsFadeIn.control = "start"
-    end if
 
+    if sameDetails then return
     showItemTitle(focusedItem.json, focusedItem.title ?? "")
 
     resetFocusedItemDetails()
@@ -1328,7 +1256,7 @@ end sub
 function showCardOwnDetails(focusedItem as object) as boolean
     json = focusedItem.json
     if not isValid(json) then return false
-    if not isValid(json.CalendarDate) and not isValid(json.SeerrTmdbId) and not isStringEqual(json.Type, "CalendarSeeAll") and not isStringEqual(json.Type, "WatchPartyRoom") and not isStringEqual(json.Type, "WatchPartyStart") then return false
+    if not isValid(json.CalendarDate) and not isValid(json.SeerrTmdbId) then return false
 
     showItemInfo(json, json)
     applyFocusedItemDetails(json, json)
@@ -1388,7 +1316,6 @@ sub onItemDetailsLoaded()
 
     ' A film or episode's preview reads its sources from here rather than asking again
     m.previewDetails = json
-    if m.focusedCarousel and isValid(m.focusedCarouselPanel) then m.focusedCarouselPanel.callFunc("setDetails", json)
 
     resetFocusedItemDetails()
 
@@ -1442,20 +1369,10 @@ sub showModernFocusCard(focusedItem as object)
     browseType = LCase(chainLookupReturn(focusedItem, "json.SeerrBrowseType", ""))
     isLogoTile = itemDataType = "seerrbrowse" and (browseType = "studio" or browseType = "network")
 
-    uris = []
-    ' The calendar rows' See All card has no art, so its glyph sits on the logo tiles' dark ground
-    if itemDataType = "calendarseeall"
-        isLogoTile = true
-        uris.push("pkg:/images/icons/calendar.webp")
-    end if
-    for each uri in homeLandscapeUris(focusedItem)
-        uris.push(homeCards.SizedImageUrl(uri, m.modernCardBox[0], m.modernCardBox[1]))
-    end for
-    m.modernFocusCard.callFunc("showCard", { item: focusedItem, uris: uris, logoTile: isLogoTile })
+    m.modernFocusCard.callFunc("showCard", { item: focusedItem, uris: homeLandscapeUris(focusedItem), logoTile: isLogoTile })
 end sub
 
-' The card's wide images best first, then its poster, as Core falls back. It shows the first, and
-' moves down the list when one fails.
+' The card's wide images best first. It shows the first, and moves down the list when one fails.
 function homeLandscapeUris(node as object) as object
     uris = []
     if not isValid(node) then return uris
@@ -1463,65 +1380,12 @@ function homeLandscapeUris(node as object) as object
         uri = node.LookupCI(field)
         if isValidAndNotEmpty(uri) then uris.push(uri)
     end for
-    ' Books and other cards that draw their own primary image carry no poster field
-    if isValidAndNotEmpty(node.LookupCI("posterURL")) then return uris
-    json = node.json
-    primaryTag = chainLookupReturn(json, "ImageTags.Primary", "")
-    if isValidAndNotEmpty(primaryTag)
-        uris.push(getImageURL(node.id, "Primary", { "Tag": primaryTag, "maxHeight": 270, "maxWidth": 464 }, { serverUrl: chainLookupReturn(json, "_serverUrl", invalid) }))
-    end if
     return uris
 end function
 
 sub hideModernFocusCard()
     stopPreview()
     if isValid(m.modernFocusCard) then m.modernFocusCard.callFunc("hideCard")
-end sub
-
-' The panel under a Carousel row shows the card last focused in it
-sub pickCarouselItem(row as object, col as integer)
-    if not m.carouselHomeRows then return
-    if row.carousel = true then m.carouselPicks[`${row.id}|${row.title}`] = col
-    layOutCarouselPanels()
-end sub
-
-' Puts a panel under each Carousel row on screen. The row list holds its focused row at the top,
-' with the rows after it at their heights apart.
-sub layOutCarouselPanels()
-    m.carouselPanels.translation = m.homeRows.translation
-    m.carouselPanels.visible = m.homeRows.visible
-    m.focusedCarouselPanel = invalid
-    used = 0
-    content = m.homeRows.content
-    heights = m.homeRows.rowHeights
-    focused = m.homeRows.rowItemFocused
-    first = 0
-    if isValid(focused) and focused.count() > 0 and focused[0] > 0 then first = focused[0]
-    if isValid(content) and isValid(heights)
-        y = 0
-        reach = 1080 - m.homeRows.translation[1]
-        for i = first to content.getChildCount() - 1
-            if y >= reach or i >= heights.count() then exit for
-            row = content.getChild(i)
-            count = row.getChildCount()
-            panelTop = y + CAROUSEL_PANEL_TOP + row.cursorSize[1]
-            if row.carousel = true and count > 0 and panelTop < reach
-                if used >= m.carouselPanels.getChildCount() then m.carouselPanels.createChild("CarouselPanel")
-                panel = m.carouselPanels.getChild(used)
-                used++
-                pick = m.carouselPicks[`${row.id}|${row.title}`] ?? 0
-                if pick >= count then pick = count - 1
-                panel.translation = [0, panelTop]
-                panel.visible = true
-                panel.item = row.getChild(pick)
-                if i = first then m.focusedCarouselPanel = panel
-            end if
-            y += heights[i] + m.homeRows.itemSpacing[1]
-        end for
-    end if
-    for i = used to m.carouselPanels.getChildCount() - 1
-        m.carouselPanels.getChild(i).visible = false
-    end for
 end sub
 
 ' Slides the items after the focused one aside so the focused landscape card has room
@@ -1534,9 +1398,6 @@ end sub
 ' status when present, mirroring what the classic top overlay shows.
 function buildModernMeta(json as object, item as object) as string
     parts = []
-
-    ' A calendar card leads with when it releases
-    if isValid(json.CalendarDate) and isValidAndNotEmpty(json.Subtitle) then parts.push(json.Subtitle)
 
     if isValid(json.ProductionYear) and json.ProductionYear > 0
         parts.push(stri(json.ProductionYear).trim())
@@ -1588,7 +1449,7 @@ end function
 
 ' The title band shows the logo, an episode's being its series', or the name until one loads
 sub showItemTitle(json as dynamic, fallback as string)
-    if not m.homeRowInfoOverlay then return
+    if m.modernHomeRows then return
     if not isValid(json) then json = {}
 
     title = fallback
@@ -1633,14 +1494,10 @@ end sub
 ' The info row, the ratings the item already carries, and the plugin's ratings once they arrive
 sub showItemInfo(json as object, item as object)
     isEpisode = isStringEqual(json.Type, "Episode")
-    if m.homeRowInfoOverlay
+    if not m.modernHomeRows
         buildInfoRow(json, item)
         m.serverRatings = ratingsRow.ServerEntries(json, "home")
         showHomeRatings([])
-    else if not m.modernHomeRows or m.focusedCarousel = true
-        ' Classic rows without the info area have nowhere to show ratings, and a Carousel panel
-        ' fetches its own
-        return
     end if
 
     if isEpisode

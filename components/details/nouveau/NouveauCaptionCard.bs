@@ -20,7 +20,6 @@ sub init()
     m.cardTitle.font.size = 17
     m.cardSubtitle.font.size = 15
     m.placeholderLabel.font.size = 15
-    m.artImage.observeField("loadStatus", "onArtLoadStatus")
 
     themeApply.ApplyToItem(m.top)
 end sub
@@ -31,14 +30,6 @@ sub onCardSizeChanged()
 
     width = size[0]
     artHeight = size[1]
-    scale = m.top.textScale
-    ' Left alone at 1, so a theme font keeps the size it was given
-    if scale <> 1
-        m.cardTitle.font.size = Int(17 * scale)
-        m.cardSubtitle.font.size = Int(15 * scale)
-    end if
-    titleHeight = Int(NOUVEAU_TITLE_HEIGHT * scale)
-    subtitleHeight = Int(NOUVEAU_SUBTITLE_HEIGHT * scale)
 
     ' Artwork taller than it is wide is a poster, anything else a still, and each
     ' shape is cut with the mask drawn for it
@@ -56,18 +47,16 @@ sub onCardSizeChanged()
     m.placeholderIcon.translation = [(width - m.placeholderIcon.width) / 2, (artHeight - m.placeholderIcon.height) / 2]
     m.placeholderLabel.width = width
     m.placeholderLabel.height = artHeight
-    ' A Seerr title's status sits inside the mask, so a banner keeps the corners
-    m.seerrStatusMark = drawSeerrStatus(m.seerrStatusMark, m.artMask, chainLookupReturn(m.top.cardData, "seerrStatus", -1), width)
 
     captionY = artHeight + NOUVEAU_CAPTION_GAP
     m.cardTitle.translation = [0, captionY]
     m.cardTitle.width = width
-    m.cardTitle.height = titleHeight
-    m.cardSubtitle.translation = [0, captionY + titleHeight]
+    m.cardTitle.height = NOUVEAU_TITLE_HEIGHT
+    m.cardSubtitle.translation = [0, captionY + NOUVEAU_TITLE_HEIGHT]
     m.cardSubtitle.width = width
-    m.cardSubtitle.height = subtitleHeight
+    m.cardSubtitle.height = NOUVEAU_SUBTITLE_HEIGHT
 
-    height = captionY + titleHeight + subtitleHeight
+    height = captionY + NOUVEAU_TITLE_HEIGHT + NOUVEAU_SUBTITLE_HEIGHT
     m.cardBorder.width = width
     m.cardBorder.height = height
     m.cardFocus.width = width
@@ -83,7 +72,8 @@ sub onCardDataChanged()
     m.artImage.uri = hasImage ? data.imageUrl : ""
 
     m.placeholderLabel.text = isValidAndNotEmpty(data.placeholder) ? UCase(data.placeholder) : ""
-    showPlaceholder(not hasImage or m.artImage.loadStatus = "failed")
+    m.placeholderLabel.visible = not hasImage and m.placeholderLabel.text <> ""
+    m.placeholderIcon.visible = not hasImage and not m.placeholderLabel.visible
 
     m.cardTitle.text = isValid(data.title) ? data.title : ""
     m.cardSubtitle.text = isValid(data.subtitle) ? data.subtitle : ""
@@ -92,22 +82,6 @@ sub onCardDataChanged()
     onCardSizeChanged()
 end sub
 
-' A picture that fails to load leaves the card to its name, the same as one with no picture. The
-' name follows the picture's own status, so a card given the same failing picture again keeps it.
-sub onArtLoadStatus()
-    if m.artImage.loadStatus = "failed"
-        showPlaceholder(true)
-    else if m.artImage.loadStatus = "ready"
-        showPlaceholder(false)
-    end if
-end sub
-
-sub showPlaceholder(show as boolean)
-    m.placeholderLabel.visible = show and m.placeholderLabel.text <> ""
-    m.placeholderIcon.visible = show and not m.placeholderLabel.visible
-end sub
-
 sub onFocusChanged()
-    m.cardFocus.blendColor = coreFocusColor()
     m.cardFocus.visible = m.top.focused
 end sub

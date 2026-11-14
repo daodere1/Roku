@@ -5,7 +5,6 @@ import "pkg:/source/enums/TaskControl.bs"
 import "pkg:/source/enums/TimerControl.bs"
 import "pkg:/source/enums/VideoControl.bs"
 import "pkg:/source/utils/remoteSubtitles.bs"
-import "pkg:/source/utils/trackMemory.bs"
 
 const STILL_WATCHING_POPUP_TIMER_SECONDS = 60
 
@@ -44,7 +43,7 @@ sub JumpIntoAudioPlayerView()
 end sub
 
 ' Play Video
-sub CreateVideoPlayerView()
+sub CreateVideoPlayerView(embeddedHost = invalid as dynamic)
     m.playbackData = {}
     m.selectedSubtitle = {}
 
@@ -64,7 +63,6 @@ sub CreateVideoPlayerView()
 
     ' If the user has set a preferred audio track index, use it
     preferredAudioTrackIndex = m.global.queueManager.callFunc("getPreferredAudioTrackIndex")
-    if preferredAudioTrackIndex < 0 then preferredAudioTrackIndex = 0
 
     selectedAudioIndex = preferredAudioTrackIndex
     if isValid(currentItem.selectedAudioStreamIndex) and currentItem.selectedAudioStreamIndex >= 0
@@ -74,9 +72,8 @@ sub CreateVideoPlayerView()
     m.global.queueManager.callFunc("setSelectedAudioStreamIndex", selectedAudioIndex)
 
     m.view = CreateObject("roSGNode", "VideoPlayerView")
+    if isValid(embeddedHost) then m.view.speshManaged = true
     m.view.observeField("state", "onStateChange")
-    ' The finish the air date card held back runs once it lets go
-    m.view.observeField("holdAtEnd", "onStateChange")
     m.view.observeField("selectPlaybackInfoPressed", "onSelectPlaybackInfoPressed")
     m.view.observeField("selectSubtitlePressed", "onSelectSubtitlePressed")
     m.view.observeField("selectAudioPressed", "onSelectAudioPressed")
@@ -87,7 +84,11 @@ sub CreateVideoPlayerView()
     m.getPlaybackInfoTask = createObject("roSGNode", "GetPlaybackInfoTask")
     m.getPlaybackInfoTask.observeField("data", "onPlaybackInfoLoaded")
 
-    m.global.sceneManager.callFunc("pushScene", m.view)
+    if isValid(embeddedHost)
+        embeddedHost.appendChild(m.view)
+    else
+        m.global.sceneManager.callFunc("pushScene", m.view)
+    end if
 end sub
 
 ' -----------------
@@ -142,61 +143,7 @@ sub onSelectAudioPressed()
     m.audioSelector.observeField("visible", "onAudioSelectorVisibleChanged")
 end sub
 
-' With a second track on offer the picker first asks which track to pick, then shows that list
-' in its place
 sub onSelectSubtitlePressed()
-    m.subtitleSelector = m.view.findNode("subtitleSelector")
-    if m.view.callFunc("offersSecondarySubtitles")
-        m.subtitleSelector.mode = "slot"
-        m.subtitleSelector.slotDetails = {
-            primary: subtitleSlotLabel(m.view.selectedSubtitle),
-            secondary: subtitleSlotLabel(m.view.secondarySubtitleIndex)
-        }
-    else
-        fillPrimarySubtitles()
-    end if
-
-    m.subtitleSelector.visible = true
-    m.subtitleSelector.setFocus(true)
-    m.subtitleSelector.observeField("slotChosen", "onSubtitleSlotChosen")
-    m.subtitleSelector.observeField("subtitleStream", "onSubtitleSelectorStreamChanged")
-    m.subtitleSelector.observeField("visible", "onSubtitleSelectorVisibleChanged")
-    m.subtitleSelector.observeField("downloadRequested", "onSubtitleDownloadRequested")
-    m.subtitleSelector.observeField("offsetRequested", "onSubtitleOffsetRequested")
-    m.subtitleSelector.observeField("appearanceRequested", "onSubtitleAppearanceRequested")
-end sub
-
-function subtitleSlotLabel(index as integer) as string
-    if index < 0 then return tr("None")
-    for each item in m.view.fullSubtitleData ?? []
-        if item.Index = index
-            name = chainLookupReturn(item, "Track.description", "")
-            if name = "" then name = chainLookupReturn(item, "Track.Language", "")
-            if name = "" then name = tr("Subtitle")
-            return name
-        end if
-    end for
-    return tr("None")
-end function
-
-sub onSubtitleSlotChosen()
-    if m.subtitleSelector.slotChosen = "secondary" then fillSecondarySubtitles() else fillPrimarySubtitles()
-end sub
-
-' None, then every track the second one can be, in the order the player gives them
-sub fillSecondarySubtitles()
-    current = m.view.secondarySubtitleIndex
-    tracks = [{ "Title": "None", "StreamIndex": SubtitleSelection.NONE, "Selected": current < 0, "json": { "Index": SubtitleSelection.NONE, "Track": { "description": "None", "TrackName": "" } } }]
-    for each json in m.view.callFunc("secondarySubtitleCandidates")
-        tracks.push({ "Title": chainLookupReturn(json, "Track.description", ""), "StreamIndex": json.Index, "Selected": json.Index = current, "json": json })
-    end for
-    m.subtitleSelector.mode = "secondary"
-    m.subtitleSelector.showOffset = true
-    m.subtitleSelector.offset = m.view.secondarySubtitleDelay
-    m.subtitleSelector.subtitleTracks = tracks
-end sub
-
-sub fillPrimarySubtitles()
     subtitleTracks = []
 
     subtitleTracks.push({
@@ -236,7 +183,18 @@ sub fillPrimarySubtitles()
                 "Title": item.Track.description,
                 "StreamIndex": item.index,
                 "Selected": isSelected,
-                "json": trackLabels.SubtitleJson(item)
+                "json": {
+                    "Index": item.index,
+                    "IsExternal": item.LookupCI("IsExternal"),
+                    "IsEncoded": item.LookupCI("IsEncoded"),
+                    "Language": chainLookupReturn(item, "Track.Language", ""),
+                    "IsForced": item.LookupCI("IsForced"),
+                    "IsHearingImpaired": item.LookupCI("IsHearingImpaired"),
+                    "Codec": item.LookupCI("Codec"),
+                    "DeliveryMethod": item.LookupCI("DeliveryMethod"),
+                    "IsEmbeddedNative": item.LookupCI("IsEmbeddedNative"),
+                    "Track": item.Track
+                }
             }
 
             subtitleTracks.push(subtitleTrack)
@@ -250,33 +208,32 @@ sub fillPrimarySubtitles()
     end for
     subtitleTracks[0].Selected = not anySelected
 
-    m.subtitleSelector.mode = "primary"
+    m.subtitleSelector = m.view.findNode("subtitleSelector")
     ' The offset moves subtitles the player draws itself, and does nothing for ones Roku draws
     m.subtitleSelector.showOffset = m.view.suppressCaptions = true
     m.subtitleSelector.offset = m.global.queueManager.callFunc("getSubtitleOffset")
     m.subtitleSelector.subtitleTracks = subtitleTracks
+    m.subtitleSelector.visible = true
+    m.subtitleSelector.setFocus(true)
+    m.subtitleSelector.observeField("subtitleStream", "onSubtitleSelectorStreamChanged")
+    m.subtitleSelector.observeField("visible", "onSubtitleSelectorVisibleChanged")
+    m.subtitleSelector.observeField("downloadRequested", "onSubtitleDownloadRequested")
+    m.subtitleSelector.observeField("offsetRequested", "onSubtitleOffsetRequested")
+    m.subtitleSelector.observeField("appearanceRequested", "onSubtitleAppearanceRequested")
 end sub
 
 sub onSubtitleOffsetRequested()
     if not m.subtitleSelector.offsetRequested then return
 
     m.subtitleSelector.offsetRequested = false
-    if m.subtitleSelector.mode = "secondary"
-        m.view.findNode("osd").action = "showsecondarysyncmenu"
-    else
-        m.view.findNode("osd").action = "showsyncmenu"
-    end if
+    m.view.findNode("osd").action = "showsyncmenu"
 end sub
 
 sub onSubtitleAppearanceRequested()
     if not m.subtitleSelector.appearanceRequested then return
 
     m.subtitleSelector.appearanceRequested = false
-    if m.subtitleSelector.mode = "secondary"
-        m.view.findNode("osd").action = "showsecondaryappearance"
-    else
-        m.view.findNode("osd").action = "showsubtitleappearance"
-    end if
+    m.view.findNode("osd").action = "showsubtitleappearance"
 end sub
 
 sub onAudioSelectorIndexChanged()
@@ -293,14 +250,12 @@ sub onAudioSelectorIndexChanged()
     m.global.queueManager.callFunc("setPreferredAudioTrackName", selectedRokuTrackName)
     m.global.queueManager.callFunc("setPreferredAudioTrackIndex", selectedIndex)
     m.view.audioIndex = selectedIndex
-    trackMemory.Remember(m.view.videoId, m.view.showID, "audio", selectedIndex, m.view.fullAudioData)
 end sub
 
-' The controls come back on the button that opened the picker
 sub onAudioSelectorVisibleChanged()
     if not m.audioSelector.visible
         m.audioSelector.unobserveField("audioStreamIndex")
-        m.view.callFunc("showControlsOn", "showAudioMenu")
+        m.view.setFocus(true)
     end if
 end sub
 
@@ -310,11 +265,6 @@ sub onSubtitleSelectorStreamChanged()
 
     originalData = selectedNode.json
     if not isValid(originalData) then return
-
-    if m.subtitleSelector.mode = "secondary"
-        m.view.callFunc("selectSecondarySubtitle", originalData.Index)
-        return
-    end if
 
     m.selectedSubtitle = originalData
 
@@ -340,16 +290,6 @@ sub onSubtitleSelectorStreamChanged()
         end if
 
         m.global.queueManager.callFunc("setPreferredSubtitleTrack", m.selectedSubtitle)
-        trackMemory.Remember(m.view.videoId, m.view.showID, "subtitle", SubtitleSelection.NONE, m.view.fullSubtitleData)
-        return
-    end if
-
-    ' A track the stream doesnt hold comes with a reload from here; captions off tells the player to reload
-    if m.selectedSubtitle.NeedsReload = true
-        m.view.globalCaptionMode = "Off"
-        m.global.queueManager.callFunc("setPreferredSubtitleTrack", m.selectedSubtitle)
-        m.view.selectedSubtitle = m.selectedSubtitle.Index
-        trackMemory.Remember(m.view.videoId, m.view.showID, "subtitle", m.selectedSubtitle.Index, m.view.fullSubtitleData)
         return
     end if
 
@@ -368,8 +308,6 @@ sub onSubtitleSelectorStreamChanged()
 
     m.global.queueManager.callFunc("setPreferredSubtitleTrack", m.selectedSubtitle)
     m.view.selectedSubtitle = m.selectedSubtitle.Index
-    trackMemory.Remember(m.view.videoId, m.view.showID, "subtitle", m.selectedSubtitle.Index, m.view.fullSubtitleData)
-    m.view.callFunc("releaseSecondaryIfPrimary", m.selectedSubtitle.Index)
 end sub
 
 sub onSubtitleDownloadRequested()
@@ -398,7 +336,7 @@ sub onSubtitleDownloadRequested()
     dialog.existingIndexes = known
     dialog.mediaSourceId = m.view.mediaSourceId
     dialog.visible = true
-    dialog.setFocus(true)
+    dialog.callFunc("focusResults")
     dialog.callFunc("startSearch")
 end sub
 
@@ -440,7 +378,6 @@ end sub
 sub onSubtitleSelectorVisibleChanged()
     if m.subtitleSelector.visible then return
 
-    m.subtitleSelector.unobserveField("slotChosen")
     m.subtitleSelector.unobserveField("subtitleStream")
     m.subtitleSelector.unobserveField("downloadRequested")
     m.subtitleSelector.unobserveField("offsetRequested")
@@ -450,7 +387,7 @@ sub onSubtitleSelectorVisibleChanged()
     for each id in ["subtitleOffsetOverlay", "subtitleAppearance", "subtitleDownloadDialog"]
         if m.view.findNode(id).visible then return
     end for
-    m.view.callFunc("showControlsOn", "showSubtitleMenu")
+    m.view.setFocus(true)
 end sub
 
 ' User requested playback info
@@ -506,6 +443,9 @@ end sub
 
 ' Playback state change event handlers
 sub onStateChange()
+    if isValid(m.view) and m.view.isSubtype("VideoPlayerView")
+        if m.view.speshManaged then return
+    end if
     ' If the state changed due to an error, we don't want to continue the queue
     if m.view.errorCode <> 0
         m.global.queueManager.callFunc("clear")
@@ -517,9 +457,6 @@ sub onStateChange()
             if m.view.returnOnStop then return
         end if
 
-        ' The card saying when the next episode airs keeps the player up until it closes
-        if m.view.hasField("holdAtEnd") and m.view.holdAtEnd then return
-
         ' A live channel has no end, so one that reaches it is the player's live recovery to bring back
         if isValid(m.view.isLiveChannel) and m.view.isLiveChannel then return
 
@@ -528,20 +465,21 @@ sub onStateChange()
             m.global.sceneManager.callFunc("dismissDialog")
         end if
 
-        ' In a SyncPlay group the server advances the queue for everyone, so ask
-        ' it for the next item instead of advancing locally
-        syncPlayManager = m.global.syncPlayManager
-        if isValid(syncPlayManager) and syncPlayManager.callFunc("shouldIntercept", m.view)
-            syncPlayManager.callFunc("requestNext")
-            return
+        ' Check if user chose not to continue to next episode
+        currentView = m.global.sceneManager.callFunc("getActiveScene")
+        if isChainValid(currentView, "disableNextEpisodeAutoPlay")
+            if currentView.disableNextEpisodeAutoPlay
+                m.global.queueManager.callFunc("bypassNextPreferredAudioTrackIndexReset")
+                m.global.queueManager.callFunc("clear")
+
+                ' Playback completed, return user to previous screen
+                m.global.sceneManager.callFunc("popScene")
+                m.global.audioPlayer.loopMode = ""
+            end if
         end if
 
-        ' With Autoplay Next Episode off, the season the player queued around one episode stops here,
-        ' though a list the viewer chose still plays through
-        stopAtEnd = not isAutoplayNextEpisodeEnabled() and m.global.queueManager.callFunc("isSeasonWindow")
-
         ' If there is something next in the queue, play it
-        if not stopAtEnd and m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1
+        if m.global.queueManager.callFunc("getPosition") < m.global.queueManager.callFunc("getCount") - 1
             stillwatchingPopupInactivityTime = chainLookupReturn(m.global.session, "user.settings.stillwatchingPopupInactivityTime", "0")
             if stillwatchingPopupInactivityTime <> "0"
                 stillwatchingPopupInactivityTime = stillwatchingPopupInactivityTime.ToInt()

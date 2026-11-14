@@ -7,7 +7,6 @@ namespace youtubeTrailer
 
     const PLAYER_URL = "https://www.youtube.com/youtubei/v1/player"
     const SPONSOR_URL = "https://sponsor.ajay.app/api/skipSegments"
-    const SEARCH_URL = "https://www.youtube.com/youtubei/v1/search?prettyPrint=false"
     ' What counts as good enough to stop looking for a sharper stream
     const HIGH_QUALITY_FLOOR = 720
 
@@ -83,6 +82,21 @@ namespace youtubeTrailer
         return ""
     end function
 
+    function CandidateIds(trailers as dynamic) as object
+        ids = []
+        seen = {}
+        if type(trailers) <> "roArray" then return ids
+        for each trailer in trailers
+            id = youtubeTrailer.ExtractIdFromUrl(toString(chainLookupReturn(trailer, "Url", "")))
+            if id <> "" and not seen.DoesExist(id)
+                ids.push(id)
+                seen[id] = true
+                if ids.count() >= 3 then exit for
+            end if
+        end for
+        return ids
+    end function
+
     ' Each YouTube trailer once, in the server's order, as the trailer picker shows it
     function RemoteChoices(trailers as dynamic) as object
         picked = []
@@ -117,46 +131,6 @@ namespace youtubeTrailer
         author = toString(chainLookupReturn(response, "videoDetails.author", ""))
         if seconds <= 0 and author = "" then return invalid
         return { seconds: seconds, author: author }
-    end function
-
-    ' What a title's trailer is searched for by, or "" for an item with no name
-    function SearchQuery(item as dynamic) as string
-        name = toString(chainLookupReturn(item, "Name", ""))
-        if name = "" then return ""
-        words = [name]
-        year = toString(chainLookupReturn(item, "ProductionYear", "")).Trim()
-        if year <> "" and year <> "0" then words.push(year)
-        words.push("trailer")
-        return words.Join(" ")
-    end function
-
-    ' Asked as the web client, whose top hit is usually the studio's own upload, for videos only,
-    ' leaving out channels and playlists
-    function SearchRequestBody(query as string) as string
-        return FormatJson({
-            "context": { "client": { "clientName": "WEB", "clientVersion": "2.20260101.00.00", "hl": "en", "gl": "US" } },
-            "query": query,
-            "params": "EgIQAQ%3D%3D"
-        })
-    end function
-
-    ' The first video in a search answer, in the order YouTube ranked them
-    function FirstSearchVideoId(node as dynamic) as string
-        kind = type(node)
-        if kind = "roAssociativeArray"
-            renderer = node.LookupCI("videoRenderer")
-            if type(renderer) = "roAssociativeArray" and isString(renderer.LookupCI("videoId")) then return renderer.LookupCI("videoId")
-            for each key in node
-                found = youtubeTrailer.FirstSearchVideoId(node[key])
-                if found <> "" then return found
-            end for
-        else if kind = "roArray"
-            for each child in node
-                found = youtubeTrailer.FirstSearchVideoId(child)
-                if found <> "" then return found
-            end for
-        end if
-        return ""
     end function
 
     function ExtractIdFromUrl(url as string) as string
@@ -232,7 +206,7 @@ namespace youtubeTrailer
                 points = youtubeTrailer.Score(stream, preferHighQuality)
                 if points > bestScore
                     bestScore = points
-                    best = { url: stream.LookupCI("url"), quality: youtubeTrailer.Quality(stream) }
+                    best = { url: stream.LookupCI("url"), quality: youtubeTrailer.Quality(stream), contentLength: youtubeTrailer.ContentSize(stream) }
                 end if
             end if
         end for
@@ -240,26 +214,39 @@ namespace youtubeTrailer
     end function
 
     ' A manifest carries every variant, so nothing else beats it on quality
-    function PlayerStream(response as dynamic, preferHighQuality as boolean) as dynamic
+    function ContentSize(stream as object) as integer
+        raw = toString(stream.LookupCI("contentLength") ?? "")
+        if raw = ""
+            match = CreateObject("roRegex", "[?&]clen=([0-9]+)(?:&|$)", "").Match(toString(stream.LookupCI("url") ?? ""))
+            if match.count() > 1 then raw = match[1]
+        end if
+        if Len(raw) > 9 or not CreateObject("roRegex", "^[0-9]+$", "").IsMatch(raw) then return 0
+        return raw.ToInt()
+    end function
+
+    function PlayerStream(response as dynamic, preferHighQuality as boolean, preferMuxed = false as boolean) as dynamic
         if type(response) <> "roAssociativeArray" then return invalid
         status = chainLookupReturn(response, "playabilityStatus.status", "")
         if status <> "" and status <> "OK" then return invalid
 
         streaming = response.LookupCI("streamingData")
         if type(streaming) <> "roAssociativeArray" then return invalid
-        if isValidAndNotEmpty(streaming.LookupCI("hlsManifestUrl")) then return { url: streaming.LookupCI("hlsManifestUrl"), quality: youtubeTrailer.HIGH_QUALITY_FLOOR, format: "hls" }
-        if isValidAndNotEmpty(streaming.LookupCI("dashManifestUrl")) then return { url: streaming.LookupCI("dashManifestUrl"), quality: youtubeTrailer.HIGH_QUALITY_FLOOR, format: "dash" }
 
         muxed = []
         formats = streaming.LookupCI("formats")
         if type(formats) = "roArray"
             for each stream in formats
-                if type(stream) = "roAssociativeArray" and isValidAndNotEmpty(stream.LookupCI("url")) and youtubeTrailer.HasAudio(stream) then muxed.push(stream)
+                if type(stream) = "roAssociativeArray" and isValidAndNotEmpty(stream.LookupCI("url")) and youtubeTrailer.HasAudio(stream)
+                    if Instr(1, LCase(toString(stream.LookupCI("mimeType") ?? "")), "video/mp4") > 0 then muxed.push(stream)
+                end if
             end for
         end if
 
         best = youtubeTrailer.PickBest(muxed, preferHighQuality)
         if isValid(best) then best.format = "mp4"
+        if preferMuxed then return best
+        if isValidAndNotEmpty(streaming.LookupCI("hlsManifestUrl")) then return { url: streaming.LookupCI("hlsManifestUrl"), quality: youtubeTrailer.HIGH_QUALITY_FLOOR, format: "hls" }
+        if isValidAndNotEmpty(streaming.LookupCI("dashManifestUrl")) then return { url: streaming.LookupCI("dashManifestUrl"), quality: youtubeTrailer.HIGH_QUALITY_FLOOR, format: "dash" }
         return best
     end function
 
@@ -376,27 +363,17 @@ namespace youtubeTrailer
         return seconds
     end function
 
-    ' SponsorBlock gets a short hash prefix that many videos share, never the video ID itself
     function SponsorRequestUrl(videoId as string) as string
-        bytes = CreateObject("roByteArray")
-        bytes.FromAsciiString(videoId)
-        digest = CreateObject("roEVPDigest")
-        digest.Setup("sha256")
         categories = `["sponsor","selfpromo","intro","outro","interaction","music_offtopic"]`
-        return youtubeTrailer.SPONSOR_URL + "/" + LCase(Left(digest.Process(bytes), 4)) + "?categories=" + categories.EncodeUriComponent()
+        return youtubeTrailer.SPONSOR_URL + "?videoID=" + videoId + "&categories=" + categories.EncodeUriComponent()
     end function
 
-    function SponsorSegments(response as dynamic, videoId as string) as object
+    function SponsorSegments(response as dynamic) as object
         segments = []
         if type(response) <> "roArray" then return segments
-        for each video in response
-            spans = chainLookupReturn(video, "segments", invalid)
-            if toString(chainLookupReturn(video, "videoID", "")) = videoId and type(spans) = "roArray"
-                for each entry in spans
-                    span = chainLookupReturn(entry, "segment", invalid)
-                    if type(span) = "roArray" and span.count() = 2 then segments.push({ start: span[0], finish: span[1] })
-                end for
-            end if
+        for each entry in response
+            span = chainLookupReturn(entry, "segment", invalid)
+            if type(span) = "roArray" and span.count() = 2 then segments.push({ start: span[0], finish: span[1] })
         end for
         return segments
     end function

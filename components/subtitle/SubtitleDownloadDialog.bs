@@ -24,6 +24,10 @@ sub init()
 end sub
 
 sub onVisibleChanged()
+    focusResults()
+end sub
+
+sub focusResults()
     if m.top.visible then m.resultsMenu.setFocus(true)
 end sub
 
@@ -35,6 +39,7 @@ sub startSearch()
 end sub
 
 sub onTaskResult(event as object)
+    if not m.top.visible or not event.getRoSGNode().isSameNode(m.task) then return
     result = event.getData()
     if not isValid(result) then return
 
@@ -112,6 +117,7 @@ sub render(status as string)
     trackDialog.Layout(m.parts, content.getChildCount(), rowHeight)
     m.resultsMenu.content = content
     m.resultsMenu.jumpToItem = 0
+    focusResults()
 end sub
 
 function startTask(fields as object) as object

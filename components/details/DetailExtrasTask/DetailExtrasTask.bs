@@ -1,5 +1,5 @@
 import "pkg:/source/api/baserequest.bs"
-import "pkg:/source/api/trailerSearch.bs"
+import "pkg:/source/utils/parentalControls.bs"
 
 sub init()
     m.top.functionName = "loadExtras"
@@ -10,13 +10,27 @@ sub loadExtras()
         target = m.top.target
         item = m.top.item
         server = m.top.server
+        if LCase(item.Type ?? "") = "series"
+            seasons = getJsonWithin(APIRequestForServer(server.serverUrl, server.userId, server.authToken, "Shows/" + item.Id + "/Seasons", { UserId: server.userId, EnableTotalRecordCount: false }), 8000)
+            if isChainValid(seasons, "Items")
+                rows = CreateObject("roSGNode", "ContentNode")
+                for each season in parentalControls.WithoutBlockedItems(seasons.Items, item.OfficialRating ?? "")
+                    node = rows.createChild("TVSeasonData")
+                    node.json = season
+                    node.posterURL = buildURLForServer(server.serverUrl, "Items/" + season.Id + "/Images/Primary", { maxHeight: 320, maxWidth: 180 })
+                end for
+                if chainLookupReturn(target, "itemContent.json.Id", "") = item.Id then target.seasonData = rows
+            end if
+            nextUp = getJsonWithin(APIRequestForServer(server.serverUrl, server.userId, server.authToken, "Shows/NextUp", { UserId: server.userId, SeriesId: item.Id, EnableResumable: true, Limit: 1, EnableTotalRecordCount: false }), 2500)
+            if chainLookupReturn(target, "itemContent.json.Id", "") = item.Id then target.displayResumeButton = isChainValid(nextUp, "Items") and isValidAndNotEmpty(nextUp.Items)
+        end if
         trailerPath = "Items/" + item.Id + "/LocalTrailers"
         if isEmbyServer(server.serverUrl) then trailerPath = "Users/" + server.userId + "/" + trailerPath
         req = APIRequestForServer(server.serverUrl, server.userId, server.authToken, trailerPath)
         trailers = optionalJson(req)
         if type(trailers) = "roAssociativeArray" then trailers = trailers.Items
         currentItem = chainLookupReturn(target, "itemContent.json.Id", "")
-        if currentItem = item.Id then target.trailerAvailable = isValidAndNotEmpty(item.RemoteTrailers) or isValidAndNotEmpty(trailers) or trailerSearch.Offers(item)
+        if currentItem = item.Id then target.trailerAvailable = isValidAndNotEmpty(item.RemoteTrailers) or isValidAndNotEmpty(trailers)
         if m.top.includeParts and currentItem = item.Id
             req = APIRequestForServer(server.serverUrl, server.userId, server.authToken, "Videos/" + item.Id + "/AdditionalParts", { UserId: server.userId })
             parts = optionalJson(req)

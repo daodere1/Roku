@@ -13,7 +13,6 @@
 '   2. Route playback requests to the correct server
 '   3. Show server-specific images using the correct base URL
 
-import "pkg:/source/utils/libraryScope.bs"
 import "pkg:/source/utils/mediaDedup.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/multiserver.bs"
@@ -32,12 +31,7 @@ sub executeMultiServerRequests()
     requestBody = m.top.requestBody
     timeoutMs = m.top.timeoutSeconds * 1000
 
-    ' Each server orders only its own share, so a list joined from several needs the sort redone.
-    ' The other routes ignore SortBy and answer in an order of their own, which the rows keep.
-    sortsJoinedList = sessions.count() > 1 and LCase(endpoint) = "/items"
-
     params = withProviderIds(params)
-    if sortsJoinedList then params = withSortFields(params)
 
     allResults = []
     allErrors = []
@@ -91,30 +85,13 @@ sub executeMultiServerRequests()
         request.AddHeader("Content-Type", "application/json")
         request.AddHeader("Accept", "application/json")
 
-        ' A Plex server only answers through its bridge, which answers right away
-        if plexUrls.Owns(url)
-            bodyJson = ""
-            if requestType = "POST" then bodyJson = FormatJson(requestBody)
-            answer = requestResponse(request, requestType, bodyJson, timeoutMs)
-            if plexAnswered(answer)
-                keepResults(answer.data, userSession, endpoint, allResults)
-            else
-                allErrors.push({
-                    error: `HTTP ${answer.status}`,
-                    serverId: userSession.serverId,
-                    serverName: userSession.serverName
-                })
-            end if
-            continue for
-        end if
-
         ' Start async request
         requestStarted = false
         if requestType = "POST"
             bodyJson = FormatJson(requestBody)
             requestStarted = request.AsyncPostFromString(bodyJson)
         else
-            requestStarted = siloStartGet(request)
+            requestStarted = request.AsyncGetToString()
         end if
 
         if requestStarted
@@ -134,7 +111,7 @@ sub executeMultiServerRequests()
     ' Wait for all responses
     pendingCount = pendingRequests.Count()
     while pendingCount > 0
-        msg = siloWait(timeoutMs, port)
+        msg = wait(timeoutMs, port)
 
         if msg = invalid
             ' Timeout - cancel remaining requests and report errors
@@ -151,7 +128,7 @@ sub executeMultiServerRequests()
         end if
 
         ' Process the response
-        if isUrlEvent(msg)
+        if type(msg) = "roUrlEvent"
             identity = msg.GetSourceIdentity().ToStr()
 
             if pendingRequests.DoesExist(identity)
@@ -164,7 +141,16 @@ sub executeMultiServerRequests()
                     ' Success - parse and augment results
                     responseStr = msg.GetString()
                     if isValidAndNotEmpty(responseStr)
-                        keepResults(ParseJson(responseStr), reqInfo.userSession, endpoint, allResults)
+                        parsedData = ParseJson(responseStr)
+                        if isValid(parsedData)
+                            ' Handle both array responses and object responses with Items array
+                            itemsArray = getItemsFromResponse(parsedData)
+                            if LCase(endpoint) = "/userviews" then itemsArray = withoutHiddenViews(itemsArray, embyHiddenViews(reqInfo.userSession))
+                            augmentedItems = augmentItemsWithServerInfo(itemsArray, reqInfo.userSession)
+                            for each item in augmentedItems
+                                allResults.push(item)
+                            end for
+                        end if
                     end if
                 else
                     ' Error response
@@ -179,23 +165,10 @@ sub executeMultiServerRequests()
         end if
     end while
 
-    results = deduplicateMediaItems(allResults)
-    if sortsJoinedList then results = libraryScope.Sorted(results, params)
-
     ' Set outputs
-    m.top.results = parentalControls.WithoutBlockedItems(results)
+    m.top.results = parentalControls.WithoutBlockedItems(deduplicateMediaItems(allResults))
     m.top.errors = allErrors
     m.top.isComplete = true
-end sub
-
-' Handles both array responses and object responses with an Items array
-sub keepResults(parsedData as dynamic, userSession as object, endpoint as string, allResults as object)
-    if not isValid(parsedData) then return
-    itemsArray = getItemsFromResponse(parsedData)
-    if LCase(endpoint) = "/userviews" then itemsArray = withoutHiddenViews(itemsArray, embyHiddenViews(userSession))
-    for each item in augmentItemsWithServerInfo(itemsArray, userSession)
-        allResults.push(item)
-    end for
 end sub
 
 ' The libraries an Emby user hid from My Media. A user that cant be read hides nothing
@@ -300,36 +273,14 @@ end sub
 ' withProviderIds: Adds ProviderIds to a request's field list
 ' Deduplication matches on provider ids and the server leaves them out unless asked
 function withProviderIds(params as object) as object
-    return withField(params, "ProviderIds")
-end function
-
-' withSortFields: Adds the values the joined list is sorted by to a request's field list
-' Each server leaves some of these out unless asked, Emby more than Jellyfin, and an item without
-' one would sort as the lowest
-function withSortFields(params as object) as object
-    sortBy = (params.LookupCI("SortBy") ?? "").split(",")
-    if sortBy.count() = 0 or not isValid(libraryScope.SortSource(sortBy[0])) then return params
-
-    for each field in sortBy
-        source = libraryScope.SortSource(field)
-        ' The played date comes with the user data, which isn't in the field list
-        if isValid(source) and Instr(1, source.field, ".") = 0 then params = withField(params, source.field)
-    end for
-    ' An undated item sorts by its year, and every tie falls back to the sort name
-    if inArray(sortBy, "PremiereDate") then params = withField(params, "ProductionYear")
-
-    return withField(params, "SortName")
-end function
-
-function withField(params as object, field as string) as object
     fields = params.LookupCI("Fields")
     if not isValidAndNotEmpty(fields)
-        params.Fields = field
+        params.Fields = "ProviderIds"
         return params
     end if
 
-    if Instr(1, LCase(fields), LCase(field)) = 0
-        params.Fields = fields + "," + field
+    if Instr(1, LCase(fields), "providerids") = 0
+        params.Fields = fields + ",ProviderIds"
     end if
 
     return params

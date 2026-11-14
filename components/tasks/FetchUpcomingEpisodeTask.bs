@@ -12,7 +12,5 @@ sub resolveUpcomingText()
         return
     end if
 
-    info = upcomingEpisode.lookup(itemData)
-    m.top.info = info ?? {}
-    m.top.text = upcomingEpisode.FormatUpcomingEpisode(info)
+    m.top.text = upcomingEpisode.ResolveUpcomingEpisodeText(itemData)
 end sub

@@ -73,17 +73,8 @@ sub executePluginProxyRequest(config as object, request as object)
 
     urlTransfer = CreateObject("roUrlTransfer")
     urlTransfer.SetUrl(url)
-    if silo.Owns(urlTransfer)
-        answer = siloResponse(urlTransfer, request.method ?? "GET", RequestBodyString(request))
-        m.top.response = { success: answer.ok, data: answer.data, statusCode: answer.status, rawResponse: answer.text }
-        if not answer.ok then m.top.response = { success: false, error: "Request failed", statusCode: answer.status }
-        return
-    end if
     urlTransfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
     urlTransfer.InitClientCertificates()
-    ' Moonbase's own endpoints say why they refused, such as a download already gone from the arr's
-    ' queue, and a device drops an error's body unless asked to keep it
-    if usePluginRoot then urlTransfer.RetainBodyOnError(true)
 
     ' Jellyfin auth - plugin handles Seerr auth server-side
     authToken = ""
@@ -93,7 +84,7 @@ sub executePluginProxyRequest(config as object, request as object)
     addServerAuthorization(urlTransfer, buildAuthHeaderForServer({ serverUrl: serverUrl, userId: "", authToken: authToken }), serverUrl)
     urlTransfer.AddHeader("Content-Type", "application/json")
     urlTransfer.AddHeader("Accept", "application/json")
-    urlTransfer.AddHeader("User-Agent", "Moonfin/1.0")
+    urlTransfer.AddHeader("User-Agent", "SpeshTV/1.0")
 
     port = CreateObject("roMessagePort")
     urlTransfer.SetMessagePort(port)
@@ -145,28 +136,7 @@ sub executePluginProxyRequest(config as object, request as object)
                 rawResponse: rawResponse
             }
         else
-            errorMessage = "Plugin request failed"
-            if rawResponse <> invalid and rawResponse <> ""
-                parsed = ParseJson(rawResponse)
-                if parsed <> invalid and type(parsed) = "roAssociativeArray"
-                    if not usePluginRoot and isValidStringValue(parsed.FileContents)
-                        decoded = DecodeBase64String(parsed.FileContents)
-                        decodedJson = ParseJson(decoded)
-                        if decodedJson <> invalid and type(decodedJson) = "roAssociativeArray"
-                            if decodedJson.message <> invalid
-                                errorMessage = decodedJson.message
-                            else if decodedJson.error <> invalid
-                                errorMessage = decodedJson.error
-                            end if
-                        end if
-                    else if parsed.message <> invalid
-                        errorMessage = parsed.message
-                    else if parsed.error <> invalid
-                        errorMessage = parsed.error
-                    end if
-                end if
-            end if
-
+            errorMessage = PluginRequestError(rawResponse)
             m.top.response = {
                 success: false,
                 error: errorMessage,
@@ -175,6 +145,7 @@ sub executePluginProxyRequest(config as object, request as object)
             }
         end if
     else
+        urlTransfer.AsyncCancel()
         diagnostics.EndTrace(started, "timed out", diagnostics.LEVEL_ERROR)
         m.top.response = {
             success: false,
@@ -183,6 +154,33 @@ sub executePluginProxyRequest(config as object, request as object)
         }
     end if
 end sub
+
+function PluginRequestError(rawResponse as string) as string
+    parsed = ParseJson(rawResponse)
+    if type(parsed) <> "roAssociativeArray" then return "Plugin request failed"
+    if isValidStringValue(parsed.FileContents)
+        parsed = ParseJson(DecodeBase64String(parsed.FileContents))
+        if type(parsed) <> "roAssociativeArray" then return "Plugin request failed"
+    end if
+    if type(parsed.errors) = "roAssociativeArray"
+        details = []
+        for each field in parsed.errors
+            reasons = parsed.errors[field]
+            if isValidStringValue(reasons)
+                details.push(field + ": " + reasons)
+            else if type(reasons) = "roArray"
+                for each reason in reasons
+                    if isValidStringValue(reason) then details.push(field + ": " + reason)
+                end for
+            end if
+        end for
+        if details.Count() > 0 then return details.Join("; ")
+    end if
+    for each key in ["message", "error", "title"]
+        if isValidStringValue(parsed[key]) then return parsed[key]
+    end for
+    return "Plugin request failed"
+end function
 
 ' A caller that cares about the key case sends the JSON ready made
 function RequestBodyString(request as object) as string

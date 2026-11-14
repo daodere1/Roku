@@ -21,6 +21,7 @@
          sort or date: { type, title, options: [{ label, selected }] }
          Any of them can carry width, surfaceColor, titleGap and dangerColor -->
     <field id="model" type="assocarray" onChange="build" />
+    <field id="waitForOkRelease" type="boolean" value="false" />
     <!-- { id } for a button, { option } for a list row -->
     <field id="action" type="assocarray" alwaysNotify="true" />
     <field id="dismissed" type="boolean" alwaysNotify="true" />

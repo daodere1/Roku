@@ -46,8 +46,6 @@ function normalizeDetailMetadata(data as object) as object
     userData = { IsFavorite: false, Played: false, PlaybackPositionTicks: 0& }
     if type(data.UserData) = "roAssociativeArray" then userData.Append(data.UserData)
     normalized.UserData = userData
-    ' A Plex person comes with no backdrops at all, where Jellyfin sends an empty list
-    if type(data.BackdropImageTags) <> "roArray" then normalized.BackdropImageTags = []
     return normalized
 end function
 
@@ -56,8 +54,7 @@ sub selectPlaybackSource(item as object, sourceId as dynamic)
     if not isValidAndNotEmpty(sourceId) then return
     targetServer = ""
     if type(item.json) = "roAssociativeArray" then targetServer = item.json._serverUrl ?? ""
-    ' On Emby and Plex a version's id isn't an item of its own, so the item keeps its id
-    if isEmbyServer(targetServer) or isPlexServer(targetServer)
+    if isEmbyServer(targetServer)
         data = item.json
         data._selectedMediaSourceId = sourceId
         item.json = data

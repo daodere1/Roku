@@ -37,21 +37,6 @@ EXTRA_GLYPHS = [
     'expand_more', 'expand_less',
     # The music category screens' buttons
     'sort_by_alpha', 'play_arrow', 'album', 'queue_music',
-    # The Seerr request, issue and requests screens
-    'toggle_on', 'toggle_off', 'radio_button_checked', 'radio_button_unchecked', 'check_circle',
-    'check_circle_outline', 'cancel_outlined', 'arrow_drop_down', 'autorenew', 'data_usage', 'block',
-    'highlight_off', 'close',
-    # The server, account and sign in screens
-    'arrow_back', 'error', 'language', 'person',
-    # The calendar screens' buttons, messages and art fallbacks
-    'calendar_month_rounded', 'chevron_left_rounded', 'chevron_right_rounded', 'today_rounded',
-    'refresh_rounded', 'event_busy_rounded', 'event_available_rounded', 'add_rounded', 'tv_rounded',
-    'info_outline_rounded', 'movie_outlined',
-    # The player's controls, which pick a glyph by state or by the skip lengths
-    'skip_previous_rounded', 'skip_next_rounded', 'pause_rounded',
-    'replay_5_rounded', 'replay_10_rounded', 'replay_30_rounded', 'fast_rewind_rounded',
-    'forward_5_rounded', 'forward_10_rounded', 'forward_30_rounded', 'fast_forward_rounded',
-    'favorite', 'favorite_border', 'fiber_manual_record', 'fiber_smart_record',
 ]
 
 
@@ -300,9 +285,6 @@ def write_images():
     bubble = round(12 * dp)
     write_fill(os.path.join(IMAGES_OUT, 'bubble20.9.png'), bubble)
     write_stroke(os.path.join(IMAGES_OUT, 'bubble20s.9.png'), bubble, dp)
-    # A checklist dialog's buttons: Save is 8 units round and the text buttons focus as a 40 unit pill, as in Core
-    write_fill(os.path.join(IMAGES_OUT, 'round13.9.png'), round(8 * dp))
-    write_fill(os.path.join(IMAGES_OUT, 'pill33.9.png'), round(20 * dp))
     write_fill(os.path.join(IMAGES_OUT, 'pill26.9.png'), 26)
     write_stroke(os.path.join(IMAGES_OUT, 'pill26s3.9.png'), 26, 2 * dp)
     write_fill(os.path.join(IMAGES_OUT, 'round3.9.png'), 3)

@@ -1,8 +1,8 @@
 {
     "schemaVersion": 1,
     "id": "moonfin",
-    "displayName": "Moonfin",
-    "description": "The default Moonfin look with cyan accents.",
+    "displayName": "SpeshTV Classic",
+    "description": "The classic SpeshTV look with cyan accents.",
     "colors": {
         "background": "#FF101010",
         "onBackground": "#FFFFFFFF",

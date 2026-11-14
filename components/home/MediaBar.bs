@@ -6,7 +6,6 @@ import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/fontApply.bs"
 import "pkg:/source/utils/galleryGlow.bs"
 import "pkg:/source/utils/misc.bs"
-import "pkg:/source/utils/recentRows.bs"
 import "pkg:/source/utils/themeApply.bs"
 import "pkg:/source/utils/themeChrome.bs"
 
@@ -62,8 +61,6 @@ const MEDIA_BAR_TOP = 223
 ' With Peek Home Rows on, Home puts the first row this far down the screen, and the
 ' styles lay themselves out above it instead of against the foot of the screen
 const ROW_PEEK_LINE = 890
-
-const NEW_RELEASE_GAP = 13
 
 ' The moonfin hero, sized the way the other clients size theirs. A docked
 ' sidebar pushes the logo and the info box clear of it, and with the navbar on
@@ -128,7 +125,6 @@ sub init()
     m.logoImage = m.top.findNode("logoImage")
     m.logoShadow = m.top.findNode("logoShadow")
     m.titleText = m.top.findNode("titleText")
-    m.featuredRelease = m.top.findNode("featuredRelease")
     m.overviewLabel = m.top.findNode("overviewLabel")
     m.leftArrow = m.top.findNode("leftArrow")
     m.rightArrow = m.top.findNode("rightArrow")
@@ -156,7 +152,6 @@ sub init()
     m.ayaBackdropNext = m.top.findNode("ayaBackdropNext")
     m.ayaLogo = m.top.findNode("ayaLogo")
     m.ayaTitle = m.top.findNode("ayaTitle")
-    m.ayaRelease = m.top.findNode("ayaRelease")
     m.ayaIndicators = m.top.findNode("ayaIndicators")
     m.ayaFocusRing = m.top.findNode("ayaFocusRing")
     m.ayaMask = m.top.findNode("ayaMask")
@@ -164,7 +159,6 @@ sub init()
 
     m.makdGroup = m.top.findNode("makdGroup")
     m.makdLogo = m.top.findNode("makdLogo")
-    m.makdRelease = m.top.findNode("makdRelease")
     m.makdText = m.top.findNode("makdText")
     m.makdTitle = m.top.findNode("makdTitle")
     m.makdMeta = m.top.findNode("makdMeta")
@@ -187,7 +181,6 @@ sub init()
     m.bannerContent = m.top.findNode("bannerContent")
     m.bannerLogo = m.top.findNode("bannerLogo")
     m.bannerTitle = m.top.findNode("bannerTitle")
-    m.bannerRelease = m.top.findNode("bannerRelease")
     m.bannerMeta = m.top.findNode("bannerMeta")
     m.bannerRatings = m.top.findNode("bannerRatings")
     m.bannerDots = m.top.findNode("bannerDots")
@@ -303,7 +296,6 @@ sub applyCurrentStyle()
     m.ayaGroup.visible = false
     m.makdGroup.visible = false
     m.bannerGroup.visible = false
-    m.featuredRelease.release = {}
     if mode = "off" or mode = ""
         m.galleryGroup.visible = false
         m.bookshelfGroup.visible = false
@@ -594,54 +586,58 @@ end sub
 ' Fetch and prepare media items
 sub loadMediaBarItems()
     ' A reload can start while the last one is out, and only the newest may fill the bar
-    if isValid(m.mediaBarTask) then m.mediaBarTask.unobserveFieldScoped("mediaBarData")
+    if isValid(m.mediaBarTask)
+        m.mediaBarTask.unobserveFieldScoped("mediaBarData")
+        m.mediaBarTask.control = "stop"
+    end if
     m.newSetTask = invalid
+    m.mediaBarPublished = false
     m.mediaBarTask = createObject("roSGNode", "MediaBarTask")
     m.mediaBarTask.userId = m.global.session.user.id
     m.mediaBarTask.contentType = m.global.session.user.settings["ui.home.mediaBarContentType"] ?? "both"
-    m.mediaBarTask.sourceType = m.global.session.user.settings["ui.home.mediaBarSourceType"] ?? "random"
+    m.mediaBarTask.sourceType = m.global.session.user.settings["ui.home.mediaBarSourceType"] ?? "library"
     m.mediaBarTask.selectedLibraryIds = m.global.session.user.settings["ui.home.mediaBarLibraryIds"] ?? "[]"
     m.mediaBarTask.featuredCount = m.global.session.user.settings["ui.home.featuredMediaItems"] ?? 15
     m.mediaBarTask.selectedCollectionIds = m.global.session.user.settings["ui.home.mediaBarCollectionIds"] ?? "[]"
     m.mediaBarTask.excludedGenreIds = m.global.session.user.settings["ui.home.mediaBarExcludedGenres"] ?? "[]"
     m.mediaBarTask.externalListIds = m.global.session.user.settings["ui.home.mediaBarExternalLists"] ?? "[]"
-    m.mediaBarTask.newReleaseDays = newReleaseDays()
-    m.mediaBarTask.hideWatched = get_user_setting_bool(recentRows.HIDE_WATCHED_SETTING, false)
     m.mediaBarTask.observeFieldScoped("mediaBarData", "onMediaBarDataLoaded")
     m.mediaBarTask.control = "RUN"
 end sub
 
 ' Handle data loaded from task
 sub onMediaBarDataLoaded(event as object)
+    if not event.getRoSGNode().isSameNode(m.mediaBarTask) then return
     data = event.getData()
     if not isValid(data)
         return
     end if
 
-    ' Clean up task observer now that we have the data
-    if isValid(m.mediaBarTask)
-        m.mediaBarTask.unobserveFieldScoped("mediaBarData")
-    end if
-
     allItems = isChainValid(data, "items") ? data.items : []
     newSet = isValid(m.newSetTask)
-    m.newSetTask = invalid
+    if data.partial <> true then m.newSetTask = invalid
     if newSet and allItems.count() = 0 then return
 
+    previousId = ""
+    if m.mediaBarPublished = true and m.currentIndex >= 0 and m.currentIndex < m.mediaBarItems.count()
+        previousId = m.mediaBarItems[m.currentIndex].id
+    end if
     m.mediaBarItems = []
-    titles = []
     for each item in allItems
         processed = processItem(item)
         buildItemUrls(processed)
         m.mediaBarItems.push(processed)
-        titles.push({ title: processed.title, genres: processed.genres })
     end for
-    m.top.titles = titles
-    loadNewReleases()
 
     m.top.isEmpty = m.mediaBarItems.count() = 0
     ' A reload starts the new titles from the first
     m.currentIndex = 0
+    if previousId <> ""
+        for index = 0 to m.mediaBarItems.count() - 1
+            if m.mediaBarItems[index].id = previousId then m.currentIndex = index
+        end for
+    end if
+    m.mediaBarPublished = true
     updateArrowVisibility()
 
     ' Initialize display if we have items
@@ -666,71 +662,8 @@ sub onMediaBarDataLoaded(event as object)
                 startAutoAdvanceTimer()
             end if
             ' Display first item (single backdrop update)
-            displayMediaBarItem(0)
+            displayMediaBarItem(m.currentIndex)
         end if
-    end if
-end sub
-
-function newReleaseDays() as integer
-    return toString(m.global.session.user.settings["ui.home.mediaBarNewReleaseDays"] ?? "30").ToInt()
-end function
-
-' Asked for once the bar shows, so a slow server only holds back the labels
-sub loadNewReleases()
-    if isValid(m.newReleasesTask) then m.newReleasesTask.unobserveFieldScoped("releases")
-    m.newReleasesTask = invalid
-    if not get_user_setting_bool("ui.home.mediaBarNewReleaseBanner", true) then return
-
-    seriesIds = []
-    for each item in m.mediaBarItems
-        if isStringEqual(item.itemType ?? "", "Series") and not item.isExternal then seriesIds.push(item.id)
-    end for
-    if seriesIds.count() = 0 then return
-
-    m.newReleasesTask = createObject("roSGNode", "MediaBarNewReleasesTask")
-    m.newReleasesTask.userId = m.global.session.user.id
-    m.newReleasesTask.seriesIds = seriesIds
-    m.newReleasesTask.days = newReleaseDays()
-    m.newReleasesTask.observeFieldScoped("releases", "onNewReleasesLoaded")
-    m.newReleasesTask.control = "RUN"
-end sub
-
-sub onNewReleasesLoaded(event as object)
-    releases = event.getData()
-    if isValid(m.newReleasesTask) then m.newReleasesTask.unobserveFieldScoped("releases")
-    m.newReleasesTask = invalid
-    if not isValid(releases) or releases.count() = 0 then return
-
-    ' The gallery pages hold these same items, so they pick the labels up too
-    for each item in m.mediaBarItems
-        if releases.DoesExist(item.id) then item.newRelease = releases[item.id]
-    end for
-
-    if m.mediaBarMode = "gallery" and isValid(m.galleryPageContentNodes)
-        for pageIndex = 0 to m.galleryPageContentNodes.count() - 1
-            content = m.galleryPageContentNodes[pageIndex]
-            page = m.galleryPages[pageIndex]
-            for i = 0 to content.getChildCount() - 1
-                if isValid(page[i].newRelease) then content.getChild(i).newRelease = page[i].newRelease
-            end for
-        end for
-        return
-    end if
-
-    current = m.mediaBarItems[m.currentIndex]
-    if not isValid(current) then return
-    release = current.newRelease ?? {}
-    if m.mediaBarMode = "moonfin"
-        m.featuredRelease.release = release
-    else if m.mediaBarMode = "makd"
-        m.makdRelease.release = release
-        layoutMakdText(m.makdLogo.visible)
-    else if m.mediaBarMode = "banner"
-        m.bannerRelease.release = release
-        layoutBannerContent()
-    else if m.mediaBarMode = "aya"
-        m.ayaRelease.release = release
-        layoutAyaRelease()
     end if
 end sub
 
@@ -865,8 +798,7 @@ function createItemContentNode(item as object, extraFields = {} as object) as ob
         runtimeDisplay: item.runtimeDisplay,
         communityRatingDisplay: item.communityRatingDisplay,
         itemType: item.itemType,
-        trailerActive: false,
-        newRelease: item.newRelease ?? {}
+        trailerActive: false
     }
     for each key in extraFields
         fields[key] = extraFields[key]
@@ -1202,7 +1134,6 @@ sub layoutFeatured()
 
     m.titleText.width = FEATURED_LOGO_WIDTH
     m.titleText.translation = [logoLeft, logoTop - MEDIA_BAR_TOP]
-    m.featuredRelease.translation = [logoLeft, logoTop + FEATURED_LOGO_HEIGHT + NEW_RELEASE_GAP - MEDIA_BAR_TOP]
 
     edge = docked ? FEATURED_EDGE_DOCKED : FEATURED_EDGE
     if m.rowPeek and not docked then edge = FEATURED_EDGE_PEEK
@@ -1322,7 +1253,6 @@ sub showBannerItem(item as object)
 
     m.bannerMeta.text = bannerMetaText(item)
     m.bannerMeta.visible = m.bannerMeta.text <> ""
-    m.bannerRelease.release = item.newRelease ?? {}
 
     m.bannerCommunity = communityRatingEntry(item)
     renderBannerRatings([])
@@ -1413,11 +1343,6 @@ sub layoutBannerContent()
         yPos += m.bannerTitle.boundingRect().height + BANNER_BLOCK_GAP
     end if
 
-    if m.bannerRelease.visible
-        m.bannerRelease.translation = [0, yPos]
-        yPos += m.bannerRelease.labelHeight + BANNER_BLOCK_GAP
-    end if
-
     if m.bannerMeta.visible
         m.bannerMeta.translation = [0, yPos]
         yPos += m.bannerMeta.boundingRect().height + BANNER_BLOCK_GAP
@@ -1480,7 +1405,6 @@ sub showMakdItem(item as object)
     m.makdOverview.text = hideDesc ? "" : (item.overview ?? "")
     m.makdOverview.visible = m.makdOverview.text <> ""
 
-    m.makdRelease.release = item.newRelease ?? {}
     buildMakdMeta(item)
     showMakdRatings(item)
     layoutMakdText(hasLogo)
@@ -1570,7 +1494,7 @@ end sub
 ' the other clients lift theirs
 sub layoutMakdText(hasLogo as boolean)
     leftInset = isValid(dockedSidebar()) ? MAKD_TEXT_LEFT_DOCKED : MAKD_TEXT_LEFT
-    logoTop = Int(MAKD_LOGO_CENTER * m.barBottom - m.makdLogo.height / 2)
+    m.makdLogo.translation = [leftInset, Int(MAKD_LOGO_CENTER * m.barBottom - m.makdLogo.height / 2)]
 
     yPos = 0
 
@@ -1578,9 +1502,6 @@ sub layoutMakdText(hasLogo as boolean)
         m.makdTitle.translation = [0, yPos]
         yPos += m.makdTitle.boundingRect().height + MAKD_BLOCK_GAP
     end if
-
-    releaseTop = yPos
-    if not hasLogo and m.makdRelease.visible then yPos += m.makdRelease.labelHeight + MAKD_BLOCK_GAP
 
     m.makdMeta.translation = [0, yPos]
     if m.makdMeta.getChildCount() > 0
@@ -1599,18 +1520,6 @@ sub layoutMakdText(hasLogo as boolean)
     columnBottom = 1080 - MAKD_PAD_BOTTOM - lift
     if m.rowPeek then columnBottom = ROW_PEEK_LINE - MAKD_PEEK_PAD_BOTTOM
     m.makdText.translation = [leftInset, columnBottom - yPos]
-
-    ' The label goes under the logo, or under the title that stands in for it. A tall column
-    ' would run into it, so then the logo and label rise to clear it.
-    if hasLogo and m.makdRelease.visible
-        releaseBottom = logoTop + m.makdLogo.height + NEW_RELEASE_GAP + m.makdRelease.labelHeight
-        clash = releaseBottom + MAKD_BLOCK_GAP - (columnBottom - yPos)
-        if clash > 0 then logoTop -= clash
-        m.makdRelease.translation = [leftInset, logoTop + m.makdLogo.height + NEW_RELEASE_GAP]
-    else if not hasLogo
-        m.makdRelease.translation = [leftInset, columnBottom - yPos + releaseTop]
-    end if
-    m.makdLogo.translation = [leftInset, logoTop]
 end sub
 
 ' The dots sit in the far corner on a rounded ground, which is sized to however
@@ -1673,17 +1582,9 @@ sub showAyaItem(item as object)
         m.ayaTitle.visible = true
         m.ayaLogo.visible = false
     end if
-    m.ayaRelease.release = item.newRelease ?? {}
-    layoutAyaRelease()
 
     updateAyaIndicators()
     showAyaBackdrop(item.backdropUrl)
-end sub
-
-sub layoutAyaRelease()
-    above = m.ayaLogo.visible ? m.ayaLogo : m.ayaTitle
-    height = m.ayaLogo.visible ? m.ayaLogo.height : m.ayaTitle.boundingRect().height
-    m.ayaRelease.translation = [above.translation[0], above.translation[1] + height + NEW_RELEASE_GAP]
 end sub
 
 ' The incoming artwork fades in over the one already showing, then takes its
@@ -1811,7 +1712,6 @@ sub showMediaBarItem(index as integer)
         m.logoShadow.visible = false
     end if
 
-    m.featuredRelease.release = item.newRelease ?? {}
     buildFeaturedMeta(item)
 
     m.featuredCommunity = communityRatingEntry(item)
@@ -1989,12 +1889,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         ' Navigate down to home rows
         return false ' Let parent handle
     else if key = KeyCode.LEFT
-        sidebar = dockedSidebar()
-        if isValid(sidebar)
-            m.clearBackdrop = false
-            sidebar.setFocus(true)
-            return true
-        end if
         if m.mediaBarMode = "gallery"
             galleryAdvance(-1)
         else if m.mediaBarMode = "bookshelf"

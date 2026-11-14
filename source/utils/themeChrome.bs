@@ -11,22 +11,6 @@ namespace themeChrome
         return isValidAndNotEmpty(themeId) and themeId <> "moonfin"
     end function
 
-    ' The look of the detail screen's action buttons for a StandardButton outline pill: glass and a
-    ' hairline at rest, then the theme's focused button colours inside a ring in the focus colour
-    sub StyleDetailChip(chip as object)
-        if not isValid(chip) then return
-        chip.outline = true
-        chip.fillUri = "pkg:/images/details/btnfill.9.png"
-        chip.outlineUri = "pkg:/images/details/btnborder.9.png"
-        chip.focusOutlineUri = "pkg:/images/details/btnborderfocus4.9.png"
-        chip.background = themeChrome.WithAlpha(themeChrome.Token("buttonNormal", "#FFFFFF"), "0F")
-        chip.focusBackground = themeChrome.WithAlpha(themeChrome.Token("buttonFocused", "#FFFFFF"), "F2")
-        chip.color = themeChrome.Token("onButtonNormal", "#FFFFFFFF")
-        chip.focusColor = themeChrome.Token("onButtonFocused", "#000000FF")
-        chip.borderColor = "#FFFFFF59"
-        chip.focusBorderColor = coreFocusColor()
-    end sub
-
     function Accent() as string
         return formatSceneGraphColor(chainLookupReturn(m.global.session, "user.settings.colorCursor", ""), "0x00A4DCFF")
     end function
@@ -65,10 +49,6 @@ namespace themeChrome
         return formatSceneGraphColor(chainLookupReturn(m.global.session, "user.settings.colorHomeRowItemBackground", ""), "0x101010FF")
     end function
 
-    function Background() as string
-        return formatSceneGraphColor(chainLookupReturn(m.global.session, "user.settings.colorBackground", ""), "0x000000FF")
-    end function
-
     sub ApplyThemeChrome(root as dynamic, restore = false as boolean)
         if not isValid(root) then return
 
@@ -80,7 +60,7 @@ namespace themeChrome
             ctx.accent = themeChrome.Accent()
             ctx.onAccent = themeChrome.OnAccent()
             ctx.textRgb = themeChrome.RgbParts(themeChrome.OnBackground())
-            ctx.backgroundRgb = themeChrome.RgbParts(themeChrome.Background())
+            ctx.backgroundRgb = themeChrome.RgbParts(formatSceneGraphColor(chainLookupReturn(m.global.session, "user.settings.colorBackground", ""), "0x000000FF"))
         end if
         themeChrome.WalkAndApply(root, ctx, 0)
     end sub

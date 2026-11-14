@@ -3,9 +3,9 @@ import "pkg:/components/details/SpotlightSummaryCard.bs"
 import "pkg:/source/enums/KeyCode.bs"
 import "pkg:/source/enums/SubtitleSelection.bs"
 import "pkg:/source/enums/TaskControl.bs"
+import "pkg:/source/utils/loginStyle.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/seerrFacts.bs"
-import "pkg:/source/utils/themeChrome.bs"
 import "pkg:/source/utils/tmdbReviews.bs"
 
 ' An open card as a panel over the page, with every section it holds stacked down
@@ -21,15 +21,11 @@ const MODAL_FOLD_PAD = 12
 const MODAL_CHEVRON = 28
 const MODAL_CHIP_HEIGHT = 56
 const MODAL_CHIP_PAD = 32
-const MODAL_TITLE_WIDTH = 1480
-const MODAL_HEADER_ACTION_GAP = 24
 
 sub init()
     m.body = m.top.findNode("modalBody")
     m.scrollAnim = m.top.findNode("modalScrollAnim")
     m.scrollInterp = m.top.findNode("modalScrollInterp")
-    m.headerAction = m.top.findNode("modalHeaderAction")
-    m.headerAction.observeField("selected", "onHeaderActionSelected")
 
     m.sections = []
     m.focusedSection = -1
@@ -86,14 +82,12 @@ sub onCardChanged()
     end if
     if m.cardId <> cardId then m.expandedById = {}
     m.cardId = cardId
-    headerHeld = m.headerAction.hasFocus()
 
     title = m.top.findNode("modalHeaderTitle")
     if isValid(title)
         modalTitle = chainLookupReturn(card, "modalTitle", "")
         if not isValidAndNotEmpty(modalTitle) then modalTitle = chainLookupReturn(card, "title", "")
         title.text = modalTitle
-        title.width = MODAL_TITLE_WIDTH - showHeaderAction(chainLookupReturn(card, "headerAction", invalid))
     end if
 
     icon = m.top.findNode("modalHeaderIcon")
@@ -109,21 +103,6 @@ sub onCardChanged()
         focusSection(held.section)
         if m.sections[held.section].isGrid and held.item >= 0 then m.sections[held.section].node.jumpToItem = held.item
     end if
-    if headerHeld and m.headerAction.visible then m.headerAction.setFocus(true)
-end sub
-
-' Puts the card's header action at the far end of the header, and says how much room it took
-function showHeaderAction(action as dynamic) as float
-    m.headerAction.visible = isValid(action)
-    if not isValid(action) then return 0
-
-    m.headerAction.text = action.label
-    m.headerAction.translation = [MODAL_BODY_WIDTH - m.headerAction.pillWidth, -10]
-    return m.headerAction.pillWidth + MODAL_HEADER_ACTION_GAP
-end function
-
-sub onHeaderActionSelected()
-    m.top.headerActionChosen = true
 end sub
 
 function focusedItemIndex(entry as object) as integer
@@ -314,11 +293,13 @@ function addTagsChip(section as object, y as float) as float
     chip.text = tr("Genres and Tags")
     chip.height = MODAL_CHIP_HEIGHT
     chip.fontSize = 24
+    chip.outline = true
+    chip.outlineUri = "pkg:/images/playback/outline41.9.png"
     measure = CreateObject("roSGNode", "Label")
     measure.font = "font:SmallSystemFont"
     measure.text = chip.text
     chip.width = measure.boundingRect().width + MODAL_CHIP_PAD * 2
-    themeChrome.StyleDetailChip(chip)
+    loginStyle.ApplyButton(chip)
     chip.translation = [0, y]
     chip.observeField("buttonSelected", "onTagsChipSelected")
 
@@ -583,12 +564,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
 
-    ' The header action is reached from the top of the first section and leads back down to it
-    if m.headerAction.hasFocus()
-        if key = KeyCode.DOWN then focusSection(0)
-        return true
-    end if
-
     if m.focusedSection < 0 then return false
     entry = m.sections[m.focusedSection]
 
@@ -615,10 +590,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         if m.focusedSection > 0
             focusSection(m.focusedSection - 1)
             return true
-        end if
-        if m.headerAction.visible
-            m.headerAction.setFocus(true)
-            scrollBodyTo(0)
         end if
         return true
     else if key = KeyCode.DOWN

@@ -8,12 +8,10 @@ import "pkg:/source/enums/ItemType.bs"
 import "pkg:/source/utils/blockedContent.bs"
 import "pkg:/source/utils/deviceCapabilities.bs"
 import "pkg:/source/utils/detailSectionLayout.bs"
-import "pkg:/source/utils/episodeCast.bs"
 import "pkg:/source/utils/HomeRecommendations.bs"
 import "pkg:/source/utils/kidsMode.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/parentalControls.bs"
-import "pkg:/source/utils/posterLabels.bs"
 
 ' How many similar titles a details screen asks for
 const SIMILAR_LIMIT = 20
@@ -115,18 +113,13 @@ sub loadAllExtras()
         return
     end if
 
-    ' A collection's page is its titles, with nothing similar, no extras and no collection of its own.
-    ' The titles the library is missing are slotted in by release, and a blocked title still counts
-    ' as owned so it isn't offered as missing.
+    ' A collection's page is its titles, with nothing similar, no extras and no collection of its own
     itemKind = LCase(m.top.itemType)
     if itemKind = "boxset"
         membersNode = resultsNode.createChild("ContentNode")
         membersNode.title = "collectionItems"
         membersNode.addFields({ order: storedCollectionOrder(m.top.itemId) })
-        held = collectionTitles(m.top.itemId, "", "PrimaryImageAspectRatio,ProductionYear,PremiereDate,ProviderIds")
-        missing = []
-        if showsMissing() then missing = seerrMissingCollection.Find({ Id: m.top.itemId, ProviderIds: m.top.providerIds }, held)
-        for each item in seerrMissingCollection.SlotByRelease(parentalControls.WithoutBlockedItems(held), missing)
+        for each item in parentalControls.WithoutBlockedItems(collectionTitles(m.top.itemId, "", "PrimaryImageAspectRatio,ProductionYear,ProviderIds"))
             membersNode.appendChild(collectionCard(item))
         end for
         m.top.content = resultsNode
@@ -181,33 +174,27 @@ sub loadAllExtras()
 
         if not hidden.DoesExist("upNext")
             nextupData = parentalControls.WithoutBlockedItems(loadNextUp(), seriesRating)
-            if m.top.withLabels then posterLabels.Attach(nextupData)
             for each item in nextupData
                 nextupNode.appendChild(item)
             end for
-        end if
-
-        if m.top.seasonsOnly
-            m.top.content = resultsNode
-            return
         end if
     end if
 
     ' Load same-season episodes for episode detail views
     if isEpisodeMode and isValidAndNotEmpty(m.top.showID) and isValidAndNotEmpty(m.top.seasonID) and not hidden.DoesExist("moreEpisodes")
         episodeData = parentalControls.WithoutBlockedItems(loadSeasonEpisodes(), seriesRating)
-        if m.top.withLabels then posterLabels.Attach(episodeData)
         for each item in episodeData
             episodesNode.appendChild(item)
         end for
     end if
 
-    peopleData = loadPeople(not hidden.DoesExist("cast"), not hidden.DoesExist("crew"))
+    peopleData = []
+    if get_user_setting_bool("ui.itemdetail.sections.people", true) then peopleData = loadPeople(not hidden.DoesExist("cast"), not hidden.DoesExist("crew"))
     for each item in peopleData
         peopleNode.appendChild(item)
     end for
 
-    if not hidden.DoesExist("moreLikeThis")
+    if not hidden.DoesExist("moreLikeThis") and get_user_setting_bool("ui.itemdetail.sections.similar", true)
         similarData = parentalControls.WithoutBlockedItems(loadSimilar())
         for each item in similarData
             similarNode.appendChild(item)
@@ -215,20 +202,20 @@ sub loadAllExtras()
         similarNode.addFields({ similarSource: m.similarSource })
     end if
 
-    if not hidden.DoesExist("extras")
+    if not hidden.DoesExist("extras") and get_user_setting_bool("ui.itemdetail.sections.specials", true)
         specialsData = parentalControls.WithoutBlockedItems(loadSpecials())
         for each item in specialsData
             specialsNode.appendChild(item)
         end for
     end if
 
-    if m.top.includeCollections and (itemKind = "movie" or itemKind = "video" or itemKind = "series") and not hidden.DoesExist("collections") then loadParentCollection(resultsNode)
+    if m.top.includeCollections and (itemKind = "movie" or itemKind = "video") and not hidden.DoesExist("collections") then loadParentCollection(resultsNode)
 
     m.top.content = resultsNode
 end sub
 
-' Every collection the title is in that holds anything else, led by the collection itself so there's
-' a way into it, then its titles with the ones the library is missing in release order
+' Every collection the film is in that holds anything else, with the titles the library is
+' missing slotted in by release
 sub loadParentCollection(resultsNode as object)
     for each collection in findParents({ Id: m.top.itemId, ProviderIds: m.top.providerIds })
         ' A blocked title is left out of the row but still counts as owned, so it isnt offered as
@@ -243,7 +230,6 @@ sub loadParentCollection(resultsNode as object)
         parentNode = resultsNode.createChild("ContentNode")
         parentNode.title = "parentCollection"
         parentNode.addFields({ collectionName: isValidAndNotEmpty(collection.Name) ? collection.Name : tr("Collection") })
-        parentNode.appendChild(collectionCard(collection))
         for each item in seerrMissingCollection.MergeByRelease(members, missing)
             parentNode.appendChild(collectionCard(item))
         end for
@@ -601,73 +587,43 @@ function loadNextUp() as object
     return episodes
 end function
 
-function fetchItemPeople(itemId as string) as dynamic
-    if itemId = "" then return invalid
-    if isMultiServer()
-        serverData = getServerData()
-        url = Substitute("Items/{0}", itemId)
-        req = APIRequestForServer(serverData.serverUrl, serverData.userId, serverData.authToken, url, { "fields": "People,SeriesId,SeasonId", "userId": serverData.userId })
-        if isValid(req) then return getJson(req)
-        return invalid
-    else
-        return api.items.GetByID(itemId, { userId: m.global.session.user.id, fields: "People,SeriesId,SeasonId" })
-    end if
-end function
-
-' The actors billed on a season or series, which its episodes and seasons borrow
-function actorsOf(itemId as string) as object
-    actors = []
-    details = fetchItemPeople(itemId)
-    if not isChainValid(details, "People") then return actors
-    for each person in details.People
-        personType = LCase(chainLookupReturn(person, "Type", ""))
-        if personType = "actor" or personType = "gueststar" then actors.push(person)
-    end for
-    return actors
-end function
-
 ' Directors and writers are the crew, and everyone else billed is the cast
 function loadPeople(withCast as boolean, withCrew as boolean) as object
     people = []
     if not withCast and not withCrew then return people
 
-    itemDetails = fetchItemPeople(m.top.itemId)
-    if not isChainValid(itemDetails, "People") then return people
-
-    itemType = LCase(m.top.itemType)
-    if itemType = "" then itemType = LCase(chainLookupReturn(itemDetails, "Type", ""))
-    seriesId = isValidAndNotEmpty(m.top.showID) ? m.top.showID : chainLookupReturn(itemDetails, "SeriesId", "")
-
-    if m.top.isEpisode or itemType = "episode"
-        ' An episode adds the season's regulars, or the series' when the season lists none
-        seasonId = isValidAndNotEmpty(m.top.seasonID) ? m.top.seasonID : chainLookupReturn(itemDetails, "SeasonId", "")
-        parentActors = actorsOf(seasonId)
-        if parentActors.count() = 0 then parentActors = actorsOf(seriesId)
-        mergedPeople = episodeCast.mergeEpisodePeople(itemDetails.People, parentActors)
-    else if itemType = "season"
-        mergedPeople = []
-        seasonCrew = []
-        for each person in itemDetails.People
-            personType = LCase(chainLookupReturn(person, "Type", ""))
-            if personType = "director" or personType = "writer"
-                seasonCrew.push(person)
-            else
-                mergedPeople.push(person)
-            end if
-        end for
-        if mergedPeople.count() = 0 then mergedPeople = actorsOf(seriesId)
-        mergedPeople.append(seasonCrew)
-    else
-        mergedPeople = itemDetails.People
+    ' Normalize server URL once if multi-server
+    normalizedServerUrl = ""
+    if isMultiServer()
+        normalizedServerUrl = m.top.serverUrl
+        if normalizedServerUrl.right(1) = "/"
+            normalizedServerUrl = normalizedServerUrl.left(normalizedServerUrl.len() - 1)
+        end if
     end if
 
-    ' The details screen keeps every credit, even the ones a hidden section leaves out of the rows
-    m.top.allPeople = mergedPeople
+    ' First get the item details to access the People array
+    ' Use multi-server API if needed
+    itemDetails = invalid
+    if isMultiServer()
+        serverData = getServerData()
+        url = Substitute("Items/{0}", m.top.itemId)
+        req = APIRequestForServer(serverData.serverUrl, serverData.userId, serverData.authToken, url, { "fields": "People", "userId": serverData.userId })
+        if isValid(req)
+            itemDetails = getJson(req)
+        end if
+    else
+        itemDetails = api.items.GetByID(m.top.itemId, { userId: m.global.session.user.id, fields: "People" })
+    end if
+
+    if not isChainValid(itemDetails, "People")
+        return people
+    end if
+
 
     orderedPeople = []
     trailingPeople = []
-    for each person in mergedPeople
-        personType = LCase(chainLookupReturn(person, "Type", ""))
+    for each person in itemDetails.People
+        personType = LCase(person.Type)
         if personType <> "director" and personType <> "writer"
             if withCast then orderedPeople.push(person)
         else if withCrew
@@ -709,7 +665,14 @@ function loadPeople(withCast as boolean, withCrew as boolean) as object
         tmp.labelText = person.Name
         tmp.type = "Person"
 
-        tmp.subTitle = episodeCast.personSubtitle(person.Type, person.Role)
+        ' Format subtitle: "as [Role]" for actors with roles, otherwise just the person type
+        personType = person.Type
+        personRole = person.Role
+        if LCase(personType) = "actor" and isValid(personRole) and personRole.ToStr().Trim() <> ""
+            tmp.subTitle = "as " + personRole
+        else
+            tmp.subTitle = personType
+        end if
 
         people.push(tmp)
     end for
@@ -830,8 +793,7 @@ function loadOnlineSimilar() as object
             SeerrTmdbId: tmdbKey,
             SeerrMediaType: mediaType,
             SeerrPosterURL: posterUrl,
-            SeerrItem: res,
-            SeerrStatus: chainLookupReturn(res, "mediaInfo.status", 0)
+            SeerrItem: res
         }
         results.push(tmp)
         count = count + 1
@@ -1004,22 +966,9 @@ function loadJellyfinSimilar(limit as integer, bypass as boolean) as object
     return similar
 end function
 
-' Special features by their number, then by name. One with no number counts as 0, and a tie keeps
-' the server's order.
-function sortedFeatures(items as object) as object
-    return stableSorted(items, featureComesFirst)
-end function
-
-function featureComesFirst(a as object, b as object, _context as dynamic) as boolean
-    numberA = a.IndexNumber ?? 0
-    numberB = b.IndexNumber ?? 0
-    if numberA <> numberB then return numberA < numberB
-    return LCase(a.Name ?? "") < LCase(b.Name ?? "")
-end function
-
 function loadSpecials() as object
     specials = []
-    for each item in sortedFeatures(responseItems(fetch(`/Items/${m.top.itemId}/SpecialFeatures`, {})))
+    for each item in responseItems(fetch(`/Items/${m.top.itemId}/SpecialFeatures`, {}))
         ' Some servers list the title among its own extras
         if item.Id = m.top.itemId then continue for
 

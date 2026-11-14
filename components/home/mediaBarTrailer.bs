@@ -43,7 +43,7 @@ sub setTrailerCovered(covered as boolean)
 end sub
 
 function trailerAllowed() as boolean
-    if not get_user_setting_bool("ui.home.mediaBarTrailerPreview", false) then return false
+    if not get_user_setting_bool("ui.home.mediaBarTrailerPreview", true) then return false
     mode = m.mediaBarMode ?? ""
     if mode <> "moonfin" and mode <> "makd" and mode <> "aya" and mode <> "gallery" then return false
     if not m.top.visible or m.trailerCovered then return false
@@ -89,6 +89,7 @@ sub requestTrailerAttempt(item as object, index as integer)
         requestId: m.trailerRequestId,
         item: { Id: serverId, RemoteTrailers: item.remoteTrailers ?? [] },
         index: index,
+        serverHelper: true,
         captions: get_user_setting_bool("ui.home.mediaBarTrailerCaptions", false),
         language: language.Replace("_", "-")
     }
@@ -108,6 +109,8 @@ sub onTrailerAnswer(event as object)
     content = CreateObject("roSGNode", "ContentNode")
     content.url = answer.url
     content.streamFormat = answer.format
+    content.HttpCertificatesFile = "common:/certs/ca-bundle.crt"
+    content.HttpHeaders = answer.httpHeaders ?? []
     if answer.startTime > 0 then content.playStart = answer.startTime
 
     layoutTrailer()

@@ -1,23 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The user switcher: every saved account in a carousel, then Add User, Select Server and the sign outs -->
 <component name="AccountDialog" extends="Group">
   <children>
-    <Rectangle id="scrim" width="1920" height="1080" color="#05070EE6" />
-    <!-- Takes the remote off the carousel while a button has it -->
-    <Group id="buttonFocus" focusable="true" />
-    <Label id="title" translation="[97, 63]" font="font:LargeBoldSystemFont" color="#FFFFFF" />
-    <Label id="signedInAs" translation="[700, 73]" width="1123" horizAlign="right" font="font:SmallSystemFont" color="#FFFFFFA6" />
-    <ProfileCarousel id="carousel" translation="[0, 290]" />
-    <LoginButton id="addUserButton" height="72" radius="36" padding="33" fontSize="25" iconGlyph="person" />
-    <LoginButton id="changeServerButton" height="72" radius="36" padding="33" fontSize="25" iconGlyph="home" />
-    <LoginButton id="signOutButton" height="72" radius="36" padding="33" fontSize="25" />
-    <LoginButton id="signOutAllButton" style="danger" height="72" radius="36" padding="33" fontSize="25" />
+    <Rectangle id="scrim" width="1920" height="1080" color="0x0000004D" />
+
+    <Poster id="panel" uri="pkg:/images/details/surface17.9.png" blendColor="0x1A1A1AFF">
+      <Label
+        id="title"
+        font="font:MediumBoldSystemFont"
+        color="0xFFFFFFFF"
+        height="36"
+        translation="[32, 28]" />
+
+      <StandardButton
+        id="closeButton"
+        text="X"
+        width="44"
+        height="44"
+        fontSize="24"
+        outline="true"
+        outlineUri="pkg:/images/playback/outline41.9.png" />
+
+      <Group id="userRowClip">
+        <LayoutGroup id="userRow" layoutDirection="horiz" />
+      </Group>
+
+      <StandardButton
+        id="changeServerButton"
+        height="62"
+        fontSize="26"
+        outline="true"
+        outlineUri="pkg:/images/details/outline6.9.png" />
+
+      <StandardButton
+        id="signOutButton"
+        height="62"
+        fontSize="26"
+        outline="true"
+        outlineUri="pkg:/images/details/outline6.9.png" />
+
+      <StandardButton
+        id="signOutAllButton"
+        height="62"
+        fontSize="26"
+        outline="true"
+        outlineUri="pkg:/images/details/outline6.9.png"
+        visible="false" />
+    </Poster>
   </children>
   <interface>
     <!-- Where focus goes when the dialog closes, otherwise it is stranded on a hidden node -->
     <field id="returnFocus" type="node" />
     <field id="accountAction" type="string" alwaysNotify="true" />
     <field id="switchToUser" type="assocarray" alwaysNotify="true" />
+    <field id="removeUserRequest" type="assocarray" alwaysNotify="true" />
     <function name="showDialog" />
   </interface>
 </component>

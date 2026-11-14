@@ -16,9 +16,6 @@ namespace settingsSync
     const PROFILE_SETTING = "plugin.syncProfile"
     ' The profile a TV follows until the user picks another
     const DEVICE_PROFILE = "tv"
-    ' Each Home row's image type is kept under this and the row's id, the way Core keeps it
-    const ROW_IMAGE_TYPE_KEY = "ui.home.rowImageType."
-    const CONTINUE_WATCHING_ROW = "resume"
 
     ' Two settings have a switch here and a property on the server, but mean different
     ' things on each side, so they are left unmapped rather than wired up to corrupt values:
@@ -43,7 +40,6 @@ namespace settingsSync
             { pluginKey: "continueWatchingDefaultAction", rokuKey: "ui.home.continueWatchingDefaultAction", type: "direct" },
             { pluginKey: "enableMultiServerLibraries", rokuKey: "ui.home.enableMultiServer", type: "bool" },
             { pluginKey: "mergeRecentRowsByType", rokuKey: "ui.home.mergeRecentRowsByType", type: "bool" },
-            { pluginKey: "hideWatchedInRecentRows", rokuKey: "ui.home.hideWatchedInRecentRows", type: "bool" },
             { pluginKey: "recentlyReleasedSeriesType", rokuKey: "ui.home.recentlyReleasedSeriesType", type: "direct" },
             { pluginKey: "showMediaDetailsOnLibraryPage", rokuKey: "ui.library.showMediaDetails", type: "bool" },
             { pluginKey: "hideBackdropsInLibraries", rokuKey: "ui.library.showBackdrops", type: "boolInvert" },
@@ -52,19 +48,13 @@ namespace settingsSync
             { pluginKey: "libraryCardTitles", rokuKey: "ui.library.cardTitles", type: "bool" },
             { pluginKey: "libraryPosterSize", rokuKey: "ui.library.posterSize", type: "direct" },
             { pluginKey: "playlistPosterSize", rokuKey: "ui.library.playlistPosterSize", type: "direct" },
-            ' Home's Card Size, which the library sizes fall back to until one is picked
-            { pluginKey: "posterSize", rokuKey: "ui.posterSize", type: "direct" },
-            ' Whether focused cards grow, which the Seerr screens follow. Nothing here sets it.
-            { pluginKey: "cardFocusExpansion", rokuKey: "ui.cardFocusExpansion", type: "bool", receiveOnly: true },
-            ' Core's focus color by name, which the Seerr screens ring focus in
-            { pluginKey: "focusColor", rokuKey: "ui.focusColor", type: "direct", receiveOnly: true },
+            ' The library sizes fall back to this one until one is picked, and nothing here sets it
+            { pluginKey: "posterSize", rokuKey: "ui.posterSize", type: "direct", receiveOnly: true },
             { pluginKey: "musicLibraryStyle", rokuKey: "ui.library.musicStyle", type: "direct" },
             { pluginKey: "keyboardStyle", rokuKey: "ui.keyboard.style", type: "keyboardStyle" },
             { pluginKey: "mediaBarMode", rokuKey: "ui.home.mediaBarMode", type: "direct" },
             { pluginKey: "mediaBarRowPeek", rokuKey: "ui.home.mediaBarRowPeek", type: "bool" },
-            { pluginKey: "mediaBarSourceType", rokuKey: "ui.home.mediaBarSourceType", type: "mediaBarSource" },
-            { pluginKey: "mediaBarNewReleaseBanner", rokuKey: "ui.home.mediaBarNewReleaseBanner", type: "bool" },
-            { pluginKey: "mediaBarNewReleaseDays", rokuKey: "ui.home.mediaBarNewReleaseDays", type: "intToStr" },
+            { pluginKey: "mediaBarSourceType", rokuKey: "ui.home.mediaBarSourceType", type: "direct" },
             { pluginKey: "mediaBarLibraryIds", rokuKey: "ui.home.mediaBarLibraryIds", type: "jsonArray" },
             { pluginKey: "mediaBarCollectionIds", rokuKey: "ui.home.mediaBarCollectionIds", type: "jsonArray" },
             { pluginKey: "mediaBarExcludedGenres", rokuKey: "ui.home.mediaBarExcludedGenres", type: "jsonArray" },
@@ -76,18 +66,10 @@ namespace settingsSync
             { pluginKey: "shuffleContentType", rokuKey: "shuffle_content_type", type: "shuffleType" },
             { pluginKey: "detailScreenStyle", rokuKey: "ui.itemdetail.style", type: "detailStyle" },
             { pluginKey: "detailExpandedTabs", rokuKey: "ui.itemdetail.expandedTabs", type: "bool" },
-            { pluginKey: "personPageSortOption", rokuKey: "ui.itemdetail.personSortOption", type: "direct" },
-            { pluginKey: "personPageGroupItems", rokuKey: "ui.itemdetail.personGroupItems", type: "bool" },
             { pluginKey: "hideDetailsMediaDescription", rokuKey: "ui.itemdetail.hideMediaDescription", type: "bool" },
             { pluginKey: "detailUseSeriesThumbnails", rokuKey: "ui.itemdetail.useSeriesThumbnails", type: "bool" },
             { pluginKey: "hideHomeMediaDescription", rokuKey: "ui.home.hideMediaDescription", type: "bool" },
             { pluginKey: "homeRowsStyle", rokuKey: "ui.home.rowsStyle", type: "direct" },
-            { pluginKey: "homeRowInfoOverlay", rokuKey: "ui.home.rowInfoOverlay", type: "bool" },
-            ' Continue Watching keeps its image type on a key of its own, apart from the list of the other
-            ' rows. Nothing here sets the type for every row at once.
-            { pluginKey: "homeImageTypeContinueWatching", rokuKey: "ui.home.rowImageType.resume", type: "imageType" },
-            { pluginKey: "homeRowsImageTypeOverride", rokuKey: "ui.home.rowsImageTypeOverride", type: "bool", receiveOnly: true },
-            { pluginKey: "homeRowsImageType", rokuKey: "ui.home.rowsImageType", type: "imageType", receiveOnly: true },
             { pluginKey: "modernCardsOnMyMediaRow", rokuKey: "ui.home.modernCardsOnMyMediaRow", type: "bool" },
             { pluginKey: "episodePreviewEnabled", rokuKey: "ui.home.episodePreviewEnabled", type: "bool" },
             { pluginKey: "mediaPreviewMode", rokuKey: "ui.home.mediaPreviewMode", type: "direct" },
@@ -116,8 +98,6 @@ namespace settingsSync
             { pluginKey: "mediaBarMdblistShowRatingBadges", rokuKey: "ui.mediaBar.ratings.showRatingBadges", type: "bool" },
             ' The key only ever arrives from the server, so it's never sent back or reset here
             { pluginKey: "tmdbApiKey", rokuKey: "plugin.tmdb.apiKey", type: "direct", skipRegistry: true, receiveOnly: true },
-            ' Only read, so the Rows screen knows whether the plugin can fill Watching Now
-            { pluginKey: "mdblistApiKey", rokuKey: "plugin.mdblist.apiKey", type: "direct", skipRegistry: true, receiveOnly: true },
 
             ' Settings the server can now store that already had a switch here.
             { pluginKey: "cinemaModeEnabled", rokuKey: "playback.cinemamode", type: "bool" },
@@ -134,7 +114,6 @@ namespace settingsSync
             { pluginKey: "seerrBlockNsfw", rokuKey: "seerr.blockNsfw", type: "bool" },
             { pluginKey: "seerrShowMissingCollectionItems", rokuKey: "seerr.showMissingCollectionItems", type: "bool" },
             { pluginKey: "showSeerrAvailabilityBadges", rokuKey: "seerr.showAvailabilityBadges", type: "bool" },
-            { pluginKey: "seerrBadgeStyle", rokuKey: "seerr.badgeStyle", type: "seerrBadgeStyle" },
             { pluginKey: "nextUpMaxDays", rokuKey: "ui.details.maxdaysnextup", type: "intToStr" },
             ' Core counts this one in milliseconds, and playback.nextupbuttonseconds
             ' is a different setting measured in seconds, so they cannot share a key
@@ -163,9 +142,6 @@ namespace settingsSync
             { pluginKey: "favoritesRowSortBy", rokuKey: "ui.home.favoritesSortField", type: "favoritesSortField" },
             { pluginKey: "favoritesRowSortOrder", rokuKey: "ui.home.favoritesSortOrder", type: "favoritesSortOrder" },
             { pluginKey: "collectionsRowSortBy", rokuKey: "ui.home.collectionsRowSortBy", type: "direct" },
-            { pluginKey: "collectionsRowSortOrder", rokuKey: "ui.home.collectionsRowSortOrder", type: "direct" },
-            { pluginKey: "audioRowsSortBy", rokuKey: "ui.home.audioRowsSortBy", type: "direct" },
-            { pluginKey: "audioRowsSortOrder", rokuKey: "ui.home.audioRowsSortOrder", type: "direct" },
             { pluginKey: "genresRowSortBy", rokuKey: "ui.home.genresRowSortBy", type: "direct" },
             { pluginKey: "genresRowItemFilter", rokuKey: "ui.home.genresRowItemFilter", type: "direct" },
 
@@ -202,35 +178,14 @@ namespace settingsSync
             { pluginKey: "radarrCalendarShowDigital", rokuKey: "calendar.radarr.showDigital", type: "bool" },
             { pluginKey: "radarrCalendarShowPhysical", rokuKey: "calendar.radarr.showPhysical", type: "bool" },
             { pluginKey: "radarrCalendarShowDate", rokuKey: "calendar.radarr.showDate", type: "bool" },
-            { pluginKey: "radarrCalendarHideDownloaded", rokuKey: "calendar.radarr.hideDownloaded", type: "bool" },
             { pluginKey: "enableSonarrCalendar", rokuKey: "calendar.sonarr.enabled", type: "bool" },
             { pluginKey: "sonarrCalendarShowEpisodeInfo", rokuKey: "calendar.sonarr.showEpisodeInfo", type: "bool" },
             { pluginKey: "sonarrCalendarShowDate", rokuKey: "calendar.sonarr.showDate", type: "bool" },
-            { pluginKey: "sonarrCalendarHideDownloaded", rokuKey: "calendar.sonarr.hideDownloaded", type: "bool" },
             { pluginKey: "mergeRadarrSonarrCalendars", rokuKey: "calendar.merge", type: "bool" },
-            { pluginKey: "calendarRowSeeAll", rokuKey: "calendar.rowSeeAll", type: "bool" },
-
-            ' The Calendar screen. Reminders are phone only, so calendarReminders isn't mapped.
-            { pluginKey: "calendarStyle", rokuKey: "calendar.style", type: "direct" },
-            { pluginKey: "calendarWeekStart", rokuKey: "calendar.weekStart", type: "direct" },
-            { pluginKey: "calendarScope", rokuKey: "calendar.scope", type: "direct" },
-            { pluginKey: "calendarShowEpisodes", rokuKey: "calendar.showEpisodes", type: "bool" },
-            { pluginKey: "calendarShowMovies", rokuKey: "calendar.showMovies", type: "bool" },
-            { pluginKey: "calendarLibraryIds", rokuKey: "calendar.libraryIds", type: "jsonArray" },
-            { pluginKey: "calendarIncludeUnmonitored", rokuKey: "calendar.includeUnmonitored", type: "bool" },
-            { pluginKey: "calendarShowSpecials", rokuKey: "calendar.showSpecials", type: "bool" },
-            { pluginKey: "calendarShowBadges", rokuKey: "calendar.showBadges", type: "bool" },
-            { pluginKey: "calendarColorBy", rokuKey: "calendar.colorBy", type: "direct" },
-            { pluginKey: "calendarImageType", rokuKey: "calendar.imageType", type: "direct" },
-            { pluginKey: "calendarSpoilerSafe", rokuKey: "calendar.spoilerSafe", type: "bool" },
-            { pluginKey: "calendarSelectAction", rokuKey: "calendar.selectAction", type: "direct" },
-            { pluginKey: "calendarRequestButton", rokuKey: "calendar.requestButton", type: "bool" },
 
             { pluginKey: "seasonalRowEnabled", rokuKey: "seasonal.row.enabled", type: "bool" },
-            { pluginKey: "mdblistWatchingNowEnabled", rokuKey: "mdblist.watchingnow.enabled", type: "bool" },
             { pluginKey: "seasonalRowCountry", rokuKey: "seasonal.row.country", type: "direct" },
             { pluginKey: "seasonalRowHiddenHolidays", rokuKey: "seasonal.row.hiddenHolidays", type: "jsonArray" },
-            { pluginKey: "seasonalRowAllYear", rokuKey: "seasonal.row.allYear", type: "bool" },
             { pluginKey: "seasonalSurprise", rokuKey: "seasonal.surprise", type: "seasonalEffect" },
             { pluginKey: "seasonalDensity", rokuKey: "seasonal.density", type: "seasonalDensity" },
             { pluginKey: "seasonalFollower", rokuKey: "seasonal.follower", type: "bool" },
@@ -260,7 +215,6 @@ namespace settingsSync
             { pluginKey: "defaultAudioLanguage", rokuKey: "playback.audioPreferredLanguage", type: "audioLanguage" },
             { pluginKey: "preferDefaultAudioTrack", rokuKey: "playback.playDefaultAudioTrack", type: "bool" },
             { pluginKey: "use24HourClock", rokuKey: "playback.use24hourclock", type: "bool" },
-            { pluginKey: "dateFormat", rokuKey: "ui.dateFormat", type: "dateFormat" },
             { pluginKey: "clockBehavior", rokuKey: "ui.showClock", type: "clockBehavior" },
             { pluginKey: "maxVideoResolution", rokuKey: "playback.resolution.max", type: "maxVideoResolution" },
             { pluginKey: "stillWatchingBehavior", rokuKey: "stillwatchingPopupInactivityTime", type: "stillWatchingBehavior" },
@@ -272,14 +226,11 @@ namespace settingsSync
             { pluginKey: "mediaBarTrailerCaptions", rokuKey: "ui.home.mediaBarTrailerCaptions", type: "bool" },
             { pluginKey: "navbarAlwaysExpanded", rokuKey: "navbar.alwaysExpanded", type: "bool" },
             { pluginKey: "showSeerrButton", rokuKey: "navbar.show_seerr", type: "bool" },
-            { pluginKey: "showCalendarButton", rokuKey: "navbar.show_calendar", type: "bool" },
             { pluginKey: "displayRewatchRow", rokuKey: "ui.home.displayRewatchRow", type: "bool" },
             { pluginKey: "watchedIndicator", rokuKey: "ui.watchedIndicator", type: "direct" },
-            { pluginKey: "showPosterLabels", rokuKey: "ui.posterLabels", type: "bool" },
             { pluginKey: "mediaBarContentType", rokuKey: "ui.home.mediaBarContentType", type: "direct" },
             { pluginKey: "nextUpBehavior", rokuKey: "playback.nextupbehavior", type: "direct" },
             { pluginKey: "replaceSkipOutroWithNextUp", rokuKey: "playback.replaceskipoutrowithnextup", type: "bool" },
-            { pluginKey: "showNextAirDate", rokuKey: "playback.showNextAirDate", type: "bool" },
             { pluginKey: "assDirectPlay", rokuKey: "playback.subs.assdirectplay", type: "bool" },
             { pluginKey: "themeMusicLoop", rokuKey: "playback.thememusic.loop", type: "bool" },
             { pluginKey: "mdblistShowRatingNames", rokuKey: "plugin.mdblist.showRatingNames", type: "bool" },
@@ -299,19 +250,7 @@ namespace settingsSync
             { pluginKey: "loadingAnimationSize", rokuKey: "ui.loadingAnimation.size", type: "direct" },
             { pluginKey: "loadingAnimationPosition", rokuKey: "ui.loadingAnimation.position", type: "direct" },
             { pluginKey: "loadingAnimationSpeed", rokuKey: "ui.loadingAnimation.speed", type: "direct" },
-            { pluginKey: "showLoadingAnimationText", rokuKey: "ui.loadingAnimation.showText", type: "bool" },
-            ' The Watch Parties switch keeps SyncPlay's key on the server, which every client shares
-            { pluginKey: "syncPlayEnabled", rokuKey: "watchParty.enabled", type: "bool" },
-            ' Whether the nav bar has the Watch Parties button, as in Core and Smart-TV
-            { pluginKey: "showSyncPlayButton", rokuKey: "navbar.show_syncplay", type: "bool" },
-            { pluginKey: "watchPartyChatOverlay", rokuKey: "watchParty.chatOverlay", type: "bool" },
-            { pluginKey: "watchPartyAlerts", rokuKey: "watchParty.alerts", type: "bool" },
-            ' Read only, so an account set to start SyncPlay groups isn't offered party picks
-            { pluginKey: "watchPartyService", rokuKey: "watchParty.service", type: "direct", receiveOnly: true },
-            ' Speed to Sync stays unmapped because a Roku has no playback rate control
-            { pluginKey: "syncPlayEnableSyncCorrection", rokuKey: "syncplay.correction.enabled", type: "bool" },
-            { pluginKey: "syncPlayMinDelaySkipToSync", rokuKey: "syncplay.correction.mindelayskip", type: "intToStr" },
-            { pluginKey: "syncPlayExtraTimeOffset", rokuKey: "syncplay.correction.extraoffset", type: "intToStr" }
+            { pluginKey: "showLoadingAnimationText", rokuKey: "ui.loadingAnimation.showText", type: "bool" }
         ]
     end function
 
@@ -428,13 +367,6 @@ namespace settingsSync
             if not chainLookupReturn(mapping, "skipRegistry", false)
                 registry_write(mapping.rokuKey, rokuValue, m.global.session.user.id)
             end if
-        end for
-
-        ' The list only names the rows someone picked a type for, so the rest keep theirs
-        rowTypes = settingsSync.DecodeRowImageTypes(profile.homeRowImageTypes)
-        for each rowId in rowTypes
-            tmpSettings[settingsSync.ROW_IMAGE_TYPE_KEY + rowId] = rowTypes[rowId]
-            registry_write(settingsSync.ROW_IMAGE_TYPE_KEY + rowId, rowTypes[rowId], m.global.session.user.id)
         end for
 
         appliedThemeId = tmpSettings["ui.theme.customThemeId"]
@@ -556,14 +488,6 @@ namespace settingsSync
             registry_write("ui.overlayOpacity", opacity, userId)
         end if
 
-        ' The tokens with no colour setting of their own, as picking the theme here writes them,
-        ' or a synced theme leaves its buttons and fields on their fallbacks
-        for each token in themeApply.DirectTokens()
-            tokenValue = colors[token] ?? ""
-            tmpSettings[`ui.theme.${token}`] = tokenValue
-            registry_write(`ui.theme.${token}`, tokenValue, userId)
-        end for
-
         navCycle = themeApply.NavColorCycleJson(theme.navColorCycle)
         tmpSettings["ui.theme.navColorCycle"] = navCycle
         registry_write("ui.theme.navColorCycle", navCycle, userId)
@@ -571,6 +495,10 @@ namespace settingsSync
         fontFamily = theme.fontFamily ?? ""
         tmpSettings["ui.theme.fontFamily"] = fontFamily
         registry_write("ui.theme.fontFamily", fontFamily, userId)
+
+        onAccent = isValidAndNotEmpty(colors.onAccent) ? colors.onAccent : ""
+        tmpSettings["ui.theme.onAccent"] = onAccent
+        registry_write("ui.theme.onAccent", onAccent, userId)
     end sub
 
     ' What a render thread hands a PostTask, since it cannot make the request itself
@@ -595,8 +523,6 @@ namespace settingsSync
         end if
 
         mapping = settingsSync.FindMappingByRokuKey(rokuKey)
-        ' A row's image type goes out with every other row's, as the one list the plugin keeps
-        if not isValid(mapping) and Left(rokuKey, Len(settingsSync.ROW_IMAGE_TYPE_KEY)) = settingsSync.ROW_IMAGE_TYPE_KEY then return settingsSync.ProfilePush({ "homeRowImageTypes": settingsSync.RowImageTypes() })
         if not isValid(mapping) then return invalid
 
         pluginValue = settingsSync.RokuToPlugin(rokuValue, mapping.type)
@@ -642,8 +568,6 @@ namespace settingsSync
             end if
         end for
 
-        rowTypes = settingsSync.RowImageTypes()
-        if rowTypes <> "" then profileData["homeRowImageTypes"] = rowTypes
         profileData["seerrRows"] = settingsSync.SeerrRowsPayload()
         ' Both layout keys go together, since a row order arriving without sections makes the
         ' server drop the sections it holds
@@ -663,8 +587,7 @@ namespace settingsSync
     ' The whole home layout as the other clients read it. Every row this app knows goes over
     ' with its own enabled flag, a row behind an off switch going over as off, and rows
     ' belonging to the other clients keep the place the stored lists hold them in. Sections
-    ' this app can't draw ride along exactly as they arrived. An external row goes over as it's
-    ' set even while the server can't fill it, so a missing key doesn't switch it off everywhere.
+    ' this app can't draw ride along exactly as they arrived.
     function HomeSectionsPayload() as object
         storedOrder = get_user_setting(homeRowLayout.ORDER_SETTING)
         storedHidden = get_user_setting(homeRowLayout.HIDDEN_SETTING)
@@ -699,7 +622,7 @@ namespace settingsSync
 
         for each id in merged.order
             enabled = not isValid(offAll[id])
-            if enabled and not homeRowLayout.IsExternalRow(id) and not homeRowLayout.RowToggleOn(id, toggles) then enabled = false
+            if enabled and not homeRowLayout.RowToggleOn(id, toggles) then enabled = false
 
             ' A picked collection, genre or playlist goes over as the record the other clients
             ' read, typed none the way they write it, since the row id alone can't say which
@@ -707,7 +630,7 @@ namespace settingsSync
             entry = picked[LCase(id)]
             if isValid(entry)
                 listEntry = homeRowLayout.SourceFor(entry.source)
-                if enabled and isValid(listEntry) and listEntry.gate <> "" and not get_user_setting_bool(listEntry.gate, false) then enabled = false
+                if enabled and isValid(listEntry) and not get_user_setting_bool(listEntry.gate, false) then enabled = false
                 owner = homeRowLayout.ServerId()
                 fromId = homeRowLayout.SourceFromId(entry.id)
                 if isValid(fromId) then owner = fromId.server
@@ -718,25 +641,17 @@ namespace settingsSync
                     owner = homeRowLayout.ServerKey()
                 end if
 
-                ' Quoted, since BrightScript lowercases a bare key and the other clients read these
-                ' by their case
-                record = {
-                    "kind": "pluginDynamic",
-                    "type": "none",
-                    "enabled": enabled,
-                    "order": order,
-                    "serverId": owner,
-                    "pluginSource": entry.source,
-                    "pluginSection": section,
-                    "pluginAdditionalData": entry.itemId,
-                    "pluginDisplayText": entry.title
-                }
-                ' Core names a Silo row by its section in pluginSection, with nothing in the extra data
-                if entry.source = "server"
-                    record["pluginSection"] = settingsSync.SiloSectionOut(entry.itemId)
-                    record.Delete("pluginAdditionalData")
-                end if
-                sections.push(record)
+                sections.push({
+                    kind: "pluginDynamic",
+                    type: "none",
+                    enabled: enabled,
+                    order: order,
+                    serverId: owner,
+                    pluginSource: entry.source,
+                    pluginSection: section,
+                    pluginAdditionalData: entry.itemId,
+                    pluginDisplayText: entry.title
+                })
             else
                 sections.push({ kind: "builtin", type: id, enabled: enabled, order: order })
             end if
@@ -774,18 +689,7 @@ namespace settingsSync
         end for
 
         keys.Append([homeRowLayout.HIDDEN_SETTING, homeRowLayout.DYNAMIC_SETTING, homeRowLayout.PASSTHROUGH_SETTING])
-        keys.Append(settingsSync.RowImageTypeKeys(settingsSync.StoredSettings()))
         return keys
-    end function
-
-    function RowImageTypes() as string
-        return settingsSync.EncodeRowImageTypes(settingsSync.StoredSettings())
-    end function
-
-    function StoredSettings() as object
-        stored = RegistryReadAll(m.global.session.user.id)
-        if not isValid(stored) then return {}
-        return stored
     end function
 
     ' Puts every synced setting back the way a device that never synced has it, which is the
@@ -920,15 +824,6 @@ namespace settingsSync
         return LCase(value.toStr()) = "left" ? "left" : "top"
     end function
 
-    ' The old Libraries and Collections sources are now the picked libraries and collections
-    ' that every source draws from, so they read as Random like anything else unknown
-    function MediaBarSource(value as dynamic) as string
-        for each known in ["random", "recentlyAdded", "recentlyReleased", "newReleases"]
-            if isStringEqual(value, known) then return known
-        end for
-        return "random"
-    end function
-
     ' Jellyfin's subtitle modes, which this app offers, and the words the other clients sync
     ' them as
     function SubtitleModes() as object
@@ -948,8 +843,6 @@ namespace settingsSync
             return normalizeDetailScreenStyleToken(pluginValue)
         else if conversionType = "navbarPosition"
             return settingsSync.NavbarPosition(pluginValue)
-        else if conversionType = "mediaBarSource"
-            return settingsSync.MediaBarSource(pluginValue)
         else if conversionType = "bool"
             if type(pluginValue) = "Boolean" or type(pluginValue) = "roBoolean"
                 return pluginValue ? "true" : "false"
@@ -1038,22 +931,6 @@ namespace settingsSync
                 if valStr = style then return style
             end for
             return invalid
-        else if conversionType = "dateFormat"
-            ' An order this build doesn't know reads as the locale default
-            for each known in ["monthDay", "dayMonth"]
-                if isStringEqual(pluginValue, known) then return known
-            end for
-            return "system"
-        else if conversionType = "seerrBadgeStyle"
-            ' A style this build doesn't draw keeps the one stored here
-            valStr = LCase(pluginValue.toStr())
-            if valStr = "badge" or valStr = "banner" then return valStr
-            return invalid
-        else if conversionType = "imageType"
-            ' A type this build doesn't draw keeps the one stored here
-            valStr = settingsSync.ImageTypeName(pluginValue, "")
-            if valStr = "" then return invalid
-            return valStr
         else if conversionType = "subtitleModeFormat"
             valStr = LCase(pluginValue.toStr())
             for each mode in settingsSync.SubtitleModes()
@@ -1085,11 +962,7 @@ namespace settingsSync
     function RokuToPlugin(rokuValue as dynamic, conversionType as string) as dynamic
         rokuStr = rokuValue.toStr()
 
-        if conversionType = "direct" or conversionType = "keyboardStyle" or conversionType = "seerrBadgeStyle" or conversionType = "dateFormat"
-            return rokuStr
-        else if conversionType = "imageType"
-            rokuStr = settingsSync.ImageTypeName(rokuStr, "")
-            if rokuStr = "" then return invalid
+        if conversionType = "direct" or conversionType = "keyboardStyle"
             return rokuStr
         else if conversionType = "detailStyle"
             ' This client's ids are exactly the enum names the Flutter client syncs,
@@ -1097,8 +970,6 @@ namespace settingsSync
             return normalizeDetailScreenStyleToken(rokuStr)
         else if conversionType = "navbarPosition"
             return settingsSync.NavbarPosition(rokuStr)
-        else if conversionType = "mediaBarSource"
-            return settingsSync.MediaBarSource(rokuStr)
         else if conversionType = "bool"
             return (LCase(rokuStr) = "true")
         else if conversionType = "clockBehavior"
@@ -1203,30 +1074,9 @@ namespace settingsSync
         req = APIRequest(settingsSync.ResetPath(profileId))
         if not isValid(req) then return false
 
+        req.SetRequest("DELETE")
         status = requestResponse(req, "DELETE").status
         return status >= 200 and status < 300
-    end function
-
-    ' Older app versions still show or hide the external rows by their own switches, so each
-    ' switch follows its row. The switches are written here and handed back as the profile
-    ' values that go out with the layout.
-    function LegacyRowSwitches() as object
-        placed = buttonLayout.ToIds(get_user_setting(homeRowLayout.ORDER_SETTING))
-        off = buttonLayout.HiddenLookup(get_user_setting(homeRowLayout.HIDDEN_SETTING))
-        picked = homeRowLayout.DynamicLookup()
-        toggles = homeRowLayout.RowToggles()
-
-        profileData = {}
-        for each row in homeRowLayout.Catalogue()
-            if not homeRowLayout.IsExternalRow(row.id) then continue for
-            mapping = settingsSync.FindMappingByRokuKey(toggles[row.id] ?? "")
-            if not isValid(mapping) then continue for
-
-            enabled = homeRowLayout.IsEnabled(row.id, placed, off, picked)
-            set_user_setting(mapping.rokuKey, enabled ? "true" : "false")
-            profileData[mapping.pluginKey] = enabled
-        end for
-        return profileData
     end function
 
     ' Which switches a pushed layout is allowed to move, keyed by the row id the server
@@ -1243,7 +1093,7 @@ namespace settingsSync
             "tmdb_airing_today_tv", "tmdb_on_the_air_tv", "tmdb_trending_movie_daily",
             "tmdb_trending_movie_weekly", "tmdb_trending_tv_daily", "tmdb_trending_tv_weekly",
             "tmdb_trending_all_weekly",
-            "favorites", "collections", "genres", "playlists", "audio", "rewatch", "seasonal", "mdblist_watching_now"
+            "favorites", "collections", "genres", "playlists", "audio", "rewatch", "seasonal"
         ]
 
         toggles = homeRowLayout.RowToggles()
@@ -1342,10 +1192,6 @@ namespace settingsSync
             end if
         end for
 
-        favorites = settingsSync.WithCombinedFavorites(order, hidden)
-        order = favorites.order
-        hidden = favorites.hidden
-
         userId = m.global.session.user.id
 
         writes = [
@@ -1369,34 +1215,6 @@ namespace settingsSync
         return applied
     end function
 
-    ' The other clients split Favorites into a row per type, where this app has one. A layout that
-    ' doesn't name this app's own row gets it at the first split row's place, on while any split
-    ' row is. The split rows stay in the lists, so a save hands them back to the other clients.
-    function WithCombinedFavorites(order as object, hidden as object) as object
-        unchanged = { order: order, hidden: hidden }
-        if inArray(order, "favorites") then return unchanged
-
-        split = ["favoritemovies", "favoriteseries", "favoriteepisodes", "favoritepeople", "favoriteartists", "favoritemusicvideos", "favoritealbums", "favoritesongs"]
-        combined = []
-        placed = false
-        anyOn = false
-        for each id in order
-            isSplit = inArray(split, id)
-            if isSplit and not placed
-                combined.push("favorites")
-                placed = true
-            end if
-            if isSplit and not inArray(hidden, id) then anyOn = true
-            combined.push(id)
-        end for
-        if not placed then return unchanged
-
-        off = []
-        off.Append(hidden)
-        if not anyOn then off.push("favorites")
-        return { order: combined, hidden: off }
-    end function
-
     ' The record the local picker would have written for a section this app can draw: one
     ' of the three list sources, for the server this session is on, naming an item. The id
     ' is rebuilt the way the picker builds it so the arriving row and a local pick of the
@@ -1408,42 +1226,25 @@ namespace settingsSync
         if not isValid(listEntry) then return invalid
 
         itemId = homeRowLayout.AsText(chainLookupReturn(section, "pluginAdditionalData", ""))
-        if source = "server" then itemId = settingsSync.SiloSectionIn(homeRowLayout.AsText(chainLookupReturn(section, "pluginSection", "")))
         if itemId = "" then return invalid
 
         ' A collection can come from another signed in server. Anything else from another server is
         ' kept as it arrived.
-        sectionServer = homeRowLayout.ServerOf(homeRowLayout.AsText(chainLookupReturn(section, "serverId", "")))
+        sectionServer = homeRowLayout.AsText(chainLookupReturn(section, "serverId", ""))
         owner = serverKey
-        ' Moonbase's admin defaults name a Silo row by its kind for whatever server reads them
-        if source = "server" and sectionServer = "" and Left(itemId, 5) = "type." then sectionServer = serverKey
         if not settingsSync.IsSameServer(sectionServer, serverKey)
             if sectionServer = "" or source <> "collections" then return invalid
             owner = sectionServer
         end if
 
-        ' A row with no setting to switch on (a Silo row) has no gate, or one would be written under ""
-        gate = invalid
-        if listEntry.gate <> "" then gate = listEntry.gate
         return {
             id: homeRowLayout.DynamicId(source, owner, itemId),
             source: source,
             itemId: itemId,
             title: homeRowLayout.AsText(chainLookupReturn(section, "pluginDisplayText", "")),
             enabled: settingsSync.ToBooleanValue(chainLookupReturn(section, "enabled", true), true),
-            gate: gate
+            gate: listEntry.gate
         }
-    end function
-
-    ' A Silo row named by its kind is "type:<kind>" on the wire and "type.<kind>" in a row id
-    function SiloSectionIn(sectionId as string) as string
-        if Left(sectionId, 5) = "type:" then return "type." + Mid(sectionId, 6)
-        return sectionId
-    end function
-
-    function SiloSectionOut(itemId as string) as string
-        if Left(itemId, 5) = "type." then return "type:" + Mid(itemId, 6)
-        return itemId
     end function
 
     ' A Seerr slider row for this server. One from another server is kept as it arrived, since
@@ -1451,7 +1252,7 @@ namespace settingsSync
     function SliderRowFromSection(section as object, serverKey as string) as object
         sliderId = homeRowLayout.AsText(chainLookupReturn(section, "pluginSection", ""))
         sliderType = homeRowLayout.AsText(chainLookupReturn(section, "pluginAdditionalData", ""))
-        sectionServer = homeRowLayout.ServerOf(homeRowLayout.AsText(chainLookupReturn(section, "serverId", "")))
+        sectionServer = homeRowLayout.AsText(chainLookupReturn(section, "serverId", ""))
         if sliderId = "" or sliderType = "" or not settingsSync.IsSameServer(sectionServer, serverKey) then return invalid
 
         return {
@@ -1510,51 +1311,5 @@ namespace settingsSync
             end for
         end for
     end sub
-
-    ' The per-row types as the plugin keeps them, one list of row:type pairs for every row a type
-    ' was picked for. Continue Watching syncs on a key of its own.
-    function EncodeRowImageTypes(stored as object) as string
-        pairs = []
-        for each key in settingsSync.RowImageTypeKeys(stored)
-            rowId = LCase(Mid(key, Len(settingsSync.ROW_IMAGE_TYPE_KEY) + 1))
-            picked = settingsSync.ImageTypeName(stored[key], "")
-            if rowId <> settingsSync.CONTINUE_WATCHING_ROW and picked <> "" then pairs.push(rowId + ":" + picked)
-        end for
-        pairs.Sort()
-        return pairs.Join(",")
-    end function
-
-    function RowImageTypeKeys(stored as object) as object
-        found = []
-        for each key in stored
-            if LCase(Left(key, Len(settingsSync.ROW_IMAGE_TYPE_KEY))) = LCase(settingsSync.ROW_IMAGE_TYPE_KEY) then found.push(key)
-        end for
-        return found
-    end function
-
-    ' The plugin's list as row id to type. A pair without a known type is skipped, the other
-    ' clients' word for the playlists row is read as it, and Continue Watching is left to its own key.
-    function DecodeRowImageTypes(value as dynamic) as object
-        types = {}
-        if not isString(value) then return types
-        for each part in value.Split(",")
-            pair = part.Split(":")
-            if pair.Count() = 2
-                rowId = LCase(pair[0].Trim())
-                if rowId = "watchlist" then rowId = "playlists"
-                picked = settingsSync.ImageTypeName(pair[1].Trim(), "")
-                if rowId <> "" and rowId <> "none" and rowId <> settingsSync.CONTINUE_WATCHING_ROW and picked <> "" then types[rowId] = picked
-            end if
-        end for
-        return types
-    end function
-
-    ' A type this app draws, whatever its case, or the fallback
-    function ImageTypeName(value as dynamic, fallback as string) as string
-        for each known in ["poster", "thumb", "banner"]
-            if isStringEqual(value, known) then return known
-        end for
-        return fallback
-    end function
 
 end namespace

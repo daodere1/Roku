@@ -26,15 +26,20 @@ sub onItemIdChanged()
 
     ' Load theme songs for this item
     m.wantsMusic = true
+    ' A fresh task keeps a previous item's response from winning a navigation race.
+    m.loadThemeSongsTask = createObject("roSGNode", "LoadThemeSongsTask")
+    m.loadThemeSongsTask.observeField("themeSongs", "onThemeSongsLoaded")
     m.loadThemeSongsTask.itemId = m.top.itemId
     m.loadThemeSongsTask.control = TaskControl.RUN
 end sub
 
 ' Called when theme songs are loaded from API
-sub onThemeSongsLoaded()
+sub onThemeSongsLoaded(event as object)
     ' The screen can go away while the request is still out, and starting the audio then
     ' would leave it holding the media pipeline
     if not m.wantsMusic then return
+    if not event.getRoSGNode().isSameNode(m.loadThemeSongsTask) then return
+    if m.loadThemeSongsTask.itemId <> m.top.itemId then return
 
     themeSongsResponse = m.loadThemeSongsTask.themeSongs
 
@@ -58,19 +63,14 @@ sub onThemeSongsLoaded()
     }
 
     streamUrl = buildURL(Substitute("Audio/{0}/stream", themeSong.Id), params)
-    streamFormat = "mp3" ' Default format for theme music
-    ' A Silo theme plays from the address its list came with, in the format Silo serves it
-    siloUrl = themeSong.LookupCI("SiloStreamUrl") ?? ""
-    if siloUrl <> ""
-        streamUrl = siloUrl
-        streamFormat = themeSong.LookupCI("SiloStreamFormat") ?? ""
-        if streamFormat = "" then streamFormat = "mp4"
-    end if
 
     ' Set up the audio content
     content = createObject("roSGNode", "ContentNode")
     content.url = streamUrl
-    content.streamformat = streamFormat
+    container = LCase(chainLookupReturn(themeSong, "Container", "mp3"))
+    if container = "m4a" then container = "mp4"
+    if container <> "mp3" and container <> "mp4" and container <> "aac" and container <> "flac" and container <> "wav" then return
+    content.streamformat = container
 
     ' Play the theme music
     m.audioPlayer.content = content
@@ -81,6 +81,7 @@ end sub
 ' Stop theme music playback
 sub stopThemeMusic()
     m.wantsMusic = false
+    m.loadThemeSongsTask.unobserveField("themeSongs")
     m.loadThemeSongsTask.control = TaskControl.STOP
     m.audioPlayer.control = "stop"
     m.audioPlayer.content = invalid

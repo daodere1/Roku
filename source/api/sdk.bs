@@ -2106,7 +2106,23 @@ namespace api
     ' Get user views.
     function GetUserViews(params = {} as object)
         resp = APIRequest(`/userviews`, params)
-        return getJson(resp)
+        if not isValid(resp) then return invalid
+        scope = LCase(resp.GetUrl()) + "|" + m.global.session.user.id
+        clock = CreateObject("roDateTime")
+        cached = m.global.userViewsCache
+        if isValid(cached) and cached.scope = scope and clock.AsSeconds() < cached.expires
+            return ParseJson(cached.body)
+        end if
+        data = getJson(resp)
+        if isChainValid(data, "Items")
+            entry = {scope: scope, expires: clock.AsSeconds() + 30, body: FormatJson(data)}
+            if m.global.hasField("userViewsCache")
+                m.global.userViewsCache = entry
+            else
+                m.global.addFields({userViewsCache: entry})
+            end if
+        end if
+        return data
     end function
 
     namespace useritems
