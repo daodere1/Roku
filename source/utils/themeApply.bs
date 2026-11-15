@@ -78,6 +78,7 @@ namespace themeApply
         set_user_setting("ui.theme.customThemeId", theme.id)
         set_user_setting("ui.theme.fontFamily", theme.fontFamily ?? "")
 
+        set_user_setting("colorCursor", "#8ABCF4")
         themeApply.Refresh(scene)
     end sub
 

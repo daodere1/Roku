@@ -105,6 +105,17 @@ sub onBrowseTypeChanged()
     m.searchQuery = ""
 end sub
 
+sub onInitialSearchQuery()
+    query = m.top.initialSearchQuery.Trim()
+    if query = "" then return
+    m.searchQuery = query
+    m.genreNameLabel.text = tr("Search Seerr") + ": " + query
+    m.searchSeen = {}
+    m.currentPage = 1
+    m.hasMorePages = true
+    LoadContent()
+end sub
+
 sub beginSearch()
     m.keyboard = tvKeyboard.Open(m.top.getScene(), { title: tr("Search Seerr"), text: m.searchQuery ?? "" })
     if not isValid(m.keyboard) then return

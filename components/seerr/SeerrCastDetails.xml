@@ -8,7 +8,7 @@
 
     <children>
         <!-- Background color -->
-        <Rectangle width="1920" height="1080" color="#111827" />
+        <Rectangle width="1920" height="1080" color="#000000" />
 
         <!-- Color tint overlay -->
         <Rectangle width="1920" height="1080" color="#F2000000" opacity="1.0" />
@@ -28,7 +28,7 @@
                     <Rectangle
                         width="350"
                         height="525"
-                        color="#1F2937" />
+                        color="#151515" />
                     <Poster id="profileImage"
                         width="350"
                         height="525"

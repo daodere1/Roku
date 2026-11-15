@@ -5,7 +5,7 @@ import "pkg:/source/utils/themeSpec.bs"
 namespace themeRegistry
 
     function BuiltInIds() as object
-        return ["spesha-style", "speshflix", "speshprime", "speshapple", "moonfin", "neon_pulse", "8bit_hero"]
+        return ["spesh-cinematic"]
     end function
 
     function IsBuiltIn(id as dynamic) as boolean
@@ -37,8 +37,7 @@ namespace themeRegistry
             end if
         end for
 
-        themeRegistry.MergeStoreThemes(order, byId)
-        themeRegistry.MergeServerThemes(order, byId)
+        ' This client uses one coherent cinematic presentation.
 
         result = []
         for each id in order

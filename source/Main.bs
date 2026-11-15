@@ -37,6 +37,7 @@ sub Main (args as dynamic) as void
     sceneManager.observeField("dataReturned", m.port)
     sceneManager.observeField("buttonSelected", m.port)
     sceneManager.observeField("quickPlayNode", m.port)
+    sceneManager.observeField("cinematicItemSelected", m.port)
     sceneManager.observeField("itemMenuRequest", m.port)
 
     overhang = m.scene.findNode("overhang")
@@ -270,6 +271,8 @@ sub Main (args as dynamic) as void
             else
                 onItemSelectedEvent(msg)
             end if
+        else if isNodeEvent(msg, "cinematicItemSelected")
+            onSelectedItemEvent(msg)
         else if isNodeEvent(msg, "buttonSelected")
             onButtonSelectedEvent(msg)
         else if isNodeEvent(msg, "content")

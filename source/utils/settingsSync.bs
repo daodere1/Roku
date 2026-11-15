@@ -458,6 +458,9 @@ namespace settingsSync
     end function
 
     sub ApplyThemeColorsFromId(themeId as dynamic, tmpSettings as object)
+        themeId = "spesh-cinematic"
+        tmpSettings["ui.theme.customThemeId"] = themeId
+        tmpSettings["ui.itemdetail.style"] = "spotlight"
         if not isValidAndNotEmpty(themeId) then return
 
         theme = themeRegistry.GetThemeById(themeId)
@@ -466,13 +469,18 @@ namespace settingsSync
         colors = theme.colors
         mappings = themeApply.TokenMappings()
         userId = m.global.session.user.id
+        for each token in themeApply.DirectTokens()
+            if isValidAndNotEmpty(colors[token]) then tmpSettings["ui.theme." + token] = colors[token]
+        end for
 
         for each token in mappings
             colorValue = colors[token]
             if isValidAndNotEmpty(colorValue)
                 for each rokuKey in mappings[token]
-                    tmpSettings[rokuKey] = colorValue
-                    registry_write(rokuKey, colorValue, userId)
+                    mappedColor = colorValue
+                    if rokuKey = "colorCursor" then mappedColor = "#8ABCF4"
+                    tmpSettings[rokuKey] = mappedColor
+                    registry_write(rokuKey, mappedColor, userId)
                 end for
             end if
         end for

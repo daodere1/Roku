@@ -1,0 +1,142 @@
+import "pkg:/source/utils/speshCalendar.bs"
+import "pkg:/source/utils/SeerrUtils.bs"
+import "pkg:/source/utils/kidsMode.bs"
+import "pkg:/source/utils/config.bs"
+import "pkg:/source/utils/misc.bs"
+
+sub init()
+    m.list = m.top.findNode("agenda")
+    m.status = m.top.findNode("status")
+    m.refresh = m.top.findNode("refresh")
+    m.list.observeField("itemSelected", "onEntrySelected")
+    m.refresh.observeField("buttonSelected", "reload")
+    m.started = false
+    m.tasks = []
+end sub
+
+sub OnScreenShown(_returning = false as boolean)
+    m.covered = false
+    if not m.started then reload()
+    if m.list.content <> invalid and m.list.content.getChildCount() > 0 then m.list.setFocus(true) else m.refresh.setFocus(true)
+end sub
+
+sub OnScreenHidden()
+    ' Keep requests completing into this screen's cache, but never reclaim focus.
+    m.covered = true
+end sub
+
+sub reload()
+    if kidsMode.Enabled() then return
+    m.covered = false
+    m.started = true
+    for each task in m.tasks
+        task.unobserveField("answer")
+    end for
+    m.tasks = []
+    m.range = speshCalendar.Range()
+    settings = m.global.session.user.settings
+    m.scope = get_url() + "|" + m.global.session.user.id + "|" + m.range.start + "|" + FormatJson({seerr:settings["seerr.enabled"], radarr:settings["calendar.radarr.enabled"], sonarr:settings["calendar.sonarr.enabled"]})
+    m.groups = {}
+    m.failures = {}
+    m.pending = {}
+    m.entries = []
+    now = CreateObject("roDateTime").AsSeconds()
+    cache = m.global.speshCalendarCache
+    if not isValid(cache) then cache = {}
+    for each source in ["Jellyfin", "Sonarr", "Radarr"]
+        m.pending[source] = true
+        cached = cache[source]
+        if isValid(cached) and cached.scope = m.scope and now - cached.saved < 300
+            m.groups[source] = cached.entries
+        end if
+        task = CreateObject("roSGNode", "SpeshCalendarTask")
+        task.request = { source:source, start:m.range.start, finish:m.range.finish, scope:m.scope }
+        task.observeField("answer", "onCalendarSource")
+        m.tasks.push(task)
+        task.control = "RUN"
+    end for
+    drawAgenda()
+end sub
+
+sub onCalendarSource(event as object)
+    active = false
+    for each task in m.tasks
+        if task.isSameNode(event.getRoSGNode()) then active = true
+    end for
+    if not active then return
+    memberPrefix = get_url() + "|" + m.global.session.user.id + "|"
+    if Left(m.scope, Len(memberPrefix)) <> memberPrefix then return
+    answer = event.getData()
+    if answer.scope <> m.scope then return
+    m.pending.Delete(answer.source)
+    if answer.error <> ""
+        m.failures[answer.source] = answer.error
+    else
+        m.groups[answer.source] = answer.entries
+        cache = m.global.speshCalendarCache
+        if not isValid(cache) then cache = {}
+        cache[answer.source] = { scope:m.scope, saved:CreateObject("roDateTime").AsSeconds(), entries:answer.entries }
+        if not m.global.hasField("speshCalendarCache") then m.global.addFields({speshCalendarCache:cache}) else m.global.speshCalendarCache = cache
+    end if
+    drawAgenda()
+end sub
+
+sub drawAgenda()
+    groups = []
+    for each source in ["Sonarr", "Jellyfin", "Radarr"]
+        if isValid(m.groups[source]) then groups.push(m.groups[source])
+    end for
+    focusedKey = ""
+    if m.list.itemFocused >= 0 and m.list.itemFocused < m.entries.count() then focusedKey = m.entries[m.list.itemFocused].key
+    m.entries = speshCalendar.Ordered(groups, m.range.start, m.range.finish)
+    content = CreateObject("roSGNode", "ContentNode")
+    target = 0
+    for i = 0 to m.entries.count() - 1
+        item = content.createChild("ContentNode")
+        item.title = m.entries[i].title
+        item.addFields({entry:m.entries[i]})
+        if m.entries[i].key = focusedKey then target = i
+    end for
+    m.list.content = content
+    if m.entries.count() > 0 then m.list.jumpToItem = target
+    text = "Eastern time · " + m.range.start + " through " + m.range.lastDay
+    if m.pending.count() > 0 then text += " · Loading " + m.pending.Keys().Join(", ")
+    if m.failures.count() > 0 then text += " · Unavailable: " + m.failures.Keys().Join(", ") + " (Refresh to retry)"
+    if m.entries.count() = 0 and m.pending.count() = 0 then text += " · No upcoming releases supplied"
+    m.status.text = text
+end sub
+
+sub onEntrySelected(event as object)
+    if kidsMode.Enabled() then return
+    index = event.getData()
+    if index < 0 or index >= m.entries.count() then return
+    entry = m.entries[index]
+    if entry.localId <> ""
+        node = CreateObject("roSGNode", "HomeData")
+        node.json = {Id:entry.localId,Type:entry.tv ? "Episode" : "Movie",Name:entry.title}
+        m.global.sceneManager.cinematicItemSelected = node
+    else if entry.tmdbId <> "" and entry.tmdbId <> "0"
+        ShowSeerrDetails({tmdbId:entry.tmdbId,mediaType:entry.tv ? "tv" : "movie"})
+    else
+        search = CreateObject("roSGNode", "SeerrGenreBrowseScreen")
+        search.browseType = "search"
+        search.initialSearchQuery = entry.title
+        m.global.sceneManager.callFunc("pushScene", search)
+    end if
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+    if key = "back"
+        m.global.sceneManager.callFunc("popScene")
+        return true
+    end if
+    if key = "up" and m.list.itemFocused <= 0
+        m.refresh.setFocus(true)
+        return true
+    else if key = "down" and m.refresh.hasFocus() and m.entries.count() > 0
+        m.list.setFocus(true)
+        return true
+    end if
+    return false
+end function

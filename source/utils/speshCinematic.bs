@@ -1,0 +1,11 @@
+import "pkg:/source/utils/misc.bs"
+namespace speshCinematic
+    function EpisodeLabel(item as object) as string
+        title = toString(item.Name)
+        first = toString(item.IndexNumber)
+        last = toString(item.IndexNumberEnd)
+        if first = "" then return title
+        if last <> "" and last <> first then first += "–" + last
+        return first + " · " + title
+    end function
+end namespace

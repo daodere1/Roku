@@ -1,0 +1,10 @@
+sub draw()
+    if m.top.itemContent = invalid then return
+    e = m.top.itemContent.entry
+    m.top.findNode("ring").visible = m.top.focusPercent > 0
+    m.top.findNode("art").uri = e.art
+    m.top.findNode("title").text = e.title
+    m.top.findNode("subtitle").text = e.subtitle
+    m.top.findNode("day").text = e.day
+    m.top.findNode("day").color = e.tv ? "#8ABCF4" : "#F3C564"
+end sub

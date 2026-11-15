@@ -750,6 +750,8 @@ function spotlightBuilderSeasonsCard() as dynamic
 
     return {
         id: "seasons",
+        seriesId: chainLookupReturn(s.item, "json.Id", ""),
+        serverData: { serverUrl:chainLookupReturn(s.item,"json._serverUrl",""), userId:chainLookupReturn(s.item,"json._userId",""), authToken:chainLookupReturn(s.item,"json._authToken","") },
         title: tr("Seasons"),
         modalTitle: isValidAndNotEmpty(showName) ? showName : tr("Seasons"),
         subtitle: spotlightJoinSubtitle(subtitleParts),

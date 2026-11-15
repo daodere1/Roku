@@ -1,0 +1,15 @@
+namespace speshServices
+    function All() as object
+        return [
+            { id: 213, name: "Netflix", icon: "netflix" },
+            { id: 2739, name: "Disney+", icon: "disneyplus" },
+            { id: 1024, name: "Prime Video", icon: "amazonprime" },
+            { id: 2552, name: "Apple TV+", icon: "appletv" },
+            { id: 453, name: "Hulu", icon: "hulu" },
+            { id: 3186, name: "HBO Max", icon: "hbo" },
+            { id: 4330, name: "Paramount+", icon: "paramountplus" },
+            { id: 3353, name: "Peacock", icon: "peacock" },
+            { id: 4353, name: "Discovery+", icon: "discoveryplus" }
+        ]
+    end function
+end namespace

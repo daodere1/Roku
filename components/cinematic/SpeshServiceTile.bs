@@ -1,0 +1,7 @@
+sub draw()
+    item = m.top.itemContent
+    if item = invalid then return
+    m.top.findNode("icon").uri = item.hdPosterUrl
+    m.top.findNode("name").text = item.title
+    m.top.findNode("ring").visible = m.top.focusPercent > 0
+end sub

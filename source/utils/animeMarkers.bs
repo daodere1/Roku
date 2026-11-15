@@ -102,7 +102,7 @@ namespace animeMarkers
         if tone = "mixed" then return { text: "#FFE08AFF", fill: "#FFC10729", border: "#FFC10780" }
         if tone = "mangaCanon" then return { text: "#9CE8B4FF", fill: "#2ECC7129", border: "#2ECC7180" }
         if tone = "animeCanon" then return { text: "#9ECBFFFF", fill: "#3498DB2E", border: "#3498DB8C" }
-        if tone = "recap" then return { text: "#D3B4FFFF", fill: "#9B59E82E", border: "#9B59E88C" }
+        if tone = "recap" then return { text: "#8ABCF4FF", fill: "#202227B8", border: "#8ABCF48C" }
         if tone = "subbed" then return { text: "#A9D8FFFF", fill: "#00A4DC2E", border: "#00A4DC8C" }
         if tone = "dubbed" then return { text: "#FFB3B3FF", fill: "#E74C3C2E", border: "#E74C3C8C" }
 

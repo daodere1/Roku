@@ -1,0 +1,114 @@
+import "pkg:/source/utils/misc.bs"
+namespace speshCalendar
+    function Pad(n as integer) as string
+        if n < 10 then return "0" + n.toStr()
+        return n.toStr()
+    end function
+
+    ' Gregorian weekday, Sunday = 0. US DST rules since 2007.
+    function Sunday(year as integer, month as integer, ordinal as integer) as integer
+        offsets = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]
+        y = year
+        if month < 3 then y--
+        weekday = (y + Int(y / 4) - Int(y / 100) + Int(y / 400) + offsets[month - 1] + 1) mod 7
+        return 1 + ((7 - weekday) mod 7) + (ordinal - 1) * 7
+    end function
+
+    function EasternOffset(utcIso as string) as integer
+        year = Val(Left(utcIso, 4))
+        start = year.toStr() + "-03-" + speshCalendar.Pad(speshCalendar.Sunday(year, 3, 2)) + "T07:00:00"
+        finish = year.toStr() + "-11-" + speshCalendar.Pad(speshCalendar.Sunday(year, 11, 1)) + "T06:00:00"
+        if utcIso >= start and utcIso < finish then return -4 * 3600
+        return -5 * 3600
+    end function
+
+    function UtcSeconds(iso as string) as longinteger
+        dt = CreateObject("roDateTime")
+        dt.FromISO8601String(Left(iso, 19) + "Z")
+        seconds = dt.AsSeconds() + 0&
+        ' Parse explicit offsets ourselves so device timezone never changes grouping.
+        if Len(iso) >= 25
+            zone = Mid(iso, Len(iso) - 5, 6)
+            if Left(zone, 1) = "+" or Left(zone, 1) = "-"
+                delta = (Val(Mid(zone, 2, 2)) * 60 + Val(Mid(zone, 5, 2))) * 60
+                if Left(zone, 1) = "+" then seconds -= delta else seconds += delta
+            end if
+        end if
+        return seconds
+    end function
+
+    function HasTime(iso as string) as boolean
+        rx = CreateObject("roRegex", "T[0-9]{2}:[0-9]{2}.*(Z|[+-][0-9]{2}:[0-9]{2})$", "i")
+        return rx.IsMatch(iso)
+    end function
+
+    function Eastern(iso as string, timed as boolean) as object
+        if not timed then return { day: Left(iso, 10), clock: "Time unavailable", sort: Left(iso, 10) + "T99:99" }
+        utc = CreateObject("roDateTime")
+        utc.FromSeconds(speshCalendar.UtcSeconds(iso))
+        offset = speshCalendar.EasternOffset(utc.ToISOString())
+        utc.FromSeconds(utc.AsSeconds() + offset)
+        stamp = utc.ToISOString()
+        suffix = "EST"
+        if offset = -14400 then suffix = "EDT"
+        return { day: Left(stamp, 10), clock: Mid(stamp, 12, 5) + " " + suffix, sort: Left(stamp, 19) }
+    end function
+
+    function Range() as object
+        now = CreateObject("roDateTime")
+        today = speshCalendar.Eastern(now.ToISOString(), true).day
+        now.FromISO8601String(today + "T00:00:00Z")
+        now.FromSeconds(now.AsSeconds() + 90 * 86400)
+        finish = Left(now.ToISOString(), 10)
+        now.FromSeconds(now.AsSeconds() - 86400)
+        return { start: today, finish: finish, lastDay: Left(now.ToISOString(), 10) }
+    end function
+
+    function Artwork(item as object) as string
+        for each kind in ["fanart", "screenshot", "banner", "poster"]
+            for each image in item.images ?? []
+                if LCase(toString(image.coverType)) = kind
+                    url = toString(image.remoteUrl ?? image.url)
+                    if url <> "" then return url.Replace("/t/p/original/", "/t/p/w780/")
+                end if
+            end for
+        end for
+        return ""
+    end function
+
+    function Ordered(groups as object, start as string, finish as string) as object
+        entries = []
+        seen = {}
+        for each group in groups
+            for each entry in group
+                if entry.day >= start and entry.day < finish
+                    key = entry.key
+                    episodeIdentity = entry.episodeKey ?? ""
+                    if episodeIdentity <> "" then key = "episode|" + episodeIdentity
+                    if not seen.DoesExist(key)
+                        seen[key] = entries.count()
+                        entries.push(entry)
+                    else
+                        prior = entries[seen[key]]
+                        ' Sonarr supplies the airing time; the library supplies the local route.
+                        if toString(entry.localId) <> "" and toString(prior.localId) = ""
+                            prior.localId = entry.localId
+                            if toString(entry.art) <> "" then prior.art = entry.art
+                        end if
+                    end if
+                end if
+            end for
+        end for
+        for i = 1 to entries.count() - 1
+            held = entries[i]
+            j = i - 1
+            while j >= 0
+                if entries[j].sort <= held.sort then exit while
+                entries[j + 1] = entries[j]
+                j--
+            end while
+            entries[j + 1] = held
+        end for
+        return entries
+    end function
+end namespace

@@ -63,7 +63,7 @@ namespace seerrStatusPills
     function Colors(tone as string) as object
         if tone = "green" then return { fill: "#22C55ECC", text: "#D7F5E2", border: "#22C55E" }
         if tone = "yellow" then return { fill: "#EAB308CC", text: "#FBF1D3", border: "#EAB308" }
-        if tone = "purple" then return { fill: "#A855F7CC", text: "#F0E3FD", border: "#A855F7" }
+        if tone = "purple" then return { fill: "#202227CC", text: "#8ABCF4", border: "#8ABCF4" }
         if tone = "red" then return { fill: "#EF4444CC", text: "#FCDDDD", border: "#EF4444" }
         return { fill: "#6B728026", text: "#9CA3AF", border: "#6B7280" }
     end function

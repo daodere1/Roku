@@ -194,7 +194,7 @@ end function
 function chosenValue(stepName as string) as string
     if not isStringEqual(stepName, "tour") then return effectiveValue(stepName)
     activeThemeId = toString(m.global.session.user.settings["ui.theme.customThemeId"])
-    if not isValidAndNotEmpty(activeThemeId) then return "spesha-style"
+    if not isValidAndNotEmpty(activeThemeId) then return "spesh-cinematic"
     return activeThemeId
 end function
 

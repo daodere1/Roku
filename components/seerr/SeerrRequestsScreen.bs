@@ -82,7 +82,8 @@ end sub
 sub buildTabs()
     m.tabBar.tabs = [
         { id: "requests", label: tabLabel(tr("Requests"), m.counts.pending) },
-        { id: "issues", label: tabLabel(tr("Issues"), m.counts.open) }
+        { id: "issues", label: tabLabel(tr("Issues"), m.counts.open) },
+        { id: "search", label: tr("Search") }
     ]
 
     index = m.tab = "issues" ? 1 : 0
@@ -132,6 +133,14 @@ sub onTabSelected(event as object)
     index = event.getData()
     if index < 0 then return
 
+    if index = 2
+        search = CreateObject("roSGNode", "SeerrGenreBrowseScreen")
+        search.browseType = "search"
+        m.global.sceneManager.callFunc("pushScene", search)
+        search.callFunc("beginSearch")
+        m.tabBar.selectedIndex = m.tab = "issues" ? 1 : 0
+        return
+    end if
     wanted = index = 1 ? "issues" : "requests"
     if wanted = m.tab then return
 

@@ -464,10 +464,9 @@ namespace session
 
                 tmpSettings = m.global.session.user.settings
                 session.user.settings.CollectDefaults(configTree, tmpSettings)
-                if not isValidAndNotEmpty(tmpSettings["ui.theme.customThemeId"])
-                    tmpSettings["ui.theme.customThemeId"] = "spesha-style"
-                    settingsSync.ApplyThemeColorsFromId("spesha-style", tmpSettings)
-                end if
+                tmpSettings["ui.theme.customThemeId"] = "spesh-cinematic"
+                tmpSettings["ui.itemdetail.style"] = "spotlight"
+                settingsSync.ApplyThemeColorsFromId("spesh-cinematic", tmpSettings)
                 session.user.Update("settings", tmpSettings)
 
                 session.user.settings.LoadGlobals()

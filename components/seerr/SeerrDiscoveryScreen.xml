@@ -3,7 +3,7 @@
 
     <children>
         <!-- Background color -->
-        <Rectangle width="1920" height="1080" color="#111827" />
+        <Rectangle width="1920" height="1080" color="#000000" />
 
         <Poster id="backdropPrev" loadDisplayMode="scaleToZoom" width="1920" height="1080" opacity="0.0" />
         <Poster id="backdrop" loadDisplayMode="scaleToZoom" width="1920" height="1080" opacity="0.0" />

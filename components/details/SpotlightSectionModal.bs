@@ -24,6 +24,8 @@ const MODAL_CHIP_PAD = 32
 
 sub init()
     m.body = m.top.findNode("modalBody")
+    m.seasonBack = m.top.findNode("seasonBack")
+    m.seasonBack.observeField("buttonSelected", "returnToSeasonPicker")
     m.scrollAnim = m.top.findNode("modalScrollAnim")
     m.scrollInterp = m.top.findNode("modalScrollInterp")
 
@@ -40,6 +42,9 @@ end sub
 ' A card opened again starts from its first section
 sub onVisibleChanged()
     if m.top.visible then return
+    cancelSeasonEpisodes()
+    m.seasonPickerCard = invalid
+    m.seasonBack.visible = false
     if isValid(m.directPlayTask)
         m.directPlayTask.unobserveField("result")
         m.directPlayTask = invalid
@@ -73,6 +78,10 @@ end function
 sub onCardChanged()
     card = m.top.card
     if not isValid(card) then return
+    if isValid(m.seasonPickerCard)
+        m.seasonPickerCard = card
+        return
+    end if
 
     ' The same card drawn again with more in it keeps the remote where it was
     cardId = chainLookupReturn(card, "id", "")
@@ -102,6 +111,69 @@ sub onCardChanged()
     if isValid(held) and held.section < m.sections.count()
         focusSection(held.section)
         if m.sections[held.section].isGrid and held.item >= 0 then m.sections[held.section].node.jumpToItem = held.item
+    end if
+end sub
+
+function getFocusTarget() as object
+    if m.focusedSection >= 0 and m.focusedSection < m.sections.count() then return m.sections[m.focusedSection].node
+    return m.top
+end function
+
+sub cancelSeasonEpisodes()
+    if isValid(m.seasonEpisodeTask)
+        m.seasonEpisodeTask.unobserveField("answer")
+        m.seasonEpisodeTask = invalid
+    end if
+    m.seasonEpisodeId = ""
+end sub
+
+sub openSeasonEpisodes(season as object)
+    seriesId = chainLookupReturn(season, "json.SeriesId", chainLookupReturn(m.top.card, "seriesId", ""))
+    if seriesId = "" then return
+    m.seasonPickerCard = m.top.card
+    m.seasonReturnFocus = { section:m.focusedSection, item:focusedItemIndex(m.sections[m.focusedSection]) }
+    cancelSeasonEpisodes()
+    m.seasonEpisodeId = season.id
+    m.seasonBack.visible = true
+    m.top.findNode("modalHeaderTitle").width = 1150
+    m.body.removeChildrenIndex(m.body.getChildCount(), 0)
+    m.sections = []
+    m.focusedSection = -1
+    m.top.findNode("modalHeaderTitle").text = season.title + " · Loading episodes…"
+    m.top.setFocus(true)
+    task = CreateObject("roSGNode", "SpeshSeasonEpisodesTask")
+    task.request = {seriesId:seriesId,seasonId:season.id,serverData:m.top.card.serverData}
+    task.observeField("answer", "onSeasonFrameLoaded")
+    m.seasonEpisodeTask = task
+    task.control = "RUN"
+end sub
+
+sub onSeasonFrameLoaded(event as object)
+    if not m.top.visible or not isValid(m.seasonPickerCard) or not isValid(m.seasonEpisodeTask) then return
+    if not event.getRoSGNode().isSameNode(m.seasonEpisodeTask) then return
+    answer = event.getData()
+    if answer.seasonId <> m.seasonEpisodeId then return
+    if not answer.ok or answer.items.count() = 0
+        returnToSeasonPicker()
+        m.top.findNode("modalHeaderTitle").text = tr("No episodes loaded. Select the season to retry.")
+        return
+    end if
+    m.top.findNode("modalHeaderTitle").text = tr("Episodes · Back to seasons")
+    buildSections([{kind:"media",title:tr("Episodes"),items:answer.items,aspect:"landscape"}])
+end sub
+
+sub returnToSeasonPicker()
+    if not isValid(m.seasonPickerCard) then return
+    held = m.seasonReturnFocus
+    cancelSeasonEpisodes()
+    m.seasonPickerCard = invalid
+    m.seasonBack.visible = false
+    m.top.findNode("modalHeaderTitle").width = 1480
+    m.cardId = ""
+    onCardChanged()
+    if held.section >= 0 and held.section < m.sections.count()
+        focusSection(held.section)
+        m.sections[held.section].node.jumpToItem = held.item
     end if
 end sub
 
@@ -513,6 +585,10 @@ sub onGridItemSelected(event as object)
 
     item = content.getChild(event.getData())
     if not isValid(item) then return
+    if LCase(chainLookupReturn(item, "json.Type", item.type ?? "")) = "season"
+        openSeasonEpisodes(item)
+        return
+    end if
 
     entry = invalid
     for each section in m.sections
@@ -559,7 +635,23 @@ end function
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
 
+    if isValid(m.seasonPickerCard)
+        if key = KeyCode.DOWN and m.seasonBack.hasFocus() and m.sections.count() > 0
+            focusSection(0)
+            return true
+        else if key = KeyCode.UP and m.focusedSection = 0
+            if focusedRow(m.sections[0]) = 0
+                m.seasonBack.setFocus(true)
+                return true
+            end if
+        end if
+    end if
+
     if key = KeyCode.BACK
+        if isValid(m.seasonPickerCard)
+            returnToSeasonPicker()
+            return true
+        end if
         m.top.modalClosed = true
         return true
     end if

@@ -170,7 +170,7 @@
             "settingName": "navbar.show_favorites",
             "glyph": "favorite",
             "type": "bool",
-            "default": "true"
+            "default": false
           },
           {
             "title": "Show Genres Button",
@@ -178,7 +178,7 @@
             "settingName": "navbar.show_genres",
             "glyph": "theater_comedy",
             "type": "bool",
-            "default": "true"
+            "default": false
           },
           {
             "title": "Show Live TV Button",
@@ -211,7 +211,7 @@
             "settingName": "navbar.show_shuffle",
             "glyph": "shuffle",
             "type": "bool",
-            "default": "true"
+            "default": false
           },
           {
             "title": "Show Seerr Button",
@@ -8384,7 +8384,7 @@
         "children": [
           {
             "title": "App Theme",
-            "description": "Apply a complete color and font theme across the whole app. Choose from built-in themes, community themes, and themes shared by your server.",
+            "description": "Spesh Cinematic: cinema black, warm gold actions, and cool blue focus.",
             "settingName": "ui.theme.picker",
             "glyph": "palette_outlined",
             "type": "themePicker"
@@ -8405,7 +8405,7 @@
                     "settingName": "colorBackground",
                     "glyph": "palette",
                     "type": "colorgrid",
-                    "default": "#121416"
+                    "default": "#000000"
                   },
                   {
                     "title": "Cursor",
@@ -8413,7 +8413,7 @@
                     "settingName": "colorCursor",
                     "glyph": "palette",
                     "type": "colorgrid",
-                    "default": "#56D9CC"
+                    "default": "#8ABCF4"
                   },
                   {
                     "title": "Primary Text",
@@ -8769,27 +8769,11 @@
             "settingName": "ui.itemdetail.style",
             "glyph": "movie_outlined",
             "type": "radio",
-            "default": "modern",
+            "default": "spotlight",
             "options": [
               {
-                "title": "Modern",
-                "id": "modern"
-              },
-              {
-                "title": "Spotlight",
+                "title": "Spesh Cinematic",
                 "id": "spotlight"
-              },
-              {
-                "title": "Nouveau",
-                "id": "nouveau"
-              },
-              {
-                "title": "Minimalist",
-                "id": "minimalist"
-              },
-              {
-                "title": "Classic",
-                "id": "classic"
               }
             ]
           },

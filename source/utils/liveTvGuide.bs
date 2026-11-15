@@ -17,7 +17,7 @@ const GUIDE_TV_CANVAS_SCALE = 1.45
 ' How fast a long program description scrolls, 55 ms per canvas point
 const GUIDE_DESCRIPTION_MS_PER_PIXEL = 37.93
 
-const GUIDE_ACCENT = "00A4DC"
+const GUIDE_ACCENT = "8ABCF4"
 const GUIDE_META_SEPARATOR = " · "
 
 const GUIDE_MIN_WINDOW_MINUTES = 150

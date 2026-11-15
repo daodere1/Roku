@@ -58,6 +58,10 @@ function trailerCurrentItem() as dynamic
     return m.mediaBarItems[m.currentIndex]
 end function
 
+function trailerIdentity(item as object) as string
+    return toString(item.id) + "|" + toString(chainLookupReturn(item, "json.ProviderIds.Tmdb", "")) + "|" + toString(chainLookupReturn(item, "json.Type", "")) + "|" + FormatJson(item.remoteTrailers ?? [])
+end function
+
 ' Starts the current title's trailer, or stops whatever plays when there is nothing to show.
 ' The same title asked for again carries on rather than starting over.
 sub refreshTrailer()
@@ -66,10 +70,11 @@ sub refreshTrailer()
         stopTrailer()
         return
     end if
-    if item.id = m.trailerItemId then return
+    if trailerIdentity(item) = m.trailerIdentity then return
 
     stopTrailer()
     m.trailerItemId = item.id
+    m.trailerIdentity = trailerIdentity(item)
     m.trailerPhase = "resolving"
     requestTrailerAttempt(item, 0)
 end sub
@@ -99,6 +104,9 @@ end sub
 sub onTrailerAnswer(event as object)
     answer = event.getData()
     if answer.requestId <> m.trailerRequestId or m.trailerPhase <> "resolving" then return
+    item = trailerCurrentItem()
+    if not isValid(item) then return
+    if trailerIdentity(item) <> m.trailerIdentity then return
 
     m.trailerAttempt = answer
     if answer.url = ""
@@ -109,6 +117,7 @@ sub onTrailerAnswer(event as object)
     content = CreateObject("roSGNode", "ContentNode")
     content.url = answer.url
     content.streamFormat = answer.format
+    content.title = item.title
     content.HttpCertificatesFile = "common:/certs/ca-bundle.crt"
     content.HttpHeaders = answer.httpHeaders ?? []
     if answer.startTime > 0 then content.playStart = answer.startTime
@@ -140,8 +149,10 @@ end sub
 ' Nothing more to try, so the artwork stays and the title isnt asked about again
 sub markTrailerUnavailable()
     itemId = m.trailerItemId
+    identity = m.trailerIdentity
     stopTrailer()
     m.trailerItemId = itemId
+    m.trailerIdentity = identity
     m.trailerPhase = "unavailable"
 end sub
 
@@ -211,6 +222,7 @@ sub stopTrailer()
     m.trailerRequestId++
     m.trailerRevealTimer.control = "stop"
     if isValid(m.trailerTask)
+        m.trailerTask.cancelRequested = true
         m.trailerTask.unobserveFieldScoped("answer")
         m.trailerTask = invalid
     end if
@@ -230,6 +242,7 @@ sub stopTrailer()
     m.trailerAttempt = invalid
     m.trailerPhase = "idle"
     m.trailerItemId = ""
+    m.trailerIdentity = ""
 end sub
 
 ' Full screen behind the bar's own styles, the frame in Aya, and the open panel in Gallery.

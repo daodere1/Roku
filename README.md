@@ -6,7 +6,10 @@ SpeshTV is a customized Roku client for Jellyfin and compatible Emby servers, ba
 
 ## SpeshTV features
 
-- SpeshTV icons, splash screens, loading graphics, and Spesha Style, SpeshFlix, SpeshPrime, and SpeshApple themes.
+- SpeshTV icons, splash screens, loading graphics, and the unified Spesh Cinematic theme: cinema black, gold actions, and blue focus.
+- Studios chooser with nine streaming-service icons and network discovery.
+- Today & upcoming: a progressive 90-day Eastern-time agenda with independent library, Sonarr, and Radarr sources; explicit EST/EDT air times and honest date-only releases.
+- Select a season to browse its episodes in the same detail frame; Back returns to the season picker and preserves your position.
 - Live TV guide with channel search, numeric channel entry, country, sports package, and tag filters.
 - Hold OK on a channel (or press *) for Watch Full Screen, Preview, and Add/Remove Favorite. Favorites belong to the signed-in Jellyfin user.
 - Remote focus protection for search and dialogs, quick Left navigation to upper controls, and restoration of the previous guide channel after using controls.

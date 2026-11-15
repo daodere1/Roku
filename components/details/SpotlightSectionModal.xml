@@ -16,6 +16,7 @@
 
     <Group id="modalPanel" translation="[173, 81]">
       <Group id="modalHeader" translation="[24, 20]">
+        <StandardButton id="seasonBack" text="Back to seasons" width="260" height="54" translation="[1240,-5]" visible="false" />
         <Poster id="modalHeaderIcon" width="30" height="30" blendColor="#FFFFFFCC" />
         <Label id="modalHeaderTitle"
           translation="[42, -6]"
@@ -37,6 +38,7 @@
     </Animation>
   </children>
   <interface>
+    <function name="getFocusTarget" />
     <field id="card" type="assocarray" onChange="onCardChanged" />
     <field id="sectionItemSelected" type="node" alwaysNotify="true" />
     <field id="chapterSeekTicks" type="longinteger" alwaysNotify="true" />

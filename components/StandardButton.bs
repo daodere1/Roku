@@ -34,7 +34,7 @@ sub applyButtonStyle()
         return
     end if
 
-    m.focusFeedback.blendColor = "0xFFFFFFFF"
+    m.focusFeedback.blendColor = m.top.focusBorderColor
     if m.top.focus
         m.buttonBackground.blendColor = m.top.focusBackground
         m.focusFeedback.visible = true

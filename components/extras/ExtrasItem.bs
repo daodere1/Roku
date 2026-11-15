@@ -212,7 +212,11 @@ sub showContent()
                 if isEpisodeCard
                     ' Episode layout: "E1" grey | "Episode Name" white | "45 min" grey right-aligned
                     epIdx = cont.json.LookupCI("IndexNumber")
-                    epPrefix = `E${epIdx}`
+                    epPrefix = `${epIdx}`
+                    last = cont.json.LookupCI("IndexNumberEnd")
+                    if isValid(last) and last <> epIdx then epPrefix += "–" + last.toStr()
+                    epPrefix += " ·"
+                    m.name.text = cont.json.Name
 
                     if isValid(m.epNumber)
                         m.epNumber.text = epPrefix

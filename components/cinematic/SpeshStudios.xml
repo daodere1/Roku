@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="SpeshStudios" extends="JFScreen">
+ <children>
+  <Rectangle width="1920" height="1080" color="#000000" />
+  <Label text="Studios &amp; streaming services" translation="[120,90]" font="font:LargeBoldSystemFont" color="#F3F5F6" />
+  <Label text="Browse shows by network. Availability varies by region." translation="[120,155]" font="font:SmallSystemFont" color="#A3A7B2" />
+  <MarkupGrid id="services" translation="[140,250]" itemComponentName="SpeshServiceTile" itemSize="[480,180]" itemSpacing="[40,30]" numColumns="3" numRows="3" drawFocusFeedback="false" />
+ </children>
+</component>

@@ -1,0 +1,35 @@
+import "pkg:/source/api/Items.bs"
+import "pkg:/source/api/Image.bs"
+import "pkg:/source/utils/config.bs"
+import "pkg:/source/utils/deviceCapabilities.bs"
+import "pkg:/source/utils/misc.bs"
+import "pkg:/source/utils/parentalControls.bs"
+import "pkg:/source/utils/speshCinematic.bs"
+
+sub init()
+    m.top.functionName = "load"
+end sub
+
+sub load()
+    r = m.top.request
+    items = []
+    ok = false
+    try
+        if isValid(r.serverData) and isValidAndNotEmpty(r.serverData.serverUrl) and isValidAndNotEmpty(r.serverData.authToken)
+            data = TVEpisodesForServer(r.serverData, r.seriesId, r.seasonId)
+        else
+            data = TVEpisodes(r.seriesId, r.seasonId)
+        end if
+        if isValid(data) and isValid(data.Items)
+            items = data.Items
+            ok = true
+            for each item in items
+                label = speshCinematic.EpisodeLabel(item.json)
+                if not item.hasField("labelText") then item.addFields({labelText:label}) else item.labelText = label
+            end for
+        end if
+    catch e
+        ok = false
+    end try
+    m.top.answer = { seasonId:r.seasonId, items:items, ok:ok }
+end sub

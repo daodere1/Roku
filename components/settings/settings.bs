@@ -471,7 +471,7 @@ sub showThemePicker(settingItem as object, themes as object)
     m.themeOptions = themes
 
     currentId = get_user_setting("ui.theme.customThemeId")
-    if not isValidAndNotEmpty(currentId) then currentId = "spesha-style"
+    if not isValidAndNotEmpty(currentId) then currentId = "spesh-cinematic"
 
     options = []
     selectedIndex = 0

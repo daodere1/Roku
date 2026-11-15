@@ -108,7 +108,7 @@ sub applyTypeBadge(request as object, media as object)
     width = m.typeLabel.boundingRect().width + (BADGE_PAD_X * 2)
     m.typeLabel.width = width
     m.typeFill.width = width
-    m.typeFill.blendColor = isSeries ? "#8B5CF6D9" : "#3B82F6D9"
+    m.typeFill.blendColor = isSeries ? "#8ABCF4D9" : "#3B82F6D9"
 end sub
 
 ' A download in flight takes the slot the state pill would have used

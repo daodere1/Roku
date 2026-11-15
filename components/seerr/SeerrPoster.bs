@@ -95,7 +95,7 @@ sub itemContentChanged()
         m.gradientOverlay.visible = false
         m.title.visible = false
         m.poster.loadDisplayMode = "scaleToFit"
-        m.backdrop.color = "#1F2937"
+        m.backdrop.color = "#151515"
     else
         m.title.text = titleText
         m.title.visible = true

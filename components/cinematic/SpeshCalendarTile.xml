@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="SpeshCalendarTile" extends="Group">
+ <interface>
+  <field id="itemContent" type="node" onChange="draw" />
+  <field id="focusPercent" type="float" onChange="draw" />
+ </interface>
+ <children>
+  <Rectangle id="ring" width="1680" height="185" color="#8ABCF4" />
+  <Rectangle translation="[3,3]" width="1674" height="179" color="#151515" />
+  <Poster id="art" translation="[10,8]" width="290" height="169" loadDisplayMode="scaleToFit" />
+  <Label id="day" translation="[325,15]" width="1300" color="#F3C564" font="font:SmallBoldSystemFont" />
+  <Label id="title" translation="[325,55]" width="1300" color="#F3F5F6" font="font:MediumBoldSystemFont" />
+  <Label id="subtitle" translation="[325,110]" width="1300" color="#A3A7B2" font="font:SmallSystemFont" />
+ </children>
+</component>

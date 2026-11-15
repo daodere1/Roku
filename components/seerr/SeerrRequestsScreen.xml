@@ -3,7 +3,7 @@
      on one screen -->
 <component name="SeerrRequestsScreen" extends="JFScreen">
   <children>
-    <Rectangle width="1920" height="1080" color="#111827" />
+    <Rectangle width="1920" height="1080" color="#000000" />
 
     <Label id="titleLabel" font="font:LargeBoldSystemFont" color="#FFFFFF" translation="[96, 56]" />
 
