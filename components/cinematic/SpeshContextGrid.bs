@@ -1,0 +1,38 @@
+sub init()
+    m.input = m.top.findNode("input")
+    m.input.observeField("selected", "onSelect")
+    m.input.observeField("requested", "onContext")
+    m.input.observeField("held", "onHeld")
+    m.top.observeField("itemFocused", "cancelHold")
+    m.top.observeField("content", "cancelHold")
+    m.top.observeField("focusedChild", "onGridFocus")
+end sub
+
+sub focusContext()
+    m.input.setFocus(true)
+end sub
+
+sub onGridFocus()
+    if not m.top.isInFocusChain() then cancelHold()
+    if m.top.hasFocus() then focusContext()
+end sub
+
+sub onContextEnabled()
+    m.input.contextEnabled = m.top.enableContext
+end sub
+
+sub cancelHold()
+    m.input.callFunc("cancelHold")
+end sub
+
+sub onHeld()
+    m.top.holdDown = m.input.held
+end sub
+
+sub onSelect()
+    m.top.contextSelected = m.top.itemFocused
+end sub
+
+sub onContext()
+    m.top.contextRequested = m.top.itemFocused
+end sub

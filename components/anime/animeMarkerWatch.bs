@@ -38,7 +38,7 @@ end sub
 
 ' The single pill a card draws over its artwork, bottom left. Made the first time there is
 ' something to show and kept on the card after that.
-function drawAnimeCardPill(pills as dynamic, parent as object, marker as dynamic, cardWidth as float, cardHeight as float, aboveProgress as boolean) as dynamic
+function drawAnimeCardPill(pills as dynamic, parent as object, marker as dynamic, cardWidth as float, cardHeight as float, aboveProgress as boolean, limit = 1 as integer) as dynamic
     if not isValid(pills)
         if not animeMarkers.HasPills(marker) then return invalid
 
@@ -49,6 +49,7 @@ function drawAnimeCardPill(pills as dynamic, parent as object, marker as dynamic
     end if
 
     pills.maxWidth = cardWidth - (ANIME_CARD_PILL_EDGE * 2)
+    pills.maxPills = limit
     pills.marker = marker ?? {}
 
     bottom = aboveProgress ? ANIME_CARD_PILL_ABOVE_PROGRESS : ANIME_CARD_PILL_EDGE

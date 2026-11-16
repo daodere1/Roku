@@ -36,6 +36,7 @@ end function
 ' watched or favorite reaches the sort and filters at once, and everything else on a detail page
 ' is read again when it is next opened.
 sub itemMenuChanged(action as string, card as dynamic, menuJson as object)
+    if isValid(m.sectionModal) and m.sectionModal.visible then m.sectionModal.callFunc("refreshMenuItem", menuJson)
     if action = "removeFromCollection"
         collectionMemberRemoved(menuJson.Id ?? "")
     else if action = "metadata" and isStringEqual(menuJson.Id, chainLookupReturn(m.top, "itemContent.json.Id", ""))

@@ -7,6 +7,7 @@ import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/multiserver.bs"
 import "pkg:/source/utils/nouveauLayout.bs"
 import "pkg:/source/utils/tmdbReviews.bs"
+import "pkg:/source/utils/speshCinematic.bs"
 
 ' Which summary cards an item gets, in what order, and what each one opens.
 '
@@ -741,7 +742,19 @@ function spotlightBuilderSeasonsCard() as dynamic
     itemName = chainLookupReturn(s.item, "json.Name", "")
     if isValidAndNotEmpty(itemName) then showName = itemName
 
-    cardSections = [{ kind: "media", title: tr("Seasons"), count: seasonItems.count(), items: seasonItems, aspect: "portrait" }]
+    selectedSeason = ""
+    if s.seriesEpisodes.count() > 0
+        anchor = s.seriesEpisodes[speshCinematic.EpisodeAnchor(s.seriesEpisodes)]
+        selectedSeason = chainLookupReturn(anchor, "json.SeasonId", "")
+    else
+        for each season in seasonItems
+            if chainLookupReturn(season, "json.UserData.UnplayedItemCount", 0) > 0
+                selectedSeason = chainLookupReturn(season, "json.Id", "")
+                exit for
+            end if
+        end for
+    end if
+    cardSections = [{ kind: "media", title: tr("Seasons"), count: seasonItems.count(), items: seasonItems, selectedId:selectedSeason, aspect: "portrait" }]
     subtitleParts = [spotlightCountLabel(seasonItems.count(), tr("1 season"), tr("{count} seasons"))]
     if episodeCount > 0 then subtitleParts.push(spotlightCountLabel(episodeCount, tr("1 episode"), tr("{count} episodes")))
 

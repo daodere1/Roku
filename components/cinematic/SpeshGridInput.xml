@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="SpeshGridInput" extends="Group">
+ <interface>
+  <field id="held" type="boolean" />
+  <field id="contextEnabled" type="boolean" value="true" />
+  <field id="selected" type="boolean" alwaysNotify="true" />
+  <field id="requested" type="boolean" alwaysNotify="true" />
+  <function name="cancelHold" />
+ </interface>
+ <children><Timer id="holdTimer" duration="0.7" repeat="false" /></children>
+</component>

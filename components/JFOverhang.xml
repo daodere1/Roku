@@ -13,6 +13,7 @@
       </LayoutGroup>
 
       <Poster id="navbarBackground" translation="[300, 30]" width="900" height="70" uri="pkg:/images/icons/pill-focus.9.png" />
+      <Poster id="navbarEdge" translation="[300,30]" width="900" height="70" uri="pkg:/images/playback/outline41.9.png" blendColor="#8ABCF4" opacity="0.18" />
 
       <Group id="navContainer" translation="[300, 30]">
         <Group id="navClipGroup" clippingRect="[0, 0, 900, 70]">

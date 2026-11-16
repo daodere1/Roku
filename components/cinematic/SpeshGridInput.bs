@@ -1,0 +1,48 @@
+' This child owns focus: OK is intercepted before MarkupGrid's native selection.
+' Arrows bubble to the grid so its scrolling and directional navigation stay native.
+sub init()
+    m.top.focusable = true
+    m.timer = m.top.findNode("holdTimer")
+    m.timer.observeField("fire", "onHold")
+    m.top.observeField("focusedChild", "onFocusChanged")
+    m.fired = false
+end sub
+
+sub cancelHold()
+    m.timer.control = "stop"
+    m.top.held = false
+    m.fired = false
+end sub
+
+sub onFocusChanged()
+    if not m.top.isInFocusChain() then cancelHold()
+end sub
+
+sub onHold()
+    if not m.top.held or not m.top.isInFocusChain() or not m.top.contextEnabled then return
+    m.fired = true
+    m.top.requested = true
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if key = "OK"
+        if press
+            if not m.top.held
+                m.fired = false
+                m.top.held = true
+                m.timer.control = "start"
+            end if
+        else
+            selectItem = m.top.held and not m.fired
+            cancelHold()
+            if selectItem then m.top.selected = true
+        end if
+        return true
+    end if
+    cancelHold()
+    if key = "options" and press and m.top.contextEnabled
+        m.top.requested = true
+        return true
+    end if
+    return false
+end function

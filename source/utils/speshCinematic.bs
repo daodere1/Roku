@@ -1,5 +1,35 @@
 import "pkg:/source/utils/misc.bs"
 namespace speshCinematic
+    ' Only episode grids are anchored. Preserve provider order for other media.
+    function EpisodeAnchor(items as object, selectedId = "" as string) as integer
+        resumeIndex = -1
+        unwatchedIndex = -1
+        recent = ""
+        for i = 0 to items.count() - 1
+            item = items[i].json
+            if item <> invalid and selectedId <> "" and item.Id = selectedId then return i
+            if item <> invalid and item.Type = "Episode"
+                if items[i].currentEpisode = true then return i
+                if selectedId <> "" and item.Id = selectedId then return i
+                data = item.UserData
+                if data <> invalid
+                    if data.PlaybackPositionTicks <> invalid and data.PlaybackPositionTicks > 0
+                        playedAt = toString(data.LastPlayedDate)
+                        if resumeIndex < 0 or playedAt > recent
+                            resumeIndex = i
+                            recent = playedAt
+                        end if
+                    end if
+                    if unwatchedIndex < 0 and data.Played <> true then unwatchedIndex = i
+                else if unwatchedIndex < 0
+                    unwatchedIndex = i
+                end if
+            end if
+        end for
+        if resumeIndex >= 0 then return resumeIndex
+        if unwatchedIndex >= 0 then return unwatchedIndex
+        return 0
+    end function
     function EpisodeLabel(item as object) as string
         title = toString(item.Name)
         first = toString(item.IndexNumber)

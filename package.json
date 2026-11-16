@@ -1,7 +1,7 @@
 {
   "name": "speshtv-roku",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "SpeshTV for Roku, based on Moonfin and Jellyfin Roku",
   "dependencies": {
     "@rokucommunity/bslib": "0.1.1"
@@ -20,7 +20,7 @@
     "build": "node scripts/speshtv-assets.mjs && npx rimraf build/ out/ && npx bsc --project bsconfig.json --source-map=false --create-package false && node scripts/package.mjs",
     "lint": "npx bsc --project bsconfig.json --create-package false --copy-to-staging false",
     "format": "npx bsfmt --write",
-    "test": "node test/server-compatibility.mjs && node test/spesh-progress.mjs && node test/spesh-seerr-player.mjs && node test/live-audio-profile.mjs && node test/guide-modal-regression.mjs && node test/spesh-cinematic.mjs"
+    "test": "node test/server-compatibility.mjs && node test/spesh-progress.mjs && node test/spesh-seerr-player.mjs && node test/live-audio-profile.mjs && node test/guide-modal-regression.mjs && node test/spesh-cinematic.mjs && node test/episode-context.mjs"
   },
   "repository": {
     "type": "git",

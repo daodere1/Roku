@@ -86,8 +86,8 @@ sub init()
     m.multiServerTask = invalid
     m.lastNavbarSettings = { shuffle: invalid, favorites: invalid, genres: invalid, libraries: invalid, seerr: invalid, showSeerr: invalid, showMessages: invalid, alwaysExpanded: invalid }
 
-    m.bgOpacity = 0.88
-    m.bgColor = "0x000000FF"
+    m.bgOpacity = 0.76
+    m.bgColor = "0x0D0F13FF"
 
     m.homeItem = createNavItem("home", "pkg:/images/icons/home.webp", "Home")
     m.searchItem = createNavItem("search", "pkg:/images/icons/search-light.webp", "Search")
@@ -427,6 +427,7 @@ end sub
 sub expandSidebar()
     if m.isExpanded then return
     m.isExpanded = true
+    m.top.findNode("sidebarGlassEdge").visible = true
 
     m.collapseAnim.control = "stop"
 
@@ -448,6 +449,7 @@ sub collapseSidebar()
     if m.navbarAlwaysExpanded then return
     if not m.isExpanded then return
     m.isExpanded = false
+    m.top.findNode("sidebarGlassEdge").visible = false
 
     m.expandAnim.control = "stop"
 
@@ -705,7 +707,7 @@ end sub
 sub applyOverlaySettings()
     if not isValid(m.global) or not isValid(m.global.session) then return
 
-    opacity = 0.88
+    opacity = 0.76
     if isValid(m.global.session.user) and isValid(m.global.session.user.settings)
         opacitySetting = m.global.session.user.settings["navbar.opacity"]
         if not isValid(opacitySetting)
@@ -717,7 +719,9 @@ sub applyOverlaySettings()
         end if
     end if
 
-    color = "0x000000FF"
+    if opacity > 0.82 then opacity = 0.82
+    if opacity < 0.65 then opacity = 0.65
+    color = "0x0D0F13FF"
     if isValid(m.global.session.user) and isValid(m.global.session.user.settings)
         navColor = m.global.session.user.settings["navbar.color"]
         if not isValid(navColor)

@@ -183,6 +183,13 @@ sub openItemMenu()
     ' The viewer moved on while the item loaded, and the menu would open over the wrong screen
     if not m.top.isInFocusChain() then return
 
+    holdSource = pending.options.selectHoldSource
+    if isValid(holdSource) and not holdSource.isInFocusChain() then return
+    if isValid(holdSource) and isValid(holdSource.content)
+        focusedCard = holdSource.content.getChild(holdSource.itemFocused)
+        if chainLookupReturn(focusedCard, "json.Id", "") <> pending.json.Id then return
+    end if
+
     menuEntries = itemMenu.BuildEntries(pending.json, pending.flags)
     menuEntries.append(itemMenu.LibraryItemEntries(pending.json, pending.flags))
     if menuEntries.count() = 0 then return
@@ -199,6 +206,7 @@ sub openItemMenu()
     m.itemMenuPanel.menuTitle = pending.json.Name ?? ""
     m.itemMenuPanel.entries = menuEntries
     m.itemMenuPanel.returnFocus = pending.returnFocus
+    if isValid(holdSource) then m.itemMenuPanel.waitForSelectRelease = holdSource.holdDown
     m.itemMenuPanel.observeField("chosen", "onItemMenuChosen")
     m.itemMenuPanel.observeField("dismissed", "onItemMenuDismissed")
 
@@ -817,7 +825,20 @@ sub onItemMenuDialogFinished(event as object)
         showItemMenuToast(tr("Metadata updated"))
     end if
 
-    itemMenuNotify("metadata", m.itemMenuDialogSubject)
+    runItemMenuTask(itemMenuRequest(m.itemMenuDialogSubject, "load", {}), "onItemMenuMetadataReloaded")
+end sub
+
+sub onItemMenuMetadataReloaded(event as object)
+    response = event.getData()
+    releaseItemMenuTask(event.getRoSGNode(), "response")
+    if not response.success or not validItemMetadata(response.data) then return
+    subject = response.request.subject
+    fresh = response.data
+    for each key in ["_serverUrl", "_userId", "_authToken", "_serverId", "_serverName", "LibraryId"]
+        if isValid(subject.json[key]) then fresh[key] = subject.json[key]
+    end for
+    subject.json = fresh
+    itemMenuNotify("metadata", subject)
 end sub
 
 ' ===== Plumbing =====

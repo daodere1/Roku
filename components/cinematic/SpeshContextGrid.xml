@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="SpeshContextGrid" extends="MarkupGrid">
+ <interface>
+  <field id="contextSelected" type="integer" alwaysNotify="true" />
+  <field id="contextRequested" type="integer" alwaysNotify="true" />
+  <field id="holdDown" type="boolean" />
+  <field id="enableContext" type="boolean" value="true" onChange="onContextEnabled" />
+  <function name="focusContext" />
+  <function name="cancelHold" />
+ </interface>
+ <children><SpeshGridInput id="input" /></children>
+</component>

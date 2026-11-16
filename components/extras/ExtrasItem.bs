@@ -332,11 +332,11 @@ end function
 sub showAnimeMarker(marker as dynamic)
     episodeLine = isAnimeEpisodeLine()
 
-    cardMarker = episodeLine ? {} : marker
-    m.animeCardPill = drawAnimeCardPill(m.animeCardPill, m.posterImgRect, cardMarker, m.posterImgRect.width, m.posterImgRect.height, false)
+    limit = episodeLine ? 0 : 1
+    m.animeCardPill = drawAnimeCardPill(m.animeCardPill, m.posterImgRect, marker, m.posterImgRect.width, m.posterImgRect.height, true, limit)
 
     if episodeLine
-        drawAnimeEpisodeLine(marker)
+        drawAnimeEpisodeLine({})
     else if isValid(m.animeLinePills)
         m.animeLinePills.marker = {}
     end if

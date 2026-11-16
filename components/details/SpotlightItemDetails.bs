@@ -1170,7 +1170,9 @@ sub onModalSeerrChosen(event as object)
 end sub
 
 sub onModalMenuRequested(event as object)
-    showItemMenu(event.getData(), itemMenuPageOptions())
+    options = itemMenuPageOptions()
+    options.selectHoldSource = m.sectionModal.callFunc("getMenuSource")
+    showItemMenu(event.getData(), options)
 end sub
 
 ' Only a playlist's rows have a menu, an album's songs just play from where they are pressed

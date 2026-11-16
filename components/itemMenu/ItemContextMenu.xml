@@ -33,6 +33,7 @@
     <field id="answers" type="array" />
     <!-- Where focus goes when the menu closes, otherwise it is stranded on a hidden node -->
     <field id="returnFocus" type="node" />
+    <field id="waitForSelectRelease" type="boolean" />
 
     <field id="chosen" type="string" alwaysNotify="true" />
     <field id="dismissed" type="boolean" alwaysNotify="true" />

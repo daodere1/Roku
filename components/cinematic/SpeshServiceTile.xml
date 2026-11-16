@@ -8,6 +8,6 @@
   <Rectangle id="ring" width="480" height="180" color="#8ABCF4" />
   <Rectangle id="fill" translation="[3,3]" width="474" height="174" color="#151515" />
   <Poster id="icon" translation="[160,25]" width="160" height="90" loadDisplayMode="scaleToFit" />
-  <Label id="name" translation="[10,125]" width="460" horizAlign="center" color="#F3F5F6" font="font:MediumSystemFont" />
+  <Label id="name" translation="[10,125]" width="460" horizAlign="center" color="#F3F5F6" font="font:MediumSystemFont" wrap="false" maxLines="1" />
  </children>
 </component>

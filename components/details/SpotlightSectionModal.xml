@@ -39,6 +39,8 @@
   </children>
   <interface>
     <function name="getFocusTarget" />
+    <function name="getMenuSource" />
+    <function name="refreshMenuItem" />
     <field id="card" type="assocarray" onChange="onCardChanged" />
     <field id="sectionItemSelected" type="node" alwaysNotify="true" />
     <field id="chapterSeekTicks" type="longinteger" alwaysNotify="true" />

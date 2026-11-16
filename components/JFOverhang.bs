@@ -386,6 +386,10 @@ sub sizeBarAndClip()
     m.navbarBg.translation = [barX, NAV_TOP]
     m.navbarBg.width = barWidth
     m.navbarBg.height = NAV_HEIGHT
+    edge = m.top.findNode("navbarEdge")
+    edge.translation = m.navbarBg.translation
+    edge.width = barWidth
+    edge.height = NAV_HEIGHT
     m.navContainer.translation = [barX, NAV_TOP]
     m.navClipGroup.clippingRect = [0, 0, barWidth, NAV_HEIGHT]
 end sub
@@ -691,7 +695,7 @@ end sub
 sub applyOverlaySettings()
     if not isValid(m.global) or not isValid(m.global.session) then return
 
-    opacity = 0.5
+    opacity = 0.72
     if isValid(m.global.session.user) and isValid(m.global.session.user.settings)
         opacitySetting = m.global.session.user.settings["navbar.opacity"]
         if not isValid(opacitySetting)
@@ -700,7 +704,9 @@ sub applyOverlaySettings()
         if isValid(opacitySetting) then opacity = opacitySetting.toFloat()
     end if
 
-    color = "0x475569FF"
+    if opacity < 0.65 then opacity = 0.65
+    if opacity > 0.82 then opacity = 0.82
+    color = "0x0D0F13FF"
     if isValid(m.global.session.user) and isValid(m.global.session.user.settings)
         navColor = m.global.session.user.settings["navbar.color"]
         if not isValid(navColor)

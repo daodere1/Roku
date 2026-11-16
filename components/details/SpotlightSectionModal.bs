@@ -7,6 +7,8 @@ import "pkg:/source/utils/loginStyle.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/seerrFacts.bs"
 import "pkg:/source/utils/tmdbReviews.bs"
+import "pkg:/source/utils/speshCinematic.bs"
+import "pkg:/source/api/Image.bs"
 
 ' An open card as a panel over the page, with every section it holds stacked down
 ' one scrolling body.
@@ -42,6 +44,7 @@ end sub
 ' A card opened again starts from its first section
 sub onVisibleChanged()
     if m.top.visible then return
+    cancelGridHolds()
     cancelSeasonEpisodes()
     m.seasonPickerCard = invalid
     m.seasonBack.visible = false
@@ -132,6 +135,7 @@ sub openSeasonEpisodes(season as object)
     if seriesId = "" then return
     m.seasonPickerCard = m.top.card
     m.seasonReturnFocus = { section:m.focusedSection, item:focusedItemIndex(m.sections[m.focusedSection]) }
+    cancelGridHolds()
     cancelSeasonEpisodes()
     m.seasonEpisodeId = season.id
     m.seasonBack.visible = true
@@ -190,6 +194,7 @@ end function
 
 ' A rebuild that puts focus somewhere itself passes focusOpening false
 sub buildSections(sections as object, focusOpening = true as boolean)
+    cancelGridHolds()
     m.body.removeChildrenIndex(m.body.getChildCount(), 0)
     m.sections = []
     m.focusedSection = -1
@@ -276,7 +281,8 @@ function addGrid(section as object, kind as string, items as object, y as float,
     rows = int((items.count() + columns - 1) / columns)
     if rows < 1 then rows = 1
 
-    grid = m.body.createChild("MarkupGrid")
+    grid = m.body.createChild("SpeshContextGrid")
+    grid.enableContext = kind = "media" and not chainLookupReturn(section, "isExtras", false)
     grid.itemComponentName = spec.component
     grid.numColumns = columns
     grid.numRows = rows
@@ -287,7 +293,10 @@ function addGrid(section as object, kind as string, items as object, y as float,
     grid.drawFocusFeedback = false
     grid.translation = [0, y]
     grid.content = spotlightContentFromItems(items, chainLookupReturn(spec, "posterWidth", 0), chainLookupReturn(spec, "square", false))
-    grid.observeField("itemSelected", "onGridItemSelected")
+    grid.observeField("contextSelected", "onGridItemSelected")
+    grid.observeField("itemFocused", "onGridFocusMoved")
+    if kind = "media" and not chainLookupReturn(section, "isExtras", false) then grid.observeField("contextRequested", "onGridContextRequested")
+    if kind = "media" then grid.jumpToItem = speshCinematic.EpisodeAnchor(items, chainLookupReturn(section, "selectedId", ""))
 
     gridHeight = rows * spec.height + (rows - 1) * spec.gap
     m.sections.push({
@@ -297,6 +306,8 @@ function addGrid(section as object, kind as string, items as object, y as float,
         bottom: y + gridHeight,
         columns: columns,
         rows: rows,
+        rowHeight: spec.height + spec.gap,
+        gridTop: y,
         kind: kind,
         isExtras: chainLookupReturn(section, "isExtras", false)
     })
@@ -504,7 +515,66 @@ sub focusSection(index as integer)
         m.sections[index].node.callFunc("focusFirst")
     end if
     m.sections[index].node.setFocus(true)
+    if m.sections[index].isGrid then m.sections[index].node.callFunc("focusContext")
     scrollSectionIntoView(index)
+    if m.sections[index].isGrid then scrollGridItem(m.sections[index])
+end sub
+
+sub onGridFocusMoved(event as object)
+    grid = event.getRoSGNode()
+    if not m.top.visible or not grid.isInFocusChain() then return
+    for each entry in m.sections
+        if entry.isGrid and entry.node.isSameNode(grid) then scrollGridItem(entry)
+    end for
+end sub
+
+sub scrollGridItem(entry as object)
+    row = int(entry.node.itemFocused / entry.columns)
+    itemTop = entry.gridTop + row * entry.rowHeight
+    itemBottom = itemTop + entry.rowHeight
+    if itemTop < m.scrollY then scrollBodyTo(itemTop)
+    if itemBottom > m.scrollY + MODAL_BODY_HEIGHT then scrollBodyTo(itemBottom - MODAL_BODY_HEIGHT)
+end sub
+
+sub cancelGridHolds()
+    if not isValid(m.sections) then return
+    for each entry in m.sections
+        if entry.isGrid then entry.node.callFunc("cancelHold")
+    end for
+end sub
+
+function getMenuSource() as object
+    if m.focusedSection >= 0 and m.focusedSection < m.sections.count() then return m.sections[m.focusedSection].node
+    return invalid
+end function
+
+sub onGridContextRequested(event as object)
+    grid = event.getRoSGNode()
+    index = event.getData()
+    if not m.top.visible or not grid.isInFocusChain() then return
+    if index < 0 or index >= grid.content.getChildCount() then return
+    m.top.menuRequested = grid.content.getChild(index)
+    m.top.menuRequested = invalid
+end sub
+
+' Replace only the matching card; never rebuild or re-anchor an open season frame.
+sub refreshMenuItem(menuJson as object)
+    if not m.top.visible or not isValid(menuJson.Id) then return
+    for each entry in m.sections
+        if entry.isGrid and isValid(entry.node.content)
+            for each card in entry.node.content.getChildren(-1, 0)
+                if chainLookupReturn(card, "json.Id", "") = menuJson.Id
+                    updated = card.clone(false)
+                    updated.json = menuJson
+                    if updated.hasField("labelText") then updated.labelText = speshCinematic.EpisodeLabel(menuJson)
+                    if updated.hasField("posterURL") then updated.posterURL = metadataPosterURL(menuJson)
+                    heldIndex = entry.node.itemFocused
+                    entry.node.content.replaceChild(updated, card)
+                    if entry.node.itemFocused <> heldIndex then entry.node.jumpToItem = heldIndex
+                end if
+            end for
+        end if
+    end for
 end sub
 
 sub onFocusItem()

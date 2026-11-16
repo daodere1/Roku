@@ -221,6 +221,11 @@ sub markFocus(index as integer)
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
+    if m.top.waitForSelectRelease and key = KeyCode.OK
+        if not press then m.top.waitForSelectRelease = false
+        return true
+    end if
+    if press and key <> KeyCode.OK then m.top.waitForSelectRelease = false
     if not press then return false
 
     ' A dismissed menu can still hold focus, and swallowing keys there would strand the screen
