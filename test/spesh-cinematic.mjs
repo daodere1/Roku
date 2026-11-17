@@ -7,7 +7,8 @@ import bsc from 'brighterscript';
 const directory=await mkdtemp(path.join(tmpdir(),'spesh-cinematic-'));
 try {
  let source=(await readFile('source/utils/speshCalendar.bs','utf8')).replace(/^import.*$/mg,'')+'\n'+(await readFile('source/utils/speshCinematic.bs','utf8')).replace(/^import.*$/mg,'');
- for(const [file,name] of [['components/cinematic/SpeshCalendar.bs','onCalendarSource'],['components/details/SpotlightSectionModal.bs','onSeasonFrameLoaded']]) {
+ source+='\n'+(await readFile('components/StandardButton.bs','utf8')).replace(/^import.*$/mg,'');
+ for(const [file,name] of [['components/cinematic/SpeshCalendar.bs','onCalendarSource'],['components/cinematic/SpeshCalendar.bs','checkDay'],['components/details/SpotlightSectionModal.bs','onSeasonFrameLoaded']]) {
   const text=await readFile(file,'utf8');
   source+='\n'+text.match(new RegExp(`^sub ${name}\\([^]*?^end sub`,'m'))[0];
  }
@@ -30,6 +31,9 @@ function tr(value)
 end function
 sub drawAgenda()
  m.drewAgenda=true
+end sub
+sub reload()
+ m.reloadCount++
 end sub
 sub buildSections(value)
  m.builtSections=value
@@ -88,6 +92,10 @@ sub Main()
  onSeasonFrameLoaded(event)
  check(m.builtSections,invalid,"closed season frame ignores load")
  check(speshCalendar.Sunday(2026,3,2),8,"March DST day")
+ check(speshCalendar.ReleaseLabel("digitalRelease"),"Digital release","digital release formatting")
+ check(speshCalendar.ReleaseLabel("physicalRelease"),"Physical release","physical release formatting")
+ check(speshCalendar.ReleaseLabel("inCinemas"),"In cinemas","cinema release formatting")
+ check(speshCalendar.SourceLabels(["Sonarr","Radarr","Jellyfin"]),"TV, Movies, Library","friendly calendar status")
  check(speshCalendar.Sunday(2026,11,1),1,"November DST day")
  check(speshCalendar.Eastern("2026-03-08T06:59:59Z",true).clock,"01:59 EST","before spring")
  check(speshCalendar.Eastern("2026-03-08T07:00:00Z",true).clock,"03:00 EDT","after spring")
@@ -110,6 +118,53 @@ sub Main()
  check(merged.count(),1,"matching airing and library deduped")
  check(merged[0].localId,"local-episode","local route retained")
  check(merged[0].sort,"2026-11-15T20:00","supplied airing retained")
+ check(speshCalendar.LocalMatch({hasFile:true},false).badge,"","Arr hasFile is not Jellyfin availability")
+ check(speshCalendar.LocalMatch({moonfinItemId:"series"},true).badge,"Series available","series-only badge")
+ check(speshCalendar.LocalMatch({moonfinItemId:"series"},true).kind,"Series","series-only route")
+ check(speshCalendar.LocalMatch({moonfinItemId:"series",moonfinEpisodeId:"episode"},true).id,"episode","episode route wins")
+ check(speshCalendar.LocalMatch({moonfinItemId:"series",moonfinEpisodeId:"episode"},true).badge,"Available","episode availability")
+ check(speshCalendar.LocalMatch({moonfinItemId:"movie"},false).kind,"Movie","local movie route")
+ check(speshCalendar.LocalMatch({moonfinItemId:"movie"},false).badge,"Available","movie available")
+ check(speshCalendar.LocalMatch({moonfinItemId:" "},false).badge,"","empty match ignored")
+ mixed=[{tv:true,key:"t"},{tv:false,key:"m"}]
+ check(speshCalendar.Filter(mixed,"All").count(),2,"All filter")
+ check(speshCalendar.Filter(mixed,"TV")[0].key,"t","TV filter")
+ check(speshCalendar.Filter(mixed,"Movies")[0].key,"m","Movies filter")
+ check(mixed.count(),2,"filters do not mutate loaded source")
+ merged=speshCalendar.Ordered([[{key:"air",episodeKey:"s|1|2",day:"2026-11-15",sort:"2026-11-15T20:00",localId:"series",localType:"Series",availability:"Series available"}],[{key:"lib",episodeKey:"s|1|2",day:"2026-11-15",sort:"2026-11-15T99:99",localId:"episode",localType:"Episode",availability:"Available"}]],"2026-11-15","2027-02-13")
+ check(merged[0].localId,"episode","local episode upgrades series match")
+ check(merged[0].availability,"Available","upgraded episode badge")
+ check(merged[0].sort,"2026-11-15T20:00","upgrade preserves airing time")
+ m.reloadCount=0
+ m.covered=false
+ m.range=speshCalendar.Range()
+ m.pending={}
+ checkDay()
+ check(m.reloadCount,1,"open page automatically rechecks Core")
+ m.pending={Sonarr:true}
+ checkDay()
+ check(m.reloadCount,1,"no overlapping refresh while pending")
+ m.covered=true
+ m.pending={}
+ checkDay()
+ check(m.reloadCount,1,"hidden page does not poll")
+ m.covered=false
+ m.range.start="1900-01-01"
+ checkDay()
+ check(m.reloadCount,2,"new Eastern day reloads automatically")
+ m.top={focus:false,outline:false,color:"#F3F5F6",focusColor:"#F3F5F6",background:"#25272C",focusBackground:"#303238",focusBorderColor:"#8ABCF4",fontSize:0,width:180,height:55,nodes:{buttonBackground:{},buttonText:{},buttonTextMeasure:{},buttonIcon:{visible:false},focusFeedback:{}},observeField:function(name,callback)
+  return invalid
+ end function,findNode:function(id)
+  return m.nodes[id]
+ end function}
+ init()
+ check(m.buttonBackground.blendColor,"#25272C","unfocused button painted at init")
+ check(m.buttonText.color,"#F3F5F6","idle button text visible at init")
+ check(m.focusFeedback.visible,false,"idle button has no focus ring")
+ m.top.focus=true
+ onFocusChanged()
+ check(m.buttonBackground.blendColor,"#303238","focused button remains dark")
+ check(m.focusFeedback.visible,true,"focus ring visible")
  print "CINEMATIC MODEL REGRESSIONS PASSED"
 end sub
 `);
@@ -142,3 +197,13 @@ const trailer=await readFile('components/details/TrailerOverlay.bs','utf8');
 assert.match(trailer,/if m.closed = true then return/);
 assert.match(trailer,/m.video.content = invalid/);
 console.log('CINEMATIC NAVIGATION, ICONS, LIFETIME CHECKS PASSED');
+const calendar=await readFile('components/cinematic/SpeshCalendar.bs','utf8');
+assert.ok(!calendar.includes('speshCalendarCache'),'no cross-screen device calendar cache');
+assert.match(calendar,/sub OnScreenShown[^]*?reload\(\)/);
+assert.match(calendar,/sub checkDay[^]*?if m.covered then return[^]*?speshCalendar.Range\(\).start <> m.range.start[^]*?reload\(\)[^]*?m.pending.count\(\) = 0[^]*?reload\(\)/);
+const filter=calendar.match(/^sub onFilter[^]*?^end sub/m)[0];
+assert.ok(!/reload|APIRequest|CreateObject/.test(filter),'filter changes never fetch');
+assert.match(calendar,/m.returnFocus = m.list/);
+const tile=await readFile('components/cinematic/SpeshCalendarTile.xml','utf8');
+assert.match(tile,/loadDisplayMode="scaleToFit"/);
+console.log('SHARED CALENDAR FILTER, AVAILABILITY, REFRESH CHECKS PASSED');

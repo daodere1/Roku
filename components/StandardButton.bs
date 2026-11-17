@@ -22,6 +22,8 @@ sub init()
     m.top.observeField("borderColor", "applyButtonStyle")
     m.top.observeField("focusBorderColor", "applyButtonStyle")
     m.top.observeField("iconUri", "onIconUriChanged")
+    ' Default field values do not trigger observers. Paint idle buttons immediately.
+    onFocusChanged()
 end sub
 
 ' An outline button drops the fill and carries its colour on the border and label

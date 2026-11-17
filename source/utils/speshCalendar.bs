@@ -1,5 +1,43 @@
 import "pkg:/source/utils/misc.bs"
 namespace speshCalendar
+    function ReleaseLabel(kind as string) as string
+        if kind = "digitalRelease" then return "Digital release"
+        if kind = "physicalRelease" then return "Physical release"
+        if kind = "inCinemas" then return "In cinemas"
+        return "Release"
+    end function
+
+    function SourceLabel(source as string) as string
+        if source = "Sonarr" then return "TV"
+        if source = "Radarr" then return "Movies"
+        return "Library"
+    end function
+
+    function SourceLabels(sources as object) as string
+        labels = []
+        for each source in sources
+            labels.push(speshCalendar.SourceLabel(source))
+        end for
+        return labels.Join(", ")
+    end function
+    function Filter(entries as object, kind as string) as object
+        result = []
+        for each entry in entries
+            if kind = "All" or (kind = "TV" and entry.tv) or (kind = "Movies" and not entry.tv) then result.push(entry)
+        end for
+        return result
+    end function
+
+    function LocalMatch(item as object, tv as boolean) as object
+        episodeId = toString(item.moonfinEpisodeId).Trim()
+        itemId = toString(item.moonfinItemId).Trim()
+        if tv and episodeId <> "" then return {id:episodeId,kind:"Episode",badge:"Available"}
+        if itemId <> ""
+            if tv then return {id:itemId,kind:"Series",badge:"Series available"}
+            return {id:itemId,kind:"Movie",badge:"Available"}
+        end if
+        return {id:"",kind:"",badge:""}
+    end function
     function Pad(n as integer) as string
         if n < 10 then return "0" + n.toStr()
         return n.toStr()
@@ -91,8 +129,10 @@ namespace speshCalendar
                     else
                         prior = entries[seen[key]]
                         ' Sonarr supplies the airing time; the library supplies the local route.
-                        if toString(entry.localId) <> "" and toString(prior.localId) = ""
+                        if toString(entry.localId) <> "" and (toString(prior.localId) = "" or (entry.localType = "Episode" and prior.localType <> "Episode"))
                             prior.localId = entry.localId
+                            prior.localType = entry.localType
+                            prior.availability = entry.availability
                             if toString(entry.art) <> "" then prior.art = entry.art
                         end if
                     end if

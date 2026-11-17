@@ -7,4 +7,6 @@ sub draw()
     m.top.findNode("subtitle").text = e.subtitle
     m.top.findNode("day").text = e.day
     m.top.findNode("day").color = e.tv ? "#8ABCF4" : "#F3C564"
+    m.top.findNode("availability").text = e.availability ?? ""
+    m.top.findNode("availability").color = e.tv ? "#8ABCF4" : "#F3C564"
 end sub

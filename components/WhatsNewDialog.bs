@@ -45,7 +45,9 @@ sub init()
 
     m.lineHeights = {}
     m.scrollTop = 0
-    m.noteBlocks = messageMarkdown.ParseBlocks(ReadAsciiFile("pkg:/source/static/whatsNew/" + version + ".md"))
+    notes = ReadAsciiFile("pkg:/source/static/whatsNew/" + version + ".md")
+    if notes.Trim() = "" then notes = "Release notes are not bundled for this version. Visit github.com/daodere1/Roku/releases for details."
+    m.noteBlocks = messageMarkdown.ParseBlocks(notes)
     layout()
 end sub
 

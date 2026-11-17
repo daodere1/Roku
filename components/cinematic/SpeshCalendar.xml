@@ -3,8 +3,12 @@
  <children>
   <Rectangle width="1920" height="1080" color="#000000" />
   <Label text="Today &amp; upcoming" translation="[120,65]" font="font:LargeBoldSystemFont" color="#F3F5F6" />
-  <Label id="status" translation="[120,130]" width="1680" font="font:SmallSystemFont" color="#A3A7B2" />
+  <Label id="status" translation="[120,130]" width="1680" height="50" wrap="true" maxLines="2" font="font:SmallSystemFont" color="#A3A7B2" />
   <StandardButton id="refresh" text="Refresh" translation="[1570,55]" width="230" height="60" />
-  <MarkupList id="agenda" translation="[120,200]" itemComponentName="SpeshCalendarTile" itemSize="[1680,185]" itemSpacing="[0,20]" numRows="4" drawFocusFeedback="false" vertFocusAnimationStyle="floatingFocus" />
+  <StandardButton id="all" text="All" translation="[120,185]" width="180" height="55" />
+  <StandardButton id="tv" text="TV" translation="[320,185]" width="180" height="55" />
+  <StandardButton id="movies" text="Movies" translation="[520,185]" width="220" height="55" />
+  <MarkupList id="agenda" translation="[120,275]" itemComponentName="SpeshCalendarTile" itemSize="[1680,185]" itemSpacing="[0,20]" numRows="3" drawFocusFeedback="false" vertFocusAnimationStyle="floatingFocus" />
+  <Timer id="midnight" duration="60" repeat="true" />
  </children>
 </component>

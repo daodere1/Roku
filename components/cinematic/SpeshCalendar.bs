@@ -12,21 +12,60 @@ sub init()
     m.refresh.observeField("buttonSelected", "reload")
     m.started = false
     m.tasks = []
+    m.filter = "All"
+    m.positions = {}
+    m.entries = []
+    m.toolbar = [m.top.findNode("all"), m.top.findNode("tv"), m.top.findNode("movies"), m.refresh]
+    for each button in m.toolbar
+        if not button.isSameNode(m.refresh) then button.observeField("buttonSelected", "onFilter")
+    end for
+    m.midnight = m.top.findNode("midnight")
+    m.midnight.observeField("fire", "checkDay")
 end sub
 
 sub OnScreenShown(_returning = false as boolean)
     m.covered = false
-    if not m.started then reload()
-    if m.list.content <> invalid and m.list.content.getChildCount() > 0 then m.list.setFocus(true) else m.refresh.setFocus(true)
+    reload()
+    m.midnight.control = "start"
+    m.restoreListFocus = isValid(m.returnFocus) and m.returnFocus.isSameNode(m.list)
+    if isValid(m.returnFocus) and not m.restoreListFocus then m.returnFocus.setFocus(true) else m.toolbar[0].setFocus(true)
 end sub
 
 sub OnScreenHidden()
-    ' Keep requests completing into this screen's cache, but never reclaim focus.
+    ' Keep only this screen's rows; the next visit always reads Core again.
+    if m.list.isInFocusChain() then m.returnFocus = m.list
+    for each button in m.toolbar
+        if button.hasFocus() then m.returnFocus = button
+    end for
     m.covered = true
+    m.midnight.control = "stop"
+end sub
+
+sub checkDay()
+    if m.covered then return
+    if speshCalendar.Range().start <> m.range.start
+        reload()
+    else if m.pending.count() = 0
+        ' Re-read Core's shared snapshot and live library matches while this page is open.
+        ' This does not refresh Arr directly or store a client schedule cache.
+        reload()
+    end if
+end sub
+
+sub rememberPosition()
+    if m.list.itemFocused >= 0 and m.list.itemFocused < m.entries.count() then m.positions[m.filter] = m.entries[m.list.itemFocused].key
+end sub
+
+sub onFilter(event as object)
+    m.restoreListFocus = false
+    rememberPosition()
+    m.filter = event.getRoSGNode().text
+    drawAgenda()
 end sub
 
 sub reload()
     if kidsMode.Enabled() then return
+    rememberPosition()
     m.covered = false
     m.started = true
     for each task in m.tasks
@@ -35,20 +74,13 @@ sub reload()
     m.tasks = []
     m.range = speshCalendar.Range()
     settings = m.global.session.user.settings
-    m.scope = get_url() + "|" + m.global.session.user.id + "|" + m.range.start + "|" + FormatJson({seerr:settings["seerr.enabled"], radarr:settings["calendar.radarr.enabled"], sonarr:settings["calendar.sonarr.enabled"]})
-    m.groups = {}
+    nextScope = get_url() + "|" + m.global.session.user.id + "|" + m.range.start + "|" + FormatJson({seerr:settings["seerr.enabled"], radarr:settings["calendar.radarr.enabled"], sonarr:settings["calendar.sonarr.enabled"]})
+    if m.scope <> nextScope or not isValid(m.groups) then m.groups = {}
+    m.scope = nextScope
     m.failures = {}
     m.pending = {}
-    m.entries = []
-    now = CreateObject("roDateTime").AsSeconds()
-    cache = m.global.speshCalendarCache
-    if not isValid(cache) then cache = {}
     for each source in ["Jellyfin", "Sonarr", "Radarr"]
         m.pending[source] = true
-        cached = cache[source]
-        if isValid(cached) and cached.scope = m.scope and now - cached.saved < 300
-            m.groups[source] = cached.entries
-        end if
         task = CreateObject("roSGNode", "SpeshCalendarTask")
         task.request = { source:source, start:m.range.start, finish:m.range.finish, scope:m.scope }
         task.observeField("answer", "onCalendarSource")
@@ -73,10 +105,6 @@ sub onCalendarSource(event as object)
         m.failures[answer.source] = answer.error
     else
         m.groups[answer.source] = answer.entries
-        cache = m.global.speshCalendarCache
-        if not isValid(cache) then cache = {}
-        cache[answer.source] = { scope:m.scope, saved:CreateObject("roDateTime").AsSeconds(), entries:answer.entries }
-        if not m.global.hasField("speshCalendarCache") then m.global.addFields({speshCalendarCache:cache}) else m.global.speshCalendarCache = cache
     end if
     drawAgenda()
 end sub
@@ -86,23 +114,39 @@ sub drawAgenda()
     for each source in ["Sonarr", "Jellyfin", "Radarr"]
         if isValid(m.groups[source]) then groups.push(m.groups[source])
     end for
-    focusedKey = ""
-    if m.list.itemFocused >= 0 and m.list.itemFocused < m.entries.count() then focusedKey = m.entries[m.list.itemFocused].key
-    m.entries = speshCalendar.Ordered(groups, m.range.start, m.range.finish)
+    focusedKey = m.positions[m.filter] ?? ""
+    if m.restoreListFocus <> true and m.list.isInFocusChain() and m.list.itemFocused >= 0 and m.list.itemFocused < m.entries.count() then focusedKey = m.entries[m.list.itemFocused].key
+    m.entries = speshCalendar.Filter(speshCalendar.Ordered(groups, m.range.start, m.range.finish), m.filter)
     content = CreateObject("roSGNode", "ContentNode")
     target = 0
+    found = false
     for i = 0 to m.entries.count() - 1
         item = content.createChild("ContentNode")
         item.title = m.entries[i].title
         item.addFields({entry:m.entries[i]})
-        if m.entries[i].key = focusedKey then target = i
+        if m.entries[i].key = focusedKey
+            target = i
+            found = true
+        end if
     end for
     m.list.content = content
-    if m.entries.count() > 0 then m.list.jumpToItem = target
+    if m.entries.count() > 0
+        m.list.jumpToItem = target
+        if focusedKey = "" then m.positions[m.filter] = m.entries[target].key
+        if m.restoreListFocus = true and not m.covered and (found or focusedKey = "" or m.pending.count() = 0)
+            m.list.setFocus(true)
+            m.restoreListFocus = false
+        end if
+    end if
+    for each button in m.toolbar
+        if not button.isSameNode(m.refresh) then button.color = button.text = m.filter ? "#F3C564" : "#F3F5F6"
+    end for
     text = "Eastern time · " + m.range.start + " through " + m.range.lastDay
-    if m.pending.count() > 0 then text += " · Loading " + m.pending.Keys().Join(", ")
-    if m.failures.count() > 0 then text += " · Unavailable: " + m.failures.Keys().Join(", ") + " (Refresh to retry)"
-    if m.entries.count() = 0 and m.pending.count() = 0 then text += " · No upcoming releases supplied"
+    if m.pending.count() > 0 then text += " · Loading " + speshCalendar.SourceLabels(m.pending.Keys())
+    if m.failures.count() > 0 then text += " · Unavailable: " + speshCalendar.SourceLabels(m.failures.Keys()) + " (Refresh to retry)"
+    if m.entries.count() = 0 and m.pending.count() = 0
+        if m.failures.count() = 0 then text += " · No upcoming releases supplied" else text += " · No entries loaded. Refresh to retry."
+    end if
     m.status.text = text
 end sub
 
@@ -111,9 +155,11 @@ sub onEntrySelected(event as object)
     index = event.getData()
     if index < 0 or index >= m.entries.count() then return
     entry = m.entries[index]
+    rememberPosition()
+    m.returnFocus = m.list
     if entry.localId <> ""
         node = CreateObject("roSGNode", "HomeData")
-        node.json = {Id:entry.localId,Type:entry.tv ? "Episode" : "Movie",Name:entry.title}
+        node.json = {Id:entry.localId,Type:entry.localType ?? (entry.tv ? "Episode" : "Movie"),Name:entry.title}
         m.global.sceneManager.cinematicItemSelected = node
     else if entry.tmdbId <> "" and entry.tmdbId <> "0"
         ShowSeerrDetails({tmdbId:entry.tmdbId,mediaType:entry.tv ? "tv" : "movie"})
@@ -127,16 +173,25 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
+    m.restoreListFocus = false
     if key = "back"
         m.global.sceneManager.callFunc("popScene")
         return true
     end if
-    if key = "up" and m.list.itemFocused <= 0
-        m.refresh.setFocus(true)
-        return true
-    else if key = "down" and m.refresh.hasFocus() and m.entries.count() > 0
-        m.list.setFocus(true)
+    if key = "up" and m.list.isInFocusChain() and m.list.itemFocused <= 0
+        rememberPosition()
+        for each button in m.toolbar
+            if button.text = m.filter then button.setFocus(true)
+        end for
         return true
     end if
+    for i = 0 to m.toolbar.count() - 1
+        if m.toolbar[i].hasFocus()
+            if key = "left" and i > 0 then m.toolbar[i - 1].setFocus(true)
+            if key = "right" and i < m.toolbar.count() - 1 then m.toolbar[i + 1].setFocus(true)
+            if key = "down" and m.entries.count() > 0 then m.list.setFocus(true)
+            if key = "left" or key = "right" or key = "down" or key = "up" then return true
+        end if
+    end for
     return false
 end function

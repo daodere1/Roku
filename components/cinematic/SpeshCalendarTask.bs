@@ -18,6 +18,7 @@ sub load()
             data = getJsonWithin(APIRequest("/Items", { UserId: m.global.session.user.id, IncludeItemTypes: "Movie,Episode", Recursive: true, MinPremiereDate: r.start + "T00:00:00Z", MaxPremiereDate: r.finish + "T23:59:59Z", SortBy: "PremiereDate", SortOrder: "Ascending", Limit: 1000, EnableTotalRecordCount: false, Fields: "PremiereDate,SeriesName,Overview,ProviderIds,ParentBackdropItemId,ParentBackdropImageTags" }), 15000)
             if not isValid(data) or not isValid(data.Items) then throw "Library source unavailable"
             for each item in parentalControls.WithoutBlockedItems(data.Items)
+                if item.IsVirtualItem = true or item.IsMissing = true or item.LocationType = "Virtual" then continue for
                 iso = toString(item.PremiereDate)
                 if iso = "" then continue for
                 tv = LCase(toString(item.Type)) = "episode"
@@ -32,7 +33,7 @@ sub load()
                 end if
                 episodeKey = ""
                 if tv then episodeKey = LCase(title) + "|" + toString(item.ParentIndexNumber) + "|" + toString(item.IndexNumber)
-                appendEntry(entries, item, iso, false, tv, title, toString(item.Name) + " · Library", art, item.Id, episodeKey)
+                appendEntry(entries, item, iso, false, tv, title, toString(item.Name) + " · Library", art, item.Id, episodeKey, toString(item.Type), "Available")
             end for
         else
             boundary = CreateObject("roDateTime")
@@ -53,25 +54,26 @@ sub load()
                     if not timed then iso = toString(item.airDate)
                     if iso = "" then continue for
                     detail = "S" + toString(item.seasonNumber) + " · E" + toString(item.episodeNumber) + " · " + toString(item.title)
-                    localId = toString(item.moonfinEpisodeId ?? item.moonfinItemId)
+                    match = speshCalendar.LocalMatch(item, true)
                     episodeKey = LCase(toString(series.title)) + "|" + toString(item.seasonNumber) + "|" + toString(item.episodeNumber)
-                    appendEntry(entries, series, iso, timed, true, toString(series.title), detail, speshCalendar.Artwork(series), localId, episodeKey)
+                    appendEntry(entries, series, iso, timed, true, toString(series.title), detail, speshCalendar.Artwork(series), match.id, episodeKey, match.kind, match.badge)
                 else
+                    match = speshCalendar.LocalMatch(item, false)
                     for each kind in ["digitalRelease", "physicalRelease", "inCinemas"]
                         iso = toString(item[kind])
-                        if iso <> "" then appendEntry(entries, item, iso, false, false, toString(item.title), kind + " · Radarr", speshCalendar.Artwork(item), toString(item.moonfinItemId))
+                        if iso <> "" then appendEntry(entries, item, iso, false, false, toString(item.title), speshCalendar.ReleaseLabel(kind), speshCalendar.Artwork(item), match.id, "", match.kind, match.badge)
                     end for
                 end if
             end for
         end if
     catch e
-        error = r.source + ": unavailable. Other sources remain visible."
+        error = speshCalendar.SourceLabel(r.source) + ": unavailable. Other entries remain visible."
     end try
     m.top.answer = { source: r.source, entries: entries, error: error, scope: r.scope }
 end sub
 
-sub appendEntry(entries as object, item as object, iso as string, timed as boolean, tv as boolean, title as string, detail as string, art as string, localId as string, episodeKey = "" as string)
+sub appendEntry(entries as object, item as object, iso as string, timed as boolean, tv as boolean, title as string, detail as string, art as string, localId as string, episodeKey = "" as string, localType = "" as string, availability = "" as string)
     date = speshCalendar.Eastern(iso, timed)
     key = LCase(title) + "|" + date.day + "|" + detail
-    entries.push({ key: key, episodeKey:episodeKey, title: title, subtitle: date.clock + " · " + detail, day: date.day, sort: date.sort, tv: tv, art: art, localId: localId, tmdbId: toString(item.tmdbId ?? chainLookup(item,"ProviderIds.Tmdb")), tvdbId: toString(item.tvdbId), name: title })
+    entries.push({ key: key, episodeKey:episodeKey, title: title, subtitle: date.clock + " · " + detail, day: date.day, sort: date.sort, tv: tv, art: art, localId: localId, localType:localType, availability:availability, tmdbId: toString(item.tmdbId ?? chainLookup(item,"ProviderIds.Tmdb")), tvdbId: toString(item.tvdbId), name: title })
 end sub
