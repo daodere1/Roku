@@ -11,9 +11,14 @@ try {
  const menuSource=await readFile('components/itemMenu/ItemContextMenu.bs','utf8');
  const menuKey=menuSource.match(/^function onKeyEvent\([^]*?^end function/m)[0].replace('function onKeyEvent','function onMenuKeyEvent');
  const keys=await readFile('source/enums/KeyCode.bs','utf8');
+ const modalSource=await readFile('components/details/SpotlightSectionModal.bs','utf8');
+ const scrollGrid=modalSource.match(/^sub scrollGridItem[^]*?^end sub/m)[0];
  const program=new bsc.Program({rootDir:temp});
  const file=path.join(temp,'test.bs');
- program.setFile({src:file,dest:'source/test.bs'},input+model+keys+menuKey+`
+ program.setFile({src:file,dest:'source/test.bs'},input+model+keys+menuKey+'\n'+scrollGrid+`
+sub scrollBodyTo(target)
+ m.scrollTarget=target
+end sub
 sub closeMenu(choice)
  m.closedChoice=choice
 end sub
@@ -87,6 +92,17 @@ sub Main()
  episodes[2].json.UserData.PlaybackPositionTicks=0
  check(speshCinematic.EpisodeAnchor(episodes),1,"first unwatched")
  check(speshCinematic.EpisodeAnchor([]),0,"empty safe")
+ window=speshCinematic.GridWindow(170,3,320,30)
+ check(window.rows,57,"long season preserves logical rows")
+ check(window.visibleRows,2,"long season has bounded native viewport")
+ check(window.height,670,"episode viewport fits modal")
+ window=speshCinematic.GridWindow(20,6,380,30)
+ check(window.visibleRows,1,"portrait rows leave room for heading")
+ check(speshCinematic.GridWindow(1,3,320,30).visibleRows,1,"single episode viewport")
+ scrollGridItem({top:112,gridTop:158,rowHeight:350,columns:3,node:{itemFocused:169}})
+ check(m.scrollTarget,112,"last episode never scrolls outer panel off screen")
+ scrollGridItem({top:112,gridTop:158,rowHeight:350,columns:3,node:{itemFocused:0}})
+ check(m.scrollTarget,112,"first and last episodes share stable outer viewport")
  print "EPISODE INPUT AND ANCHOR REGRESSIONS PASSED"
 end sub
 `);
@@ -100,6 +116,11 @@ const modal=await readFile('components/details/SpotlightSectionModal.bs','utf8')
 assert.match(modal,/createChild\("SpeshContextGrid"\)/);
 assert.match(modal,/observeField\("contextSelected", "onGridItemSelected"\)/);
 assert.match(modal,/content.replaceChild\(updated, card\)/);
+assert.match(modal,/grid.numRows = visibleRows/);
+assert.match(modal,/grid.vertFocusAnimationStyle = "floatingFocus"/);
+const scroll=modal.match(/^sub scrollGridItem[^]*?^end sub/m)[0];
+assert.ok(!scroll.includes('itemFocused'),'outer panel does not scroll by native item offset');
+assert.match(modal,/cancelGridHolds\(\)\s+m.scrollAnim.control = "stop"/);
 const menu=await readFile('components/itemMenu/ItemContextMenu.bs','utf8');
 assert.ok(menu.indexOf('m.top.waitForSelectRelease and key')<menu.indexOf('if not press then return false'));
 console.log('EPISODE CONTEXT WIRING CHECKS PASSED');

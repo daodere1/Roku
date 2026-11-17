@@ -138,6 +138,9 @@ sub openSeasonEpisodes(season as object)
     cancelGridHolds()
     cancelSeasonEpisodes()
     m.seasonEpisodeId = season.id
+    m.scrollAnim.control = "stop"
+    m.scrollY = 0
+    m.body.translation = [0, 0]
     m.seasonBack.visible = true
     m.top.findNode("modalHeaderTitle").width = 1150
     m.body.removeChildrenIndex(m.body.getChildCount(), 0)
@@ -195,6 +198,7 @@ end function
 ' A rebuild that puts focus somewhere itself passes focusOpening false
 sub buildSections(sections as object, focusOpening = true as boolean)
     cancelGridHolds()
+    m.scrollAnim.control = "stop"
     m.body.removeChildrenIndex(m.body.getChildCount(), 0)
     m.sections = []
     m.focusedSection = -1
@@ -278,18 +282,22 @@ function addGrid(section as object, kind as string, items as object, y as float,
     spec = sectionGridSpec(kind, chainLookupReturn(section, "aspect", "portrait"))
     columns = int((MODAL_BODY_WIDTH + spec.gap) / (spec.width + spec.gap))
     if columns < 1 then columns = 1
-    rows = int((items.count() + columns - 1) / columns)
-    if rows < 1 then rows = 1
+    window = speshCinematic.GridWindow(items.count(), columns, spec.height, spec.gap)
+    rows = window.rows
 
     grid = m.body.createChild("SpeshContextGrid")
     grid.enableContext = kind = "media" and not chainLookupReturn(section, "isExtras", false)
     grid.itemComponentName = spec.component
     grid.numColumns = columns
-    grid.numRows = rows
+    ' MarkupGrid owns scrolling inside a bounded window. A season can contain
+    ' hundreds of episodes; allocating one visible row for each creates an
+    ' enormous grid and scrolling the parent as well can hide it completely.
+    visibleRows = window.visibleRows
+    grid.numRows = visibleRows
     grid.itemSize = [spec.width, spec.height]
     grid.rowHeights = [spec.height]
     grid.itemSpacing = [spec.gap, spec.gap]
-    grid.vertFocusAnimationStyle = "fixedFocus"
+    grid.vertFocusAnimationStyle = "floatingFocus"
     grid.drawFocusFeedback = false
     grid.translation = [0, y]
     grid.content = spotlightContentFromItems(items, chainLookupReturn(spec, "posterWidth", 0), chainLookupReturn(spec, "square", false))
@@ -298,7 +306,7 @@ function addGrid(section as object, kind as string, items as object, y as float,
     if kind = "media" and not chainLookupReturn(section, "isExtras", false) then grid.observeField("contextRequested", "onGridContextRequested")
     if kind = "media" then grid.jumpToItem = speshCinematic.EpisodeAnchor(items, chainLookupReturn(section, "selectedId", ""))
 
-    gridHeight = rows * spec.height + (rows - 1) * spec.gap
+    gridHeight = window.height
     m.sections.push({
         node: grid,
         isGrid: true,
@@ -529,11 +537,10 @@ sub onGridFocusMoved(event as object)
 end sub
 
 sub scrollGridItem(entry as object)
-    row = int(entry.node.itemFocused / entry.columns)
-    itemTop = entry.gridTop + row * entry.rowHeight
-    itemBottom = itemTop + entry.rowHeight
-    if itemTop < m.scrollY then scrollBodyTo(itemTop)
-    if itemBottom > m.scrollY + MODAL_BODY_HEIGHT then scrollBodyTo(itemBottom - MODAL_BODY_HEIGHT)
+    ' jumpToItem/native arrows already position the focused episode within the
+    ' grid. The outer panel only brings that viewport into view, never its
+    ' absolute item row (which would apply the scroll a second time).
+    scrollBodyTo(entry.top)
 end sub
 
 sub cancelGridHolds()
@@ -598,7 +605,7 @@ sub scrollBodyTo(target as float)
     if target = m.scrollY then return
 
     m.scrollAnim.control = "stop"
-    m.scrollInterp.keyValue = [[0, -m.scrollY], [0, -target]]
+    m.scrollInterp.keyValue = [m.body.translation, [0, -target]]
     m.scrollY = target
     m.scrollAnim.control = "start"
 end sub

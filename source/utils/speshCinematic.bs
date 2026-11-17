@@ -1,5 +1,16 @@
 import "pkg:/source/utils/misc.bs"
 namespace speshCinematic
+    function GridWindow(count as integer, columns as integer, height as integer, gap as integer) as object
+        if columns < 1 then columns = 1
+        rows = int((count + columns - 1) / columns)
+        if rows < 1 then rows = 1
+        visibleRows = int((790 - 46 + gap) / (height + gap))
+        if visibleRows > 2 then visibleRows = 2
+        if visibleRows < 1 then visibleRows = 1
+        if visibleRows > rows then visibleRows = rows
+        return {rows:rows,visibleRows:visibleRows,height:visibleRows * height + (visibleRows - 1) * gap}
+    end function
+
     ' Only episode grids are anchored. Preserve provider order for other media.
     function EpisodeAnchor(items as object, selectedId = "" as string) as integer
         resumeIndex = -1
