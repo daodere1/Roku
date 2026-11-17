@@ -798,8 +798,7 @@ function spotlightBuilderEpisodesCard() as dynamic
     }
 end function
 
-' The whole run rather than just this episode's season, a foldable section per season with only
-' the one being watched left open
+' More Episodes starts with seasons, then opens one season in the same frame.
 function spotlightBuilderMoreEpisodesCard() as dynamic
     s = m.s
     all = s.seriesEpisodes
@@ -823,32 +822,17 @@ function spotlightBuilderMoreEpisodesCard() as dynamic
         groups[groups.count() - 1].items.push(entry.node)
     end for
 
-    ' A show with one season has nothing to choose between, so it opens. Otherwise the season
-    ' number says which one is being watched, and where an episode carries no number the section
-    ' holding it does.
     seasonId = chainLookupReturn(s.item, "json.SeasonId", "")
-    cardSections = []
+    seasonItems = []
     for each group in groups
-        expanded = groups.count() = 1
-        if not expanded and isValid(currentSeason)
-            expanded = group.season = currentSeason
-        else if not expanded
-            for each episode in group.items
-                if chainLookupReturn(episode, "json.Id", "") = itemId or (seasonId <> "" and chainLookupReturn(episode, "json.SeasonId", "") = seasonId) then expanded = true
-            end for
-        end if
-
-        cardSections.push({
-            kind: "media",
-            title: nouveauLayout.SeasonLabel(group.season),
-            count: group.items.count(),
-            items: group.items,
-            aspect: "landscape",
-            id: `season-${group.season}`,
-            collapsible: true,
-            expanded: expanded
-        })
+        groupId = chainLookupReturn(group.items[0], "json.SeasonId", "")
+        season = CreateObject("roSGNode", "TVSeasonData")
+        season.json = {Id:groupId,Type:"Season",Name:nouveauLayout.SeasonLabel(group.season),IndexNumber:group.season,SeriesId:chainLookupReturn(s.item,"json.SeriesId","")}
+        season.posterURL = spotlightFirstPosterUrl(s.serverUrl, group.items)
+        season.addFields({seasonEpisodes:group.items})
+        seasonItems.push(season)
     end for
+    cardSections = [{kind:"media",title:tr("Seasons"),items:seasonItems,count:seasonItems.count(),aspect:"portrait",selectedId:seasonId}]
 
     subtitleParts = []
     if groups.count() > 1 then subtitleParts.push(spotlightCountLabel(groups.count(), tr("1 season"), tr("{count} seasons")))
@@ -859,6 +843,10 @@ function spotlightBuilderMoreEpisodesCard() as dynamic
 
     return {
         id: "episodes",
+        seriesId: chainLookupReturn(s.item, "json.SeriesId", ""),
+        currentEpisodeId: itemId,
+        currentSeasonId: seasonId,
+        serverData: {serverUrl:chainLookupReturn(s.item,"json._serverUrl",""),userId:chainLookupReturn(s.item,"json._userId",""),authToken:chainLookupReturn(s.item,"json._authToken","")},
         title: tr("More Episodes"),
         subtitle: spotlightJoinSubtitle(subtitleParts),
         imageUrl: cardImage,

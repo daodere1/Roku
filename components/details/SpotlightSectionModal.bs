@@ -148,6 +148,10 @@ sub openSeasonEpisodes(season as object)
     m.focusedSection = -1
     m.top.findNode("modalHeaderTitle").text = season.title + " · Loading episodes…"
     m.top.setFocus(true)
+    if season.hasField("seasonEpisodes") and isValidAndNotEmpty(season.seasonEpisodes)
+        showSeasonFrame(season.seasonEpisodes)
+        return
+    end if
     task = CreateObject("roSGNode", "SpeshSeasonEpisodesTask")
     task.request = {seriesId:seriesId,seasonId:season.id,serverData:m.top.card.serverData}
     task.observeField("answer", "onSeasonFrameLoaded")
@@ -165,8 +169,14 @@ sub onSeasonFrameLoaded(event as object)
         m.top.findNode("modalHeaderTitle").text = tr("No episodes loaded. Select the season to retry.")
         return
     end if
+    showSeasonFrame(answer.items)
+end sub
+
+sub showSeasonFrame(items as object)
+    selectedId = ""
+    if chainLookupReturn(m.top.card, "currentSeasonId", "") = m.seasonEpisodeId then selectedId = chainLookupReturn(m.top.card, "currentEpisodeId", "")
     m.top.findNode("modalHeaderTitle").text = tr("Episodes · Back to seasons")
-    buildSections([{kind:"media",title:tr("Episodes"),items:answer.items,aspect:"landscape"}])
+    buildSections([{kind:"media",title:tr("Episodes"),items:items,aspect:"landscape",selectedId:selectedId}])
 end sub
 
 sub returnToSeasonPicker()

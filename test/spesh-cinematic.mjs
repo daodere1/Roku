@@ -8,7 +8,7 @@ const directory=await mkdtemp(path.join(tmpdir(),'spesh-cinematic-'));
 try {
  let source=(await readFile('source/utils/speshCalendar.bs','utf8')).replace(/^import.*$/mg,'')+'\n'+(await readFile('source/utils/speshCinematic.bs','utf8')).replace(/^import.*$/mg,'');
  source+='\n'+(await readFile('components/StandardButton.bs','utf8')).replace(/^import.*$/mg,'');
- for(const [file,name] of [['components/cinematic/SpeshCalendar.bs','onCalendarSource'],['components/cinematic/SpeshCalendar.bs','checkDay'],['components/details/SpotlightSectionModal.bs','onSeasonFrameLoaded']]) {
+ for(const [file,name] of [['components/cinematic/SpeshCalendar.bs','onCalendarSource'],['components/cinematic/SpeshCalendar.bs','checkDay'],['components/details/SpotlightSectionModal.bs','onSeasonFrameLoaded'],['components/details/SpotlightSectionModal.bs','showSeasonFrame']]) {
   const text=await readFile(file,'utf8');
   source+='\n'+text.match(new RegExp(`^sub ${name}\\([^]*?^end sub`,'m'))[0];
  }
@@ -22,6 +22,11 @@ function toString(value)
 end function
 function isValid(value)
  return value <> invalid
+end function
+function chainLookupReturn(value, key, fallback)
+ if value = invalid then return fallback
+ if value[key] = invalid then return fallback
+ return value[key]
 end function
 function get_url()
  return "server"
@@ -87,6 +92,12 @@ sub Main()
  event.data.seasonId="s2"
  onSeasonFrameLoaded(event)
  check(m.builtSections.count(),1,"current season opens episode frame")
+ m.top.card={currentSeasonId:"s2",currentEpisodeId:"episode4"}
+ showSeasonFrame([{}])
+ check(m.builtSections[0].selectedId,"episode4","current season targets current episode")
+ m.seasonEpisodeId="s1"
+ showSeasonFrame([{}])
+ check(m.builtSections[0].selectedId,"","other season never targets current episode")
  m.top.visible=false
  m.builtSections=invalid
  onSeasonFrameLoaded(event)
