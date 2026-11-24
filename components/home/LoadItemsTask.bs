@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/Image.bs"
 import "pkg:/source/api/Items.bs"
@@ -43,6 +44,7 @@ const LIBRARY_INDEX_TTL_SECONDS = 30 * 60
 const FIELDS = "DateCreated,Type,UserData,Overview,Genres,CommunityRating,CriticRating,OfficialRating,RunTimeTicks,ProductionYear,SeriesName,ParentIndexNumber,IndexNumber,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,ParentLogoItemId,ParentLogoImageTag,PrimaryImageTag,PrimaryImageAspectRatio"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.itemsToLoad = "libraries"
     m.top.functionName = "loadItems"
 end sub

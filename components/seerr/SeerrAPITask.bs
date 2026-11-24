@@ -1,8 +1,10 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/SeerrUtils.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "executeRequest"
 end sub
 

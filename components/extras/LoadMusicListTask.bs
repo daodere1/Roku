@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/parentalControls.bs"
@@ -7,6 +8,7 @@ const MAX_ARTIST_ALBUMS = 100
 const MAX_PLAYLIST_ITEMS = 300
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "load"
 end sub
 

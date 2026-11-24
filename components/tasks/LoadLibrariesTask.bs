@@ -1,7 +1,9 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/sdk.bs"
 import "pkg:/source/utils/misc.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "loadLibrariesTask"
 end sub
 

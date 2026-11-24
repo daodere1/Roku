@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/MoonfinPlugin.bs"
 import "pkg:/source/api/sdk.bs"
@@ -6,6 +7,7 @@ import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/parentalControls.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "getMediaBarData"
 end sub
 

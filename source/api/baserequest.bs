@@ -1,6 +1,20 @@
 import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/serverCompatibility.bs"
 ' Functions for making requests to the API
+function speshProfileRequestAllowed() as boolean
+    if not isChainValid(m.global, "speshProfileFence") then return true
+    fence = m.global.speshProfileFence
+    if fence.closed then return false
+    if type(m.top) = "roSGNode"
+        if m.top.isSubType("Task")
+            ' No Task->render callFunc rendezvous. Identity is captured by init.
+            if m.top.hasField("speshTaskContext") then return m.top.speshTaskContext.generation = fence.generation
+            return false
+        end if
+    end if
+    return true
+end function
+
 function buildParams(params = {} as object) as string
     ' Take an object of parameters and construct the URL query
 
@@ -102,6 +116,7 @@ function buildURL(path as string, params = {} as object) as dynamic
 end function
 
 function APIRequest(url as string, params = {} as object) as dynamic
+    if not speshProfileRequestAllowed() then return invalid
     full_url = buildURL(url, params)
     if full_url = invalid then return invalid
 
@@ -122,6 +137,7 @@ end function
 ' Lets the access schedule watcher know the server turned a request away with a 403. A user whose
 ' hours have just ended is refused everything, and nothing else would tell the app.
 sub noteAccessRefused()
+    if not speshProfileRequestAllowed() then return
     if type(m.global) <> "roSGNode" or not m.global.hasField("accessRefused") then return
     m.global.accessRefused = m.global.accessRefused + 1
 end sub
@@ -133,11 +149,13 @@ end sub
 ' APIRequest hands back invalid when there is no server to build a URL against,
 ' so callers can reach here before a server has been picked
 function getJson(req)
+    if not speshProfileRequestAllowed() then return invalid
     if req = invalid then return invalid
 
     started = diagnostics.StartTrace("GET", req)
     response = requestResponse(req, "GET", "", 20000)
     data = response.data
+    if not speshProfileRequestAllowed() then return invalid
 
     if data = invalid
         noteRefusalIn(req)
@@ -158,6 +176,7 @@ end function
 
 ' getJson for a lookup that is only worth a short wait
 function getJsonWithin(req, timeoutMs as integer) as dynamic
+    if not speshProfileRequestAllowed() then return invalid
     if req = invalid then return invalid
 
     started = diagnostics.StartTrace("GET", req)
@@ -174,6 +193,8 @@ function getJsonWithin(req, timeoutMs as integer) as dynamic
         return invalid
     end if
 
+    if not speshProfileRequestAllowed() then return invalid
+
     code = resp.GetResponseCode()
     if code <> 200
         diagnostics.EndTrace(started, code.ToStr(), diagnostics.LEVEL_WARN)
@@ -186,6 +207,8 @@ function getJsonWithin(req, timeoutMs as integer) as dynamic
 end function
 
 function postVoid(req, data = "" as string) as boolean
+    if not speshProfileRequestAllowed() then return false
+    if req = invalid then return false
     started = diagnostics.StartTrace("POST", req)
     req.setMessagePort(CreateObject("roMessagePort"))
     req.AddHeader("Content-Type", "application/json")
@@ -207,6 +230,7 @@ function postVoid(req, data = "" as string) as boolean
 end function
 
 function headVoid(req) as boolean
+    if not speshProfileRequestAllowed() or req = invalid then return false
     started = diagnostics.StartTrace("HEAD", req)
     req.setMessagePort(CreateObject("roMessagePort"))
     req.AddHeader("Content-Type", "application/json")
@@ -228,6 +252,7 @@ function headVoid(req) as boolean
 end function
 
 function getVoid(req) as boolean
+    if not speshProfileRequestAllowed() or req = invalid then return false
     started = diagnostics.StartTrace("GET", req)
     req.setMessagePort(CreateObject("roMessagePort"))
     req.AddHeader("Content-Type", "application/json")
@@ -250,6 +275,8 @@ function getVoid(req) as boolean
 end function
 
 function postJson(req, data = "" as string)
+    if not speshProfileRequestAllowed() then return invalid
+    if req = invalid then return invalid
     started = diagnostics.StartTrace("POST", req)
     req.setMessagePort(CreateObject("roMessagePort"))
     req.AddHeader("Content-Type", "application/json")
@@ -260,6 +287,7 @@ function postJson(req, data = "" as string)
         return invalid
     end if
 
+    if not speshProfileRequestAllowed() then return invalid
     code = resp.GetResponseCode()
 
     if resp.getString() = ""
@@ -275,6 +303,7 @@ function postJson(req, data = "" as string)
 end function
 
 function deleteVoid(req)
+    if not speshProfileRequestAllowed() or req = invalid then return invalid
     started = diagnostics.StartTrace("DELETE", req)
     req.setMessagePort(CreateObject("roMessagePort"))
     req.AddHeader("Content-Type", "application/json")
@@ -314,6 +343,10 @@ function getRegistryValue(section as string, key as string) as dynamic
 end function
 
 function getActiveUserIdFromRegistry() as dynamic
+    if type(m.top) = "roSGNode" and m.top.hasField("speshTaskContext")
+        if isValidAndNotEmpty(m.top.speshTaskContext.userId) then return m.top.speshTaskContext.userId
+    end if
+    if isChainValid(m.global, "speshActiveProfile") then return m.global.session.user.id
     runtimeUserId = getRuntimeContextValue("moonfin.userId")
     if isValidAndNotEmpty(runtimeUserId)
         return runtimeUserId
@@ -376,6 +409,10 @@ function getServerUrlFromRegistry() as dynamic
 end function
 
 function getAuthTokenFromRegistry() as dynamic
+    if type(m.top) = "roSGNode" and m.top.hasField("speshTaskContext")
+        if isValidAndNotEmpty(m.top.speshTaskContext.userId) then return m.top.speshTaskContext.authToken
+    end if
+    if isChainValid(m.global, "speshActiveProfile") then return m.global.session.user.authToken
     authToken = getRuntimeContextValue("moonfin.authToken")
     if isValidAndNotEmpty(authToken)
         return authToken
@@ -417,13 +454,17 @@ function get_url()
 end function
 
 function getString(req)
+    if not speshProfileRequestAllowed() then return ""
     if req = invalid then return ""
 
     data = req.GetToString()
+    if not speshProfileRequestAllowed() then return ""
     return data
 end function
 
 function postString(req, data = "" as string)
+    if not speshProfileRequestAllowed() then return invalid
+    if req = invalid then return invalid
     req.setMessagePort(CreateObject("roMessagePort"))
     req.AddHeader("Content-Type", "application/json")
     req.AsyncPostFromString(data)
@@ -432,6 +473,7 @@ function postString(req, data = "" as string)
         return invalid
     end if
 
+    if not speshProfileRequestAllowed() then return invalid
     return resp.getString()
 end function
 
@@ -584,6 +626,7 @@ function buildURLForServer(serverUrl as string, path as string, params = {} as o
 end function
 
 function APIRequestForServer(serverUrl as string, userId as string, authToken as string, url as string, params = {} as object) as dynamic
+    if not speshProfileRequestAllowed() then return invalid
     full_url = buildURLForServer(serverUrl, url, params, userId)
     if full_url = "" then return invalid
 
@@ -664,6 +707,7 @@ end sub
 ' Bounded optional requests share cancellation/status handling. Regular library
 ' GETs retain their transport-managed timeout through getJson.
 function requestResponse(req as object, method = "GET" as string, body = "" as string, timeoutMs = 30000 as integer, cancelNode = invalid as dynamic) as object
+    if not speshProfileRequestAllowed() then return {status:0,data:invalid}
     if req = invalid then return { status: 0, data: invalid }
     if requestCanceled(cancelNode) then return { status: 0, data: invalid }
     port = CreateObject("roMessagePort")
@@ -676,6 +720,7 @@ function requestResponse(req as object, method = "GET" as string, body = "" as s
     if not started then return { status: 0, data: invalid }
     timer = CreateObject("roTimespan")
     while timer.TotalMilliseconds() < timeoutMs
+        if not speshProfileRequestAllowed() then exit while
         if requestCanceled(cancelNode) then exit while
         event = wait(100, port)
         if type(event) = "roUrlEvent"

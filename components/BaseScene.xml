@@ -2,18 +2,13 @@
 <component name="BaseScene" extends="Scene">
   <children>
     <Group id="content" />
-    <JFOverhang id="overhang" />
-    <Sidebar id="sidebar" visible="false" />
-    <Spinner id="spinner" translation="[897, 477]" visible="false" />
-    <TVKeyboard id="tvKeyboard" visible="false" />
-    <AccountDialog id="accountDialog" visible="false" />
-    <SeerrTagsDialog id="seerrTagsDialog" visible="false" />
-    <NotificationBanner id="notificationBanner" />
   </children>
   <interface>
+    <function name="resetProfileViews" />
     <field id="disableRemote" type="boolean" value="false" onchange="disableRemoteChanged" />
     <field id="isLoading" type="boolean" value="false" onchange="isLoadingChanged" />
     <field id="exit" type="boolean" alwaysNotify="true" />
+    <field id="profileStartupFailed" type="boolean" />
     <field id="jumpTo" type="assocarray" alwaysNotify="true" onChange="onJumpToChange" />
   </interface>
 </component>

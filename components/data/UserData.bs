@@ -20,6 +20,7 @@ sub loadFromRegistry(id as string)
 end sub
 
 sub saveToRegistry()
+    if m.global.hasField("speshActiveProfile") and m.global.speshActiveProfile.id <> "main" then return
     users = parseJson(get_setting("available_users", "[]"))
     this_user = invalid
 

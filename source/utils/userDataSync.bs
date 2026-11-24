@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/misc.bs"
 
@@ -19,6 +20,7 @@ namespace userDataSync
     end function
 
     sub Publish(itemId as string, patch as object)
+        if not profileTaskIdentity.IsCurrent() then return
         if not isValidAndNotEmpty(itemId) or not isValid(m.global) then return
         changes = {}
         changes[itemId] = patch

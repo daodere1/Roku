@@ -5,8 +5,33 @@ import "pkg:/source/utils/themeApply.bs"
 
 sub init()
     m.top.backgroundURI = ""
-    m.spinner = m.top.findNode("spinner")
+    resetProfileViews()
+end sub
+
+sub resetProfileViews()
+    ' The XML ID dictionary retains removed nodes: keep its content anchor attached.
+    content = m.top.findNode("content")
+    content.removeChildrenIndex(content.getChildCount(), 0)
+    for each child in m.top.getChildren(-1, 0)
+        if not child.isSameNode(content) then m.top.removeChild(child)
+    end for
+    for each item in [{id:"overhang",kind:"JFOverhang"},{id:"sidebar",kind:"Sidebar"},{id:"spinner",kind:"Spinner"},{id:"tvKeyboard",kind:"TVKeyboard"},{id:"accountDialog",kind:"AccountDialog"},{id:"seerrTagsDialog",kind:"SeerrTagsDialog"},{id:"notificationBanner",kind:"NotificationBanner"}]
+        node = m.top.createChild(item.kind)
+        node.id = item.id
+        if item.id = "sidebar" or item.id = "spinner" or item.id = "tvKeyboard" or item.id = "accountDialog" or item.id = "seerrTagsDialog" then node.visible = false
+        if item.id = "spinner"
+            node.translation = [897,477]
+            m.spinner = node
+        end if
+    end for
+    errorLabel = m.top.createChild("Label")
+    errorLabel.setFields({id:"profileStartupError",translation:[220,360],width:1480,height:300,text:"Unable to start profiles. Reopen SpeshTV. Press Back to exit.",wrap:true,maxLines:5,horizAlign:"center",color:"#F3F5F6",visible:false})
     themeApply.ApplyToItem(m.top)
+    m.top.disableRemote = false
+    m.top.isLoading = false
+    if not content.getParent().isSameNode(m.top) then m.top.appendChild(content)
+    m.top.profileStartupFailed = false
+    m.top.visible = true
 end sub
 
 ' Triggered when the isLoading boolean component field is changed
@@ -39,6 +64,10 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
+    if m.top.profileStartupFailed
+        if key = "back" then m.top.exit = true
+        return true
+    end if
 
     if key = "back"
         m.global.sceneManager.callFunc("popScene")

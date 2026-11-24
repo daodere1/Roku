@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/serverCompatibility.bs"
@@ -6,6 +7,7 @@ import "pkg:/source/utils/serverCompatibility.bs"
 const NEW_TRACK_WAITS_MS = [300, 300, 500, 700, 1000, 1000, 1500, 2000, 2000, 3000, 3000, 4000]
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "runTask"
 end sub
 

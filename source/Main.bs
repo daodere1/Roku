@@ -5,10 +5,16 @@ import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/parentalControls.bs"
 import "pkg:/source/utils/settingsSync.bs"
 import "pkg:/source/utils/setupWizardGate.bs"
+import "pkg:/source/utils/speshProfileLifecycle.bs"
 
 sub Main (args as dynamic) as void
+    profile_runtime_restart:
     ' The main function that runs when the application is launched.
-    m.screen = CreateObject("roSGScreen")
+    if not isValid(m.screen)
+        m.screen = CreateObject("roSGScreen")
+    else
+        RetireSpeshProfileRuntime()
+    end if
     m.port = CreateObject("roMessagePort")
     m.screen.setMessagePort(m.port)
 
@@ -21,13 +27,48 @@ sub Main (args as dynamic) as void
     SaveDeviceToGlobal()
 
     session.Init()
+    session.setRuntimeRequestContextValue("moonfin.userId", invalid)
+    session.setRuntimeRequestContextValue("moonfin.authToken", invalid)
 
-    m.scene = m.screen.CreateScene("BaseScene")
+    profileApplied = false
+    if isValid(m.profileRestartSelection)
+        owner = m.profileRestartOwner
+        session.Update("server", m.profileRestartServer)
+        session.Update("user", owner)
+        m.global.serverIdentity = {url:m.profileRestartServer.url,serverType:m.profileRestartServer.serverType}
+        session.setRuntimeRequestContextValue("moonfin.serverUrl", m.profileRestartServer.url)
+        if not ActivateSpeshProfile(owner, m.profileRestartSelection) then return
+        profileApplied = true
+        m.profileRestartSelection = invalid
+        m.profileRestartOwner = invalid
+        m.profileRestartServer = invalid
+    end if
+    if not isValid(m.scene)
+        m.scene = m.screen.CreateScene("BaseScene")
+    else
+        m.scene.callFunc("resetProfileViews")
+    end if
+    m.global.addFields({speshProfileScene:m.scene})
+    m.global.speshProfileScene = m.scene
 
     ' Set default background color
     m.scene.backgroundColor = chainLookupReturn(m.global.session, "user.settings.colorBackground", ColorPalette.VIEWBACKGROUND)
 
     m.screen.show() ' vscode_rale_tracker_entry
+    ' Main-thread component creation requires the SceneGraph screen to be shown.
+    ' Creating this before Show returned invalid in the device startup log.
+    if not m.global.hasField("speshProfileFence") then m.global.addFields({speshProfileFence:CreateObject("roSGNode", "SpeshProfileFence")})
+    if not isValid(m.global.speshProfileFence)
+        m.scene.profileStartupFailed = true
+        m.scene.findNode("profileStartupError").visible = true
+        m.scene.setFocus(true)
+        while true
+            startupMessage = wait(250, m.port)
+            if m.scene.exit then return
+            if type(startupMessage) = "roSGScreenEvent" and startupMessage.isScreenClosed() then return
+        end while
+    end if
+    if not isValid(m.profileRestartSelection) then m.global.speshProfileFence.callFunc("resumeRequests")
     'vscode_rdb_on_device_component_entry
 
     playstateTask = CreateObject("roSGNode", "PlaystateTask")
@@ -90,7 +131,18 @@ sub Main (args as dynamic) as void
     sidebar = m.scene.findNode("sidebar")
     if isValid(sidebar) then sidebar.visible = false
 
-    if not LoginFlow() then return
+    if not profileApplied
+        if not LoginFlow() then return
+        owner = m.global.session.user
+        selection = RunSpeshProfilePicker(owner)
+        if not isValid(selection) then return
+        ' Login can launch owner-scoped background jobs. Keep that global node
+        ' separate from the selected profile, even on the first cold launch.
+        m.profileRestartOwner = owner
+        m.profileRestartServer = m.global.session.server
+        m.profileRestartSelection = selection
+        goto profile_runtime_restart
+    end if
 
     parentalControls.Activate()
     if not RunPinGate() then return
@@ -286,11 +338,27 @@ sub Main (args as dynamic) as void
                 if timesUpResult = "switch" then SignOut(false)
                 setUserColors()
                 sceneManager.callFunc("clearScenes")
-                goto app_start
+                goto profile_runtime_restart
             end if
         else if isNodeEvent(msg, "accountAction")
             accountDialog.visible = false
             action = msg.getData()
+            if isStringEqual(action, "switch_profile")
+                if DrainSpeshProfilePlayback()
+                    selection = RunSpeshProfilePicker(m.global.speshProfileOwner)
+                    if isValid(selection)
+                        stopAchievementsPoll()
+                        m.accessWatcher.userId = ""
+                        m.profileRestartSelection = selection
+                        m.profileRestartOwner = m.global.speshProfileOwner
+                        m.profileRestartServer = m.global.session.server
+                        goto profile_runtime_restart
+                    end if
+                end if
+                returnFocus = accountDialog.returnFocus
+                if isValid(returnFocus) then returnFocus.setFocus(true)
+                continue while
+            end if
             restartApp = true
             if isStringEqual(action, "change_server")
                 unset_setting("server")
@@ -312,14 +380,14 @@ sub Main (args as dynamic) as void
             if restartApp
                 setUserColors()
                 sceneManager.callFunc("clearScenes")
-                goto app_start
+                goto profile_runtime_restart
             end if
         else if isNodeEvent(msg, "switchToUser")
             accountDialog.visible = false
             SwitchToSavedUser(msg.getData())
             setUserColors()
             sceneManager.callFunc("clearScenes")
-            goto app_start
+            goto profile_runtime_restart
         else if isNodeEvent(msg, "removeUserRequest")
             request = msg.getData()
             prompt = Substitute(tr("Are you sure you want to remove {0} from {1}?"), request.username, request.serverName)
@@ -327,12 +395,12 @@ sub Main (args as dynamic) as void
             if confirmed = 1
                 ForgetSavedUser(request.id)
                 ' Removing the account in use leaves nothing signed in
-                if isStringEqual(request.id, m.global.session.user.id)
+                if isStringEqual(request.id, m.global.session.user.id) or isStringEqual(request.id, chainLookupReturn(m.global, "speshProfileOwner.id", ""))
                     accountDialog.visible = false
                     SignOut()
                     setUserColors()
                     sceneManager.callFunc("clearScenes")
-                    goto app_start
+                    goto profile_runtime_restart
                 end if
             end if
             accountDialog.callFunc("showDialog")

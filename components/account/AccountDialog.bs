@@ -26,13 +26,14 @@ sub init()
     m.changeServer = m.top.findNode("changeServerButton")
     m.signOut = m.top.findNode("signOutButton")
     m.signOutAll = m.top.findNode("signOutAllButton")
+    m.switchProfile = m.top.findNode("switchProfileButton")
 
     m.top.findNode("title").text = tr("Switch Account")
     m.changeServer.text = tr("Change Server")
     m.signOut.text = tr("Sign Out")
     m.signOutAll.text = tr("Sign Out All Users")
 
-    for each button in [m.closeButton, m.changeServer, m.signOut, m.signOutAll]
+    for each button in [m.closeButton, m.changeServer, m.signOut, m.signOutAll, m.switchProfile]
         loginStyle.ApplyButton(button)
     end for
 
@@ -118,6 +119,9 @@ sub layoutDialog(tileCount as integer)
     m.signOut.translation = [PANEL_PADDING + half + ACTION_GAP, ACTIONS_Y]
 
     actionsBottom = ACTIONS_Y + actionHeight
+    m.switchProfile.width = clipWidth
+    m.switchProfile.translation = [PANEL_PADDING, actionsBottom + ACTION_STACK_GAP]
+    actionsBottom += ACTION_STACK_GAP + actionHeight
     if m.signOutAll.visible
         m.signOutAll.width = clipWidth
         m.signOutAll.translation = [PANEL_PADDING, actionsBottom + ACTION_STACK_GAP]
@@ -137,6 +141,7 @@ function collectAccounts() as object
     accounts = []
     serverNames = savedServerNames()
     activeId = m.global.session.user.id
+    if m.global.hasField("speshProfileOwner") then activeId = m.global.speshProfileOwner.id
 
     for each user in AvailableUsers()
         if not isValidAndNotEmpty(user.id) then continue for
@@ -205,7 +210,8 @@ sub refreshFocus()
     m.closeButton.focus = (m.focusZone = "close")
     m.changeServer.focus = (m.focusZone = "actions" and m.actionIndex = 0)
     m.signOut.focus = (m.focusZone = "actions" and m.actionIndex = 1)
-    m.signOutAll.focus = (m.focusZone = "actions" and m.actionIndex = 2)
+    m.switchProfile.focus = (m.focusZone = "actions" and m.actionIndex = 2)
+    m.signOutAll.focus = (m.focusZone = "actions" and m.actionIndex = 3)
 
     scrollRow()
 end sub
@@ -296,7 +302,7 @@ end function
 
 function moveUp() as boolean
     if m.focusZone = "actions"
-        if m.actionIndex = 2
+        if m.actionIndex >= 2
             m.actionIndex = 0
         else
             m.focusZone = "tiles"
@@ -321,8 +327,11 @@ function moveDown() as boolean
         m.focusZone = "actions"
         m.actionIndex = 0
         refreshFocus()
-    else if m.focusZone = "actions" and m.actionIndex < 2 and m.signOutAll.visible
+    else if m.focusZone = "actions" and m.actionIndex < 2
         m.actionIndex = 2
+        refreshFocus()
+    else if m.focusZone = "actions" and m.actionIndex = 2 and m.signOutAll.visible
+        m.actionIndex = 3
         refreshFocus()
     end if
 
@@ -340,6 +349,8 @@ function selectFocused() as boolean
             m.top.accountAction = "change_server"
         else if m.actionIndex = 1
             m.top.accountAction = "sign_out"
+        else if m.actionIndex = 2
+            m.top.accountAction = "switch_profile"
         else
             m.top.accountAction = "sign_out_all"
         end if

@@ -9,6 +9,7 @@
     <field id="speshNowNext" type="assocarray" alwaysNotify="true" />
     <function name="speshTune" />
     <function name="speshStop" />
+    <function name="profileReportsDrained" />
     <field id="backPressed" type="boolean" alwaysNotify="true" />
     <field id="selectSubtitlePressed" type="boolean" alwaysNotify="true" />
     <field id="selectAudioPressed" type="boolean" alwaysNotify="true" />

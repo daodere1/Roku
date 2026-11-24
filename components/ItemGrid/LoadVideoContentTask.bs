@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/speshTrackSelection.brs"
 import "pkg:/source/api/Image.bs"
@@ -18,6 +19,7 @@ import "pkg:/source/utils/speshResume.brs"
 import "pkg:/source/utils/trackLabels.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.filter = "All"
     m.top.sortField = "SortName"
     m.top.functionName = "loadItems"

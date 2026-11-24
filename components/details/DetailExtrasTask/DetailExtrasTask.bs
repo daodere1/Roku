@@ -1,7 +1,9 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/parentalControls.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "loadExtras"
 end sub
 

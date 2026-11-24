@@ -1,0 +1,67 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
+import "pkg:/source/api/baserequest.bs"
+import "pkg:/source/utils/speshProfiles.bs"
+sub init()
+    profileTaskIdentity.Capture()
+    m.top.functionName = "loadProfiles"
+end sub
+
+sub loadProfiles()
+    r = m.top.request
+    owner = r.owner
+    reply = {ok:false,status:0,op:r.op,error:"Profile request failed. Please retry."}
+    try
+        path = "Spesh/Profiles"
+        method = "GET"
+        if r.op <> "list"
+            if not isValidAndNotEmpty(r.profileId) and r.op <> "create" then throw "Missing profile"
+            if r.op <> "create"
+                rx = CreateObject("roRegex", "^(main|[a-fA-F0-9]{32})$", "")
+                if not rx.IsMatch(r.profileId) then throw "Invalid profile"
+                path += "/" + r.profileId
+            end if
+            if r.op = "select" then path += "/Select"
+            method = "POST"
+        end if
+        req = APIRequestForServer(r.serverUrl, owner.id, owner.authToken, path)
+        req.AddHeader("Cache-Control", "no-store")
+        body = "{}"
+        if r.op = "create" or r.op = "edit"
+            if not speshProfiles.ValidName(r.name) then throw "Invalid name"
+            body = FormatJson({name:r.name.Trim(),avatar:r.avatar})
+            if r.op = "edit" then req.SetRequest("PUT")
+        end if
+        req.AddHeader("Content-Type", "application/json")
+        response = requestResponse(req, method, body, 20000)
+        reply.status = response.status
+        reply.ok = response.status >= 200 and response.status < 300
+        reply.data = response.data
+        if reply.ok and r.op = "list"
+            if not isValid(response.data) then throw "Invalid profile response"
+            dataType = LCase(type(response.data.profiles))
+            if dataType <> "roarray" and dataType <> "array" then throw "Invalid profile list"
+            if response.data.profiles.count() < 1 or response.data.profiles.count() > 3 then throw "Invalid profile count"
+        end if
+        if reply.ok and r.op = "select"
+            selected = response.data
+            token = selected.accessToken
+            if selected.profile.id = "main" then token = owner.authToken
+            if not isValidAndNotEmpty(token) then throw "Missing selection token"
+            req = APIRequestForServer(r.serverUrl, selected.userId, token, "Users/Me")
+            userReply = requestResponse(req, "GET", "", 20000)
+            if userReply.status <> 200 then throw "Unable to load profile permissions"
+            selected.user = userReply.data
+            if not isValid(speshProfiles.Selection(owner, selected)) then throw "Invalid profile identity"
+            reply.data = selected
+        end if
+        if not reply.ok
+            if response.status = 409 then reply.error = "Three profiles maximum, or profile unavailable. Refresh and retry."
+            if response.status = 400 then reply.error = "Use a name of 1–24 characters and a listed avatar."
+            if response.status = 401 or response.status = 403 then reply.error = "Account access denied. Sign in again."
+        end if
+    catch e
+        reply.ok = false
+    end try
+    if not reply.ok then reply.Delete("data")
+    m.top.reply = reply
+end sub

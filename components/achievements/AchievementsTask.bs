@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/Achievements.bs"
 import "pkg:/source/utils/misc.bs"
 
@@ -7,6 +8,7 @@ import "pkg:/source/utils/misc.bs"
 ' network, so none of it runs on the render thread.
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "loadAchievements"
 end sub
 

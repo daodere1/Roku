@@ -69,6 +69,13 @@ function AboutMe(id = "" as string)
 end function
 
 sub SignOut(deleteSavedEntry = true as boolean)
+    if m.global.hasField("speshProfileOwner")
+        session.Update("user", m.global.speshProfileOwner)
+        session.setRuntimeRequestContextValue("moonfin.userId", m.global.speshProfileOwner.id)
+        session.setRuntimeRequestContextValue("moonfin.authToken", m.global.speshProfileOwner.authToken)
+        m.global.removeField("speshActiveProfile")
+        m.global.removeField("speshProfileOwner")
+    end if
     diagnostics.Auth("Signed out")
     m.global.queueManager.callFunc("clear")
     m.global.audioPlayer.control = "stop"

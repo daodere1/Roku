@@ -25,6 +25,8 @@ function createServerUserSession(serverId as string, serverUrl as string, server
 end function
 
 function getLoggedInServerUsers() as object
+    ' A managed profile must never aggregate its owner's saved credentials/history.
+    if m.global.hasField("speshActiveProfile") and m.global.speshActiveProfile.id <> "main" then return []
     sessionsArray = []
 
     savedServersJson = get_setting("saved_servers")

@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/libraryOrder.bs"
 import "pkg:/source/utils/misc.bs"
@@ -86,4 +87,8 @@ sub saveOrder()
     end for
 
     m.top.result = { ok: true }
+end sub
+
+sub init()
+    profileTaskIdentity.Capture()
 end sub

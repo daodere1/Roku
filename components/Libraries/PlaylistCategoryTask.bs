@@ -1,8 +1,10 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/playlistGrouping.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "resolveCategories"
 end sub
 

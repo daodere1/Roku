@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="SpeshProfiles" extends="Group" focusable="true">
+ <interface>
+  <field id="owner" type="assocarray" />
+  <field id="serverUrl" type="string" />
+  <field id="selected" type="assocarray" alwaysNotify="true" />
+  <field id="cancelled" type="boolean" alwaysNotify="true" />
+  <function name="beginProfiles" />
+ </interface>
+ <children>
+  <Rectangle width="1920" height="1080" color="#000000" />
+  <Label id="heading" text="Who’s watching?" translation="[160,150]" width="1600" horizAlign="center" color="#F3F5F6" font="font:LargeBoldSystemFont" />
+  <Label id="status" text="Loading profiles…" translation="[160,260]" width="1600" wrap="true" maxLines="3" horizAlign="center" color="#A3A7B2" font="font:SmallSystemFont" />
+  <Group id="tiles" />
+  <Label id="help" text="OK: choose · Down: manage profiles · Back: return" translation="[160,880]" width="1600" horizAlign="center" color="#A3A7B2" font="font:SmallSystemFont" />
+ </children>
+</component>

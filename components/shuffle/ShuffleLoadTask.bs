@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/sdk.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/parentalControls.bs"
@@ -6,6 +7,7 @@ import "pkg:/source/utils/parentalControls.bs"
 const SHUFFLE_ITEM_COUNT = 5
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "shuffleLoadFunction"
 end sub
 

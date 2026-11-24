@@ -1,7 +1,9 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/EmbyConnect.bs"
 import "pkg:/source/utils/embyFeatures.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "loadPreview"
 end sub
 

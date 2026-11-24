@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/session.bs"
 import "pkg:/source/utils/settingsSync.bs"
@@ -31,4 +32,8 @@ sub resetProfile()
     end if
 
     m.top.result = { ok: ok }
+end sub
+
+sub init()
+    profileTaskIdentity.Capture()
 end sub

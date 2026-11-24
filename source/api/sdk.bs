@@ -2127,7 +2127,18 @@ namespace api
 
     namespace useritems
         function GetResumeItems(params = {} as object)
-            resp = APIRequest(`/useritems/resume`, params)
+            targetParams = {}
+            targetParams.Append(params)
+            userId = targetParams.LookupCI("UserId")
+            if not isValidAndNotEmpty(userId) then userId = getActiveUserIdFromRegistry()
+            if not isValidAndNotEmpty(userId) then return invalid
+            if isChainValid(m.global, "speshActiveProfile")
+                if userId <> getActiveUserIdFromRegistry() then return invalid
+            end if
+            targetParams.UserId = userId
+            resp = APIRequest(`/useritems/resume`, targetParams)
+            if resp = invalid then return invalid
+            resp.AddHeader("Cache-Control", "no-cache, no-store")
             result = getJson(resp)
             return result
         end function

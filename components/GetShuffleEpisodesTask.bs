@@ -1,9 +1,11 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/sdk.bs"
 import "pkg:/source/utils/blockedContent.bs"
 import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/parentalControls.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "getShuffleEpisodesTask"
 end sub
 

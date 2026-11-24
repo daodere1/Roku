@@ -109,6 +109,9 @@ function settingOr(key as string, fallback as string) as string
 end function
 
 sub set_user_setting(key as string, value as dynamic)
+    if isValid(m.global) and m.global.hasField("speshActiveProfile")
+        if m.global.speshActiveProfile.id <> "main" and (key = "token" or key = "username") then return
+    end if
     userId = current_user_id()
     if not isValid(userId) then return
     session.user.settings.Save(key, value)

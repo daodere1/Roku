@@ -1,7 +1,9 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 '
 ' Task used to discover Jellyfin and Emby servers on the local network
 '
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "execute"
 end sub
 

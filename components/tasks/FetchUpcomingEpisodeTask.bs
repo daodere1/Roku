@@ -1,7 +1,9 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/upcomingEpisode.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "resolveUpcomingText"
 end sub
 

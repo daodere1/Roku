@@ -1,6 +1,8 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/MoonfinPlugin.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "pingPlugin"
 end sub
 

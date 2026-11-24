@@ -1,0 +1,40 @@
+sub init()
+    m.epoch = 0
+    m.tasks = []
+end sub
+
+function acceptTask(task as object) as boolean
+    if m.top.closed then return false
+    if task.hasField("speshProfileEpoch")
+        if task.speshProfileEpoch <> m.epoch then return false
+    else
+        task.addFields({speshProfileEpoch:m.epoch})
+    end if
+    kept = []
+    found = false
+    for each prior in m.tasks
+        if prior.isSameNode(task)
+            found = true
+            kept.push(prior)
+        else if prior.state = "run"
+            kept.push(prior)
+        end if
+    end for
+    if not found then kept.push(task)
+    m.tasks = kept
+    return true
+end function
+
+sub retireTasks()
+    m.top.closed = true
+    m.epoch++
+    m.top.generation = m.epoch
+    for each task in m.tasks
+        task.control = "STOP"
+    end for
+    m.tasks = []
+end sub
+
+sub resumeRequests()
+    m.top.closed = false
+end sub

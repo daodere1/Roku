@@ -1,0 +1,43 @@
+import "pkg:/source/utils/misc.bs"
+namespace speshProfiles
+    function Avatars() as object
+        return ["blue","gold","teal","purple","coral","green","pink","slate"]
+    end function
+
+    function Color(avatar as string) as string
+        colors = {blue:"#427AC7",gold:"#B88729",teal:"#237E82",purple:"#7955A8",coral:"#C66350",green:"#3D8657",pink:"#AD537C",slate:"#596778"}
+        return colors[avatar] ?? colors.blue
+    end function
+
+    function ValidName(name as string) as boolean
+        return Len(name.Trim()) >= 1 and Len(name.Trim()) <= 24
+    end function
+
+    function Selection(owner as object, selected as object) as dynamic
+        if not isValid(selected) or not isValid(selected.profile) or not isValid(selected.user) then return invalid
+        user = {}
+        user.Append(selected.user)
+        if LCase(toString(user.Id).Replace("-", "")) <> LCase(toString(selected.userId).Replace("-", "")) then return invalid
+        if selected.profile.id = "main"
+            if selected.accessToken <> invalid or selected.userId <> owner.id then return invalid
+            token = owner.authToken
+        else
+            if not isValidAndNotEmpty(selected.accessToken) or selected.userId = owner.id then return invalid
+            policy = user.Policy
+            if not isValid(policy) then return invalid
+            for each flag in ["IsAdministrator","EnableContentDeletion","EnableCollectionManagement","EnableSubtitleManagement","EnableLiveTvManagement","EnableRemoteControlOfOtherUsers","EnableSharedDeviceControl"]
+                if policy[flag] = true then return invalid
+            end for
+            token = selected.accessToken
+        end if
+        if not isValidAndNotEmpty(token) then return invalid
+        user.authToken = token
+        user.settings = {}
+        for each key in owner.settings
+            if key <> "token" and key <> "username" then user.settings[key] = owner.settings[key]
+        end for
+        user.friendlyName = selected.profile.name
+        user.name = selected.profile.name
+        return user
+    end function
+end namespace

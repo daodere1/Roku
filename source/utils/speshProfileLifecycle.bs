@@ -1,0 +1,107 @@
+import "pkg:/source/utils/speshProfiles.bs"
+import "pkg:/source/utils/session.bs"
+
+function RunSpeshProfilePicker(owner as object) as dynamic
+    if not isValidAndNotEmpty(owner._profileDeviceId) then owner._profileDeviceId = m.global.device.serverDeviceName
+    stopLoadingSpinner()
+    picker = CreateObject("roSGNode", "SpeshProfiles")
+    picker.owner = owner
+    picker.serverUrl = m.global.session.server.url
+    port = CreateObject("roMessagePort")
+    picker.observeField("selected", port)
+    picker.observeField("cancelled", port)
+    m.scene.appendChild(picker)
+    picker.callFunc("beginProfiles")
+    result = invalid
+    while true
+        msg = wait(250, port)
+        if m.scene.exit = true then exit while
+        if isNodeEvent(msg, "selected")
+            result = msg.getData()
+            exit while
+        else if isNodeEvent(msg, "cancelled")
+            exit while
+        end if
+    end while
+    picker.unobserveField("selected")
+    picker.unobserveField("cancelled")
+    m.scene.removeChild(picker)
+    startLoadingSpinner()
+    return result
+end function
+
+function ActivateSpeshProfile(owner as object, selected as object) as boolean
+    user = speshProfiles.Selection(owner, selected)
+    if not isValid(user) then return false
+    ' Never call Login(): that path writes saved accounts and tokens to registry.
+    session.Update("user", user)
+    session.setRuntimeRequestContextValue("moonfin.userId", user.id)
+    session.setRuntimeRequestContextValue("moonfin.authToken", user.authToken)
+    m.global.addFields({speshProfileOwner:owner,speshActiveProfile:selected.profile})
+    if m.global.hasField("speshProfileFence") then m.global.speshProfileFence.callFunc("resumeRequests")
+    session.user.settings.SaveDefaults()
+    return true
+end function
+
+sub stopProfileTimers(node as object)
+    if node.isSubType("Timer") then node.control = "stop"
+    if node.isSubType("Animation") then node.control = "stop"
+    for each child in node.getChildren(-1, 0)
+        stopProfileTimers(child)
+    end for
+end sub
+
+sub RetireSpeshProfileRuntime()
+    ' roSGScreen/global are application-wide. Keep the screen, fence old tasks,
+    ' detach old views, then discard per-user globals before rebuilding the scene.
+    m.global.speshProfileFence.callFunc("retireTasks")
+    m.global.sceneManager.callFunc("clearScenes")
+    stopProfileTimers(m.scene)
+    m.scene.visible = false
+    port = CreateObject("roMessagePort")
+    wait(750, port)
+    for each key in m.global.getFields()
+        if key <> "speshProfileFence" and key <> "speshProfileScene" and key <> "id" and key <> "focusedChild" and key <> "change" then m.global.removeField(key)
+    end for
+end sub
+
+sub collectProfilePlayers(node as object, players as object)
+    if node.isSubType("VideoPlayerView") then players.push(node)
+    for each child in node.getChildren(-1, 0)
+        collectProfilePlayers(child, players)
+    end for
+end sub
+
+function DrainSpeshProfilePlayback() as boolean
+    players = []
+    collectProfilePlayers(m.scene, players)
+    for each player in players
+        player.callFunc("speshStop")
+    end for
+    m.global.audioPlayer.control = "stop"
+    timer = CreateObject("roTimespan")
+    port = CreateObject("roMessagePort")
+    quietSince = -1
+    ' Render callbacks run on the SceneGraph thread while main waits. Old credentials
+    ' remain active until every player-owned report and the shared report finish.
+    while timer.TotalMilliseconds() < 45000
+        ready = m.global.playstateTask.state <> "run"
+        ready = ready and (m.global.audioPlayer.state = "stopped" or m.global.audioPlayer.state = "none" or m.global.audioPlayer.state = "finished")
+        for each player in players
+            if player.callFunc("profileReportsDrained") <> true then ready = false
+        end for
+        if ready
+            if quietSince < 0 then quietSince = timer.TotalMilliseconds()
+            if timer.TotalMilliseconds() - quietSince >= 750
+                m.global.queueManager.callFunc("clear")
+                return true
+            end if
+        else
+            quietSince = -1
+        end if
+        wait(100, port)
+    end while
+    ' Fail closed rather than switching a late progress report to another identity.
+    show_dialog("Playback is still stopping. Please try Switch profile again.", ["OK"], 0)
+    return false
+end function

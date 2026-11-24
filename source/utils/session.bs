@@ -7,6 +7,7 @@ import "pkg:/source/utils/diagnostics.bs"
 import "pkg:/source/utils/misc.bs"
 import "pkg:/source/utils/SeerrUtils.bs"
 import "pkg:/source/utils/settingsSync.bs"
+import "pkg:/source/utils/profileTaskIdentity.bs"
 
 namespace session
     sub setRuntimeRequestContextValue(key as string, value as dynamic)
@@ -52,6 +53,7 @@ namespace session
     end sub
 
     sub Update(key as string, value = {} as object)
+        if not profileTaskIdentity.IsCurrent() then return
         if key = "" or (key <> "user" and key <> "server") or value = invalid
             return
         end if
@@ -243,7 +245,9 @@ namespace session
             localGlobal = m.global
             deviceName = localGlobal.device.id
 
-            if isChainValid(localGlobal, "session.user.friendlyName")
+            if isChainValid(localGlobal, "speshProfileOwner._profileDeviceId")
+                deviceName = localGlobal.speshProfileOwner._profileDeviceId
+            else if isChainValid(localGlobal, "session.user.friendlyName")
                 deviceName = deviceName + localGlobal.session.user.friendlyName
             end if
 

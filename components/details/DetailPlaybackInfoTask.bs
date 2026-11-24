@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/enums/PlaybackMethod.bs"
 import "pkg:/source/enums/String.bs"
@@ -16,6 +17,7 @@ import "pkg:/source/utils/misc.bs"
 const DEFAULT_STREAMING_BITRATE = 140000000
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "probePlaybackInfo"
 end sub
 

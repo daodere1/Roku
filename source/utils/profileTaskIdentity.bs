@@ -1,0 +1,27 @@
+namespace profileTaskIdentity
+    ' Called in a Task component's init, before its worker thread starts.
+    sub Capture()
+        context = {generation:0,userId:"",authToken:"",serverUrl:""}
+        if m.global <> invalid
+            if m.global.speshProfileFence <> invalid then context.generation = m.global.speshProfileFence.generation
+            if m.global.session <> invalid
+                if m.global.session.user <> invalid
+                    context.userId = m.global.session.user.id
+                    context.authToken = m.global.session.user.authToken
+                end if
+                if m.global.session.server <> invalid then context.serverUrl = m.global.session.server.url
+            end if
+        end if
+        m.top.addFields({speshTaskContext:context,speshProfileEpoch:context.generation})
+        if m.global <> invalid
+            if m.global.speshProfileFence <> invalid then m.global.speshProfileFence.callFunc("acceptTask", m.top)
+        end if
+    end sub
+
+    function IsCurrent() as boolean
+        if m.top = invalid then return true
+        if not m.top.hasField("speshTaskContext") then return true
+        if m.global = invalid or m.global.speshProfileFence = invalid then return true
+        return not m.global.speshProfileFence.closed and m.top.speshTaskContext.generation = m.global.speshProfileFence.generation
+    end function
+end namespace

@@ -1,8 +1,10 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/sdk.bs"
 import "pkg:/source/utils/config.bs"
 import "pkg:/source/utils/speshProgress.brs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "getNextEpisodeTask"
 end sub
 

@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/baserequest.bs"
 import "pkg:/source/api/Image.bs"
 import "pkg:/source/api/Items.bs"
@@ -14,6 +15,7 @@ const PEOPLE_GRACE_MS = 1000
 const PEOPLE_TIMEOUT_MS = 10000
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "search"
 end sub
 

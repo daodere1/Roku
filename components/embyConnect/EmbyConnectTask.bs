@@ -1,6 +1,8 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/EmbyConnect.bs"
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "execute"
 end sub
 

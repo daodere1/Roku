@@ -3776,6 +3776,12 @@ sub speshStop()
     m.top.content = invalid
 end sub
 
+function profileReportsDrained() as boolean
+    if m.ownReportTasks.count() > 0 then return false
+    if m.top.state = "playing" or m.top.state = "buffering" or m.top.state = "paused" then return false
+    return true
+end function
+
 sub onSwitchTimeout()
     finishChannelSwitch(false)
 end sub

@@ -1,3 +1,4 @@
+import "pkg:/source/utils/profileTaskIdentity.bs"
 import "pkg:/source/api/Achievements.bs"
 import "pkg:/source/utils/misc.bs"
 
@@ -6,6 +7,7 @@ import "pkg:/source/utils/misc.bs"
 const ACHIEVEMENTS_POLL_MS = 30000
 
 sub init()
+    profileTaskIdentity.Capture()
     m.top.functionName = "pollAchievements"
 end sub
 
