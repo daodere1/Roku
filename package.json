@@ -1,7 +1,7 @@
 {
   "name": "speshtv-roku",
   "type": "module",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "SpeshTV for Roku, based on Moonfin and Jellyfin Roku",
   "dependencies": {
     "@rokucommunity/bslib": "0.1.1"

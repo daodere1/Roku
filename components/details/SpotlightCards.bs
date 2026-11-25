@@ -828,7 +828,8 @@ function spotlightBuilderMoreEpisodesCard() as dynamic
         groupId = chainLookupReturn(group.items[0], "json.SeasonId", "")
         season = CreateObject("roSGNode", "TVSeasonData")
         season.json = {Id:groupId,Type:"Season",Name:nouveauLayout.SeasonLabel(group.season),IndexNumber:group.season,SeriesId:chainLookupReturn(s.item,"json.SeriesId","")}
-        fallbackPoster = spotlightFirstPosterUrl(s.serverUrl, group.items)
+        seriesId = chainLookupReturn(s.item, "json.SeriesId", "")
+        fallbackPoster = spotlightServerImageUrl(s.item, seriesId, "Primary", {maxWidth:400,maxHeight:600})
         season.posterURL = fallbackPoster
         if groupId <> "" then season.posterURL = spotlightServerImageUrl(s.item, groupId, "Primary", {maxWidth:400,maxHeight:600})
         season.addFields({seasonEpisodes:group.items, seasonFallbackPoster:fallbackPoster})

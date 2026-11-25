@@ -76,8 +76,6 @@ sub findNodes()
     m.posterMask = m.top.findNode("posterMask")
     m.modernShiftAnim = m.top.findNode("modernShiftAnim")
     m.modernShiftInterp = m.top.findNode("modernShiftInterp")
-    m.modernShiftPosterOpacity = m.top.findNode("modernShiftPosterOpacity")
-    m.modernShiftTextOpacity = m.top.findNode("modernShiftTextOpacity")
     m.itemSubtext = m.top.findNode("itemSubtext")
     m.classicNameFont = m.top.findNode("classicNameFont")
     m.classicLineFont = m.top.findNode("classicLineFont")
@@ -161,7 +159,10 @@ sub itemContentChanged()
     else if isValid(m.modernObservedNode)
         m.modernObservedNode.unobserveFieldScoped("modernShift")
         m.modernObservedNode = invalid
-        if isValid(m.scaleGroup) then m.scaleGroup.translation = [0, 0]
+        if isValid(m.scaleGroup)
+            m.scaleGroup.translation = [0, 0]
+            m.scaleGroup.visible = true
+        end if
     end if
 
     ' Every read of the json field copies it, so it is read once
@@ -650,8 +651,9 @@ sub setupModernShiftObserver(itemData as object)
     ' Apply the current shift instantly (no slide) when the cell is (re)bound
     shift = itemData.modernShift
     if not isValid(shift) then shift = 0
-    if shift = -1 then shift = 0
-    if isValid(m.scaleGroup) then m.scaleGroup.translation = [shift, 0]
+    m.scaleGroup.visible = shift <> -1
+    if shift < 0 then shift = 0
+    m.scaleGroup.translation = [shift, 0]
 end sub
 
 sub onModernShiftChanged()
@@ -661,13 +663,11 @@ sub onModernShiftChanged()
     shift = itemData.modernShift
     if not isValid(shift) then shift = 0
 
+    m.scaleGroup.visible = shift <> -1
+    if shift < 0 then shift = 0
     if isValid(m.modernShiftAnim) and isValid(m.modernShiftInterp)
         m.modernShiftAnim.control = "stop"
         m.modernShiftInterp.keyValue = [m.scaleGroup.translation, [shift, 0]]
-
-        targetOpacity = shift = -1 ? 0.0 : 1.0
-        m.modernShiftPosterOpacity.keyValue = [m.itemPoster.opacity, targetOpacity]
-        m.modernShiftTextOpacity.keyValue = [m.itemText.opacity, targetOpacity]
 
         m.modernShiftAnim.control = "start"
     else

@@ -317,7 +317,6 @@ function addGrid(section as object, kind as string, items as object, y as float,
     visibleRows = window.visibleRows
     grid.numRows = visibleRows
     grid.itemSize = [spec.width, spec.height]
-    grid.rowHeights = [spec.height]
     grid.itemSpacing = [spec.gap, spec.gap]
     grid.vertFocusAnimationStyle = "floatingFocus"
     grid.drawFocusFeedback = false
@@ -784,7 +783,16 @@ function onKeyEvent(key as string, press as boolean) as boolean
         end if
         return true
     else if key = KeyCode.DOWN
-        if focusedRow(entry) < entry.rows - 1 then return false
+        if focusedRow(entry) < entry.rows - 1
+            if isValid(m.seasonPickerCard) and entry.isGrid
+                lastIndex = entry.node.content.getChildCount() - 1
+                if entry.node.itemFocused + entry.columns > lastIndex
+                    entry.node.jumpToItem = lastIndex
+                    return true
+                end if
+            end if
+            return false
+        end if
         if m.focusedSection < m.sections.count() - 1
             focusSection(m.focusedSection + 1)
             return true

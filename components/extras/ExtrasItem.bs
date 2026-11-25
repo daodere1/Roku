@@ -474,5 +474,12 @@ end sub
 sub onSeasonPosterStatus()
     if m.posterImgRect.loadStatus <> "failed" then return
     fallback = chainLookupReturn(m.top.itemContent, "seasonFallbackPoster", "")
-    if fallback <> "" and m.posterImgRect.uri <> fallback then m.posterImgRect.uri = fallback
+    if not isValid(m.top.itemContent) then return
+    if not m.top.itemContent.hasField("seasonFallbackPoster") then return
+    if fallback <> "" and m.posterImgRect.uri <> fallback and m.posterImgRect.uri <> "pkg:/images/logo.webp"
+        m.posterImgRect.uri = fallback
+    else if m.posterImgRect.uri <> "pkg:/images/logo.webp"
+        m.posterImgRect.loadDisplayMode = "scaleToFit"
+        m.posterImgRect.uri = "pkg:/images/logo.webp"
+    end if
 end sub

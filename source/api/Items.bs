@@ -985,8 +985,7 @@ end function
 ' Accepts strings for the TV Show Id and the season Id
 function TVEpisodes(showId as string, seasonId as string) as dynamic
     ' Get and validate data
-    data = api.shows.GetEpisodes(showId,
-    {
+    req = APIRequest(Substitute("Shows/{0}/Episodes", showId), {
         "seasonId": seasonId,
         "UserId": m.global.session.user.id,
         ' Add overview to get episode overview without making additional calls
@@ -994,6 +993,9 @@ function TVEpisodes(showId as string, seasonId as string) as dynamic
         "fields": "MediaStreams,MediaSources,Overview"
     })
 
+    if not isValid(req) then return invalid
+    req.AddHeader("Cache-Control", "no-cache, no-store")
+    data = getJson(req)
     if data = invalid or data.Items = invalid then return invalid
 
     results = []
@@ -1025,6 +1027,7 @@ function TVEpisodesForServer(serverData as object, showId as string, seasonId as
     req = APIRequestForServer(serverData.serverUrl, serverData.userId, serverData.authToken, url, params)
     if not isValid(req) then return invalid
 
+    req.AddHeader("Cache-Control", "no-cache, no-store")
     data = getJson(req)
     if data = invalid or data.Items = invalid then return invalid
 
