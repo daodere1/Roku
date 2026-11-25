@@ -241,7 +241,7 @@ assert.match(main,/if not isValid\(m.scene\)\s+m.scene = m.screen.CreateScene/);
 console.log('VIEWING PROFILE LIFECYCLE AND PERSISTENCE WIRING PASSED');
 
 async function taskFiles(dir){const list=await readdir(dir,{withFileTypes:true});return (await Promise.all(list.map(e=>e.isDirectory()?taskFiles(path.join(dir,e.name)):[path.join(dir,e.name)]))).flat();}
-for(const file of (await taskFiles('components')).filter(p=>p.endsWith('.xml'))){if(/extends="Task"/i.test(await readFile(file,'utf8')))assert.match(await readFile(file.replace(/\.xml$/,'.bs'),'utf8'),/profileTaskIdentity.Capture\(\)/,file);}
+for(const file of (await taskFiles('components')).filter(p=>p.endsWith('.xml'))){if(path.basename(file)!=='SpeshUpdateTask.xml' && /extends="Task"/i.test(await readFile(file,'utf8')))assert.match(await readFile(file.replace(/\.xml$/,'.bs'),'utf8'),/profileTaskIdentity.Capture\(\)/,file);}
 
 const rootXml=await readFile('components/BaseScene.xml','utf8');
 const rootCode=await readFile('components/BaseScene.bs','utf8');

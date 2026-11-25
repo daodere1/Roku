@@ -128,6 +128,7 @@ sub cancelSeasonEpisodes()
         m.seasonEpisodeTask = invalid
     end if
     m.seasonEpisodeId = ""
+    m.seasonFallbackEpisodes = []
 end sub
 
 sub openSeasonEpisodes(season as object)
@@ -149,8 +150,8 @@ sub openSeasonEpisodes(season as object)
     m.top.findNode("modalHeaderTitle").text = season.title + " · Loading episodes…"
     m.top.setFocus(true)
     if season.hasField("seasonEpisodes") and isValidAndNotEmpty(season.seasonEpisodes)
-        showSeasonFrame(season.seasonEpisodes)
-        return
+        m.seasonFallbackEpisodes = season.seasonEpisodes
+        showSeasonFrame(m.seasonFallbackEpisodes)
     end if
     task = CreateObject("roSGNode", "SpeshSeasonEpisodesTask")
     task.request = {seriesId:seriesId,seasonId:season.id,serverData:m.top.card.serverData}
@@ -164,17 +165,28 @@ sub onSeasonFrameLoaded(event as object)
     if not event.getRoSGNode().isSameNode(m.seasonEpisodeTask) then return
     answer = event.getData()
     if answer.seasonId <> m.seasonEpisodeId then return
+    m.seasonEpisodeTask.unobserveField("answer")
+    m.seasonEpisodeTask = invalid
+    if not answer.ok and m.seasonFallbackEpisodes.count() > 0 then return
     if not answer.ok or answer.items.count() = 0
         returnToSeasonPicker()
         m.top.findNode("modalHeaderTitle").text = tr("No episodes loaded. Select the season to retry.")
         return
     end if
-    showSeasonFrame(answer.items)
+    selectedId = ""
+    if m.focusedSection >= 0 and m.focusedSection < m.sections.count()
+        entry = m.sections[m.focusedSection]
+        index = focusedItemIndex(entry)
+        if entry.isGrid and index >= 0
+            focused = entry.node.content.getChild(index)
+            if isValid(focused) then selectedId = focused.id
+        end if
+    end if
+    showSeasonFrame(answer.items, selectedId)
 end sub
 
-sub showSeasonFrame(items as object)
-    selectedId = ""
-    if chainLookupReturn(m.top.card, "currentSeasonId", "") = m.seasonEpisodeId then selectedId = chainLookupReturn(m.top.card, "currentEpisodeId", "")
+sub showSeasonFrame(items as object, selectedId = "" as string)
+    if selectedId = "" and chainLookupReturn(m.top.card, "currentSeasonId", "") = m.seasonEpisodeId then selectedId = chainLookupReturn(m.top.card, "currentEpisodeId", "")
     m.top.findNode("modalHeaderTitle").text = tr("Episodes · Back to seasons")
     buildSections([{kind:"media",title:tr("Episodes"),items:items,aspect:"landscape",selectedId:selectedId}])
 end sub

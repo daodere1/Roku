@@ -84,12 +84,20 @@ sub Main()
   return m.header
  end function}
  m.seasonPickerCard={id:"seasons"}
+ task.unobserveField=sub(field)
+ end sub
+ m.focusedSection=-1
+ m.seasonFallbackEpisodes=[{}]
  m.seasonEpisodeTask=task
  m.seasonEpisodeId="s2"
  event.data={seasonId:"s1",ok:true,items:[{}]}
  onSeasonFrameLoaded(event)
  check(m.builtSections,invalid,"stale season rejected")
- event.data.seasonId="s2"
+ event.data={seasonId:"s2",ok:false,items:[]}
+ onSeasonFrameLoaded(event)
+ check(m.builtSections,invalid,"failed refresh leaves the displayed episode list alone")
+ m.seasonEpisodeTask=task
+ event.data={seasonId:"s2",ok:true,items:[{}]}
  onSeasonFrameLoaded(event)
  check(m.builtSections.count(),1,"current season opens episode frame")
  m.top.card={currentSeasonId:"s2",currentEpisodeId:"episode4"}

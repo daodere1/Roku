@@ -1,0 +1,34 @@
+sub init()
+    m.top.functionName = "checkLatestRelease"
+end sub
+
+sub checkLatestRelease()
+    port = CreateObject("roMessagePort")
+    request = CreateObject("roUrlTransfer")
+    request.SetMessagePort(port)
+    request.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    request.SetUrl("https://api.github.com/repos/daodere1/Roku/releases/latest")
+    request.AddHeader("User-Agent", "SpeshTV-Roku-Update")
+    if not request.AsyncGetToString() then return
+    reply = wait(8000, port)
+    if type(reply) <> "roUrlEvent"
+        request.AsyncCancel()
+        return
+    end if
+    if reply.GetResponseCode() <> 200 then return
+    release = ParseJson(reply.GetString())
+    if type(release) <> "roAssociativeArray" then return
+    if type(release.tag_name) <> "roString" and type(release.tag_name) <> "String" then return
+    matcher = CreateObject("roRegex", "^v?([0-9]+)\.([0-9]+)\.([0-9]+)$", "i")
+    available = matcher.Match(release.tag_name)
+    app = CreateObject("roAppInfo")
+    installed = matcher.Match(app.GetVersion())
+    if available.count() <> 4 or installed.count() <> 4 then return
+    for i = 1 to 3
+        if Val(available[i]) < Val(installed[i]) then return
+        if Val(available[i]) > Val(installed[i])
+            m.top.availableVersion = release.tag_name
+            return
+        end if
+    end for
+end sub

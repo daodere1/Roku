@@ -116,7 +116,8 @@ sub setPosterText(itemData as object)
     m.posterText.font.size = textSize
 
     title = itemData.LookupCI("title")
-    m.posterText.text = isValidAndNotEmpty(title) ? UCase(title) : string.EMPTY
+    hasCaption = isValidAndNotEmpty(itemData.LookupCI("name"))
+    m.posterText.text = not hasCaption and isValidAndNotEmpty(title) ? UCase(title) : string.EMPTY
 
     showPosterText(m.itemPoster.loadStatus <> PosterLoadStatus.READY)
 end sub
